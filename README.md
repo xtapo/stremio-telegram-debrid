@@ -40,12 +40,30 @@ Deploy your own instance of the Telegram Stremio Addon instantly using any of th
 
 - **Direct Catalog Browsing & Search**: Search files directly inside Stremio or browse the latest 50 files sent to your Telegram channel.
 - **Metadata & Catalog Syncing**: Open entries in Stremio; the addon checks your Telegram channel for matching file names and links them as stream sources.
+- **Stitched Split Streaming**: Automatically groups, merges, and streams multi-part file archives (such as `.001`, `.part1` patterns) as one continuous virtual stream.
 - **Smart Segment Filtering**: Intelligently parses naming patterns and number sequences (e.g. Part 1, Part 2, V1, V2) from filenames to retrieve and stream only the exact segmented file requested.
 - **Subtitle Auto-Mapping**: Automatically scans your channel for matching subtitle files (SRT, VTT, ASS), injects them, and auto-detects English, Spanish, and French tracks.
 - **High-Speed Range Proxy**: Supports HTTP `206 Partial Content` streaming, enabling instant scrub/seek (fast-forwarding/rewinding) on players like ExoPlayer, VLC, and MPV.
 - **Zero-Storage Footprint**: Streams files chunk-by-chunk in memory directly from Telegram DCs. No temporary server storage is consumed.
 - **Secure Access Control**: Protects your endpoints using an optional API key query (`?api_key=...`) to prevent unauthorized access.
 - **Custom Logging**: Log streaming activity directly back to a separate private Telegram channel.
+
+---
+
+## Stitched Split Streaming
+
+If you have large media files (e.g., 4K HDR video backups) that exceed Telegram's file upload limits (2GB for bots, 4GB for user accounts), you can split them into smaller segments before uploading. The addon automatically detects, groups, and stitches them back together into a single virtual stream.
+
+### Supported Split Formats
+The addon parses standard split archive conventions including:
+* **Numeric extensions**: `Video.mkv.001`, `Video.mkv.002`, `Video.mkv.003`...
+* **Part indicators**: `Video.part1.rar`, `Video.part2.rar`, `Video.part3.rar`... (or `.part01.mkv`, `.part02.mkv`...)
+* **Suffix delimiters**: `Video_part_1.mp4`, `Video_part_2.mp4`...
+
+### How It Works Under the Hood
+1. **Aggregation**: The catalog handler parses filename patterns and clusters split files together, presenting them as a single item with their total combined file size (e.g., `Stitch stream | 6.2 GB`).
+2. **Dynamic Range Mapping**: When you press play or seek in Stremio, the addon maps the player's byte-range requests to the respective split files on the fly.
+3. **In-Memory Sequential Access**: It downloads only the necessary segments from Telegram DCs and transitions between split messages seamlessly in memory, resulting in uninterrupted playback.
 
 ---
 

@@ -119,6 +119,29 @@ def get_search_query_from_filename(filename: str) -> str:
     name = re.sub(r'\s+', ' ', name).strip()
     return name
 
+def parse_split_info(filename: str) -> tuple:
+    if not filename:
+        return None, None
+        
+    # Match suffix .001, .002 etc.
+    m1 = re.search(r'\.(\d{3,4})$', filename)
+    if m1:
+        part = int(m1.group(1))
+        base = filename[:m1.start()]
+        return base, part
+        
+    # Match part1, part01, part_1 etc.
+    m2 = re.search(r'[._\- ]part_?(\d+)(?:\.([^.]+))?$', filename, re.IGNORECASE)
+    if m2:
+        part = int(m2.group(1))
+        ext = m2.group(2) or ""
+        base = filename[:m2.start()]
+        if ext:
+            base += f".{ext}"
+        return base, part
+        
+    return None, None
+
 _metadata_cache = {}
 
 async def get_metadata_from_cinemeta(meta_type: str, imdb_id: str) -> dict:

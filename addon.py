@@ -1,5 +1,12 @@
 import logging
 import asyncio
+
+# Fix Pyrogram event loop crash on Python 3.12/3.14
+try:
+    asyncio.get_event_loop()
+except RuntimeError:
+    asyncio.set_event_loop(asyncio.new_event_loop())
+
 import urllib.parse
 import markupsafe
 from contextlib import asynccontextmanager
@@ -14,7 +21,8 @@ from utils import (
     matches_episode,
     get_metadata_from_cinemeta,
     matches_subtitle,
-    get_search_query_from_filename
+    get_search_query_from_filename,
+    parse_split_info
 )
 
 logging.basicConfig(
@@ -48,6 +56,45 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+def group_tg_messages(messages: list) -> list:
+    grouped = {}
+    standalone = []
+    
+    for msg in messages:
+        media = msg.video or msg.document or msg.audio
+        if not media:
+            continue
+            
+        fn = getattr(media, "file_name", "") or msg.caption or f"Telegram File {msg.id}"
+        base, part = parse_split_info(fn)
+        
+        if base and part is not None:
+            key = base.lower()
+            if key not in grouped:
+                grouped[key] = {
+                    "base_name": base,
+                    "parts": {}
+                }
+            grouped[key]["parts"][part] = msg
+        else:
+            standalone.append(msg)
+            
+    results = []
+    for key, data in grouped.items():
+        parts = data["parts"]
+        base_name = data["base_name"]
+        
+        if len(parts) == 1:
+            results.append(list(parts.values())[0])
+        else:
+            sorted_parts = [msg for part, msg in sorted(parts.items())]
+            results.append((base_name, sorted_parts))
+            
+    for msg in standalone:
+        results.append(msg)
+        
+    return results
 
 def verify_api_key(request: Request):
     if Config.API_KEY:
@@ -96,81 +143,473 @@ async def landing(request: Request):
     escaped_manifest_url = markupsafe.escape(manifest_url)
     escaped_stremio_url = markupsafe.escape(manifest_url.replace('http://', '').replace('https://', ''))
     
+    web_stremio_url = f"https://web.stremio.com/#/addons?addon={urllib.parse.quote(manifest_url)}"
+    escaped_web_stremio_url = markupsafe.escape(web_stremio_url)
+    
     html_content = f"""
-    <html>
+    <!DOCTYPE html>
+    <html lang="en">
         <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Telegram Addon by SunilRoy-dev</title>
+            <meta name="description" content="Stream private Telegram files directly inside Stremio. Secure, lightweight, and ranges-supported proxy.">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
             <style>
+                :root {{
+                    --bg-dark: #09090b;
+                    --bg-card: #18181b;
+                    --border-muted: #27272a;
+                    --text-primary: #f4f4f5;
+                    --text-secondary: #a1a1aa;
+                    --text-muted: #71717a;
+                    --color-primary: #2563eb;
+                    --color-primary-hover: #1d4ed8;
+                    --color-accent: #60a5fa;
+                    --font-title: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+                }}
+                * {{
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }}
                 body {{
-                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                    background-color: #0e1621;
-                    color: #ffffff;
-                    text-align: center;
-                    padding: 50px;
+                    font-family: var(--font-body);
+                    background-color: var(--bg-dark);
+                    color: var(--text-primary);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    padding: 40px 20px;
+                    margin: 0;
+                    overflow-x: hidden;
                 }}
-                .container {{
-                    max-width: 600px;
-                    margin: 0 auto;
-                    background-color: #17212b;
-                    padding: 30px;
-                    border-radius: 10px;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-                }}
-                h1 {{ color: #2481cc; }}
-                a.btn {{
-                    display: inline-block;
-                    background-color: #2481cc;
-                    color: white;
-                    padding: 12px 25px;
-                    text-decoration: none;
-                    font-weight: bold;
-                    border-radius: 5px;
-                    margin-top: 20px;
-                }}
-                a.btn:hover {{ background-color: #2895e7; }}
-                input.url-box {{
+                .app-card {{
+                    background-color: var(--bg-card);
+                    border: 1px solid var(--border-muted);
+                    border-radius: 12px;
+                    padding: 40px;
                     width: 100%;
-                    padding: 10px;
-                    background-color: #24303f;
-                    border: 1px solid #2481cc;
-                    color: white;
-                    border-radius: 5px;
+                    max-width: 680px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                    position: relative;
+                }}
+                .nav-header {{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    margin-bottom: 32px;
+                }}
+                .brand {{
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    font-family: var(--font-title);
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    letter-spacing: -0.02em;
+                    color: var(--text-primary);
+                }}
+                .brand-logo {{
+                    width: 28px;
+                    height: 28px;
+                }}
+                .star-badge {{
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    background: #27272a;
+                    border: 1px solid #3f3f46;
+                    color: #e4e4e7;
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    text-decoration: none;
+                    transition: all 0.2s;
+                }}
+                .star-badge:hover {{
+                    background: #3f3f46;
+                    border-color: #52525b;
+                    color: #ffffff;
+                }}
+                .hero {{
                     text-align: center;
-                    font-size: 14px;
-                    margin-top: 15px;
+                    margin-bottom: 32px;
+                }}
+                .hero h1 {{
+                    font-family: var(--font-title);
+                    font-size: 2rem;
+                    font-weight: 700;
+                    line-height: 1.25;
+                    letter-spacing: -0.02em;
+                    margin: 8px 0 16px 0;
+                    color: #ffffff;
+                }}
+                .hero p {{
+                    font-size: 0.95rem;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    max-width: 520px;
+                    margin: 0 auto;
+                }}
+                .url-section {{
+                    background: #09090b;
+                    border: 1px solid var(--border-muted);
+                    border-radius: 8px;
+                    padding: 20px;
+                    margin-bottom: 24px;
+                }}
+                .section-title {{
+                    font-family: var(--font-title);
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    letter-spacing: 0.05em;
+                    color: var(--text-secondary);
+                    margin-bottom: 12px;
+                }}
+                .input-group {{
+                    display: flex;
+                    gap: 10px;
+                }}
+                .url-box {{
+                    flex: 1;
+                    background-color: #18181b;
+                    border: 1px solid #27272a;
+                    color: var(--text-primary);
+                    padding: 12px 16px;
+                    border-radius: 6px;
+                    font-size: 0.85rem;
+                    font-family: monospace;
+                    outline: none;
+                    transition: border-color 0.2s;
+                }}
+                .url-box:focus {{
+                    border-color: var(--color-primary);
+                }}
+                .btn-copy {{
+                    background: #27272a;
+                    border: 1px solid #3f3f46;
+                    color: var(--text-primary);
+                    padding: 0 16px;
+                    border-radius: 6px;
+                    font-size: 0.85rem;
+                    font-weight: 500;
+                    cursor: pointer;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: all 0.2s;
+                }}
+                .btn-copy:hover {{
+                    background: #3f3f46;
+                    border-color: #52525b;
+                }}
+                .button-group {{
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                    margin-bottom: 32px;
+                }}
+                @media (min-width: 520px) {{
+                    .button-group {{
+                        grid-template-columns: 1fr 1fr;
+                    }}
+                }}
+                .btn {{
+                    padding: 12px 20px;
+                    font-family: var(--font-body);
+                    font-size: 0.9rem;
+                    font-weight: 500;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    text-align: center;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    transition: all 0.2s;
+                }}
+                .btn-primary {{
+                    background-color: var(--color-primary);
+                    color: #ffffff;
+                }}
+                .btn-primary:hover {{
+                    background-color: var(--color-primary-hover);
+                }}
+                .btn-secondary {{
+                    background: #27272a;
+                    border: 1px solid #3f3f46;
+                    color: var(--text-primary);
+                }}
+                .btn-secondary:hover {{
+                    background: #3f3f46;
+                    border-color: #52525b;
+                }}
+                .troubleshoot-details {{
+                    background: #09090b;
+                    border: 1px solid var(--border-muted);
+                    border-radius: 8px;
+                    padding: 16px;
+                    margin-bottom: 24px;
+                }}
+                .troubleshoot-summary {{
+                    font-family: var(--font-title);
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    user-select: none;
+                    outline: none;
+                }}
+                .troubleshoot-content {{
+                    margin-top: 14px;
+                    font-size: 0.85rem;
+                    color: var(--text-secondary);
+                    line-height: 1.5;
+                    border-top: 1px solid #27272a;
+                    padding-top: 14px;
+                }}
+                .troubleshoot-content ol {{
+                    margin-left: 20px;
+                    margin-top: 8px;
+                }}
+                .troubleshoot-content li {{
+                    margin-bottom: 6px;
+                }}
+                .features-grid {{
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 16px;
+                    margin-bottom: 32px;
+                }}
+                @media (min-width: 600px) {{
+                    .features-grid {{
+                        grid-template-columns: 1fr 1fr;
+                    }}
+                }}
+                .feature-card {{
+                    background: #18181b;
+                    border: 1px solid var(--border-muted);
+                    border-radius: 8px;
+                    padding: 20px;
+                }}
+                .feature-icon {{
+                    width: 36px;
+                    height: 36px;
+                    background: #27272a;
+                    border-radius: 6px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--color-accent);
+                    margin-bottom: 12px;
+                }}
+                .feature-title {{
+                    font-family: var(--font-title);
+                    font-size: 0.95rem;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                    color: var(--text-primary);
+                }}
+                .feature-desc {{
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    line-height: 1.45;
+                }}
+                .license-card {{
+                    background: #18181b;
+                    border: 1px solid var(--border-muted);
+                    border-radius: 8px;
+                    padding: 20px;
+                    margin-bottom: 32px;
+                }}
+                .license-title {{
+                    font-family: var(--font-title);
+                    font-size: 0.9rem;
+                    font-weight: 600;
+                    color: var(--text-primary);
+                    margin-bottom: 6px;
+                }}
+                .license-text {{
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    line-height: 1.45;
                 }}
                 .footer {{
-                    margin-top: 40px;
-                    font-size: 13px;
-                    color: #7f91a4;
+                    text-align: center;
+                    font-size: 0.78rem;
+                    color: var(--text-muted);
+                    border-top: 1px solid var(--border-muted);
+                    padding-top: 24px;
                     line-height: 1.6;
                 }}
                 .footer a {{
-                    color: #2481cc;
+                    color: var(--text-secondary);
                     text-decoration: none;
-                    font-weight: bold;
+                    font-weight: 500;
+                    transition: color 0.2s;
                 }}
                 .footer a:hover {{
+                    color: var(--text-primary);
                     text-decoration: underline;
+                }}
+                .footer em {{
+                    display: block;
+                    margin-top: 6px;
+                    color: var(--text-muted);
+                    font-style: normal;
                 }}
             </style>
         </head>
         <body>
-            <div class="container">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" width="80" alt="Logo">
-                <h1>Telegram Addon</h1>
-                <p>Stream your private Telegram channel files directly inside Stremio.</p>
+            <div class="app-card">
+                <div class="nav-header">
+                    <div class="brand">
+                        <svg class="brand-logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="url(#logoGrad)"/>
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M16.974 8.23272C17.1568 7.2796 16.2004 6.5492 15.3533 6.94008L6.46743 11.0398C5.72727 11.3813 5.76103 12.4431 6.51651 12.7336L8.85507 13.6331C9.52554 13.891 10.2831 13.7828 10.8553 13.3486L14.4754 10.6011C14.6195 10.4917 14.7766 10.7042 14.6534 10.8406L11.597 14.2238C11.107 14.7663 11.2335 15.6322 11.854 16.015L15.3854 18.1936C16.1471 18.6635 17.1264 18.0673 17.0792 17.1685L16.974 8.23272Z" fill="white"/>
+                            <defs>
+                                <linearGradient id="logoGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                    <stop stop-color="#3b82f6"/>
+                                    <stop offset="1" stop-color="#1d4ed8"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        Stremio Telegram Addon
+                    </div>
+                    <div class="header-actions">
+                        <a href="https://github.com/SunilRoy-dev/stremio-telegram-debrid" target="_blank" class="star-badge">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                            GitHub Repository
+                        </a>
+                    </div>
+                </div>
                 
-                <p>Use the link below to configure/install this addon:</p>
-                <input class="url-box" type="text" readonly value="{escaped_manifest_url}">
+                <div class="hero">
+                    <h1>Stremio Telegram Addon</h1>
+                    <p>A self-hosted Stremio addon proxy to stream videos, audios, and segmented archive parts directly from Telegram.</p>
+                </div>
                 
-                <a class="btn" href="stremio://{escaped_stremio_url}">Install on Stremio</a>
+                <div class="url-section">
+                    <div class="section-title">Addon Manifest URL</div>
+                    <div class="input-group">
+                        <input class="url-box" id="manifestUrl" type="text" readonly value="{escaped_manifest_url}">
+                        <button class="btn-copy" id="btnCopy" onclick="copyManifestUrl()">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            <span id="btnCopyText">Copy</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <a class="btn btn-primary" href="stremio://{escaped_stremio_url}">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        Install on Stremio App
+                    </a>
+                    <a class="btn btn-secondary" href="{escaped_web_stremio_url}" target="_blank">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                        Install on Stremio Web
+                    </a>
+                </div>
+                
+                <details class="troubleshoot-details">
+                    <summary class="troubleshoot-summary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px; color: #fbbf24;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                        Local Deployment Troubleshooting
+                    </summary>
+                    <div class="troubleshoot-content">
+                        This error <strong>only occurs in local HTTP deployments</strong>. If you deploy this project to a secure public HTTPS server (such as Hugging Face Spaces, Render, or Koyeb), this installation button will work <strong>flawlessly</strong>.
+                        <br><br>
+                        For local deployments, Stremio's desktop protocol handler (<strong>stremio://</strong>) strips local ports and forces HTTPS, resulting in connection failure.
+                        <br><br>
+                        <strong>How to install locally:</strong>
+                        <ol>
+                            <li>Click the <strong>Copy</strong> button on the manifest URL field above.</li>
+                            <li>Open the <strong>Stremio Desktop App</strong>.</li>
+                            <li>Navigate to <strong>Add-ons</strong> (puzzle icon in the sidebar).</li>
+                            <li>Paste the copied URL directly into the <strong>Add-on Repository URL</strong> input box at the bottom and click <strong>Install</strong>.</li>
+                            <li>Alternatively, use the <strong>Install on Stremio Web</strong> button above.</li>
+                        </ol>
+                    </div>
+                </details>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                        </div>
+                        <div class="feature-title">Segmented File Stitching</div>
+                        <div class="feature-desc">Groups and stitches split file parts (.001, .part1, etc.) into a virtual continuous stream on the fly.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                        </div>
+                        <div class="feature-title">Range-Seek Support</div>
+                        <div class="feature-desc">Full byte-range support allows you to skip forward or seek backward instantly inside your media player.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        </div>
+                        <div class="feature-title">Subtitle Mapping</div>
+                        <div class="feature-desc">Scans the channel dynamically for matching subtitle files (.srt, .vtt, .ass) and injects them.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        </div>
+                        <div class="feature-title">Access Control</div>
+                        <div class="feature-desc">Protects endpoints with a secure API key check to prevent unauthorized use of your proxy.</div>
+                    </div>
+                </div>
+                
+                <div class="license-card">
+                    <div class="license-title">License: MIT Non-Commercial License (MIT-NC)</div>
+                    <div class="license-text">
+                        This software is published under a custom <strong>MIT Non-Commercial License (MIT-NC)</strong>. Sublicensing, commercial distribution, renting, or monetization of this code or its derivatives is strictly prohibited. Attribution must be preserved in all copies.
+                    </div>
+                </div>
                 
                 <div class="footer">
-                    Developed by <a href="https://github.com/SunilRoy-dev" target="_blank">SunilRoy-dev</a> | Licensed under MIT<br>
-                    <em>For educational and personal testing only. Do not use for illegal purposes or copyrighted distribution.</em>
+                    Developed by <a href="https://github.com/SunilRoy-dev" target="_blank">SunilRoy-dev</a> | Licensed under MIT-NC
+                    <em>For educational and personal testing only. Do not use for unauthorized hosting or distribution of copyrighted media.</em>
                 </div>
             </div>
+            
+            <script>
+                function copyManifestUrl() {{
+                    var copyText = document.getElementById("manifestUrl");
+                    copyText.select();
+                    copyText.setSelectionRange(0, 99999);
+                    navigator.clipboard.writeText(copyText.value);
+                    
+                    var btnText = document.getElementById("btnCopyText");
+                    var originalText = btnText.innerHTML;
+                    btnText.innerHTML = "Copied!";
+                    
+                    var copyBtn = document.getElementById("btnCopy");
+                    
+                    copyBtn.style.background = "#22c55e";
+                    copyBtn.style.borderColor = "#22c55e";
+                    copyBtn.style.color = "#ffffff";
+                    
+                    setTimeout(function() {{
+                        btnText.innerHTML = originalText;
+                        copyBtn.style.background = "";
+                        copyBtn.style.borderColor = "";
+                        copyBtn.style.color = "";
+                    }}, 2000);
+                }}
+            </script>
         </body>
     </html>
     """
@@ -205,26 +644,40 @@ async def catalog_handler(
         logger.error(f"Catalog search failed: {e}")
         return {"metas": []}
 
+    grouped_items = group_tg_messages(messages)
     metas = []
-    for msg in messages:
-        media = msg.video or msg.document or msg.audio
-        if not media:
-            continue
+    for item in grouped_items:
+        if isinstance(item, tuple):
+            base_name, parts = item
+            total_size = sum((x.video or x.document or x.audio).file_size for x in parts)
+            first_msg = parts[0]
+            chat_id = first_msg.chat.id
+            msg_ids = ",".join(str(x.id) for x in parts)
             
-        file_name = getattr(media, "file_name", None) or msg.caption or f"Telegram File {msg.id}"
-        file_size = media.file_size
-        caption = msg.caption or ""
-        
-        tg_id = f"tgfile_{msg.chat.id}_{msg.id}"
-        
-        metas.append({
-            "id": tg_id,
-            "type": type,
-            "name": file_name,
-            "description": f"💾 Telegram File\n📦 Size: {format_size(file_size)}\n💬 {caption}" if caption else f"💾 Telegram File\n📦 Size: {format_size(file_size)}",
-            "poster": None,
-        })
-        
+            tg_id = f"tgfile_split_{chat_id}_{msg_ids}"
+            metas.append({
+                "id": tg_id,
+                "type": type,
+                "name": base_name,
+                "description": f"💾 Telegram File (Split Parts: {len(parts)})\n📦 Total Size: {format_size(total_size)}",
+                "poster": None,
+            })
+        else:
+            msg = item
+            media = msg.video or msg.document or msg.audio
+            file_name = getattr(media, "file_name", None) or msg.caption or f"Telegram File {msg.id}"
+            file_size = media.file_size
+            caption = msg.caption or ""
+            
+            tg_id = f"tgfile_{msg.chat.id}_{msg.id}"
+            metas.append({
+                "id": tg_id,
+                "type": type,
+                "name": file_name,
+                "description": f"💾 Telegram File\n📦 Size: {format_size(file_size)}\n💬 {caption}" if caption else f"💾 Telegram File\n📦 Size: {format_size(file_size)}",
+                "poster": None,
+            })
+            
     return {"metas": metas}
 
 async def find_subtitles_for_video(video_filename: str, api_key: str = "", cached_messages=None) -> list:
@@ -282,34 +735,74 @@ async def stream_handler(
     query_param = f"?api_key={api_key}" if api_key else ""
 
     if stream_id.startswith("tgfile_"):
-        parts = stream_id.split("_")
-        if len(parts) >= 3:
-            chat_id = parts[1]
-            msg_id = parts[2]
-            try:
+        if stream_id.startswith("tgfile_split_"):
+            parts = stream_id.split("_")
+            if len(parts) >= 4:
+                chat_id = parts[2]
+                msg_ids = parts[3]
                 try:
-                    chat_id_val = int(chat_id)
-                except ValueError:
-                    chat_id_val = chat_id
-                msg = await tg_client_manager.get_message(int(msg_id), chat_id=chat_id_val)
-                media = msg.video or msg.document or msg.audio
-                file_name = getattr(media, "file_name", "video.mp4") or "video.mp4"
-                file_size = media.file_size
-                
-                stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(file_name)}{query_param}"
-                subtitles = await find_subtitles_for_video(file_name, api_key=api_key)
-                
-                streams.append({
-                    "name": "▶ TG Play",
-                    "title": f"{file_name}\n💾 Direct stream | 📦 {format_size(file_size)}",
-                    "url": stream_url,
-                    "subtitles": subtitles,
-                    "behaviorHints": {
-                        "notWebReady": True,
-                    }
-                })
-            except Exception as e:
-                logger.error(f"Failed resolving direct stream for {stream_id}: {e}")
+                    msg_id_list = [int(x) for x in msg_ids.split(",") if x.isdigit()]
+                    try:
+                        chat_id_val = int(chat_id)
+                    except ValueError:
+                        chat_id_val = chat_id
+                    
+                    first_msg = await tg_client_manager.get_message(msg_id_list[0], chat_id=chat_id_val)
+                    media = first_msg.video or first_msg.document or first_msg.audio
+                    first_fn = getattr(media, "file_name", "video.mp4") or "video.mp4"
+                    base_name, _ = parse_split_info(first_fn)
+                    if not base_name:
+                        base_name = first_fn
+                        
+                    total_size = 0
+                    for m_id in msg_id_list:
+                        m = await tg_client_manager.get_message(m_id, chat_id=chat_id_val)
+                        if m:
+                            med = m.video or m.document or m.audio
+                            if med:
+                                total_size += med.file_size
+                                
+                    stream_url = f"{Config.ADDON_URL}/stream/split/{chat_id}/{msg_ids}/{urllib.parse.quote(base_name)}{query_param}"
+                    
+                    streams.append({
+                        "name": "▶ TG Play (Split)",
+                        "title": f"{base_name}\n💾 Stitch stream | 📦 {format_size(total_size)}",
+                        "url": stream_url,
+                        "behaviorHints": {
+                            "notWebReady": True,
+                        }
+                    })
+                except Exception as e:
+                    logger.error(f"Failed resolving split stream for {stream_id}: {e}")
+        else:
+            parts = stream_id.split("_")
+            if len(parts) >= 3:
+                chat_id = parts[1]
+                msg_id = parts[2]
+                try:
+                    try:
+                        chat_id_val = int(chat_id)
+                    except ValueError:
+                        chat_id_val = chat_id
+                    msg = await tg_client_manager.get_message(int(msg_id), chat_id=chat_id_val)
+                    media = msg.video or msg.document or msg.audio
+                    file_name = getattr(media, "file_name", "video.mp4") or "video.mp4"
+                    file_size = media.file_size
+                    
+                    stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(file_name)}{query_param}"
+                    subtitles = await find_subtitles_for_video(file_name, api_key=api_key)
+                    
+                    streams.append({
+                        "name": "▶ TG Play",
+                        "title": f"{file_name}\n💾 Direct stream | 📦 {format_size(file_size)}",
+                        "url": stream_url,
+                        "subtitles": subtitles,
+                        "behaviorHints": {
+                            "notWebReady": True,
+                        }
+                    })
+                except Exception as e:
+                    logger.error(f"Failed resolving direct stream for {stream_id}: {e}")
 
     elif stream_id.startswith("tt"):
         imdb_id = stream_id
@@ -330,26 +823,53 @@ async def stream_handler(
                 logger.info(f"Resolved IMDb {imdb_id} to '{movie_name}'. Searching Telegram...")
                 tg_results = await tg_client_manager.search_messages(query=movie_name, limit=50)
                 
-                for msg in tg_results:
-                    media = msg.video or msg.document or msg.audio
-                    file_name = getattr(media, "file_name", None) or msg.caption or ""
-                    
-                    if type == "series" and not matches_episode(file_name, season, episode):
-                        continue
+                grouped_results = group_tg_messages(tg_results)
+                
+                for item in grouped_results:
+                    if isinstance(item, tuple):
+                        base_name, parts = item
+                        first_msg = parts[0]
+                        media = first_msg.video or first_msg.document or first_msg.audio
+                        file_name = getattr(media, "file_name", "") or ""
                         
-                    file_size = media.file_size
-                    stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(file_name)}{query_param}"
-                    subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results)
-                    
-                    streams.append({
-                        "name": "▶ TG Channel",
-                        "title": f"{file_name}\n💾 Telegram File | 📦 {format_size(file_size)}",
-                        "url": stream_url,
-                        "subtitles": subtitles,
-                        "behaviorHints": {
-                            "notWebReady": True,
-                        }
-                    })
+                        if type == "series" and not matches_episode(file_name, season, episode):
+                            continue
+                            
+                        total_size = sum((x.video or x.document or x.audio).file_size for x in parts)
+                        msg_ids = ",".join(str(x.id) for x in parts)
+                        chat_id = first_msg.chat.id
+                        
+                        stream_url = f"{Config.ADDON_URL}/stream/split/{chat_id}/{msg_ids}/{urllib.parse.quote(base_name)}{query_param}"
+                        
+                        streams.append({
+                            "name": "▶ TG Channel (Split)",
+                            "title": f"{base_name}\n💾 Stitch stream | 📦 {format_size(total_size)}",
+                            "url": stream_url,
+                            "behaviorHints": {
+                                "notWebReady": True,
+                            }
+                        })
+                    else:
+                        msg = item
+                        media = msg.video or msg.document or msg.audio
+                        file_name = getattr(media, "file_name", None) or msg.caption or ""
+                        
+                        if type == "series" and not matches_episode(file_name, season, episode):
+                            continue
+                            
+                        file_size = media.file_size
+                        stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(file_name)}{query_param}"
+                        subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results)
+                        
+                        streams.append({
+                            "name": "▶ TG Channel",
+                            "title": f"{file_name}\n💾 Telegram File | 📦 {format_size(file_size)}",
+                            "url": stream_url,
+                            "subtitles": subtitles,
+                            "behaviorHints": {
+                                "notWebReady": True,
+                            }
+                        })
         except Exception as e:
             logger.error(f"Cinemeta search/resolve failed: {e}")
 
@@ -593,6 +1113,143 @@ async def tg_stream_proxy(
     
     return StreamingResponse(
         file_generator(),
+        status_code=status_code,
+        media_type=mime_type,
+        headers=headers
+    )
+
+@app.api_route("/stream/split/{chat_id}/{message_ids}/{filename}", methods=["GET", "HEAD"])
+async def tg_split_stream_proxy(
+    chat_id: str, 
+    message_ids: str, 
+    filename: str, 
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY and api_key != Config.API_KEY:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    msg_id_list = [int(x) for x in message_ids.split(",") if x.strip().isdigit()]
+    if not msg_id_list:
+        raise HTTPException(status_code=400, detail="Invalid message IDs")
+        
+    try:
+        chat_id_val = int(chat_id)
+    except ValueError:
+        chat_id_val = chat_id
+        
+    if request.method == "GET":
+        asyncio.create_task(
+            tg_client_manager.send_play_log(filename, chat_id_val, msg_id_list[0])
+        )
+        
+    chunks_info = []
+    total_size = 0
+    
+    for msg_id in msg_id_list:
+        try:
+            msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
+            if not msg:
+                raise HTTPException(status_code=404, detail=f"Message {msg_id} not found")
+            media = msg.video or msg.document or msg.audio
+            if not media:
+                raise HTTPException(status_code=400, detail=f"No media in message {msg_id}")
+                
+            chunks_info.append({
+                "media": media,
+                "size": media.file_size,
+                "start_byte": total_size,
+                "end_byte": total_size + media.file_size - 1
+            })
+            total_size += media.file_size
+        except Exception as e:
+            logger.error(f"Error fetching metadata for msg {msg_id}: {e}")
+            raise HTTPException(status_code=500, detail="Failed resolving split file metadata")
+            
+    range_header = request.headers.get("Range")
+    start = 0
+    end = total_size - 1
+    
+    if range_header:
+        try:
+            bytes_range = range_header.replace("bytes=", "").split("-")
+            if bytes_range[0]:
+                start = int(bytes_range[0])
+            if len(bytes_range) > 1 and bytes_range[1]:
+                end = int(bytes_range[1])
+        except ValueError:
+            pass
+            
+    content_length = end - start + 1
+    mime_type = chunks_info[0]["media"].mime_type or "video/mp4"
+    
+    headers = {
+        "Content-Range": f"bytes {start}-{end}/{total_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(content_length),
+        "Content-Disposition": f'inline; filename="{filename}"',
+    }
+    
+    status_code = 206 if range_header else 200
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=status_code,
+            media_type=mime_type,
+            headers=headers
+        )
+        
+    async def split_file_generator():
+        bytes_sent = 0
+        block_size = 1024 * 1024  # 1 MB blocks
+        
+        for chunk in chunks_info:
+            c_start = chunk["start_byte"]
+            c_end = chunk["end_byte"]
+            
+            if c_end < start or c_start > end:
+                continue
+                
+            read_start = max(c_start, start)
+            read_end = min(c_end, end)
+            chunk_read_len = read_end - read_start + 1
+            
+            local_offset = read_start - c_start
+            offset_blocks = local_offset // block_size
+            skip_bytes = local_offset % block_size
+            
+            chunk_bytes_sent = 0
+            first_block = True
+            
+            try:
+                async for block in tg_client_manager.client.stream_media(chunk["media"], offset=offset_blocks):
+                    if first_block:
+                        first_block = False
+                        if skip_bytes < len(block):
+                            block = block[skip_bytes:]
+                        else:
+                            continue
+                            
+                    if chunk_bytes_sent + len(block) > chunk_read_len:
+                        block = block[:chunk_read_len - chunk_bytes_sent]
+                        
+                    yield block
+                    chunk_bytes_sent += len(block)
+                    bytes_sent += len(block)
+                    
+                    if chunk_bytes_sent >= chunk_read_len:
+                        break
+            except Exception as e:
+                logger.error(f"Error streaming split chunk: {e}")
+                break
+                
+            if bytes_sent >= content_length:
+                break
+                
+    logger.info(f"Streaming split media '{filename}' (bytes {start}-{end}/{total_size}) - Status {status_code}")
+    
+    return StreamingResponse(
+        split_file_generator(),
         status_code=status_code,
         media_type=mime_type,
         headers=headers
