@@ -20,6 +20,20 @@ Contributions and bug reports are welcome! If you encounter issues, feel free to
 
 ---
 
+## 🚀 Quick Start (For Beginners)
+
+Here is a simplified step-by-step roadmap to get the addon running on your phone or computer in less than 5 minutes:
+
+| Step | Action | Where to do it |
+| :--- | :--- | :--- |
+| **1. Fork the Project** | Click **Fork** at the top of this GitHub repository to copy it to your own GitHub account. | GitHub (this webpage) |
+| **2. Get Keys** | Go to [my.telegram.org](https://my.telegram.org) and generate your 'API_ID' and 'API_HASH' keys. | Telegram Website |
+| **3. Get Session** | Run the Python script on [Computer](#how-to-generate-user_session_string-locally) or [Mobile](#how-to-generate-user_session_string-on-mobile-no-computer-needed) to get your 'USER_SESSION_STRING'. | Local computer or Mobile Phone |
+| **4. Deploy** | Create a free account on Hugging Face and launch a Docker Space (see the [Hugging Face Space Setup Guide](#hugging-face-spaces-setup-guide)). Enter your variables in the Space settings (see the [Channel Configuration Guide](#configuring-channels-private-and-public)). | Hugging Face Website |
+| **5. Install** | Copy the manifest URL of your deployed Space and paste it into the 'Add-ons' section of Stremio (see the [Stremio Installation Guide](#how-to-install-in-stremio)). | Stremio App |
+
+---
+
 ## One-Click Deploy & Setup Options
 
 Deploy your own instance of the Telegram Stremio Addon instantly using any of the services below:
@@ -32,7 +46,7 @@ Deploy your own instance of the Telegram Stremio Addon instantly using any of th
 | **Railway** | Trial Tier (Limited Credits, approx. 500 hours/month) | [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https://github.com/SunilRoy-dev/stremio-telegram-debrid) |
 | **Zeabur** | Trial Tier (Limited Credits) | [![Deploy on Zeabur](https://zeabur.com/button.svg)](https://zeabur.com/templates/deploy?template=https://github.com/SunilRoy-dev/stremio-telegram-debrid) |
 
-*Please read the **[Deployment Platform Specs & Limitations](#deployment-platform-specs--limitations)** section below before selecting a hosting provider.*
+*Please read the **[Deployment Platform Specs and Limitations](#deployment-platform-specs-and-limitations)** section below before selecting a hosting provider.*
 
 ---
 
@@ -130,7 +144,7 @@ You can run this addon using either a standard Telegram Bot Token or a Pyrogram 
 > - **Only** enter it as a secure secret environment variable on trusted hosting platforms (Render, Koyeb, Railway, etc.).
 > - **Always** generate the session string on your trusted local computer.
 
-### How to Generate a `USER_SESSION_STRING` Locally
+### How to Generate 'USER_SESSION_STRING' Locally
 
 Run the following command in your terminal to safely generate and export your session string:
 
@@ -155,9 +169,49 @@ asyncio.run(run())
 "
 ```
 
+### How to Generate 'USER_SESSION_STRING' on Mobile (No Computer Needed)
+
+If you do not have a computer, you can safely generate your session string directly on your mobile phone:
+
+#### Option A: Android (using Pydroid 3 App - Easiest & 100% Offline)
+1. Install **Pydroid 3 - IDE for Python 3** from the Google Play Store.
+2. Open the app, tap the menu (three lines in top-left), select **Pip**, search for `pyrogram tgcrypto`, and tap **Install**.
+3. Go back to the main editor screen and paste the following Python script:
+   ```python
+   import asyncio
+   from pyrogram import Client
+   api_id = int(input('API ID: '))
+   api_hash = input('API HASH: ')
+   async def main():
+       async with Client('temp_session', api_id, api_hash) as app:
+           print('\nYour USER_SESSION_STRING is:\n')
+           print(await app.export_session_string())
+   asyncio.run(main())
+   ```
+4. Tap the yellow **Play** button. A terminal window will open—enter your API ID, API Hash, phone number (with country code, e.g. +1234567890), and the login code sent to your Telegram app.
+5. Copy the generated string from the screen.
+
+#### Option B: Web Browser (using Google Colab - No App Install Needed)
+1. Open **Google Colab** in your mobile browser: [colab.new](https://colab.new) (log in with your Google account).
+2. Tap '+ Code' to add a new cell, paste the following code, and tap the **Play** button to run it:
+   ```python
+   !pip install pyrogram tgcrypto
+   import asyncio
+   from pyrogram import Client
+   api_id = int(input('API ID: '))
+   api_hash = input('API HASH: ')
+   async def main():
+       async with Client('temp_session', api_id, api_hash) as app:
+           print('\nYour USER_SESSION_STRING is:\n')
+           print(await app.export_session_string())
+   await main()
+   ```
+3. Enter your details and phone authentication code inside the prompt fields that appear.
+4. Copy the generated string completely.
+
 ---
 
-## Configuring Channels (Private & Public)
+## Configuring Channels (Private and Public)
 
 You can configure the addon to index media from multiple channels (both private and public).
 
@@ -177,7 +231,7 @@ While the config accepts any number of channels, it is highly recommended to lim
 
 ---
 
-## Deployment Platform Specs & Limitations
+## Deployment Platform Specs and Limitations
 
 Read these limitations carefully to choose the hosting platform that best fits your requirements:
 
@@ -312,7 +366,7 @@ This project is made possible thanks to the following open-source frameworks, li
 
 ---
 
-## License, Attribution & Stars
+## License, Attribution and Stars
 
 ### MIT Non-Commercial License (MIT-NC)
 This project is licensed under a custom **MIT Non-Commercial License (MIT-NC)** - see the [LICENSE](LICENSE) file for details. Copyright (c) 2026 SunilRoy.
