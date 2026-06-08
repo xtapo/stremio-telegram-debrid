@@ -107,7 +107,7 @@ def group_tg_messages(messages: list) -> list:
 
 def verify_api_key(request: Request):
     if Config.API_KEY:
-        api_key = request.query_params.get("api_key", "")
+        api_key = request.query_params.get("api_key", "") or request.path_params.get("api_key", "")
         if api_key != Config.API_KEY:
             raise HTTPException(status_code=403, detail="Unauthorized: Invalid API Key")
 
@@ -132,9 +132,10 @@ def get_manifest(api_key: str = ""):
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def landing(request: Request):
     api_key = request.query_params.get("api_key", "")
-    manifest_url = f"{Config.ADDON_URL}/manifest.json"
     if api_key:
-        manifest_url += f"?api_key={urllib.parse.quote(api_key)}"
+        manifest_url = f"{Config.ADDON_URL}/{urllib.parse.quote(api_key)}/manifest.json"
+    else:
+        manifest_url = f"{Config.ADDON_URL}/manifest.json"
         
     escaped_manifest_url = markupsafe.escape(manifest_url)
     escaped_stremio_url = markupsafe.escape(manifest_url.replace('http://', '').replace('https://', ''))
@@ -616,8 +617,8 @@ async def landing(request: Request):
                     
                     if (apiKey) {{
                         const encodedKey = encodeURIComponent(apiKey);
-                        manifestUrl += "?api_key=" + encodedKey;
-                        stremioUrl += "?api_key=" + encodedKey;
+                        manifestUrl = "{Config.ADDON_URL}/" + encodedKey + "/manifest.json";
+                        stremioUrl = baseStremioUrl.replace("manifest.json", encodedKey + "/manifest.json");
                     }}
                     
                     if (manifestUrlEl) {{
@@ -665,6 +666,7 @@ async def landing(request: Request):
     return HTMLResponse(content=html_content)
 
 @app.api_route("/manifest.json", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/manifest.json", methods=["GET", "HEAD"])
 async def manifest_endpoint(api_key: str = ""):
     if Config.API_KEY and api_key != Config.API_KEY:
         return JSONResponse({"detail": "Unauthorized: Invalid API Key"}, status_code=403)
@@ -672,6 +674,8 @@ async def manifest_endpoint(api_key: str = ""):
 
 @app.get("/catalog/{type}/{catalog_id}.json", dependencies=[Depends(verify_api_key)])
 @app.get("/catalog/{type}/{catalog_id}/{extra}.json", dependencies=[Depends(verify_api_key)])
+@app.get("/{api_key}/catalog/{type}/{catalog_id}.json", dependencies=[Depends(verify_api_key)])
+@app.get("/{api_key}/catalog/{type}/{catalog_id}/{extra}.json", dependencies=[Depends(verify_api_key)])
 async def catalog_handler(
     type: str, 
     catalog_id: str, 
@@ -787,6 +791,7 @@ async def get_banner():
     return Response(status_code=404)
 
 @app.get("/meta/{type}/{meta_id}.json", dependencies=[Depends(verify_api_key)])
+@app.get("/{api_key}/meta/{type}/{meta_id}.json", dependencies=[Depends(verify_api_key)])
 async def meta_handler(type: str, meta_id: str, api_key: str = ""):
     if not meta_id.startswith("tgfile_"):
         return {"meta": {}}
@@ -932,13 +937,17 @@ async def find_subtitles_for_video(video_filename: str, api_key: str = "", cache
     return subtitles
 
 @app.get("/stream/{type}/{stream_id}.json")
+@app.get("/{api_key}/stream/{type}/{stream_id}.json")
 async def stream_handler(
     type: str, 
     stream_id: str,
+    request: Request,
     api_key: str = ""
 ):
-    if Config.API_KEY and api_key != Config.API_KEY:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
         
     streams = []
     query_param = f"?api_key={api_key}" if api_key else ""
@@ -1195,14 +1204,19 @@ async def stream_handler(
 
 @app.get("/subtitles/{type}/{id}.json")
 @app.get("/subtitles/{type}/{id}/{extra}.json")
+@app.get("/{api_key}/subtitles/{type}/{id}.json")
+@app.get("/{api_key}/subtitles/{type}/{id}/{extra}.json")
 async def subtitles_handler(
     type: str,
     id: str,
+    request: Request,
     extra: str = None,
     api_key: str = ""
 ):
-    if Config.API_KEY and api_key != Config.API_KEY:
-        raise HTTPException(status_code=403, detail="Unauthorized")
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
         
     subtitles = []
     
