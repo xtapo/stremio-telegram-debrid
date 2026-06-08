@@ -142,6 +142,18 @@ async def landing(request: Request):
     web_stremio_url = f"https://web.stremio.com/#/addons?addon={urllib.parse.quote(manifest_url)}"
     escaped_web_stremio_url = markupsafe.escape(web_stremio_url)
     
+    api_key_section = ""
+    if Config.API_KEY:
+        escaped_api_key = markupsafe.escape(api_key)
+        api_key_section = f"""
+                <div class="url-section" style="margin-bottom: 16px;">
+                    <div class="section-title">Enter API Key</div>
+                    <div class="input-group">
+                        <input class="url-box" id="apiKeyInput" type="text" placeholder="Enter your API Key..." value="{escaped_api_key}" oninput="updateManifestUrl()">
+                    </div>
+                </div>
+        """
+        
     html_content = f"""
     <!DOCTYPE html>
     <html lang="en">
@@ -494,6 +506,7 @@ async def landing(request: Request):
                     <p>A self-hosted Stremio addon proxy to stream videos, audios, and segmented archive parts directly from Telegram.</p>
                 </div>
                 
+                {api_key_section}
                 <div class="url-section">
                     <div class="section-title">Addon Manifest URL</div>
                     <div class="input-group">
@@ -506,11 +519,11 @@ async def landing(request: Request):
                 </div>
                 
                 <div class="button-group">
-                    <a class="btn btn-primary" href="stremio://{escaped_stremio_url}">
+                    <a class="btn btn-primary" id="installApp" href="stremio://{escaped_stremio_url}">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                         Install on Stremio App
                     </a>
-                    <a class="btn btn-secondary" href="{escaped_web_stremio_url}" target="_blank">
+                    <a class="btn btn-secondary" id="installWeb" href="{escaped_web_stremio_url}" target="_blank">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                         Install on Stremio Web
                     </a>
@@ -582,6 +595,42 @@ async def landing(request: Request):
             </div>
             
             <script>
+                const baseManifestUrl = "{Config.ADDON_URL}/manifest.json";
+                const baseStremioUrl = baseManifestUrl.replace('http://', '').replace('https://', '');
+                
+                function updateManifestUrl() {{
+                    const apiKeyInput = document.getElementById("apiKeyInput");
+                    const manifestUrlEl = document.getElementById("manifestUrl");
+                    const installAppEl = document.getElementById("installApp");
+                    const installWebEl = document.getElementById("installWeb");
+                    
+                    let apiKey = "";
+                    if (apiKeyInput) {{
+                        apiKey = apiKeyInput.value.trim();
+                    }} else {{
+                        apiKey = new URLSearchParams(window.location.search).get("api_key") || "";
+                    }}
+                    
+                    let manifestUrl = baseManifestUrl;
+                    let stremioUrl = baseStremioUrl;
+                    
+                    if (apiKey) {{
+                        const encodedKey = encodeURIComponent(apiKey);
+                        manifestUrl += "?api_key=" + encodedKey;
+                        stremioUrl += "?api_key=" + encodedKey;
+                    }}
+                    
+                    if (manifestUrlEl) {{
+                        manifestUrlEl.value = manifestUrl;
+                    }}
+                    if (installAppEl) {{
+                        installAppEl.href = "stremio://" + stremioUrl;
+                    }}
+                    if (installWebEl) {{
+                        installWebEl.href = "https://web.stremio.com/#/addons?addon=" + encodeURIComponent(manifestUrl);
+                    }}
+                }}
+
                 function copyManifestUrl() {{
                     var copyText = document.getElementById("manifestUrl");
                     copyText.select();
@@ -605,6 +654,10 @@ async def landing(request: Request):
                         copyBtn.style.color = "";
                     }}, 2000);
                 }}
+
+                window.onload = function() {{
+                    updateManifestUrl();
+                }};
             </script>
         </body>
     </html>
