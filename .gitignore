@@ -25,7 +25,7 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
-
+temp_cache/
 # PyInstaller
 #  Usually these files are written by a python script, etc.
 *.manifest
