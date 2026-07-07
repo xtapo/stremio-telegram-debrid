@@ -123,7 +123,20 @@ def get_manifest(api_key: str = ""):
         "resources": ["meta", "stream", "subtitles"],
         "types": ["movie", "series"],
         "idPrefixes": ["tgfile_", "tt"],
-        "catalogs": [],
+        "catalogs": [
+            {
+                "type": "movie",
+                "id": "telegram_movies",
+                "name": "Telegram Movies",
+                "extra": [{"name": "search", "isRequired": False}]
+            },
+            {
+                "type": "series",
+                "id": "telegram_series",
+                "name": "Telegram Series",
+                "extra": [{"name": "search", "isRequired": False}]
+            }
+        ],
         "behaviorHints": {
             "configurable": False,
             "configurationRequired": False
@@ -1330,7 +1343,7 @@ async def tg_subtitle_proxy(
         content_type = "text/plain"
         
     headers = {
-        "Content-Disposition": f'inline; filename="{filename}"',
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
         "Access-Control-Allow-Origin": "*",
         "Content-Length": str(media.file_size),
     }
@@ -1416,7 +1429,7 @@ async def tg_stream_proxy(
         "Content-Range": f"bytes {start}-{end}/{file_size}",
         "Accept-Ranges": "bytes",
         "Content-Length": str(content_length),
-        "Content-Disposition": f'inline; filename="{filename}"',
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
     }
     
     status_code = 206 if range_header else 200
@@ -1531,7 +1544,7 @@ async def tg_split_stream_proxy(
         "Content-Range": f"bytes {start}-{end}/{total_size}",
         "Accept-Ranges": "bytes",
         "Content-Length": str(content_length),
-        "Content-Disposition": f'inline; filename="{filename}"',
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
     }
     
     status_code = 206 if range_header else 200
@@ -1674,7 +1687,7 @@ async def tg_zip_stream_proxy(
         "Content-Range": f"bytes {start}-{end}/{file_size}",
         "Accept-Ranges": "bytes",
         "Content-Length": str(content_length),
-        "Content-Disposition": f'inline; filename="{filename}"',
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
     }
     
     status_code = 206 if range_header else 200
