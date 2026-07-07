@@ -9,9 +9,10 @@ except RuntimeError:
 
 import urllib.parse
 import markupsafe
+import re
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, HTTPException, Depends, Response
-from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse
+from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from config import Config
@@ -24,7 +25,8 @@ from utils import (
     get_search_query_from_filename,
     parse_split_info,
     is_video_file,
-    matches_title
+    matches_title,
+    matches_any_title
 )
 from zip_helper import (
     list_zip_files,
@@ -33,6 +35,8 @@ from zip_helper import (
     zip_compressed_generator
 )
 import anyio
+from debrid import get_debrid_provider
+from torrent_search import search_torrents
 
 
 logging.basicConfig(
@@ -128,13 +132,13 @@ def get_manifest(api_key: str = ""):
                 "type": "movie",
                 "id": "telegram_movies",
                 "name": "Telegram Movies",
-                "extra": [{"name": "search", "isRequired": False}]
+                "extra": [{"name": "search", "isRequired": False}, {"name": "skip", "isRequired": False}]
             },
             {
                 "type": "series",
                 "id": "telegram_series",
                 "name": "Telegram Series",
-                "extra": [{"name": "search", "isRequired": False}]
+                "extra": [{"name": "search", "isRequired": False}, {"name": "skip", "isRequired": False}]
             }
         ],
         "behaviorHints": {
@@ -700,13 +704,19 @@ async def catalog_handler(
         return {"metas": []}
         
     query = ""
+    skip = 0
     if extra:
         params = urllib.parse.parse_qs(extra)
         if "search" in params:
             query = params["search"][0]
+        if "skip" in params:
+            try:
+                skip = int(params["skip"][0])
+            except ValueError:
+                pass
 
     try:
-        messages = await tg_client_manager.search_messages(query=query, limit=50)
+        messages = await tg_client_manager.search_messages(query=query, limit=skip + 100)
     except Exception as e:
         logger.error(f"Catalog search failed: {e}")
         return {"metas": []}
@@ -737,7 +747,7 @@ async def catalog_handler(
                                 "type": type,
                                 "name": entry.filename,
                                 "description": f"💾 Telegram ZIP Entry\n📦 Size: {format_size(entry.file_size)}\n📂 ZIP Archive: {base_name}",
-                                "poster": logo_url,
+                                "poster": get_message_thumbnail_url(first_msg, logo_url),
                             })
                 except Exception as e:
                     logger.error(f"Error reading split ZIP archive: {e}")
@@ -749,7 +759,7 @@ async def catalog_handler(
                     "type": type,
                     "name": base_name,
                     "description": f"💾 Telegram File (Split Parts: {len(parts)})\n📦 Total Size: {format_size(total_size)}",
-                    "poster": logo_url,
+                    "poster": get_message_thumbnail_url(first_msg, logo_url),
                 })
         else:
             msg = item
@@ -772,7 +782,7 @@ async def catalog_handler(
                                 "type": type,
                                 "name": entry.filename,
                                 "description": f"💾 Telegram ZIP Entry\n📦 Size: {format_size(entry.file_size)}\n📂 ZIP Archive: {file_name}",
-                                "poster": logo_url,
+                                "poster": get_message_thumbnail_url(msg, logo_url),
                             })
                 except Exception as e:
                     logger.error(f"Error reading standalone ZIP archive: {e}")
@@ -784,10 +794,10 @@ async def catalog_handler(
                     "type": type,
                     "name": file_name,
                     "description": f"💾 Telegram File\n📦 Size: {format_size(file_size)}\n💬 {caption}" if caption else f"💾 Telegram File\n📦 Size: {format_size(file_size)}",
-                    "poster": logo_url,
+                    "poster": get_message_thumbnail_url(msg, logo_url),
                 })
             
-    return {"metas": metas}
+    return {"metas": metas[skip:skip+100]}
 
 from fastapi.responses import FileResponse
 import os
@@ -882,12 +892,14 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
                 caption = first_msg.caption or ""
                 description = f"💾 Telegram File\n📦 Size: {format_size(total_size)}\n💬 {caption}" if caption else f"💾 Telegram File\n📦 Size: {format_size(total_size)}"
                 
+        logo_url = f"{Config.ADDON_URL}/stremio_telegram_logo.png" if getattr(Config, "ADDON_URL", None) else None
+        poster_url = get_message_thumbnail_url(first_msg, logo_url)
         meta = {
             "id": meta_id,
             "type": type,
             "name": file_name,
             "description": description,
-            "poster": f"{Config.ADDON_URL}/stremio_telegram_logo.png" if getattr(Config, "ADDON_URL", None) else None,
+            "poster": poster_url,
             "background": f"{Config.ADDON_URL}/stremio_telegram_banner.png" if getattr(Config, "ADDON_URL", None) else None,
             "logo": f"{Config.ADDON_URL}/stremio_telegram_logo.png" if getattr(Config, "ADDON_URL", None) else None,
         }
@@ -1110,9 +1122,32 @@ async def stream_handler(
             movie_name = meta.get("name")
             
             if movie_name:
-                logger.info(f"Resolved IMDb {imdb_id} to '{movie_name}'. Searching Telegram...")
-                tg_results = await tg_client_manager.search_messages(query=movie_name, limit=50)
+                target_titles = [movie_name]
+                if meta.get("aka"):
+                    target_titles.extend(meta["aka"])
+                    
+                seen_titles = set()
+                unique_titles = []
+                for t_title in target_titles:
+                    t_clean = t_title.strip().lower()
+                    if t_clean and t_clean not in seen_titles:
+                        seen_titles.add(t_clean)
+                        unique_titles.append(t_title)
                 
+                tg_results = []
+                seen_msg_ids = set()
+                for query in unique_titles[:3]:
+                    logger.info(f"Searching Telegram for query: '{query}'")
+                    try:
+                        res = await tg_client_manager.search_messages(query=query, limit=40)
+                        for msg in res:
+                            if msg.id not in seen_msg_ids:
+                                seen_msg_ids.add(msg.id)
+                                tg_results.append(msg)
+                    except Exception as e:
+                        logger.error(f"Telegram search for query '{query}' failed: {e}")
+                
+                logger.info(f"Telegram search returned {len(tg_results)} unique results for titles: {unique_titles[:3]}")
                 grouped_results = group_tg_messages(tg_results)
                 
                 for item in grouped_results:
@@ -1122,7 +1157,7 @@ async def stream_handler(
                         media = first_msg.video or first_msg.document or first_msg.audio
                         file_name = getattr(media, "file_name", "") or ""
                         
-                        if not matches_title(base_name, movie_name):
+                        if not matches_any_title(base_name, unique_titles):
                             continue
                             
                         if type == "series" and not matches_episode(file_name, season, episode):
@@ -1173,7 +1208,7 @@ async def stream_handler(
                         media = msg.video or msg.document or msg.audio
                         file_name = getattr(media, "file_name", None) or msg.caption or ""
                         
-                        if not matches_title(file_name, movie_name):
+                        if not matches_any_title(file_name, unique_titles):
                             continue
                             
                         if type == "series" and not matches_episode(file_name, season, episode):
@@ -1217,6 +1252,65 @@ async def stream_handler(
                                 "title": f"{file_name}\n💾 Telegram File | 📦 {format_size(file_size)}",
                                 "url": stream_url,
                                 "subtitles": subtitles,
+                                "behaviorHints": {
+                                    "notWebReady": True,
+                                }
+                            })
+                            
+                # 2. Torrent & Debrid Search
+                debrid_provider = get_debrid_provider()
+                if debrid_provider:
+                    search_query = movie_name
+                    if type == "series" and season is not None and episode is not None:
+                        search_query = f"{movie_name} S{season:02d}E{episode:02d}"
+                        
+                    logger.info(f"Searching torrents for: '{search_query}' (IMDb: {imdb_id})")
+                    torrents = await search_torrents(search_query, imdb_id=imdb_id)
+                    
+                    if torrents:
+                        hashes = []
+                        for t in torrents:
+                            h = _extract_hash_from_magnet(t["magnet"])
+                            if h:
+                                hashes.append(h)
+                                
+                        cache_status = {}
+                        if hashes:
+                            try:
+                                cache_status = await debrid_provider.check_availability(hashes)
+                            except Exception as e:
+                                logger.error(f"Debrid cache check failed: {e}")
+                                
+                        for t in torrents:
+                            if not matches_any_title(t["title"], unique_titles):
+                                  continue
+                            mag = t["magnet"]
+                            h = _extract_hash_from_magnet(mag)
+                            is_cached = cache_status.get(h.lower(), False) if h else False
+                            
+                            import base64
+                            mag_b64 = base64.b64encode(mag.encode()).decode()
+                            provider_name = "realdebrid" if Config.REAL_DEBRID_API_KEY else ("torbox" if Config.TORBOX_API_KEY else "qbittorrent")
+                            stream_url = f"{Config.ADDON_URL}/stream/debrid/{provider_name}/{mag_b64}/{urllib.parse.quote(t['title'])}?imdb={imdb_id}"
+                            if query_param:
+                                q_p = query_param.replace("?", "&")
+                                stream_url += q_p
+                                
+                            size_str = format_size(t["size"])
+                            if provider_name == "qbittorrent":
+                                prefix = "💾 [TG Local qBit] [Cached]" if is_cached else "📥 [TG Local qBit] [Download]"
+                                title_desc = f"{t['title']}\n"
+                                title_desc += f"🟢 Cached (Instant Local Play)" if is_cached else f"📥 Download & Cache to Telegram"
+                            else:
+                                prefix = "⚡ [TG Debrid] [Cached]" if is_cached else "📥 [TG Debrid] [Download]"
+                                title_desc = f"{t['title']}\n"
+                                title_desc += f"🟢 Cached (Instant Play)" if is_cached else f"📥 Download & Cache to Telegram"
+                            title_desc += f"\n📦 Size: {size_str} | 👥 Seeders: {t['seeders']} | 🔍 Source: {t['source']}"
+                            
+                            streams.append({
+                                "name": prefix,
+                                "title": title_desc,
+                                "url": stream_url,
                                 "behaviorHints": {
                                     "notWebReady": True,
                                 }
@@ -1785,6 +1879,608 @@ async def tg_zip_stream_proxy(
             media_type=mime_type,
             headers=headers
         )
+
+
+def _extract_hash_from_magnet(magnet: str) -> str:
+    if not magnet:
+        return ""
+    m = re.search(r'xt=urn:btih:([a-zA-Z0-9]+)', magnet)
+    if m:
+        return m.group(1).lower()
+    return ""
+
+
+upload_semaphore = asyncio.Semaphore(1)
+
+async def _prepare_telegram_thumbnail(poster_url: str) -> str:
+    """
+    Downloads the poster image and resizes it to a maximum of 320px for Telegram thumbnails.
+    Returns the local path of the prepared thumbnail, or None if failed.
+    """
+    if not poster_url:
+        return None
+        
+    import tempfile
+    import os
+    import httpx
+    import hashlib
+    
+    try:
+        temp_dir = "temp_cache"
+        os.makedirs(temp_dir, exist_ok=True)
+        h = hashlib.md5(poster_url.encode()).hexdigest()
+        raw_thumb_path = os.path.join(temp_dir, f"raw_thumb_{h}")
+        final_thumb_path = os.path.join(temp_dir, f"thumb_{h}.jpg")
+        
+        if os.path.exists(final_thumb_path):
+            return final_thumb_path
+            
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(poster_url)
+            if resp.status_code == 200:
+                with open(raw_thumb_path, "wb") as f:
+                    f.write(resp.content)
+            else:
+                return None
+                
+        try:
+            from PIL import Image
+            with Image.open(raw_thumb_path) as img:
+                img.thumbnail((320, 320))
+                if img.mode in ("RGBA", "P"):
+                    img = img.convert("RGB")
+                img.save(final_thumb_path, "JPEG", quality=85)
+            os.remove(raw_thumb_path)
+            return final_thumb_path
+        except ImportError:
+            os.rename(raw_thumb_path, final_thumb_path)
+            return final_thumb_path
+    except Exception as e:
+        logger.warning(f"Failed to prepare thumbnail: {e}")
+        return None
+
+
+async def _build_rich_caption(imdb_id: str, filename: str) -> tuple:
+    """
+    Returns (caption_text, poster_url)
+    """
+    caption = f"📥 Cached via Telegram Debrid\n🎥 {filename}"
+    poster_url = None
+    
+    if imdb_id:
+        try:
+            meta = await get_metadata_from_cinemeta("movie", imdb_id)
+            if not meta.get("name"):
+                meta = await get_metadata_from_cinemeta("series", imdb_id)
+                
+            if meta.get("name"):
+                name = meta["name"]
+                year = meta.get("year", "")
+                genres = ", ".join(meta.get("genres", []))
+                poster_url = meta.get("poster")
+                
+                caption = f"🎥 **{name}**"
+                if year:
+                    caption += f" ({year})"
+                caption += "\n"
+                if genres:
+                    caption += f"🎭 **Genres:** {genres}\n"
+                caption += f"📁 **File:** `{filename}`\n\n"
+                caption += "📥 Cached via Telegram Debrid"
+        except Exception as e:
+            logger.warning(f"Failed building rich caption: {e}")
+            
+    return caption, poster_url
+
+
+async def cache_to_telegram_task(direct_url: str, filename: str, imdb_id: str = ""):
+    """
+    Downloads the file from the direct Debrid URL and uploads it to the Telegram channel.
+    This runs entirely in the background under upload_semaphore control.
+    """
+    try:
+        existing = await tg_client_manager.search_messages(query=filename, limit=5)
+        for msg in existing:
+            media = msg.video or msg.document or msg.audio
+            if media:
+                fn = getattr(media, "file_name", "") or ""
+                if fn == filename:
+                    logger.info(f"File '{filename}' already exists in Telegram channel. Skipping upload cache.")
+                    return
+    except Exception as e:
+        logger.warning(f"Error checking existing files in channel: {e}")
+
+    logger.info(f"Background Cache: File '{filename}' is waiting for upload slot...")
+    async with upload_semaphore:
+        logger.info(f"Background Cache: Starting download of '{filename}' from Debrid...")
+        
+        import os
+        import httpx
+        
+        temp_dir = "temp_cache"
+        os.makedirs(temp_dir, exist_ok=True)
+        temp_path = os.path.join(temp_dir, filename)
+        
+        try:
+            async with httpx.AsyncClient(timeout=600.0) as client:
+                async with client.stream("GET", direct_url) as response:
+                    if response.status_code != 200:
+                        logger.error(f"Failed to download file from Debrid (HTTP {response.status_code})")
+                        return
+                    with open(temp_path, "wb") as f:
+                        async for chunk in response.iter_bytes(chunk_size=1024*1024):
+                            f.write(chunk)
+                            
+            logger.info(f"Background Cache: Download complete. Uploading '{filename}' to Telegram...")
+            
+            channel_ids = tg_client_manager.get_channel_ids()
+            if not channel_ids:
+                logger.error("No Telegram channels configured for caching upload")
+                return
+                
+            target_chat = channel_ids[0]
+            caption, poster_url = await _build_rich_caption(imdb_id, filename)
+            thumb_path = await _prepare_telegram_thumbnail(poster_url)
+            
+            ext = filename.lower()
+            if ext.endswith(('.mp4', '.mkv', '.webm')):
+                await tg_client_manager.client.send_video(
+                    chat_id=target_chat,
+                    video=temp_path,
+                    file_name=filename,
+                    thumb=thumb_path,
+                    supports_streaming=True,
+                    caption=caption
+                )
+            else:
+                await tg_client_manager.client.send_document(
+                    chat_id=target_chat,
+                    document=temp_path,
+                    file_name=filename,
+                    thumb=thumb_path,
+                    caption=caption
+                )
+                
+            logger.info(f"Background Cache: File '{filename}' uploaded successfully to Telegram chat {target_chat}!")
+            
+            if Config.LOG_CHANNEL_ID:
+                try:
+                    await tg_client_manager.client.send_message(
+                        chat_id=Config.LOG_CHANNEL_ID,
+                        text=f"📥 **Torrent Cached to Telegram**\n\n📁 **File Name:** `{filename}`\n💬 **Target Channel:** `{target_chat}`"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send background cache log to log channel: {e}")
+                    
+            await asyncio.sleep(5.0)
+                    
+        except Exception as e:
+            logger.error(f"Error in background cache task for '{filename}': {e}")
+        finally:
+            if os.path.exists(temp_path):
+                try:
+                    os.remove(temp_path)
+                except Exception as e:
+                    logger.warning(f"Failed to delete temp file '{temp_path}': {e}")
+
+
+@app.get("/stream/debrid/{provider}/{magnet_base64}/{filename}")
+async def debrid_stream_proxy(
+    provider: str,
+    magnet_base64: str,
+    filename: str,
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+            
+    import base64
+    try:
+        magnet_link = base64.b64decode(magnet_base64.encode()).decode()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid magnet base64")
+        
+    debrid_provider = get_debrid_provider()
+    if not debrid_provider:
+        raise HTTPException(status_code=500, detail="Debrid provider not configured")
+        
+    logger.info(f"Resolving Debrid stream for torrent: '{filename}'")
+    direct_url = await debrid_provider.get_stream_url(magnet_link, filename)
+    if not direct_url:
+        raise HTTPException(status_code=504, detail="Failed to retrieve direct stream URL from Debrid")
+        
+    if direct_url.startswith("qbittorrent://"):
+        info_hash = direct_url.replace("qbittorrent://", "")
+        imdb_id = request.query_params.get("imdb", "")
+        local_stream_url = f"{Config.ADDON_URL}/stream/qbittorrent/{info_hash}/{urllib.parse.quote(filename)}"
+        params = []
+        if imdb_id:
+            params.append(f"imdb={imdb_id}")
+        if api_key:
+            params.append(f"api_key={api_key}")
+        if params:
+            local_stream_url += "?" + "&".join(params)
+        logger.info(f"Redirecting player to local qBittorrent stream: {local_stream_url}")
+        return RedirectResponse(url=local_stream_url, status_code=302)
+        
+    if Config.AUTO_UPLOAD_TO_TELEGRAM:
+        imdb_id = request.query_params.get("imdb", "")
+        asyncio.create_task(
+            cache_to_telegram_task(direct_url, filename, imdb_id)
+        )
+        
+    logger.info(f"Redirecting player to direct Debrid stream: {direct_url}")
+    return RedirectResponse(url=direct_url, status_code=302)
+
+
+_active_qbit_monitors = set()
+
+async def monitor_and_cache_qbit_task(info_hash: str, file_path: str, filename: str, qbit_client, imdb_id: str = ""):
+    """
+    Monitors qBittorrent download status until 100% complete, uploads to Telegram, and cleans up.
+    """
+    if info_hash in _active_qbit_monitors:
+        return
+    _active_qbit_monitors.add(info_hash)
+    
+    logger.info(f"Background Monitor: Started monitoring local qBit download for hash: {info_hash}")
+    
+    try:
+        import os
+        is_completed = False
+        for _ in range(960):
+            torrent_info = await qbit_client.get_torrent_info(info_hash)
+            if not torrent_info:
+                logger.warning(f"Background Monitor: Torrent {info_hash} deleted from qBit. Stopping.")
+                return
+                
+            progress = torrent_info.get("progress", 0)
+            if progress >= 1.0:
+                is_completed = True
+                break
+                
+            state = torrent_info.get("state", "")
+            if "error" in state.lower() or "missing" in state.lower():
+                logger.error(f"Background Monitor: Torrent {info_hash} entered error state ({state}). Stopping.")
+                return
+                
+            await asyncio.sleep(15.0)
+            
+        if not is_completed:
+            logger.warning(f"Background Monitor: Torrent {info_hash} did not complete within 4 hours. Stopping.")
+            return
+
+        await asyncio.sleep(3.0)
+        if not os.path.exists(file_path):
+            logger.error(f"Background Monitor: Completed file not found at path: {file_path}")
+            return
+
+        try:
+            existing = await tg_client_manager.search_messages(query=filename, limit=5)
+            for msg in existing:
+                media = msg.video or msg.document or msg.audio
+                if media:
+                    fn = getattr(media, "file_name", "") or ""
+                    if fn == filename:
+                        logger.info(f"Background Monitor: File '{filename}' already exists in Telegram. Deleting local torrent.")
+                        await qbit_client.delete_torrent(info_hash, delete_files=True)
+                        return
+        except Exception as e:
+            logger.warning(f"Background Monitor: Error checking existing files in channel: {e}")
+
+        logger.info(f"Background Monitor: Completed download. File '{filename}' is waiting for upload slot...")
+        async with upload_semaphore:
+            logger.info(f"Background Monitor: Uploading completed file '{filename}' to Telegram channel...")
+            channel_ids = tg_client_manager.get_channel_ids()
+            if not channel_ids:
+                logger.error("No Telegram channels configured for caching upload")
+                return
+                
+            target_chat = channel_ids[0]
+            caption, poster_url = await _build_rich_caption(imdb_id, filename)
+            thumb_path = await _prepare_telegram_thumbnail(poster_url)
+            
+            ext = filename.lower()
+            if ext.endswith(('.mp4', '.mkv', '.webm')):
+                await tg_client_manager.client.send_video(
+                    chat_id=target_chat,
+                    video=file_path,
+                    file_name=filename,
+                    thumb=thumb_path,
+                    supports_streaming=True,
+                    caption=caption
+                )
+            else:
+                await tg_client_manager.client.send_document(
+                    chat_id=target_chat,
+                    document=file_path,
+                    file_name=filename,
+                    thumb=thumb_path,
+                    caption=caption
+                )
+                
+            logger.info(f"Background Monitor: File '{filename}' uploaded successfully to Telegram! Deleting local torrent.")
+            
+            await qbit_client.delete_torrent(info_hash, delete_files=True)
+            
+            if Config.LOG_CHANNEL_ID:
+                try:
+                    await tg_client_manager.client.send_message(
+                        chat_id=Config.LOG_CHANNEL_ID,
+                        text=f"📥 **Torrent Cached from Local qBit**\n\n📁 **File Name:** `{filename}`\n💬 **Target Channel:** `{target_chat}`"
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to send qBit cache log to log channel: {e}")
+                    
+            await asyncio.sleep(5.0)
+                
+    except Exception as e:
+        logger.error(f"Error in monitor task for '{filename}': {e}")
+    finally:
+        _active_qbit_monitors.discard(info_hash)
+
+
+async def local_file_generator(file_path: str, start_byte: int, end_byte: int, info_hash: str, qbit_client):
+    import os
+    chunk_size = 64 * 1024  # 64 KB chunks
+    bytes_sent = 0
+    content_length = end_byte - start_byte + 1
+    curr_pos = start_byte
+
+    while bytes_sent < content_length:
+        if os.path.exists(file_path):
+            file_size = os.path.getsize(file_path)
+            if file_size > curr_pos:
+                read_len = min(chunk_size, file_size - curr_pos, content_length - bytes_sent)
+                with open(file_path, "rb") as f:
+                    f.seek(curr_pos)
+                    data = f.read(read_len)
+                if data:
+                    yield data
+                    bytes_sent += len(data)
+                    curr_pos += len(data)
+                    continue
+
+        torrent_info = await qbit_client.get_torrent_info(info_hash)
+        if not torrent_info:
+            logger.warning("Torrent deleted during local stream. Aborting.")
+            break
+            
+        state = torrent_info.get("state", "")
+        if "error" in state.lower() or "missing" in state.lower():
+            logger.error(f"Torrent error state: {state}. Aborting stream.")
+            break
+
+        await asyncio.sleep(1.0)
+
+
+@app.api_route("/stream/qbittorrent/{info_hash}/{filename}", methods=["GET", "HEAD"])
+async def qbittorrent_stream_proxy(
+    info_hash: str,
+    filename: str,
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+            
+    debrid_provider = get_debrid_provider()
+    from debrid import QBittorrentProvider
+    if not isinstance(debrid_provider, QBittorrentProvider):
+        raise HTTPException(status_code=400, detail="qBittorrent is not the active Debrid provider")
+        
+    torrent_info = {}
+    files = []
+    import os
+    for _ in range(10):
+        torrent_info = await debrid_provider.get_torrent_info(info_hash)
+        if torrent_info:
+            files = await debrid_provider.get_torrent_files(info_hash)
+            if files:
+                break
+        await asyncio.sleep(1.5)
+        
+    if not torrent_info or not files:
+        raise HTTPException(status_code=404, detail="Torrent metadata not found in qBittorrent")
+        
+    target_file = None
+    decoded_fn = urllib.parse.unquote(filename).lower()
+    for f in files:
+        if decoded_fn in f.get("name", "").lower():
+            target_file = f
+            break
+            
+    if not target_file:
+        video_files = [f for f in files if f.get("name", "").lower().endswith(('.mp4', '.mkv', '.avi', '.mov', '.webm', '.ts'))]
+        if video_files:
+            video_files.sort(key=lambda x: x.get("size", 0), reverse=True)
+            target_file = video_files[0]
+            
+    if not target_file:
+        target_file = files[0]
+        
+    save_dir = Config.QBITTORRENT_PLAY_DIR or torrent_info.get("save_path", "")
+    file_path = os.path.join(save_dir, target_file["name"])
+    
+    file_size = target_file["size"]
+    mime_type = "video/mp4"
+    if target_file["name"].lower().endswith(".mkv"):
+        mime_type = "video/x-matroska"
+        
+    range_header = request.headers.get("Range")
+    start = 0
+    end = file_size - 1
+    
+    if range_header:
+        try:
+            bytes_range = range_header.replace("bytes=", "").split("-")
+            if bytes_range[0]:
+                start = int(bytes_range[0])
+            if len(bytes_range) > 1 and bytes_range[1]:
+                end = int(bytes_range[1])
+        except ValueError:
+            pass
+            
+    content_length = end - start + 1
+    
+    headers = {
+        "Content-Range": f"bytes {start}-{end}/{file_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(content_length),
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(os.path.basename(target_file['name']))}",
+    }
+    
+    status_code = 206 if range_header else 200
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=status_code,
+            media_type=mime_type,
+            headers=headers
+        )
+        
+    logger.info(f"Local qBit streaming '{target_file['name']}' (bytes {start}-{end}/{file_size}) - Status {status_code}")
+    
+    if Config.AUTO_UPLOAD_TO_TELEGRAM:
+        imdb_id = request.query_params.get("imdb", "")
+        asyncio.create_task(
+            monitor_and_cache_qbit_task(info_hash, file_path, os.path.basename(target_file['name']), debrid_provider, imdb_id)
+        )
+        
+    return StreamingResponse(
+        local_file_generator(file_path, start, end, info_hash, debrid_provider),
+        status_code=status_code,
+        media_type=mime_type,
+        headers=headers
+    )
+
+
+_thumb_file_id_cache = {}
+_thumb_download_semaphore = asyncio.Semaphore(2)
+_active_thumb_downloads = set()
+
+async def _download_thumb_task(chat_id: str, msg_id: int, thumb_file_id: str, thumb_path: str):
+    cache_key = f"{chat_id}_{msg_id}"
+    if cache_key in _active_thumb_downloads:
+        return
+    _active_thumb_downloads.add(cache_key)
+    try:
+        # Wait 1.0s before starting to queue up multiple parallel catalog loads gently
+        await asyncio.sleep(1.0)
+        async with _thumb_download_semaphore:
+            if not os.path.exists(thumb_path):
+                logger.info(f"Background downloading Telegram thumbnail for message {msg_id} in {chat_id}...")
+                await tg_client_manager.client.download_media(
+                    thumb_file_id,
+                    file_name=thumb_path
+                )
+                # Pause between downloads to keep Telegram DC connection happy
+                await asyncio.sleep(1.5)
+    except Exception as e:
+        logger.error(f"Failed to background download Telegram thumbnail for {cache_key}: {e}")
+    finally:
+        _active_thumb_downloads.discard(cache_key)
+
+
+def get_message_thumbnail_url(msg, logo_url: str) -> str:
+    if not msg:
+        return logo_url
+    media = msg.video or msg.document
+    logger.info(f"get_message_thumbnail_url: msg={msg.id}, media={type(media).__name__ if media else None}, thumbs={len(media.thumbs) if media and getattr(media, 'thumbs', None) else 0}")
+    if media:
+        thumb = getattr(media, "thumb", None)
+        if thumb and getattr(thumb, "file_id", None):
+            chat_id = msg.chat.id
+            msg_id = msg.id
+            _thumb_file_id_cache[f"{chat_id}_{msg_id}"] = thumb.file_id
+            query = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
+            return f"{Config.ADDON_URL}/thumbnail/{chat_id}/{msg_id}.jpg{query}"
+            
+        thumbs = getattr(media, "thumbs", None)
+        if thumbs and isinstance(thumbs, list) and thumbs:
+            chat_id = msg.chat.id
+            msg_id = msg.id
+            _thumb_file_id_cache[f"{chat_id}_{msg_id}"] = thumbs[0].file_id
+            query = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
+            return f"{Config.ADDON_URL}/thumbnail/{chat_id}/{msg_id}.jpg{query}"
+    return logo_url
+
+
+@app.get("/thumbnail/{chat_id}/{msg_id}.jpg")
+async def get_message_thumbnail(
+    chat_id: str,
+    msg_id: int,
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+            
+    import os
+    temp_dir = os.path.join("temp_cache", "thumbs")
+    os.makedirs(temp_dir, exist_ok=True)
+    
+    thumb_path = os.path.join(temp_dir, f"{chat_id}_{msg_id}.jpg")
+    default_logo = "stremio_telegram_logo.png"
+    
+    # 1. Serve immediately if cached on disk
+    if os.path.exists(thumb_path):
+        return FileResponse(thumb_path)
+        
+    cache_key = f"{chat_id}_{msg_id}"
+    thumb_file_id = _thumb_file_id_cache.get(cache_key)
+    
+    # 2. If cached in memory, trigger background download and return fallback immediately
+    if thumb_file_id:
+        if cache_key not in _active_thumb_downloads:
+            asyncio.create_task(_download_thumb_task(chat_id, msg_id, thumb_file_id, thumb_path))
+            
+        if os.path.exists(default_logo):
+            return FileResponse(default_logo)
+        raise HTTPException(status_code=404, detail="Fallback logo not found")
+        
+    # 3. If not cached, resolve the message in the background to prevent blocking
+    async def resolve_and_download():
+        try:
+            try:
+                chat_id_val = int(chat_id)
+            except ValueError:
+                chat_id_val = chat_id
+                
+            msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
+            if msg:
+                media = msg.video or msg.document
+                if media:
+                    thumb = getattr(media, "thumb", None)
+                    fid = None
+                    if thumb and getattr(thumb, "file_id", None):
+                        fid = thumb.file_id
+                    else:
+                        thumbs = getattr(media, "thumbs", None)
+                        if thumbs and isinstance(thumbs, list) and thumbs:
+                            fid = thumbs[0].file_id
+                            
+                    if fid:
+                        _thumb_file_id_cache[cache_key] = fid
+                        await _download_thumb_task(chat_id, msg_id, fid, thumb_path)
+        except Exception as e:
+            logger.warning(f"Background thumbnail resolution failed for {cache_key}: {e}")
+            
+    if cache_key not in _active_thumb_downloads:
+        asyncio.create_task(resolve_and_download())
+        
+    if os.path.exists(default_logo):
+        return FileResponse(default_logo)
+        
+    raise HTTPException(status_code=404, detail="Thumbnail not found")
+
 
 if __name__ == "__main__":
     import uvicorn

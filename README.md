@@ -62,12 +62,15 @@ Deploy your own instance of the Telegram Stremio Addon instantly using any of th
 ## Key Features
 
 - **Search & Match Integration**: Search for any video or media title in Stremio; the addon automatically scans your Telegram channel for matching file names and serves them instantly as stream sources.
+- **Debrid Cache Integration**: Stream public torrent files instantly via **Real-Debrid** or **TorBox** (uses HTTP 302 Redirect directly to Debrid CDNs to bypass local bandwidth limits). See [DEBRID_GUIDE.md](DEBRID_GUIDE.md).
+- **Free qBittorrent Streaming**: Stream torrent files on-the-fly sequentially while qBittorrent downloads them locally. See [QBITTORRENT_GUIDE.md](QBITTORRENT_GUIDE.md).
+- **Telegram Upload Auto-Cache**: Automatically upload completed torrents from Debrid or qBittorrent to your private Telegram channel in the background, keeping a permanent free backup.
 - **Stitched Split Streaming**: Automatically groups, merges, and streams multi-part file archives (such as `.001`, `.part1` patterns) as one continuous virtual stream.
 - **ZIP Archive Streaming**: Automatically scans, lists, and streams video files nested inside standard ZIP archives or split ZIP files (e.g., '.zip.001', '.zip.002', etc.) on the fly.
 - **Smart Segment Filtering**: Intelligently parses naming patterns and number sequences (e.g. Part 1, Part 2, V1, V2) from filenames to retrieve and stream only the exact segmented file requested.
 - **Subtitle Auto-Mapping**: Automatically scans your channel for matching subtitle files (SRT, VTT, ASS), injects them, and auto-detects English, Spanish, and French tracks.
 - **High-Speed Range Proxy**: Supports HTTP `206 Partial Content` streaming, enabling instant scrub/seek (fast-forwarding/rewinding) on players like ExoPlayer, VLC, and MPV (for direct files and stitched split streams).
-- **Zero-Storage Footprint**: Streams files chunk-by-chunk in memory directly from Telegram DCs. No temporary server storage is consumed.
+- **Zero-Storage Footprint**: Streams files chunk-by-chunk in memory directly from Telegram DCs. No temporary server storage is consumed (except for temporary torrent caches if auto-upload is enabled).
 - **Secure Access Control**: Protects your endpoints using an optional API key query (`?api_key=...`) to prevent unauthorized access.
 - **Custom Logging**: Log streaming activity directly back to a separate private Telegram channel.
 
@@ -362,10 +365,12 @@ Once the status bar at the top turns green and says **Running**, your addon is o
 
 ### Prerequisites
 - Python 3.10 or higher.
-- System compiler tools (for Pyrogram C extensions - `tgcrypto`):
-  - **Windows**: Build Tools for Visual Studio.
-  - **Linux**: `build-essential libssl-dev python3-dev`
-  - **macOS**: Xcode Command Line Tools.
+- (Optional but highly recommended) Cryptography speedup library:
+  - **TgrCrypto** (Recommended for Python 3.12+ / to avoid compiler setup): Rust-powered drop-in replacement with precompiled wheels. No compiler tools needed!
+  - **tgcrypto** (Original library, supports up to Python 3.11 precompiled): Requires system compiler tools if building from source on newer Python versions:
+    - **Windows**: Build Tools for Visual Studio.
+    - **Linux**: `build-essential libssl-dev python3-dev`
+    - **macOS**: Xcode Command Line Tools.
 
 ### Option A: Python Setup
 1. Clone the repository:
@@ -382,9 +387,14 @@ Once the status bar at the top turns green and says **Running**, your addon is o
    source .venv/bin/activate
    ```
 3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt tgcrypto
-   ```
+   - **For Python 3.12+** (or if you don't have C++ Build Tools):
+     ```bash
+     pip install -r requirements.txt TgrCrypto
+     ```
+   - **For Python 3.10/3.11** (or if you already have C++ compilers):
+     ```bash
+     pip install -r requirements.txt tgcrypto
+     ```
 4. Create a `.env` file in the root folder using your credentials (refer to the [Configuration Variables](#configuration-environment-variables) section).
 5. Run the server:
    ```bash

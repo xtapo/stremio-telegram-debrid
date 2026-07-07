@@ -4,6 +4,7 @@ import asyncio
 import functools
 import inspect
 import re
+import collections
 from hashlib import sha256
 from typing import Callable, Optional, AsyncGenerator, Union
 
@@ -35,6 +36,197 @@ async def _patched_auth_create(self):
     return key
 
 Auth.create = _patched_auth_create
+
+
+# Media chunk caching manager (LRU cache of AsyncIO Tasks)
+class ChunkCache:
+    def __init__(self, max_size_mb: int):
+        self.max_size = max_size_mb
+        self.cache = collections.OrderedDict()  # key -> asyncio.Task yielding bytes
+        self.lock = asyncio.Lock()
+
+    async def get_or_create(self, key, download_coro):
+        async with self.lock:
+            if key in self.cache:
+                self.cache.move_to_end(key)
+                return self.cache[key]
+
+            async def wrapper():
+                try:
+                    return await download_coro
+                except Exception as e:
+                    async with self.lock:
+                        self.cache.pop(key, None)
+                    raise e
+
+            task = asyncio.create_task(wrapper())
+            self.cache[key] = task
+
+            if len(self.cache) > self.max_size:
+                old_key, old_task = self.cache.popitem(last=False)
+                if not old_task.done():
+                    old_task.cancel()
+
+            return task
+
+    async def exists(self, key) -> bool:
+        async with self.lock:
+            return key in self.cache
+
+chunk_cache = ChunkCache(Config.STREAM_CACHE_SIZE_MB)
+
+# File-level cache for CDN redirect info
+_file_cdn_info = {}
+_file_cdn_lock = asyncio.Lock()
+
+async def _download_cdn_block(session, cdn_session, r, offset_bytes, chunk_size) -> bytes:
+    while True:
+        r2 = await cdn_session.invoke(
+            raw.functions.upload.GetCdnFile(
+                file_token=r.file_token,
+                offset=offset_bytes,
+                limit=chunk_size
+            )
+        )
+
+        if isinstance(r2, raw.types.upload.CdnFileReuploadNeeded):
+            try:
+                await session.invoke(
+                    raw.functions.upload.ReuploadCdnFile(
+                        file_token=r.file_token,
+                        request_token=r2.request_token
+                    )
+                )
+            except VolumeLocNotFound:
+                return b""
+            else:
+                continue
+
+        chunk = r2.bytes
+
+        decrypted_chunk = aes.ctr256_decrypt(
+            chunk,
+            r.encryption_key,
+            bytearray(
+                r.encryption_iv[:-4]
+                + (offset_bytes // 16).to_bytes(4, "big")
+            )
+        )
+
+        hashes = await session.invoke(
+            raw.functions.upload.GetCdnFileHashes(
+                file_token=r.file_token,
+                offset=offset_bytes
+            )
+        )
+
+        for i, h in enumerate(hashes):
+            cdn_chunk = decrypted_chunk[h.limit * i: h.limit * (i + 1)]
+            CDNFileHashMismatch.check(
+                h.hash == sha256(cdn_chunk).digest(),
+                "h.hash == sha256(cdn_chunk).digest()"
+            )
+
+        return decrypted_chunk
+
+async def _fetch_block_from_tg(
+    self: Client,
+    file_id: FileId,
+    location,
+    dc_id: int,
+    offset_bytes: int,
+    chunk_size: int,
+    file_size: int
+) -> bytes:
+    media_id = file_id.media_id
+
+    # 1. Get or create standard session
+    async with self.media_sessions_lock:
+        session = self.media_sessions.get(dc_id)
+        if session is None:
+            logger.info(f"Creating new media session for DC{dc_id}...")
+            session = Session(
+                self, dc_id,
+                await Auth(self, dc_id, await self.storage.test_mode()).create()
+                if dc_id != await self.storage.dc_id()
+                else await self.storage.auth_key(),
+                await self.storage.test_mode(),
+                is_media=True
+            )
+            await session.start()
+
+            if dc_id != await self.storage.dc_id():
+                exported_auth = await self.invoke(
+                    raw.functions.auth.ExportAuthorization(
+                        dc_id=dc_id
+                    )
+                )
+
+                await session.invoke(
+                    raw.functions.auth.ImportAuthorization(
+                        id=exported_auth.id,
+                        bytes=exported_auth.bytes
+                    )
+                )
+            self.media_sessions[dc_id] = session
+
+    # 2. Check if we already know this is a CDN file
+    async with _file_cdn_lock:
+        cdn_info = _file_cdn_info.get(media_id)
+
+    if cdn_info and cdn_info.get("is_cdn"):
+        cdn_session = cdn_info["cdn_session"]
+        r = cdn_info["redirect_info"]
+        return await _download_cdn_block(session, cdn_session, r, offset_bytes, chunk_size)
+
+    # 3. Standard GetFile request
+    try:
+        r = await session.invoke(
+            raw.functions.upload.GetFile(
+                location=location,
+                offset=offset_bytes,
+                limit=chunk_size
+            ),
+            sleep_threshold=30
+        )
+    except Exception as e:
+        if not isinstance(e, (pyrogram.StopTransmission, asyncio.CancelledError)):
+            logger.warning(f"Error in media session for DC{dc_id}: {e}")
+            async with self.media_sessions_lock:
+                if self.media_sessions.get(dc_id) is session:
+                    self.media_sessions.pop(dc_id, None)
+            try:
+                await session.stop()
+            except Exception:
+                pass
+        raise e
+
+    if isinstance(r, raw.types.upload.File):
+        return r.bytes
+
+    elif isinstance(r, raw.types.upload.FileCdnRedirect):
+        logger.info(f"FileCdnRedirect encountered for media {media_id}. Setting up CDN session...")
+        async with _file_cdn_lock:
+            cdn_info = _file_cdn_info.get(media_id)
+            if not cdn_info:
+                cdn_session = Session(
+                    self, r.dc_id, await Auth(self, r.dc_id, await self.storage.test_mode()).create(),
+                    await self.storage.test_mode(), is_media=True, is_cdn=True
+                )
+                await cdn_session.start()
+                cdn_info = {
+                    "is_cdn": True,
+                    "cdn_session": cdn_session,
+                    "redirect_info": r
+                }
+                _file_cdn_info[media_id] = cdn_info
+            else:
+                cdn_session = cdn_info["cdn_session"]
+                r = cdn_info["redirect_info"]
+
+        return await _download_cdn_block(session, cdn_session, r, offset_bytes, chunk_size)
+
+    return b""
 
 
 # Monkey-patch Client.get_file to reuse media sessions and avoid connection overhead
@@ -91,175 +283,61 @@ async def _patched_get_file(
         total = abs(limit) or (1 << 31) - 1
         chunk_size = 1024 * 1024
         offset_bytes = abs(offset) * chunk_size
-
         dc_id = file_id.dc_id
+        media_id = file_id.media_id
 
-        async with self.media_sessions_lock:
-            session = self.media_sessions.get(dc_id)
-            if session is None:
-                logger.info(f"Creating new media session for DC{dc_id}...")
-                session = Session(
-                    self, dc_id,
-                    await Auth(self, dc_id, await self.storage.test_mode()).create()
-                    if dc_id != await self.storage.dc_id()
-                    else await self.storage.auth_key(),
-                    await self.storage.test_mode(),
-                    is_media=True
-                )
-                await session.start()
-
-                if dc_id != await self.storage.dc_id():
-                    exported_auth = await self.invoke(
-                        raw.functions.auth.ExportAuthorization(
-                            dc_id=dc_id
-                        )
-                    )
-
-                    await session.invoke(
-                        raw.functions.auth.ImportAuthorization(
-                            id=exported_auth.id,
-                            bytes=exported_auth.bytes
-                        )
-                    )
-                self.media_sessions[dc_id] = session
-            else:
-                logger.info(f"Reusing cached media session for DC{dc_id}")
-
-        try:
-            r = await session.invoke(
-                raw.functions.upload.GetFile(
-                    location=location,
-                    offset=offset_bytes,
-                    limit=chunk_size
-                ),
-                sleep_threshold=30
+        while True:
+            key = (media_id, offset_bytes)
+            
+            # 1. Get or create download task for the current chunk
+            download_coro = _fetch_block_from_tg(
+                self, file_id, location, dc_id, offset_bytes, chunk_size, file_size
             )
+            task = await chunk_cache.get_or_create(key, download_coro)
 
-            if isinstance(r, raw.types.upload.File):
-                while True:
-                    chunk = r.bytes
-
-                    yield chunk
-
-                    current += 1
-                    offset_bytes += chunk_size
-
-                    if progress:
-                        func = functools.partial(
-                            progress,
-                            min(offset_bytes, file_size)
-                            if file_size != 0
-                            else offset_bytes,
-                            file_size,
-                            *progress_args
-                        )
-
-                        if inspect.iscoroutinefunction(progress):
-                            await func()
-                        else:
-                            await self.loop.run_in_executor(self.executor, func)
-
-                    if len(chunk) < chunk_size or current >= total:
-                        break
-
-                    r = await session.invoke(
-                        raw.functions.upload.GetFile(
-                            location=location,
-                            offset=offset_bytes,
-                            limit=chunk_size
-                        ),
-                        sleep_threshold=30
+            # 2. Trigger pre-fetching for next chunks in the background
+            for i in range(1, Config.PREFETCH_CHUNKS + 1):
+                next_offset = offset_bytes + i * chunk_size
+                if file_size > 0 and next_offset >= file_size:
+                    break
+                
+                next_key = (media_id, next_offset)
+                if not await chunk_cache.exists(next_key):
+                    next_coro = _fetch_block_from_tg(
+                        self, file_id, location, dc_id, next_offset, chunk_size, file_size
                     )
+                    await chunk_cache.get_or_create(next_key, next_coro)
 
-            elif isinstance(r, raw.types.upload.FileCdnRedirect):
-                cdn_session = Session(
-                    self, r.dc_id, await Auth(self, r.dc_id, await self.storage.test_mode()).create(),
-                    await self.storage.test_mode(), is_media=True, is_cdn=True
+            # 3. Await current chunk
+            try:
+                chunk = await task
+            except Exception as e:
+                logger.error(f"Failed to stream block at offset {offset_bytes} for media {media_id}: {e}")
+                raise e
+
+            if not chunk:
+                break
+
+            yield chunk
+
+            current += 1
+            offset_bytes += chunk_size
+
+            if progress:
+                func = functools.partial(
+                    progress,
+                    min(offset_bytes, file_size) if file_size != 0 else offset_bytes,
+                    file_size,
+                    *progress_args
                 )
 
-                try:
-                    await cdn_session.start()
+                if inspect.iscoroutinefunction(progress):
+                    await func()
+                else:
+                    await self.loop.run_in_executor(self.executor, func)
 
-                    while True:
-                        r2 = await cdn_session.invoke(
-                            raw.functions.upload.GetCdnFile(
-                                file_token=r.file_token,
-                                offset=offset_bytes,
-                                limit=chunk_size
-                            )
-                        )
-
-                        if isinstance(r2, raw.types.upload.CdnFileReuploadNeeded):
-                            try:
-                                await session.invoke(
-                                    raw.functions.upload.ReuploadCdnFile(
-                                        file_token=r.file_token,
-                                        request_token=r2.request_token
-                                    )
-                                )
-                            except VolumeLocNotFound:
-                                break
-                            else:
-                                continue
-
-                        chunk = r2.bytes
-
-                        decrypted_chunk = aes.ctr256_decrypt(
-                            chunk,
-                            r.encryption_key,
-                            bytearray(
-                                r.encryption_iv[:-4]
-                                + (offset_bytes // 16).to_bytes(4, "big")
-                            )
-                        )
-
-                        hashes = await session.invoke(
-                            raw.functions.upload.GetCdnFileHashes(
-                                file_token=r.file_token,
-                                offset=offset_bytes
-                            )
-                        )
-
-                        for i, h in enumerate(hashes):
-                            cdn_chunk = decrypted_chunk[h.limit * i: h.limit * (i + 1)]
-                            CDNFileHashMismatch.check(
-                                h.hash == sha256(cdn_chunk).digest(),
-                                "h.hash == sha256(cdn_chunk).digest()"
-                            )
-
-                        yield decrypted_chunk
-
-                        current += 1
-                        offset_bytes += chunk_size
-
-                        if progress:
-                            func = functools.partial(
-                                progress,
-                                min(offset_bytes, file_size) if file_size != 0 else offset_bytes,
-                                file_size,
-                                *progress_args
-                            )
-
-                            if inspect.iscoroutinefunction(progress):
-                                await func()
-                            else:
-                                await self.loop.run_in_executor(self.executor, func)
-
-                        if len(chunk) < chunk_size or current >= total:
-                            break
-                finally:
-                    await cdn_session.stop()
-        except Exception as e:
-            if not isinstance(e, (pyrogram.StopTransmission, asyncio.CancelledError)):
-                logger.warning(f"Error in media session for DC{dc_id}, discarding from cache: {e}")
-                async with self.media_sessions_lock:
-                    if self.media_sessions.get(dc_id) is session:
-                        self.media_sessions.pop(dc_id, None)
-                try:
-                    await session.stop()
-                except Exception:
-                    pass
-            raise e
+            if len(chunk) < chunk_size or current >= total:
+                break
 
 Client.get_file = _patched_get_file
 

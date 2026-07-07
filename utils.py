@@ -22,7 +22,8 @@ _NORM_MAP = {
     "uno": "1", "dos": "2", "tres": "3", "cuatro": "4", "cinco": "5",
     "seis": "6", "siete": "7", "ocho": "8", "nueve": "9", "diez": "10",
     "temporada": "season", "temp": "season", "capitulo": "episode", 
-    "capítulo": "episode", "cap": "episode", "ep": "episode", "ch": "episode", "chapter": "episode"
+    "capítulo": "episode", "cap": "episode", "ep": "episode", "ch": "episode", 
+    "chapter": "episode", "tập": "episode", "tap": "episode"
 }
 
 def _normalize_filename(text: str) -> str:
@@ -208,11 +209,21 @@ async def get_metadata_from_cinemeta(meta_type: str, imdb_id: str) -> dict:
                 data = resp.json()
                 meta = data.get("meta", {})
                 if meta:
+                    akas = []
+                    raw_aka = meta.get("aka", [])
+                    if isinstance(raw_aka, list):
+                        for item in raw_aka:
+                            if isinstance(item, str):
+                                akas.append(item)
+                            elif isinstance(item, dict) and "name" in item:
+                                akas.append(item["name"])
+                                
                     result = {
                         "name": meta.get("name"),
                         "year": meta.get("year"),
                         "genres": meta.get("genres", []),
-                        "poster": meta.get("poster")
+                        "poster": meta.get("poster"),
+                        "aka": akas
                     }
                     _metadata_cache[cache_key] = result
                     return result
@@ -229,8 +240,9 @@ def is_video_file(filename: str) -> bool:
 def normalize_title(title: str) -> str:
     if not title:
         return ""
-    t = "".join(c for c in unicodedata.normalize('NFD', title) if unicodedata.category(c) != 'Mn')
-    t = t.lower()
+    t = title.lower()
+    t = t.replace('đ', 'd')
+    t = "".join(c for c in unicodedata.normalize('NFD', t) if unicodedata.category(c) != 'Mn')
     t = re.sub(r'[^a-z0-9\s]', ' ', t)
     t = re.sub(r'\bii\b', '2', t)
     t = re.sub(r'\biii\b', '3', t)
@@ -285,5 +297,14 @@ def matches_title(filename: str, title: str) -> bool:
         words = norm_title.split()
         
     return all(word in norm_prefix for word in words)
+
+
+def matches_any_title(filename: str, titles: list) -> bool:
+    if not titles:
+        return True
+    for title in titles:
+        if matches_title(filename, title):
+            return True
+    return False
 
 
