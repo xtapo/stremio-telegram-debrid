@@ -508,29 +508,49 @@ class TelegramClientManager:
         
         query_str = str(query).strip() if query else ""
         
-        cache_key = f"{query_str}:{limit}"
+        cache_key = query_str
         now = time.time()
         if cache_key in self._search_cache:
-            cached_time, cached_results = self._search_cache[cache_key]
+            cached_time, cached_results, fully_fetched = self._search_cache[cache_key]
             if now - cached_time < Config.CACHE_TTL:
-                return cached_results
+                if len(cached_results) >= limit or fully_fetched:
+                    logger.info(f"Search cache HIT for query='{query_str}' (limit={limit}, cache_size={len(cached_results)}, fully_fetched={fully_fetched})")
+                    return cached_results[:limit]
 
         chat_ids = self.get_channel_ids()
         results = []
-        per_channel_limit = max(100, limit)
+        target_media_limit = max(500, limit)
+        max_scan = 5000
         
+        fully_fetched = True
         for chat_id in chat_ids:
             try:
+                channel_count = 0
+                media_count = 0
                 if query_str:
-                    async for msg in self.client.search_messages(chat_id=chat_id, query=query_str, limit=per_channel_limit):
+                    async for msg in self.client.search_messages(chat_id=chat_id, query=query_str, limit=max_scan):
+                        channel_count += 1
                         if self._has_media(msg):
                             results.append(msg)
+                            media_count += 1
+                            if media_count >= target_media_limit:
+                                fully_fetched = False
+                                break
                 else:
-                    async for msg in self.client.get_chat_history(chat_id=chat_id, limit=per_channel_limit):
+                    async for msg in self.client.get_chat_history(chat_id=chat_id, limit=max_scan):
+                        channel_count += 1
                         if self._has_media(msg):
                             results.append(msg)
+                            media_count += 1
+                            if media_count >= target_media_limit:
+                                fully_fetched = False
+                                break
+                
+                if channel_count >= max_scan:
+                    fully_fetched = False
             except Exception as e:
                 logger.warning(f"Telegram query failed for {chat_id}: {e}")
+                fully_fetched = False
         
         results.sort(key=lambda m: m.date, reverse=True)
         
@@ -572,10 +592,9 @@ class TelegramClientManager:
             
         final_results = list(deduped.values())
         final_results.sort(key=lambda m: m.date, reverse=True)
-        final_results = final_results[:limit]
         
-        self._search_cache[cache_key] = (now, final_results)
-        return final_results
+        self._search_cache[cache_key] = (now, final_results, fully_fetched)
+        return final_results[:limit]
 
     async def get_message(self, message_id: int, chat_id: int = None) -> Message:
         if not self.is_running:

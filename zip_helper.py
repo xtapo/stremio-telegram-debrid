@@ -155,18 +155,38 @@ def list_zip_files_sync(reader: TelegramSeekableReader, loop: asyncio.AbstractEv
         return []
 
 
+_zip_list_cache = {}
+_zip_cache_lock = asyncio.Lock()
+
 async def list_zip_files(client, messages: Union[Message, List[Message]]) -> list:
     reader = TelegramSeekableReader(client, messages)
     if reader.total_size < 4:
         return []
         
+    if not reader.messages:
+        return []
+        
+    first_msg = reader.messages[0]
+    chat_id = first_msg.chat.id if first_msg.chat else 0
+    msg_ids = ",".join(str(x.id) for x in reader.messages)
+    cache_key = (chat_id, msg_ids, reader.total_size)
+    
+    async with _zip_cache_lock:
+        if cache_key in _zip_list_cache:
+            return _zip_list_cache[cache_key]
+            
     # Check if first part starts with ZIP signature
     first_block = await reader.fetch_block(0, 0)
     if not first_block.startswith(b"PK\x03\x04"):
         return []
         
     loop = asyncio.get_running_loop()
-    return await anyio.to_thread.run_sync(list_zip_files_sync, reader, loop)
+    entries = await anyio.to_thread.run_sync(list_zip_files_sync, reader, loop)
+    
+    async with _zip_cache_lock:
+        _zip_list_cache[cache_key] = entries
+        
+    return entries
 
 
 async def get_zip_entry_data_offset(reader: TelegramSeekableReader, header_offset: int) -> int:
