@@ -37,6 +37,8 @@ from zip_helper import (
 import anyio
 from debrid import get_debrid_provider
 from torrent_search import search_torrents
+import hashlib
+from subtitles_service import subtitle_generator
 
 
 logging.basicConfig(
@@ -920,7 +922,7 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
         return {"meta": {}}
 
 
-async def find_subtitles_for_video(video_filename: str, api_key: str = "", cached_messages=None) -> list:
+async def find_subtitles_for_video(video_filename: str, api_key: str = "", cached_messages=None, video_url: str = None) -> list:
     subtitles = []
     search_results = cached_messages or []
     query_param = f"?api_key={api_key}" if api_key else ""
@@ -960,6 +962,48 @@ async def find_subtitles_for_video(video_filename: str, api_key: str = "", cache
                     "lang": lang
                 })
                 
+    if Config.AUTO_VIET_SUB:
+        has_vi = any(sub.get("lang") in ("vie", "vi") for sub in subtitles)
+        if not has_vi:
+            source_sub = None
+            for s in subtitles:
+                if s["lang"] == "eng":
+                    source_sub = s
+                    break
+            if not source_sub and subtitles:
+                source_sub = subtitles[0]
+                
+            cache_key = hashlib.md5(video_filename.encode("utf-8")).hexdigest()
+            source_url = source_sub["url"] if source_sub else None
+            
+            params = {}
+            if api_key:
+                params["api_key"] = api_key
+            if source_url:
+                params["source_url"] = source_url
+            if video_url:
+                params["video_url"] = video_url
+            params["filename"] = video_filename
+            
+            query_str = urllib.parse.urlencode(params)
+            sub_url = f"{Config.ADDON_URL}/stream/subtitle/autoviet/{cache_key}"
+            if query_str:
+                sub_url += f"?{query_str}"
+            
+            subtitles.append({
+                "id": f"autovietsub_{cache_key}",
+                "url": sub_url,
+                "lang": "vie"
+            })
+            
+            # Preload in background
+            asyncio.create_task(subtitle_generator.get_or_start_translation(
+                cache_key=cache_key,
+                source_url=source_url,
+                video_url=video_url,
+                filename=video_filename
+            ))
+            
     return subtitles
 
 @app.get("/stream/{type}/{stream_id}.json")
@@ -1024,7 +1068,7 @@ async def stream_handler(
                             break
                             
                     stream_url = f"{Config.ADDON_URL}/stream/zip/{chat_id}/{msg_ids}/{urllib.parse.quote(zip_entry_filename)}{query_param}"
-                    subtitles = await find_subtitles_for_video(zip_entry_filename, api_key=api_key)
+                    subtitles = await find_subtitles_for_video(zip_entry_filename, api_key=api_key, video_url=stream_url)
                     
                     streams.append({
                         "name": "▶ TG ZIP Play",
@@ -1092,7 +1136,7 @@ async def stream_handler(
                     file_size = media.file_size
                     
                     stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(file_name)}{query_param}"
-                    subtitles = await find_subtitles_for_video(file_name, api_key=api_key)
+                    subtitles = await find_subtitles_for_video(file_name, api_key=api_key, video_url=stream_url)
                     
                     streams.append({
                         "name": "▶ TG Play",
@@ -1178,7 +1222,7 @@ async def stream_handler(
                                         if type == "series" and not matches_episode(entry.filename, season, episode):
                                             continue
                                         stream_url = f"{Config.ADDON_URL}/stream/zip/{chat_id}/{msg_ids}/{urllib.parse.quote(entry.filename)}{query_param}"
-                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results)
+                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
                                         streams.append({
                                             "name": "▶ TG ZIP Play (Split)",
                                             "title": f"{entry.filename}\n💾 Stream ZIP entry | 📦 {format_size(entry.file_size)}",
@@ -1228,7 +1272,7 @@ async def stream_handler(
                                         if type == "series" and not matches_episode(entry.filename, season, episode):
                                             continue
                                         stream_url = f"{Config.ADDON_URL}/stream/zip/{chat_id}/{msg.id}/{urllib.parse.quote(entry.filename)}{query_param}"
-                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results)
+                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
                                         streams.append({
                                             "name": "▶ TG ZIP Play",
                                             "title": f"{entry.filename}\n💾 Stream ZIP entry | 📦 {format_size(entry.file_size)}",
@@ -1245,7 +1289,7 @@ async def stream_handler(
                             if not is_video_file(file_name):
                                 continue
                             stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg.id}/{urllib.parse.quote(file_name)}{query_param}"
-                            subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results)
+                            subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
                             
                             streams.append({
                                 "name": "▶ TG Play",
@@ -1337,6 +1381,8 @@ async def subtitles_handler(
             raise HTTPException(status_code=403, detail="Unauthorized")
         
     subtitles = []
+    actual_key = api_key or request.query_params.get("api_key", "")
+    query_param = f"?api_key={actual_key}" if actual_key else ""
     
     if id.startswith("tgfile_"):
         parts = id.split("_")
@@ -1352,7 +1398,8 @@ async def subtitles_handler(
                 media = msg.video or msg.document or msg.audio
                 video_filename = getattr(media, "file_name", "") or ""
                 if video_filename:
-                    subtitles = await find_subtitles_for_video(video_filename, api_key=api_key)
+                    stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(video_filename)}{query_param}"
+                    subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url)
             except Exception as e:
                 logger.error(f"Failed to resolve subtitles for direct catalog ID {id}: {e}")
                 
@@ -1378,22 +1425,36 @@ async def subtitles_handler(
 
             if video_filename:
                 logger.info(f"Resolving subtitles directly for filename: '{video_filename}'")
-                subtitles = await find_subtitles_for_video(video_filename, api_key=api_key)
+                stream_url = None
+                try:
+                    tg_results = await tg_client_manager.search_messages(query=video_filename, limit=5)
+                    for msg in tg_results:
+                        media = msg.video or msg.document or msg.audio
+                        fn = getattr(media, "file_name", "") or ""
+                        if fn == video_filename:
+                            stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(video_filename)}{query_param}"
+                            break
+                except Exception as e:
+                    logger.error(f"Failed to find video msg in subtitles_handler: {e}")
+                subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url)
             else:
                 meta = await get_metadata_from_cinemeta(type, imdb_id)
                 movie_name = meta.get("name")
                 if movie_name:
                     tg_results = await tg_client_manager.search_messages(query=movie_name, limit=50)
+                    target_msg = None
                     for msg in tg_results:
                         media = msg.video or msg.document or msg.audio
                         fn = getattr(media, "file_name", "") or msg.caption or ""
                         if type == "series" and not matches_episode(fn, season, episode):
                             continue
                         video_filename = fn
+                        target_msg = msg
                         break
                     
-                    if video_filename:
-                        subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, cached_messages=tg_results)
+                    if video_filename and target_msg:
+                        stream_url = f"{Config.ADDON_URL}/stream/file/{target_msg.chat.id}/{target_msg.id}/{urllib.parse.quote(video_filename)}{query_param}"
+                        subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
         except Exception as e:
             logger.error(f"Failed to resolve subtitles for IMDb ID {id}: {e}")
             
@@ -1459,6 +1520,60 @@ async def tg_subtitle_proxy(
         
     return Response(
         content=content,
+        media_type=content_type,
+        headers=headers
+    )
+
+@app.api_route("/stream/subtitle/autoviet/{cache_key}", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/stream/subtitle/autoviet/{cache_key}", methods=["GET", "HEAD"])
+async def auto_viet_subtitle_endpoint(
+    cache_key: str,
+    request: Request,
+    api_key: str = "",
+    source_url: str = None,
+    video_url: str = None,
+    filename: str = "subtitle.srt"
+):
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+            
+    q_params = request.query_params
+    source_url = q_params.get("source_url")
+    video_url = q_params.get("video_url")
+    filename = q_params.get("filename", "subtitle.srt")
+    
+    content_type = "application/x-subrip"
+    if filename.lower().endswith(".vtt"):
+        content_type = "text/vtt"
+        
+    headers = {
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
+        "Access-Control-Allow-Origin": "*",
+    }
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=200,
+            media_type=content_type,
+            headers=headers
+        )
+        
+    content, progress = await subtitle_generator.get_or_start_translation(
+        cache_key=cache_key,
+        source_url=source_url,
+        video_url=video_url,
+        filename=filename
+    )
+    
+    if progress < 1.0:
+        headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    else:
+        headers["Cache-Control"] = "public, max-age=31536000"
+        
+    return Response(
+        content=content.encode("utf-8"),
         media_type=content_type,
         headers=headers
     )

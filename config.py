@@ -26,6 +26,8 @@ class Config:
     QBITTORRENT_USER = os.getenv("QBITTORRENT_USER", "admin")
     QBITTORRENT_PASS = os.getenv("QBITTORRENT_PASS", "adminadmin")
     QBITTORRENT_PLAY_DIR = os.getenv("QBITTORRENT_PLAY_DIR", "")
+    AUTO_VIET_SUB = os.getenv("AUTO_VIET_SUB", "True").lower() == "true"
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
     API_ID = os.getenv("API_ID")
     API_HASH = os.getenv("API_HASH")
