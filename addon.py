@@ -15,8 +15,28 @@ from fastapi import FastAPI, Request, HTTPException, Depends, Response
 from fastapi.responses import JSONResponse, StreamingResponse, HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+class SafeStreamingResponse(StreamingResponse):
+    async def __call__(self, scope, receive, send) -> None:
+        async def safe_send(message):
+            try:
+                await send(message)
+            except RuntimeError as e:
+                if "Response content shorter than Content-Length" in str(e):
+                    return
+                raise e
+        try:
+            await super().__call__(scope, receive, safe_send)
+        except RuntimeError as e:
+            if "Response content shorter than Content-Length" in str(e):
+                return
+            raise e
+
 from config import Config
 from tg_client import tg_client_manager
+
+# Cache to store direct Debrid stream URLs mapped by filename
+DEBRID_STREAM_URL_CACHE = {}
+
 from utils import (
     format_size,
     matches_episode,
@@ -127,8 +147,7 @@ def get_manifest(api_key: str = ""):
         "description": "Personal Telegram streaming proxy. For educational & personal testing only. Do not use for unauthorized hosting of copyrighted media.",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
         "resources": ["meta", "stream", "subtitles"],
-        "types": ["movie", "series"],
-        "idPrefixes": ["tgfile_", "tt"],
+        "types": ["movie", "series", "anime", "other"],
         "catalogs": [
             {
                 "type": "movie",
@@ -922,11 +941,64 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
         return {"meta": {}}
 
 
-async def find_subtitles_for_video(video_filename: str, api_key: str = "", cached_messages=None, video_url: str = None) -> list:
+async def fetch_opensubtitles(imdb_id: str, media_type: str = "movie") -> list:
+    import httpx
+    url = f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/{urllib.parse.quote(imdb_id)}.json"
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                return resp.json().get("subtitles", [])
+    except Exception as e:
+        logger.error(f"Failed to fetch subtitles from OpenSubtitles for {imdb_id}: {e}")
+    return []
+
+async def prepare_existing_vi_sub_and_tts(cache_key: str, sub_url: str):
+    import httpx
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.get(sub_url)
+            if resp.status_code == 200:
+                content = resp.text
+                from subtitles_service import CACHE_DIR as SUB_CACHE_DIR
+                sub_path = os.path.join(SUB_CACHE_DIR, f"{cache_key}.srt")
+                with open(sub_path, "w", encoding="utf-8") as f:
+                    f.write(content)
+                from tts_service import tts_manager
+                await tts_manager.start_tts_generation(cache_key, content)
+            else:
+                logger.error(f"Failed to download existing VI subtitle from {sub_url}: status {resp.status_code}")
+    except Exception as e:
+        logger.error(f"Failed to prepare existing VI subtitle for TTS: {e}")
+
+async def find_subtitles_for_video(
+    video_filename: str,
+    api_key: str = "",
+    cached_messages=None,
+    video_url: str = None,
+    imdb_id: str = None,
+    media_type: str = "movie"
+) -> list:
     subtitles = []
     search_results = cached_messages or []
     query_param = f"?api_key={api_key}" if api_key else ""
     
+    # 1. Search OpenSubtitles if imdb_id is provided
+    if imdb_id:
+        try:
+            os_subs = await fetch_opensubtitles(imdb_id, media_type)
+            for sub in os_subs:
+                lang = sub.get("lang")
+                if lang in ("vie", "vi", "eng"):
+                    sub_id_hash = hashlib.md5(sub["url"].encode()).hexdigest()
+                    subtitles.append({
+                        "id": f"os_{lang}_{sub_id_hash}",
+                        "url": sub["url"],
+                        "lang": "vie" if lang in ("vie", "vi") else "eng"
+                    })
+        except Exception as e:
+            logger.error(f"Failed to process OpenSubtitles tracks: {e}")
+            
     if not search_results:
         query = get_search_query_from_filename(video_filename)
         if query:
@@ -964,7 +1036,14 @@ async def find_subtitles_for_video(video_filename: str, api_key: str = "", cache
                 
     if Config.AUTO_VIET_SUB:
         has_vi = any(sub.get("lang") in ("vie", "vi") for sub in subtitles)
-        if not has_vi:
+        cache_key = hashlib.md5(video_filename.encode("utf-8")).hexdigest()
+        if video_url:
+            subtitle_generator.register_video_url(cache_key, video_url)
+        
+        if has_vi:
+            vi_sub = next(sub for sub in subtitles if sub.get("lang") in ("vie", "vi"))
+            asyncio.create_task(prepare_existing_vi_sub_and_tts(cache_key, vi_sub["url"]))
+        else:
             source_sub = None
             for s in subtitles:
                 if s["lang"] == "eng":
@@ -973,7 +1052,6 @@ async def find_subtitles_for_video(video_filename: str, api_key: str = "", cache
             if not source_sub and subtitles:
                 source_sub = subtitles[0]
                 
-            cache_key = hashlib.md5(video_filename.encode("utf-8")).hexdigest()
             source_url = source_sub["url"] if source_sub else None
             
             params = {}
@@ -1222,7 +1300,7 @@ async def stream_handler(
                                         if type == "series" and not matches_episode(entry.filename, season, episode):
                                             continue
                                         stream_url = f"{Config.ADDON_URL}/stream/zip/{chat_id}/{msg_ids}/{urllib.parse.quote(entry.filename)}{query_param}"
-                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
+                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url, imdb_id=imdb_id, media_type=type)
                                         streams.append({
                                             "name": "▶ TG ZIP Play (Split)",
                                             "title": f"{entry.filename}\n💾 Stream ZIP entry | 📦 {format_size(entry.file_size)}",
@@ -1272,7 +1350,7 @@ async def stream_handler(
                                         if type == "series" and not matches_episode(entry.filename, season, episode):
                                             continue
                                         stream_url = f"{Config.ADDON_URL}/stream/zip/{chat_id}/{msg.id}/{urllib.parse.quote(entry.filename)}{query_param}"
-                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
+                                        subtitles = await find_subtitles_for_video(entry.filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url, imdb_id=imdb_id, media_type=type)
                                         streams.append({
                                             "name": "▶ TG ZIP Play",
                                             "title": f"{entry.filename}\n💾 Stream ZIP entry | 📦 {format_size(entry.file_size)}",
@@ -1289,7 +1367,7 @@ async def stream_handler(
                             if not is_video_file(file_name):
                                 continue
                             stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg.id}/{urllib.parse.quote(file_name)}{query_param}"
-                            subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
+                            subtitles = await find_subtitles_for_video(file_name, api_key=api_key, cached_messages=tg_results, video_url=stream_url, imdb_id=imdb_id, media_type=type)
                             
                             streams.append({
                                 "name": "▶ TG Play",
@@ -1335,7 +1413,8 @@ async def stream_handler(
                             import base64
                             mag_b64 = base64.b64encode(mag.encode()).decode()
                             provider_name = "realdebrid" if Config.REAL_DEBRID_API_KEY else ("torbox" if Config.TORBOX_API_KEY else "qbittorrent")
-                            stream_url = f"{Config.ADDON_URL}/stream/debrid/{provider_name}/{mag_b64}/{urllib.parse.quote(t['title'])}?imdb={imdb_id}"
+                            stream_url = f"{Config.ADDON_URL}/stream/debrid/{provider_name}/{mag_b64}/{urllib.parse.quote(t['title'])}?imdb={stream_id}"
+                            DEBRID_STREAM_URL_CACHE[t['title']] = (provider_name, mag)
                             if query_param:
                                 q_p = query_param.replace("?", "&")
                                 stream_url += q_p
@@ -1351,6 +1430,10 @@ async def stream_handler(
                                 title_desc += f"🟢 Cached (Instant Play)" if is_cached else f"📥 Download & Cache to Telegram"
                             title_desc += f"\n📦 Size: {size_str} | 👥 Seeders: {t['seeders']} | 🔍 Source: {t['source']}"
                             
+                            if Config.AUTO_THUYET_MINH:
+                                tm_cache_key = hashlib.md5(t['title'].encode("utf-8")).hexdigest()
+                                asyncio.create_task(ensure_subtitles_and_tts(tm_cache_key, t['title'], imdb_id=stream_id, media_type=type))
+                                
                             streams.append({
                                 "name": prefix,
                                 "title": title_desc,
@@ -1361,8 +1444,96 @@ async def stream_handler(
                             })
         except Exception as e:
             logger.error(f"Cinemeta search/resolve failed: {e}")
+            
+    # Interleave Thuyết Minh AI streams if enabled
+    if Config.AUTO_THUYET_MINH and streams:
+        tm_streams = []
+        for s in streams:
+            name = s.get("name", "")
+            url = s.get("url", "")
+            if not url:
+                continue
+                
+            is_tg_file = "/stream/file/" in url
+            is_debrid = "/stream/debrid/" in url
+            is_qbit = "/stream/qbittorrent/" in url
+            
+            if is_tg_file or is_debrid or is_qbit:
+                tm_url = url
+                if is_tg_file:
+                    tm_url = url.replace("/stream/file/", "/stream/thuyetminh/file/")
+                elif is_debrid:
+                    tm_url = url.replace("/stream/debrid/", "/stream/thuyetminh/debrid/")
+                elif is_qbit:
+                    tm_url = url.replace("/stream/qbittorrent/", "/stream/thuyetminh/qbittorrent/")
+                
+                tm_stream = dict(s)
+                tm_stream["url"] = tm_url
+                
+                if "▶" in name:
+                    tm_stream["name"] = name.replace("▶", "🎙️ TM AI -")
+                elif "⚡" in name:
+                    tm_stream["name"] = name.replace("⚡", "🎙️ TM AI - ⚡")
+                elif "📥" in name:
+                    tm_stream["name"] = name.replace("📥", "🎙️ TM AI - 📥")
+                elif "💾" in name:
+                    tm_stream["name"] = name.replace("💾", "🎙️ TM AI - 💾")
+                else:
+                    tm_stream["name"] = "🎙️ TM AI - " + name
+                    
+                tm_title = s.get("title", "")
+                tm_stream["title"] = f"[Thuyết Minh Tiếng Việt AI]\n" + tm_title
+                
+                # Exclude original subtitles from TM stream as it's already voiced over
+                # (but keeping it can also be fine if they want to read along; let's keep them)
+                tm_streams.append(tm_stream)
+                
+        # Interleave them for a better user experience
+        interleaved = []
+        for s in streams:
+            interleaved.append(s)
+            for tm_s in tm_streams:
+                expected_tm_url = s["url"].replace("/stream/file/", "/stream/thuyetminh/file/").replace("/stream/debrid/", "/stream/thuyetminh/debrid/").replace("/stream/qbittorrent/", "/stream/thuyetminh/qbittorrent/")
+                if expected_tm_url == tm_s["url"]:
+                    interleaved.append(tm_s)
+                    break
+        streams = interleaved
 
+    logger.info(f"Returning streams count={len(streams)} names={[s.get('name') for s in streams]}")
     return {"streams": streams}
+
+async def resolve_stream_url_from_cache(video_filename: str, video_size: int = None) -> str:
+    stream_data = DEBRID_STREAM_URL_CACHE.get(video_filename)
+    if isinstance(stream_data, tuple):
+        provider, magnet_link = stream_data
+        try:
+            debrid_provider = get_debrid_provider()
+            if debrid_provider:
+                logger.info(f"Resolving Debrid stream URL on-the-fly for {video_filename}...")
+                direct_url = await debrid_provider.get_stream_url(magnet_link, video_filename)
+                if direct_url:
+                    # Update cache to the resolved direct URL string so we don't resolve it again
+                    DEBRID_STREAM_URL_CACHE[video_filename] = direct_url
+                    return direct_url
+        except Exception as e:
+            logger.error(f"Failed to resolve Debrid stream URL on-the-fly: {e}")
+    elif isinstance(stream_data, str):
+        return stream_data
+
+    # Fallback: scan user's Debrid/qBittorrent active downloads for matching file size or filename
+    try:
+        debrid_provider = get_debrid_provider()
+        if debrid_provider and hasattr(debrid_provider, "get_direct_url_by_size"):
+            logger.info(f"Searching active torrent downloads for filename: '{video_filename}' (size: {video_size})...")
+            direct_url = await debrid_provider.get_direct_url_by_size(video_size, name_hint=video_filename)
+            if direct_url:
+                logger.info(f"Found direct stream URL for torrent: {direct_url}")
+                DEBRID_STREAM_URL_CACHE[video_filename] = direct_url
+                return direct_url
+    except Exception as e:
+        logger.error(f"Failed to find direct stream URL by size/name on Debrid/qBittorrent: {e}")
+
+    return None
 
 @app.get("/subtitles/{type}/{id}.json")
 @app.get("/subtitles/{type}/{id}/{extra}.json")
@@ -1384,6 +1555,22 @@ async def subtitles_handler(
     actual_key = api_key or request.query_params.get("api_key", "")
     query_param = f"?api_key={actual_key}" if actual_key else ""
     
+    # Extract filename and size from extra parameter if present
+    video_filename = None
+    video_size = None
+    if extra:
+        decoded_extra = urllib.parse.unquote(extra)
+        if "?" in decoded_extra:
+            decoded_extra = decoded_extra.split("?", 1)[0]
+        params = urllib.parse.parse_qs(decoded_extra)
+        if "filename" in params:
+            video_filename = params["filename"][0]
+        if "videoSize" in params:
+            try:
+                video_size = int(params["videoSize"][0])
+            except ValueError:
+                pass
+    
     if id.startswith("tgfile_"):
         parts = id.split("_")
         if len(parts) >= 3:
@@ -1396,10 +1583,10 @@ async def subtitles_handler(
                     chat_id_val = chat_id
                 msg = await tg_client_manager.get_message(int(msg_id), chat_id=chat_id_val)
                 media = msg.video or msg.document or msg.audio
-                video_filename = getattr(media, "file_name", "") or ""
-                if video_filename:
-                    stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(video_filename)}{query_param}"
-                    subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url)
+                fn = getattr(media, "file_name", "") or ""
+                if fn:
+                    stream_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(fn)}{query_param}"
+                    subtitles = await find_subtitles_for_video(fn, api_key=api_key, video_url=stream_url)
             except Exception as e:
                 logger.error(f"Failed to resolve subtitles for direct catalog ID {id}: {e}")
                 
@@ -1414,29 +1601,26 @@ async def subtitles_handler(
             episode = int(parts[2])
             
         try:
-            video_filename = None
-            if extra:
-                decoded_extra = urllib.parse.unquote(extra)
-                if "?" in decoded_extra:
-                    decoded_extra = decoded_extra.split("?", 1)[0]
-                params = urllib.parse.parse_qs(decoded_extra)
-                if "filename" in params:
-                    video_filename = params["filename"][0]
-
             if video_filename:
                 logger.info(f"Resolving subtitles directly for filename: '{video_filename}'")
                 stream_url = None
                 try:
-                    tg_results = await tg_client_manager.search_messages(query=video_filename, limit=5)
+                    tg_results = await tg_client_manager.search_messages(query=video_filename, limit=10)
                     for msg in tg_results:
                         media = msg.video or msg.document or msg.audio
-                        fn = getattr(media, "file_name", "") or ""
-                        if fn == video_filename:
-                            stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(video_filename)}{query_param}"
+                        fn = getattr(media, "file_name", "") or msg.caption or ""
+                        if fn == video_filename or video_filename in fn or fn in video_filename:
+                            actual_fn = fn if fn else video_filename
+                            stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(actual_fn)}{query_param}"
                             break
                 except Exception as e:
                     logger.error(f"Failed to find video msg in subtitles_handler: {e}")
-                subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url)
+                
+                # Check direct Debrid stream cache if not on Telegram
+                if not stream_url:
+                    stream_url = await resolve_stream_url_from_cache(video_filename, video_size)
+                    
+                subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url, imdb_id=id, media_type=type)
             else:
                 meta = await get_metadata_from_cinemeta(type, imdb_id)
                 movie_name = meta.get("name")
@@ -1454,9 +1638,29 @@ async def subtitles_handler(
                     
                     if video_filename and target_msg:
                         stream_url = f"{Config.ADDON_URL}/stream/file/{target_msg.chat.id}/{target_msg.id}/{urllib.parse.quote(video_filename)}{query_param}"
-                        subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url)
+                        subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, cached_messages=tg_results, video_url=stream_url, imdb_id=id, media_type=type)
         except Exception as e:
             logger.error(f"Failed to resolve subtitles for IMDb ID {id}: {e}")
+            
+    elif video_filename:
+        # Fallback for non-standard IDs (like adult_xxx or magnet links) when filename is provided
+        try:
+            logger.info(f"Resolving subtitles for non-standard ID {id} via filename: '{video_filename}'")
+            stream_url = await resolve_stream_url_from_cache(video_filename, video_size)
+            if not stream_url:
+                try:
+                    tg_results = await tg_client_manager.search_messages(query=video_filename, limit=5)
+                    for msg in tg_results:
+                        media = msg.video or msg.document or msg.audio
+                        fn = getattr(media, "file_name", "") or ""
+                        if fn == video_filename:
+                            stream_url = f"{Config.ADDON_URL}/stream/file/{msg.chat.id}/{msg.id}/{urllib.parse.quote(video_filename)}{query_param}"
+                            break
+                except Exception as e:
+                    logger.error(f"Failed to search video msg in subtitles_handler: {e}")
+            subtitles = await find_subtitles_for_video(video_filename, api_key=api_key, video_url=stream_url, imdb_id=None, media_type=type)
+        except Exception as e:
+            logger.error(f"Failed to resolve subtitles for custom ID {id}: {e}")
             
     return {"subtitles": subtitles}
 
@@ -1578,6 +1782,501 @@ async def auto_viet_subtitle_endpoint(
         headers=headers
     )
 
+async def get_remote_file_size(url: str) -> int:
+    try:
+        async with httpx.AsyncClient(timeout=6.0) as client:
+            # 1. Try GET with Range bytes=0-0 (most reliable for CDNs that block HEAD or strip Content-Length on HEAD)
+            resp = await client.get(url, headers={"Range": "bytes=0-0"}, follow_redirects=True)
+            if resp.status_code in (200, 206):
+                content_range = resp.headers.get("Content-Range", "")
+                if "/" in content_range:
+                    total_size = content_range.split("/")[-1].strip()
+                    if total_size.isdigit():
+                        return int(total_size)
+                content_length = resp.headers.get("Content-Length")
+                if content_length and content_length.isdigit():
+                    return int(content_length)
+    except Exception as e:
+        logger.warning(f"Range GET file size check failed: {e}")
+
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.head(url, follow_redirects=True)
+            content_length = resp.headers.get("Content-Length")
+            if content_length and content_length.isdigit():
+                return int(content_length)
+    except Exception as e:
+        logger.warning(f"HEAD file size check failed: {e}")
+        
+    return 0
+
+def get_subtitle_duration(cache_key: str) -> float:
+    from subtitles_service import CACHE_DIR as SUB_CACHE_DIR, parse_subtitles
+    sub_path = os.path.join(SUB_CACHE_DIR, f"{cache_key}.srt")
+    if os.path.exists(sub_path):
+        try:
+            with open(sub_path, "r", encoding="utf-8") as f:
+                content = f.read()
+            _, blocks = parse_subtitles(content)
+            max_time = 0.0
+            for b in blocks:
+                parts = b["time"].split("-->")
+                if len(parts) == 2:
+                    end_str = parts[1].strip().replace(",", ".")
+                    try:
+                        t_parts = end_str.split(":")
+                        if len(t_parts) == 3:
+                            h, m, s = t_parts
+                            t = float(h) * 3600 + float(m) * 60 + float(s)
+                        elif len(t_parts) == 2:
+                            m, s = t_parts
+                            t = float(m) * 60 + float(s)
+                        else:
+                            t = float(end_str)
+                        if t > max_time:
+                            max_time = t
+                    except Exception:
+                        pass
+            if max_time > 0:
+                return max_time
+        except Exception:
+            pass
+    return 7200.0  # default 2 hours
+
+async def ensure_subtitles_and_tts(cache_key: str, filename: str, imdb_id: str = None, media_type: str = "movie") -> str:
+    from tts_service import CACHE_DIR as TTS_CACHE_DIR, tts_manager
+    final_pcm_path = os.path.join(TTS_CACHE_DIR, f"{cache_key}_merged.pcm")
+    if os.path.exists(final_pcm_path):
+        return final_pcm_path
+        
+    from subtitles_service import CACHE_DIR as SUB_CACHE_DIR
+    sub_path = os.path.join(SUB_CACHE_DIR, f"{cache_key}.srt")
+    
+    if os.path.exists(sub_path) and not os.path.exists(final_pcm_path) and cache_key not in tts_manager.active_tasks:
+        try:
+            logger.info(f"Sub cached but PCM missing for {cache_key}. Starting TTS generation...")
+            with open(sub_path, "r", encoding="utf-8") as f:
+                srt_content = f.read()
+            await tts_manager.start_tts_generation(cache_key, srt_content)
+        except Exception as e:
+            logger.error(f"Failed to start TTS from cached sub: {e}")
+    if not os.path.exists(sub_path):
+        logger.info(f"Subtitle cache miss for '{filename}' ({cache_key}). Fetching on the fly...")
+        subtitles = []
+        
+        if imdb_id:
+            try:
+                os_subs = await fetch_opensubtitles(imdb_id, media_type)
+                for sub in os_subs:
+                    lang = sub.get("lang")
+                    if lang in ("vie", "vi", "eng"):
+                        sub_id_hash = hashlib.md5(sub["url"].encode()).hexdigest()
+                        subtitles.append({
+                            "url": sub["url"],
+                            "lang": "vie" if lang in ("vie", "vi") else "eng"
+                        })
+            except Exception as e:
+                logger.error(f"On-the-fly OpenSubtitles query failed: {e}")
+                
+        query = get_search_query_from_filename(filename)
+        if query:
+            try:
+                tg_results = await tg_client_manager.search_messages(query=query, limit=20)
+                seen_msg_ids = set()
+                for msg in tg_results:
+                    if msg.id in seen_msg_ids:
+                        continue
+                    doc = msg.document or msg.audio or msg.video
+                    if not doc:
+                        continue
+                    sub_fn = getattr(doc, "file_name", "") or ""
+                    if sub_fn.lower().endswith(('.srt', '.vtt', '.ass')):
+                        if matches_subtitle(filename, sub_fn):
+                            seen_msg_ids.add(msg.id)
+                            query_param = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
+                            subtitles.append({
+                                "url": f"{Config.ADDON_URL}/stream/subtitle/{msg.chat.id}/{msg.id}/{urllib.parse.quote(sub_fn)}{query_param}",
+                                "lang": "eng"
+                            })
+            except Exception as e:
+                logger.error(f"On-the-fly Telegram subtitle search failed: {e}")
+
+        if subtitles:
+            has_vi = any(sub.get("lang") in ("vie", "vi") for sub in subtitles)
+            if has_vi:
+                vi_sub = next(sub for sub in subtitles if sub.get("lang") in ("vie", "vi"))
+                await prepare_existing_vi_sub_and_tts(cache_key, vi_sub["url"])
+            elif Config.AUTO_VIET_SUB:
+                source_sub = next((s for s in subtitles if s.get("lang") == "eng"), subtitles[0])
+                await subtitle_generator.get_or_start_translation(
+                    cache_key=cache_key,
+                    source_url=source_sub["url"],
+                    video_url=None,
+                    filename=filename
+                )
+                
+    if os.path.exists(sub_path) or cache_key in tts_manager.active_tasks or cache_key in subtitle_generator.active_tasks:
+        logger.info(f"Waiting for merged PCM to be generated for {cache_key}...")
+        for _ in range(24):
+            if os.path.exists(final_pcm_path):
+                return final_pcm_path
+            await asyncio.sleep(0.5)
+            
+    if os.path.exists(final_pcm_path):
+        return final_pcm_path
+    return ""
+
+async def ffmpeg_stream_generator(ffmpeg_path: str, video_url: str, pcm_path: str, seek_time: float):
+    cmd = [
+        ffmpeg_path, "-y",
+        "-ss", f"{seek_time:.3f}",
+        "-i", video_url,
+        "-ss", f"{seek_time:.3f}",
+        "-f", "s16le",
+        "-ar", "24000",
+        "-ac", "1",
+        "-i", pcm_path,
+        "-filter_complex", "[0:a:0][1:a]sidechaincompress=threshold=0.03:ratio=5:attack=100:release=500[ducked]; [ducked][1:a]amix=inputs=2:duration=first:dropout_transition=0[tm_audio]",
+        "-map", "0:v:0",
+        "-map", "[tm_audio]",
+        "-map", "0:a:0",
+        "-c:v", "copy",
+        "-c:a:0", "aac",
+        "-b:a:0", "128k",
+        "-c:a:1", "aac",
+        "-b:a:1", "128k",
+        "-metadata:s:a:0", "language=vie",
+        "-metadata:s:a:0", "title=Thuyết Minh AI",
+        "-metadata:s:a:1", "language=eng",
+        "-metadata:s:a:1", "title=Original Audio",
+        "-f", "mpegts",
+        "pipe:1"
+    ]
+    
+    logger.info(f"Running FFMPEG Thuyết Minh command: {' '.join(cmd)}")
+    
+    import subprocess
+    proc = subprocess.Popen(
+        cmd,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.DEVNULL
+    )
+    try:
+        while True:
+            chunk = await asyncio.to_thread(proc.stdout.read, 65536)
+            if not chunk:
+                break
+            yield chunk
+    except asyncio.CancelledError:
+        try:
+            proc.terminate()
+            await asyncio.to_thread(proc.wait)
+        except Exception:
+            pass
+        raise
+    finally:
+        try:
+            if proc.poll() is None:
+                proc.terminate()
+                await asyncio.to_thread(proc.wait)
+        except Exception:
+            pass
+
+@app.api_route("/stream/thuyetminh/file/{chat_id}/{message_id}/{filename}", methods=["GET", "HEAD"])
+async def tg_thuyetminh_stream_proxy(
+    chat_id: str, 
+    message_id: int, 
+    filename: str, 
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY and api_key != Config.API_KEY:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    
+    try:
+        try:
+            chat_id_val = int(chat_id)
+        except ValueError:
+            chat_id_val = chat_id
+        msg = await tg_client_manager.get_message(message_id, chat_id=chat_id_val)
+    except Exception as e:
+        logger.error(f"Proxy failed to fetch message: {e}")
+        raise HTTPException(status_code=404, detail="Media file not found")
+        
+    if not msg:
+        raise HTTPException(status_code=404, detail="Media message not found")
+        
+    media = msg.video or msg.document or msg.audio
+    if not media:
+        raise HTTPException(status_code=404, detail="No playable media found in message")
+        
+    file_size = media.file_size
+    mime_type = "video/mp2t"
+    
+    pcm_path = await ensure_subtitles_and_tts(cache_key, filename)
+    
+    if not pcm_path:
+        logger.warning(f"No TTS audio track found for '{filename}'. Falling back to original stream.")
+        original_url = f"{Config.ADDON_URL}/stream/file/{chat_id}/{message_id}/{urllib.parse.quote(filename)}"
+        if api_key:
+            original_url += f"?api_key={api_key}"
+        return RedirectResponse(url=original_url)
+        
+    range_header = request.headers.get("Range")
+    start = 0
+    if range_header:
+        try:
+            bytes_range = range_header.replace("bytes=", "").split("-")
+            if bytes_range[0]:
+                start = int(bytes_range[0])
+        except ValueError:
+            pass
+            
+    duration = get_subtitle_duration(cache_key)
+    bitrate = file_size / duration if duration > 0 else 1
+    seek_time = start / bitrate
+    
+    query_param = f"?api_key={api_key}" if api_key else ""
+    local_video_url = f"http://127.0.0.1:{Config.PORT}/stream/file/{chat_id}/{message_id}/{urllib.parse.quote(filename)}{query_param}"
+    
+    ffmpeg_path = shutil.which("ffmpeg") or "ffmpeg"
+    if not os.path.exists(ffmpeg_path) and os.path.exists("ffmpeg.exe"):
+        ffmpeg_path = "ffmpeg.exe"
+        
+    headers = {
+        "Content-Range": f"bytes {start}-{file_size - 1}/{file_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(file_size - start),
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
+    }
+    
+    status_code = 206 if range_header else 200
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=status_code,
+            media_type=mime_type,
+            headers=headers
+        )
+        
+    logger.info(f"Streaming Thuyết Minh media '{filename}' (bytes {start}-) via FFMPEG at seek {seek_time:.2f}s")
+    
+    return SafeStreamingResponse(
+        ffmpeg_stream_generator(ffmpeg_path, local_video_url, pcm_path, seek_time),
+        status_code=status_code,
+        media_type=mime_type,
+        headers=headers
+    )
+
+@app.api_route("/stream/thuyetminh/debrid/{provider}/{magnet_base64}/{filename}", methods=["GET", "HEAD"])
+async def debrid_thuyetminh_stream_proxy(
+    provider: str,
+    magnet_base64: str,
+    filename: str,
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY:
+        actual_key = api_key or request.query_params.get("api_key", "")
+        if actual_key != Config.API_KEY:
+            raise HTTPException(status_code=403, detail="Unauthorized")
+            
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    
+    import base64
+    try:
+        magnet_link = base64.b64decode(magnet_base64.encode()).decode()
+    except Exception:
+        raise HTTPException(status_code=400, detail="Invalid magnet base64")
+        
+    debrid_provider = get_debrid_provider()
+    if not debrid_provider:
+        raise HTTPException(status_code=500, detail="Debrid provider not configured")
+        
+    direct_url = await debrid_provider.get_stream_url(magnet_link, filename)
+    if not direct_url:
+        raise HTTPException(status_code=504, detail="Failed to retrieve direct stream URL")
+        
+    if direct_url.startswith("qbittorrent://"):
+        info_hash = direct_url.replace("qbittorrent://", "")
+        imdb_id = request.query_params.get("imdb", "")
+        local_stream_url = f"{Config.ADDON_URL}/stream/thuyetminh/qbittorrent/{info_hash}/{urllib.parse.quote(filename)}"
+        params = []
+        if imdb_id:
+            params.append(f"imdb={imdb_id}")
+        if api_key:
+            params.append(f"api_key={api_key}")
+        if params:
+            local_stream_url += "?" + "&".join(params)
+        logger.info(f"Redirecting player to local qBittorrent Thuyết Minh stream: {local_stream_url}")
+        return RedirectResponse(url=local_stream_url, status_code=302)
+        
+    imdb_id = request.query_params.get("imdb", "")
+    media_type = "series" if ":" in imdb_id else "movie"
+    pcm_path = await ensure_subtitles_and_tts(cache_key, filename, imdb_id=imdb_id, media_type=media_type)
+    
+    if not pcm_path:
+        logger.warning(f"No TTS audio track found for '{filename}'. Redirecting to direct Debrid stream.")
+        return RedirectResponse(url=direct_url)
+        
+    file_size = await get_remote_file_size(direct_url)
+    if not file_size:
+        return RedirectResponse(url=direct_url)
+        
+    mime_type = "video/mp2t"
+    
+    range_header = request.headers.get("Range")
+    start = 0
+    if range_header:
+        try:
+            bytes_range = range_header.replace("bytes=", "").split("-")
+            if bytes_range[0]:
+                start = int(bytes_range[0])
+        except ValueError:
+            pass
+            
+    duration = get_subtitle_duration(cache_key)
+    bitrate = file_size / duration if duration > 0 else 1
+    seek_time = start / bitrate
+    
+    ffmpeg_path = shutil.which("ffmpeg") or "ffmpeg"
+    if not os.path.exists(ffmpeg_path) and os.path.exists("ffmpeg.exe"):
+        ffmpeg_path = "ffmpeg.exe"
+        
+    headers = {
+        "Content-Range": f"bytes {start}-{file_size - 1}/{file_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(file_size - start),
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(filename)}",
+    }
+    
+    status_code = 206 if range_header else 200
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=status_code,
+            media_type=mime_type,
+            headers=headers
+        )
+        
+    logger.info(f"Streaming Thuyết Minh Debrid media '{filename}' (bytes {start}-) at seek {seek_time:.2f}s")
+    
+    return SafeStreamingResponse(
+        ffmpeg_stream_generator(ffmpeg_path, direct_url, pcm_path, seek_time),
+        status_code=status_code,
+        media_type=mime_type,
+        headers=headers
+    )
+
+@app.api_route("/stream/thuyetminh/qbittorrent/{info_hash}/{filename}", methods=["GET", "HEAD"])
+async def qbittorrent_thuyetminh_stream_proxy(
+    info_hash: str,
+    filename: str,
+    request: Request,
+    api_key: str = ""
+):
+    if Config.API_KEY and api_key != Config.API_KEY:
+        raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    imdb_id = request.query_params.get("imdb", "")
+    media_type = "series" if ":" in imdb_id else "movie"
+    
+    pcm_path = await ensure_subtitles_and_tts(cache_key, filename, imdb_id=imdb_id, media_type=media_type)
+    
+    if not pcm_path:
+        logger.warning(f"No TTS audio track found for '{filename}'. Falling back to original local qBit stream.")
+        original_url = f"{Config.ADDON_URL}/stream/qbittorrent/{info_hash}/{urllib.parse.quote(filename)}"
+        params = []
+        if imdb_id:
+            params.append(f"imdb={imdb_id}")
+        if api_key:
+            params.append(f"api_key={api_key}")
+        if params:
+            original_url += "?" + "&".join(params)
+        return RedirectResponse(url=original_url)
+        
+    debrid_provider = get_debrid_provider()
+    from debrid import QBittorrentProvider
+    if not isinstance(debrid_provider, QBittorrentProvider):
+        raise HTTPException(status_code=400, detail="qBittorrent is not the active Debrid provider")
+        
+    files = await debrid_provider.get_torrent_files(info_hash)
+    if not files:
+        raise HTTPException(status_code=404, detail="Torrent files not found in qBit")
+        
+    target_file = None
+    decoded_fn = urllib.parse.unquote(filename).lower()
+    for f in files:
+        if decoded_fn in f.get("name", "").lower():
+            target_file = f
+            break
+            
+    if not target_file:
+        video_files = [f for f in files if f.get("name", "").lower().endswith(('.mp4', '.mkv', '.avi', '.mov', '.webm', '.ts'))]
+        if video_files:
+            video_files.sort(key=lambda x: x.get("size", 0), reverse=True)
+            target_file = video_files[0]
+            
+    if not target_file:
+        target_file = files[0]
+        
+    file_size = target_file["size"]
+    mime_type = "video/mp2t"
+    
+    range_header = request.headers.get("Range")
+    start = 0
+    if range_header:
+        try:
+            bytes_range = range_header.replace("bytes=", "").split("-")
+            if bytes_range[0]:
+                start = int(bytes_range[0])
+        except ValueError:
+            pass
+            
+    duration = get_subtitle_duration(cache_key)
+    bitrate = file_size / duration if duration > 0 else 1
+    seek_time = start / bitrate
+    
+    query_param = []
+    if imdb_id:
+        query_param.append(f"imdb={imdb_id}")
+    if api_key:
+        query_param.append(f"api_key={api_key}")
+    q_str = "?" + "&".join(query_param) if query_param else ""
+    local_video_url = f"http://127.0.0.1:{Config.PORT}/stream/qbittorrent/{info_hash}/{urllib.parse.quote(filename)}{q_str}"
+    
+    ffmpeg_path = shutil.which("ffmpeg") or "ffmpeg"
+    if not os.path.exists(ffmpeg_path) and os.path.exists("ffmpeg.exe"):
+        ffmpeg_path = "ffmpeg.exe"
+        
+    headers = {
+        "Content-Range": f"bytes {start}-{file_size - 1}/{file_size}",
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(file_size - start),
+        "Content-Disposition": f"inline; filename*=UTF-8''{urllib.parse.quote(os.path.basename(target_file['name']))}",
+    }
+    
+    status_code = 206 if range_header else 200
+    
+    if request.method == "HEAD":
+        return Response(
+            status_code=status_code,
+            media_type=mime_type,
+            headers=headers
+        )
+        
+    logger.info(f"Streaming Thuyết Minh Local qBit media '{filename}' (bytes {start}-) via FFMPEG at seek {seek_time:.2f}s")
+    
+    return SafeStreamingResponse(
+        ffmpeg_stream_generator(ffmpeg_path, local_video_url, pcm_path, seek_time),
+        status_code=status_code,
+        media_type=mime_type,
+        headers=headers
+    )
+
 @app.api_route("/stream/file/{chat_id}/{message_id}/{filename}", methods=["GET", "HEAD"])
 async def tg_stream_proxy(
     chat_id: str, 
@@ -1588,6 +2287,9 @@ async def tg_stream_proxy(
 ):
     if Config.API_KEY and api_key != Config.API_KEY:
         raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    subtitle_generator.register_video_url(cache_key, str(request.url))
         
     try:
         try:
@@ -1677,7 +2379,7 @@ async def tg_stream_proxy(
             
     logger.info(f"Streaming media '{filename}' (bytes {start}-{end}/{file_size}) - Status {status_code}")
     
-    return StreamingResponse(
+    return SafeStreamingResponse(
         file_generator(),
         status_code=status_code,
         media_type=mime_type,
@@ -1694,6 +2396,9 @@ async def tg_split_stream_proxy(
 ):
     if Config.API_KEY and api_key != Config.API_KEY:
         raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    subtitle_generator.register_video_url(cache_key, str(request.url))
         
     msg_id_list = [int(x) for x in message_ids.split(",") if x.strip().isdigit()]
     if not msg_id_list:
@@ -1815,7 +2520,7 @@ async def tg_split_stream_proxy(
                 
     logger.info(f"Streaming split media '{filename}' (bytes {start}-{end}/{total_size}) - Status {status_code}")
     
-    return StreamingResponse(
+    return SafeStreamingResponse(
         split_file_generator(),
         status_code=status_code,
         media_type=mime_type,
@@ -1832,6 +2537,9 @@ async def tg_zip_stream_proxy(
 ):
     if Config.API_KEY and api_key != Config.API_KEY:
         raise HTTPException(status_code=403, detail="Unauthorized")
+        
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    subtitle_generator.register_video_url(cache_key, str(request.url))
         
     msg_id_list = [int(x) for x in message_ids.split(",") if x.strip().isdigit()]
     if not msg_id_list:
@@ -1979,7 +2687,7 @@ async def tg_zip_stream_proxy(
                     break
                     
         logger.info(f"Streaming uncompressed ZIP entry '{filename}' (raw bytes {stream_start}-{stream_end}/{total_size}) - Status {status_code}")
-        return StreamingResponse(
+        return SafeStreamingResponse(
             split_file_generator(),
             status_code=status_code,
             media_type=mime_type,
@@ -1988,7 +2696,7 @@ async def tg_zip_stream_proxy(
     else:
         logger.info(f"ZIP entry '{filename}' is COMPRESSED (type {target_entry.compress_type}). Streaming on-the-fly decompression.")
         reader = TelegramSeekableReader(tg_client_manager.client, messages)
-        return StreamingResponse(
+        return SafeStreamingResponse(
             zip_compressed_generator(reader, filename, start, end),
             status_code=status_code,
             media_type=mime_type,
@@ -2192,6 +2900,9 @@ async def debrid_stream_proxy(
         if actual_key != Config.API_KEY:
             raise HTTPException(status_code=403, detail="Unauthorized")
             
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    subtitle_generator.register_video_url(cache_key, str(request.url))
+            
     import base64
     try:
         magnet_link = base64.b64decode(magnet_base64.encode()).decode()
@@ -2206,6 +2917,9 @@ async def debrid_stream_proxy(
     direct_url = await debrid_provider.get_stream_url(magnet_link, filename)
     if not direct_url:
         raise HTTPException(status_code=504, detail="Failed to retrieve direct stream URL from Debrid")
+        
+    # Cache the resolved Debrid direct URL for subtitles/audio transcription
+    DEBRID_STREAM_URL_CACHE[filename] = direct_url
         
     if direct_url.startswith("qbittorrent://"):
         info_hash = direct_url.replace("qbittorrent://", "")
@@ -2384,6 +3098,9 @@ async def qbittorrent_stream_proxy(
         if actual_key != Config.API_KEY:
             raise HTTPException(status_code=403, detail="Unauthorized")
             
+    cache_key = hashlib.md5(filename.encode("utf-8")).hexdigest()
+    subtitle_generator.register_video_url(cache_key, str(request.url))
+            
     debrid_provider = get_debrid_provider()
     from debrid import QBittorrentProvider
     if not isinstance(debrid_provider, QBittorrentProvider):
@@ -2467,7 +3184,7 @@ async def qbittorrent_stream_proxy(
             monitor_and_cache_qbit_task(info_hash, file_path, os.path.basename(target_file['name']), debrid_provider, imdb_id)
         )
         
-    return StreamingResponse(
+    return SafeStreamingResponse(
         local_file_generator(file_path, start, end, info_hash, debrid_provider),
         status_code=status_code,
         media_type=mime_type,
@@ -2477,12 +3194,34 @@ async def qbittorrent_stream_proxy(
 
 _thumb_file_id_cache = {}
 _thumb_download_semaphore = asyncio.Semaphore(2)
+_thumb_resolve_semaphore = asyncio.Semaphore(1)
 _active_thumb_downloads = set()
+_failed_thumb_downloads = {}  # cache_key -> (timestamp, count)
 
 async def _download_thumb_task(chat_id: str, msg_id: int, thumb_file_id: str, thumb_path: str):
+    import time
+    import shutil
     cache_key = f"{chat_id}_{msg_id}"
     if cache_key in _active_thumb_downloads:
         return
+        
+    default_logo = "stremio_telegram_logo.png"
+    now = time.time()
+    if cache_key in _failed_thumb_downloads:
+        last_time, count = _failed_thumb_downloads[cache_key]
+        # Cooldown of 5 minutes between download attempts
+        if now - last_time < 300:
+            return
+        # If failed 3 or more times, copy default logo to prevent future attempts
+        if count >= 3:
+            if os.path.exists(default_logo) and not os.path.exists(thumb_path):
+                try:
+                    os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
+                    shutil.copy(default_logo, thumb_path)
+                except Exception as ce:
+                    logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
+            return
+
     _active_thumb_downloads.add(cache_key)
     try:
         # Wait 1.0s before starting to queue up multiple parallel catalog loads gently
@@ -2496,8 +3235,14 @@ async def _download_thumb_task(chat_id: str, msg_id: int, thumb_file_id: str, th
                 )
                 # Pause between downloads to keep Telegram DC connection happy
                 await asyncio.sleep(1.5)
+        # Clear failure tracking on success
+        if os.path.exists(thumb_path):
+            _failed_thumb_downloads.pop(cache_key, None)
     except Exception as e:
         logger.error(f"Failed to background download Telegram thumbnail for {cache_key}: {e}")
+        now = time.time()
+        _, count = _failed_thumb_downloads.get(cache_key, (0, 0))
+        _failed_thumb_downloads[cache_key] = (now, count + 1)
     finally:
         _active_thumb_downloads.discard(cache_key)
 
@@ -2563,30 +3308,78 @@ async def get_message_thumbnail(
         
     # 3. If not cached, resolve the message in the background to prevent blocking
     async def resolve_and_download():
+        import time
+        import shutil
+        if cache_key in _active_thumb_downloads:
+            return
+            
+        now = time.time()
+        if cache_key in _failed_thumb_downloads:
+            last_time, count = _failed_thumb_downloads[cache_key]
+            # Cooldown of 5 minutes between resolution attempts
+            if now - last_time < 300:
+                return
+            # If failed 3 or more times, copy default logo to prevent future attempts
+            if count >= 3:
+                if os.path.exists(default_logo) and not os.path.exists(thumb_path):
+                    try:
+                        os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
+                        shutil.copy(default_logo, thumb_path)
+                    except Exception as ce:
+                        logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
+                return
+
+        _active_thumb_downloads.add(cache_key)
         try:
-            try:
-                chat_id_val = int(chat_id)
-            except ValueError:
-                chat_id_val = chat_id
+            async with _thumb_resolve_semaphore:
+                # Sleep a little to pace out requests to Telegram API
+                await asyncio.sleep(0.5)
                 
-            msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
-            if msg:
-                media = msg.video or msg.document
-                if media:
-                    thumb = getattr(media, "thumb", None)
-                    fid = None
-                    if thumb and getattr(thumb, "file_id", None):
-                        fid = thumb.file_id
-                    else:
-                        thumbs = getattr(media, "thumbs", None)
-                        if thumbs and isinstance(thumbs, list) and thumbs:
-                            fid = thumbs[0].file_id
+                try:
+                    chat_id_val = int(chat_id)
+                except ValueError:
+                    chat_id_val = chat_id
+                    
+                msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
+                
+                has_thumb = False
+                if msg:
+                    media = msg.video or msg.document
+                    if media:
+                        thumb = getattr(media, "thumb", None)
+                        fid = None
+                        if thumb and getattr(thumb, "file_id", None):
+                            fid = thumb.file_id
+                        else:
+                            thumbs = getattr(media, "thumbs", None)
+                            if thumbs and isinstance(thumbs, list) and thumbs:
+                                fid = thumbs[0].file_id
+                                
+                        if fid:
+                            has_thumb = True
+                            _thumb_file_id_cache[cache_key] = fid
+                            # Release the lock for this key so download task can lock it
+                            _active_thumb_downloads.discard(cache_key)
+                            await _download_thumb_task(chat_id, msg_id, fid, thumb_path)
                             
-                    if fid:
-                        _thumb_file_id_cache[cache_key] = fid
-                        await _download_thumb_task(chat_id, msg_id, fid, thumb_path)
+                if not has_thumb:
+                    logger.info(f"No thumbnail found for message {msg_id} in {chat_id}. Using fallback.")
+                    if os.path.exists(default_logo) and not os.path.exists(thumb_path):
+                        try:
+                            os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
+                            shutil.copy(default_logo, thumb_path)
+                        except Exception as ce:
+                            logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
+                        # Clear failure tracking since we have a permanent fallback now
+                        _failed_thumb_downloads.pop(cache_key, None)
+                        
         except Exception as e:
             logger.warning(f"Background thumbnail resolution failed for {cache_key}: {e}")
+            now = time.time()
+            _, count = _failed_thumb_downloads.get(cache_key, (0, 0))
+            _failed_thumb_downloads[cache_key] = (now, count + 1)
+        finally:
+            _active_thumb_downloads.discard(cache_key)
             
     if cache_key not in _active_thumb_downloads:
         asyncio.create_task(resolve_and_download())

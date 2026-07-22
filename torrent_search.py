@@ -157,15 +157,28 @@ async def _search_jackett(url: str, api_key: str, query: str) -> list:
         return results
 
 async def _search_yts(imdb_id: str) -> list:
-    url = f"https://yts.mx/api/v2/list_movies.json?query_term={imdb_id}"
-    async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
-        resp = await client.get(url)
-        if resp.status_code != 200:
-            return []
-        data = resp.json()
-        movie_data = data.get("data", {})
-        if not movie_data or movie_data.get("movie_count", 0) == 0:
-            return []
+    domains = ["yts.mx", "yts.pm", "yts.am", "yts.lt"]
+    for domain in domains:
+        url = f"https://{domain}/api/v2/list_movies.json?query_term={imdb_id}"
+        try:
+            async with httpx.AsyncClient(timeout=8.0, follow_redirects=True) as client:
+                resp = await client.get(url)
+                if resp.status_code != 200:
+                    continue
+                data = resp.json()
+                movie_data = data.get("data", {})
+                if not movie_data or movie_data.get("movie_count", 0) == 0:
+                    return []
+                break
+        except Exception as e:
+            logger.warning(f"YTS mirror {domain} query failed: {e}")
+            continue
+    else:
+        return []
+    
+    movie_data = data.get("data", {})
+    if not movie_data or movie_data.get("movie_count", 0) == 0:
+        return []
         
         results = []
         movies = movie_data.get("movies", [])

@@ -45,7 +45,7 @@ class ChunkCache:
         self.cache = collections.OrderedDict()  # key -> asyncio.Task yielding bytes
         self.lock = asyncio.Lock()
 
-    async def get_or_create(self, key, download_coro):
+    async def get_or_create(self, key, download_coro_fn):
         async with self.lock:
             if key in self.cache:
                 self.cache.move_to_end(key)
@@ -53,7 +53,7 @@ class ChunkCache:
 
             async def wrapper():
                 try:
-                    return await download_coro
+                    return await download_coro_fn()
                 except Exception as e:
                     async with self.lock:
                         self.cache.pop(key, None)
@@ -287,13 +287,13 @@ async def _patched_get_file(
         media_id = file_id.media_id
 
         while True:
-            key = (media_id, offset_bytes)
+            key = (media_id, file_id.thumbnail_size or "", offset_bytes)
             
             # 1. Get or create download task for the current chunk
-            download_coro = _fetch_block_from_tg(
+            download_coro_fn = lambda: _fetch_block_from_tg(
                 self, file_id, location, dc_id, offset_bytes, chunk_size, file_size
             )
-            task = await chunk_cache.get_or_create(key, download_coro)
+            task = await chunk_cache.get_or_create(key, download_coro_fn)
 
             # 2. Trigger pre-fetching for next chunks in the background
             for i in range(1, Config.PREFETCH_CHUNKS + 1):
@@ -301,12 +301,12 @@ async def _patched_get_file(
                 if file_size > 0 and next_offset >= file_size:
                     break
                 
-                next_key = (media_id, next_offset)
+                next_key = (media_id, file_id.thumbnail_size or "", next_offset)
                 if not await chunk_cache.exists(next_key):
-                    next_coro = _fetch_block_from_tg(
-                        self, file_id, location, dc_id, next_offset, chunk_size, file_size
+                    next_coro_fn = lambda off=next_offset: _fetch_block_from_tg(
+                        self, file_id, location, dc_id, off, chunk_size, file_size
                     )
-                    await chunk_cache.get_or_create(next_key, next_coro)
+                    await chunk_cache.get_or_create(next_key, next_coro_fn)
 
             # 3. Await current chunk
             try:
@@ -535,6 +535,37 @@ class TelegramClientManager:
                             media_count += 1
                             if media_count >= target_media_limit:
                                 fully_fetched = False
+                                break
+
+                    # Fallback: if raw query_str returned 0 results, clean special characters/brackets and retry
+                    if not results:
+                        clean_q = re.sub(r'\[.*?\]|\(.*?\)', ' ', query_str)
+                        clean_q = re.sub(r'\.(mkv|mp4|avi|zip|srt|vtt|ass)$', '', clean_q, flags=re.IGNORECASE)
+                        clean_q = re.sub(r'[^a-zA-Z0-9\s]', ' ', clean_q)
+                        clean_q = re.sub(r'\s+', ' ', clean_q).strip()
+                        
+                        fallback_queries = []
+                        if clean_q and clean_q != query_str:
+                            fallback_queries.append(clean_q)
+                            
+                        # Extract main title and episode number if present
+                        ep_match = re.search(r'([A-Za-z0-9\s]+?)\s*(?:20[0-9]|1[0-9]{2}|\d{2,3})', clean_q)
+                        if ep_match:
+                            sub_q = ep_match.group(0).strip()
+                            if sub_q not in fallback_queries:
+                                fallback_queries.append(sub_q)
+                                
+                        for f_q in fallback_queries:
+                            logger.info(f"Retrying Telegram search with query '{f_q}'...")
+                            async for msg in self.client.search_messages(chat_id=chat_id, query=f_q, limit=max_scan):
+                                channel_count += 1
+                                if self._has_media(msg):
+                                    results.append(msg)
+                                    media_count += 1
+                                    if media_count >= target_media_limit:
+                                        fully_fetched = False
+                                        break
+                            if results:
                                 break
                 else:
                     async for msg in self.client.get_chat_history(chat_id=chat_id, limit=max_scan):

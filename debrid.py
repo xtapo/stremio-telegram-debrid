@@ -19,6 +19,13 @@ class DebridProvider:
         """
         raise NotImplementedError()
 
+    async def get_direct_url_by_size(self, size: int, name_hint: str = None) -> str:
+        """
+        Scans the user's active transfers on their Debrid account to find a file of the exact size
+        and returns its unrestricted direct stream URL.
+        """
+        raise NotImplementedError()
+
 class RealDebridProvider(DebridProvider):
     def __init__(self, api_key: str):
         self.api_key = api_key
@@ -124,6 +131,38 @@ class RealDebridProvider(DebridProvider):
             unrestricted = unrestrict_resp.json()
             return unrestricted.get("download")
 
+    async def get_direct_url_by_size(self, size: int, name_hint: str = None) -> str:
+        async with httpx.AsyncClient(headers=self.headers, timeout=12.0) as client:
+            resp = await client.get(f"{self.base_url}/torrents")
+            if resp.status_code != 200:
+                logger.error(f"RD torrents list failed: {resp.text}")
+                return None
+                
+            torrents_list = resp.json()
+            # Scan the 15 most recent torrents
+            for t in torrents_list[:15]:
+                torrent_id = t.get("id")
+                info_resp = await client.get(f"{self.base_url}/torrents/info/{torrent_id}")
+                if info_resp.status_code == 200:
+                    info = info_resp.json()
+                    files = info.get("files", [])
+                    for f in files:
+                        if f.get("bytes") == size:
+                            selected_files = [sf for sf in files if sf.get("selected") == 1]
+                            link_idx = -1
+                            for idx, sf in enumerate(selected_files):
+                                if sf.get("id") == f.get("id"):
+                                    link_idx = idx
+                                    break
+                            
+                            links = info.get("links", [])
+                            if link_idx != -1 and link_idx < len(links):
+                                rd_link = links[link_idx]
+                                unrestrict_resp = await client.post(f"{self.base_url}/unrestrict/link", data={"link": rd_link})
+                                if unrestrict_resp.status_code == 200:
+                                    return unrestrict_resp.json().get("download")
+            return None
+
 class TorBoxProvider(DebridProvider):
     def __init__(self, api_key: str):
         self.api_key = api_key
@@ -188,8 +227,8 @@ class TorBoxProvider(DebridProvider):
                 if list_resp.status_code == 200:
                     torrents_list = list_resp.json().get("data", [])
                     for t in torrents_list:
-                        # Match by ID or torrent_id
-                        if t.get("id") == torrent_id or t.get("torrent_id") == torrent_id:
+                        t_id = t.get("id") or t.get("torrent_id")
+                        if t_id is not None and str(t_id) == str(torrent_id):
                             torrent_info = t
                             break
                 if torrent_info and torrent_info.get("download_finished"):
@@ -227,6 +266,33 @@ class TorBoxProvider(DebridProvider):
                 
             dl_data = dl_resp.json()
             return dl_data.get("data")
+
+    async def get_direct_url_by_size(self, size: int, name_hint: str = None) -> str:
+        async with httpx.AsyncClient(headers=self.headers, timeout=12.0) as client:
+            resp = await client.get(f"{self.base_url}/torrents/mylist")
+            if resp.status_code != 200:
+                logger.error(f"TorBox mylist failed: {resp.text}")
+                return None
+                
+            torrents_list = resp.json().get("data", [])
+            for t in torrents_list:
+                files = t.get("files", [])
+                for f in files:
+                    if f.get("size") == size:
+                        torrent_id = t.get("id") or t.get("torrent_id")
+                        file_id = f.get("id")
+                        
+                        params = {
+                            "token": self.api_key,
+                            "torrent_id": torrent_id,
+                            "file_id": file_id,
+                            "redirect": "false"
+                        }
+                        dl_resp = await client.get(f"{self.base_url}/torrents/requestdl", params=params)
+                        if dl_resp.status_code == 200:
+                            dl_data = dl_resp.json()
+                            return dl_data.get("data")
+            return None
 
 class QBittorrentProvider(DebridProvider):
     def __init__(self):
@@ -321,11 +387,43 @@ class QBittorrentProvider(DebridProvider):
             logger.error(f"qBittorrent get_stream_url error: {e}")
             return None
 
+    async def get_direct_url_by_size(self, size: int, name_hint: str = None) -> str:
+        if not self.cookies:
+            await self.login()
+        try:
+            resp = await self.client.get(f"{self.url}/api/v2/torrents/info", cookies=self.cookies)
+            if resp.status_code in (401, 403):
+                if await self.login():
+                    resp = await self.client.get(f"{self.url}/api/v2/torrents/info", cookies=self.cookies)
+            if resp.status_code == 200:
+                torrents = resp.json()
+                for t in torrents:
+                    h = t.get("hash")
+                    if not h:
+                        continue
+                    files_resp = await self.client.get(
+                        f"{self.url}/api/v2/torrents/files",
+                        params={"hash": h},
+                        cookies=self.cookies
+                    )
+                    if files_resp.status_code == 200:
+                        files = files_resp.json()
+                        for f in files:
+                            f_size = f.get("size", 0)
+                            f_name = f.get("name", "")
+                            if (size and f_size == size) or (name_hint and name_hint.lower() in f_name.lower()):
+                                import urllib.parse
+                                logger.info(f"Found matching torrent file in qBittorrent: {f_name} ({f_size} bytes)")
+                                return f"{Config.ADDON_URL}/stream/qbittorrent/{h}/{urllib.parse.quote(f_name)}"
+        except Exception as e:
+            logger.error(f"qBittorrent get_direct_url_by_size failed: {e}")
+        return None
+
 def get_debrid_provider() -> DebridProvider:
     if Config.REAL_DEBRID_API_KEY:
         return RealDebridProvider(Config.REAL_DEBRID_API_KEY)
-    elif Config.TORBOX_API_KEY:
-        return TorBoxProvider(Config.TORBOX_API_KEY)
     elif Config.QBITTORRENT_URL:
         return QBittorrentProvider()
+    elif Config.TORBOX_API_KEY:
+        return TorBoxProvider(Config.TORBOX_API_KEY)
     return None

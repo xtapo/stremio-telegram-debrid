@@ -13,7 +13,7 @@ class Config:
     CACHE_TTL = int(os.getenv("CACHE_TTL", 1800))
     TIMEZONE = os.getenv("TIMEZONE", "UTC")
     STREAM_CACHE_SIZE_MB = int(os.getenv("STREAM_CACHE_SIZE_MB", 256))
-    PREFETCH_CHUNKS = int(os.getenv("PREFETCH_CHUNKS", 3))
+    PREFETCH_CHUNKS = int(os.getenv("PREFETCH_CHUNKS", 1))
     REAL_DEBRID_API_KEY = os.getenv("REAL_DEBRID_API_KEY", "")
     TORBOX_API_KEY = os.getenv("TORBOX_API_KEY", "")
     JACKETT_URL = os.getenv("JACKETT_URL", "")
@@ -28,6 +28,15 @@ class Config:
     QBITTORRENT_PLAY_DIR = os.getenv("QBITTORRENT_PLAY_DIR", "")
     AUTO_VIET_SUB = os.getenv("AUTO_VIET_SUB", "True").lower() == "true"
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    AUTO_THUYET_MINH = os.getenv("AUTO_THUYET_MINH", "True").lower() == "true"
+    
+    # Custom AI translation settings
+    CUSTOM_AI_API_KEY = os.getenv("CUSTOM_AI_API_KEY", "")
+    CUSTOM_AI_API_URL = os.getenv("CUSTOM_AI_API_URL", "")
+    CUSTOM_AI_MODEL = os.getenv("CUSTOM_AI_MODEL", "cc/claude-opus-4-6")
+    CUSTOM_AI_STREAM = os.getenv("CUSTOM_AI_STREAM", "True").lower() == "true"
+    SUBTITLE_TRANSLATION_SOURCE = os.getenv("SUBTITLE_TRANSLATION_SOURCE", "sub")
 
     API_ID = os.getenv("API_ID")
     API_HASH = os.getenv("API_HASH")
