@@ -876,16 +876,37 @@ class SubtitleGeneratorManager:
             self.active_tasks[cache_key]["orig_blocks"] = blocks
             
             batch_size = 40
-            for i in range(0, len(blocks), batch_size):
-                chunk = blocks[i:i+batch_size]
-                translated_chunk = await translate_blocks(chunk, Config.GEMINI_API_KEY)
-                
-                if cache_key not in self.active_tasks:
-                    break
+            chunks = [blocks[i:i+batch_size] for i in range(0, len(blocks), batch_size)]
+            total_blocks_count = len(blocks)
+            
+            # Limit parallel API requests to 5 to prevent rate limits
+            sem = asyncio.Semaphore(5)
+            completed_chunks = set()
+            translated_chunks_dict = {idx: chunk for idx, chunk in enumerate(chunks)}
+            
+            async def translate_chunk_with_sem(chunk_idx, chunk_data):
+                async with sem:
+                    try:
+                        translated_chunk = await translate_blocks(chunk_data, Config.GEMINI_API_KEY)
+                        translated_chunks_dict[chunk_idx] = translated_chunk
+                        completed_chunks.add(chunk_idx)
+                    except Exception as e:
+                        logger.error(f"Failed to translate chunk {chunk_idx}: {e}")
+                        completed_chunks.add(chunk_idx)
                     
-                self.active_tasks[cache_key]["translated_blocks"].extend(translated_chunk)
-                progress = min(1.0, len(self.active_tasks[cache_key]["translated_blocks"]) / len(blocks))
-                self.active_tasks[cache_key]["progress"] = progress
+                    # Assemble all chunks to maintain exact chronological order
+                    current_translated = []
+                    for idx in sorted(translated_chunks_dict.keys()):
+                        current_translated.extend(translated_chunks_dict[idx])
+                        
+                    if cache_key in self.active_tasks:
+                        self.active_tasks[cache_key]["translated_blocks"] = current_translated
+                        translated_blocks_count = sum(len(translated_chunks_dict[idx]) for idx in completed_chunks)
+                        progress = min(1.0, translated_blocks_count / total_blocks_count)
+                        self.active_tasks[cache_key]["progress"] = progress
+
+            tasks = [asyncio.create_task(translate_chunk_with_sem(idx, chunk)) for idx, chunk in enumerate(chunks)]
+            await asyncio.gather(*tasks)
                 
             if cache_key in self.active_tasks:
                 final_blocks = list(self.active_tasks[cache_key]["translated_blocks"])
