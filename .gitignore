@@ -156,3 +156,9 @@ cython_debug/
 .idea/
 *.swp
 *.swo
+
+# Executables / Binaries
+*.exe
+ffmpeg.exe
+ffprobe.exe
+
