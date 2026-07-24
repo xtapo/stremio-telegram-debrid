@@ -1,0 +1,6 @@
+2026/07/24-20:16:34.949 6d84 Reusing MANIFEST D:\GitHub\stremio-telegram-debrid\scratch\edge_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/07/24-20:16:34.951 6d84 Recovering log #4
+2026/07/24-20:16:34.952 6d84 Reusing old log D:\GitHub\stremio-telegram-debrid\scratch\edge_profile\Default\EdgeCoupons/coupons_data.db/000004.log 
+2026/07/24-20:16:35.059 2c80 Level-0 table #8: started
+2026/07/24-20:16:35.073 2c80 Level-0 table #8: 683212 bytes OK
+2026/07/24-20:16:35.078 2c80 Delete type=0 #4

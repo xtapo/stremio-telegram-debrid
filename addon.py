@@ -83,6 +83,9 @@ async def lifespan(app: FastAPI):
     finally:
         await tg_client_manager.stop()
 
+from nguonc_router import nguonc_router
+from vsmov_router import vsmov_router
+
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
@@ -92,6 +95,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
+app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
+
+
 
 def group_tg_messages(messages: list) -> list:
     grouped = {}

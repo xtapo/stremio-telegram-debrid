@@ -1,0 +1,5 @@
+2026/07/24-20:15:46.818 925c Creating DB D:\GitHub\stremio-telegram-debrid\scratch\edge_profile\Default\EdgeCoupons/coupons_data.db since it was missing.
+2026/07/24-20:15:46.837 925c Reusing MANIFEST D:\GitHub\stremio-telegram-debrid\scratch\edge_profile\Default\EdgeCoupons/coupons_data.db/MANIFEST-000001
+2026/07/24-20:15:47.058 5f2c Level-0 table #5: started
+2026/07/24-20:15:47.067 5f2c Level-0 table #5: 683041 bytes OK
+2026/07/24-20:15:47.072 5f2c Delete type=0 #3
