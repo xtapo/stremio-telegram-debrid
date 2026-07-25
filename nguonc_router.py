@@ -850,6 +850,7 @@ if __name__ == "__main__":
     from fastapi.middleware.cors import CORSMiddleware
     from vsmov_router import vsmov_router
     from topxx_router import topxx_router
+    from hhpanda_router import hhpanda_router
 
     def get_lan_ip():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -866,11 +867,12 @@ if __name__ == "__main__":
     port = int(os.getenv("NGUONC_PORT", os.getenv("PORT", 7071)))
     
     print("\n" + "=" * 65)
-    print(" 🚀 Cinema Stremio Addons Server (NguonC & VSMov & TopXX)")
+    print(" 🚀 Cinema Stremio Addons Server (NguonC & VSMov & TopXX & HHPanda)")
     print(f" 💻 Local PC Manifest:    http://127.0.0.1:{port}/vsmov/manifest.json")
     print(f" 📱 LAN Network Manifest:  http://{lan_ip}:{port}/vsmov/manifest.json")
     print(f" 🎬 NguonC LAN Manifest:   http://{lan_ip}:{port}/nguonc/manifest.json")
     print(f" 🔞 TopXX LAN Manifest:    http://{lan_ip}:{port}/topxx/manifest.json")
+    print(f" 🐼 HHPanda LAN Manifest:  http://{lan_ip}:{port}/hhpanda/manifest.json")
     print("=" * 65 + "\n")
 
     app = FastAPI(title="Cinema Stremio Addons")
@@ -884,4 +886,6 @@ if __name__ == "__main__":
     app.include_router(nguonc_router)
     app.include_router(vsmov_router, prefix="/vsmov")
     app.include_router(topxx_router, prefix="/topxx")
+    app.include_router(hhpanda_router, prefix="/hhpanda")
     uvicorn.run(app, host="0.0.0.0", port=port)
+
