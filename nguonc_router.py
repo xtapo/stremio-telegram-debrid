@@ -849,6 +849,7 @@ if __name__ == "__main__":
     from fastapi import FastAPI
     from fastapi.middleware.cors import CORSMiddleware
     from vsmov_router import vsmov_router
+    from topxx_router import topxx_router
 
     def get_lan_ip():
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -865,10 +866,11 @@ if __name__ == "__main__":
     port = int(os.getenv("NGUONC_PORT", os.getenv("PORT", 7071)))
     
     print("\n" + "=" * 65)
-    print(" 🚀 CINEMA STREMIO ADDONS STARTED SUCCESSFULLY!")
+    print(" 🚀 Cinema Stremio Addons Server (NguonC & VSMov & TopXX)")
     print(f" 💻 Local PC Manifest:    http://127.0.0.1:{port}/vsmov/manifest.json")
     print(f" 📱 LAN Network Manifest:  http://{lan_ip}:{port}/vsmov/manifest.json")
     print(f" 🎬 NguonC LAN Manifest:   http://{lan_ip}:{port}/nguonc/manifest.json")
+    print(f" 🔞 TopXX LAN Manifest:    http://{lan_ip}:{port}/topxx/manifest.json")
     print("=" * 65 + "\n")
 
     app = FastAPI(title="Cinema Stremio Addons")
@@ -881,4 +883,5 @@ if __name__ == "__main__":
     )
     app.include_router(nguonc_router)
     app.include_router(vsmov_router, prefix="/vsmov")
+    app.include_router(topxx_router, prefix="/topxx")
     uvicorn.run(app, host="0.0.0.0", port=port)

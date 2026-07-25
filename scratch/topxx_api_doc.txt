@@ -1,0 +1,131 @@
+API phim | Tài liệu tích hợp đầy đủ - Topxx.vip
+Việt Sub
+Nhật Bản
+Không che
+Thể Loại
+Việt Sub
+Trung Quốc
+Hàn Quốc
+Nhật Bản
+Hentai 18+
+Không che
+Tập thể
+Âu Mỹ
+Xnxx
+Chubby
+Vú to
+Sex Less
+Sex Nga
+Amateur
+Việt Nam
+Quốc Gia
+Việt Nam
+Nhật Bản
+Mỹ
+Trung Quốc
+Tây Ban Nha
+Nga
+API
+Hỗ trợ
+Theme
+Tối
+Search
+Navigation
+API references
+API references
+API Base URL / Domain
+https://topxx.vip/api/v1
+Movies
+GET
+/movies/today
+GET
+/movies/latest
+GET
+/movies/search
+GET
+/movies/{code}
+Filters
+GET
+/genres/{code}/movies
+GET
+/countries/{code}/movies
+GET
+/actors/{slug}/movies
+Metadata
+GET
+/actors
+GET
+/genres
+GET
+/countries
+Nếu đã có tài khoản API, nên gửi X-API-Key và X-API-Secret khi lấy link embed để kỹ thuật nhận diện sớm và hỗ trợ nhanh hơn khi cần.
+API Base URL / Domain
+Domain API là API Base URL bên dưới. Khi gọi API, ghép API Base URL + endpoint/path. Ví dụ: https://topxx.vip/api/v1/movies/latest
+Latest movies
+GET
+Copy
+Movies
+Copy full
+Overview
+HTTP method
+GET
+API Base URL / Domain
+https://topxx.vip/api/v1
+Auth
+Public
+Request parameters
+Optional API account headers
+API public, không cần token để gọi API hoặc phát embed. Nếu đã có tài khoản API,
+nên gửi kèm để hệ thống tự gắn mã tài khoản vào embed link, giúp kỹ thuật
+nhận diện sớm và hỗ trợ nhanh hơn khi cần.
+Header
+Required
+Description
+X-API-Key
+Optional
+API key của tài khoản tích hợp nếu đã được cấp.
+X-API-Secret
+Optional
+API secret tương ứng. Chưa có header vẫn gọi API bình thường.
+Chỉ dùng
+X-API-Key
+/
+X-API-Secret
+ở server/plugin khi gọi API (khuyến khích gửi).
+Example request
+Copy
+curl
+Response
+200
+Successful response
+Copy
+application/json
+{}
+Theo dõi chúng tôi trên
+Điều hướng
+Truy cập CMS
+Get API
+Tổng quan
+Phim mới
+Thông tin
+FAQ
+Liên hệ
+Chính sách
+404 Error
+Lưu ý: Chúng tôi từ chối mọi trách nhiệm liên quan đến nội dung hiển thị/tồn tại trên trang.
+Tất cả video và dữ liệu tại đây đều được tổng hợp từ các nguồn phổ biến trên Internet, và không thuộc
+quyền sở hữu hay kiểm soát của chúng tôi. Chúng tôi không cung cấp dịch vụ phát trực tuyến chính thức.
+Nếu bạn cho rằng quyền lợi của mình bị ảnh hưởng, vui lòng liên hệ ngay cho chúng tôi sẽ xử lý và gỡ bỏ
+nội dung vi phạm kịp thời. Xin cảm ơn sự thông cảm và hợp tác của bạn.
+© Copyright 2026 topxx.vip - All rights reserved.
+Việt Sub
+Nhật Bản
+Không che
+Thể Loại
+Quốc Gia
+Việt Nam
+Nhật Bản
+Mỹ
+Trung Quốc
+Tây Ban Nha
+Nga

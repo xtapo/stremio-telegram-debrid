@@ -85,6 +85,7 @@ async def lifespan(app: FastAPI):
 
 from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
+from topxx_router import topxx_router
 
 app = FastAPI(lifespan=lifespan)
 
@@ -98,6 +99,8 @@ app.add_middleware(
 
 app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
+app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
+
 
 
 

@@ -69,6 +69,45 @@ Tùy vào thiết bị và môi trường của bạn:
 
 ---
 
+## 🐧 Hướng dẫn Chạy Ngầm 24/7 trên Linux / VPS (PM2 & Cloudflare)
+
+Nếu triển khai máy chủ Addon trên hệ điều hành Linux (Ubuntu, Debian, CentOS...) hoặc VPS:
+
+### 1. Cài đặt môi trường (Python 3, Node.js & PM2)
+
+```bash
+sudo apt update && sudo apt install python3 python3-pip nodejs npm -y
+sudo npm install -g pm2
+```
+
+### 2. Cài đặt Cloudflare Tunnel (`cloudflared`)
+
+```bash
+# Dành cho VPS Intel / AMD (amd64 / x86_64):
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb && dpkg -i cloudflared.deb
+
+# Dành cho VPS ARM (Oracle Cloud ARM...):
+curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64.deb && dpkg -i cloudflared.deb
+```
+
+### 3. Khởi chạy ngầm 24/7 bằng PM2
+
+```bash
+# 1. Khởi chạy Server Python Addon
+pm2 start nguonc_router.py --name "cinema-addon" --interpreter python3
+
+# 2. Khởi chạy Cloudflare Tunnel (Tạo đường dẫn HTTPS)
+pm2 start cloudflared --name "cloudflare-tunnel" -- tunnel --url http://localhost:7071
+
+# 3. Xem log để lấy địa chỉ HTTPS (trycloudflare.com)
+pm2 logs cloudflare-tunnel
+
+# 4. Lưu lại cấu hình để tự khởi động cùng Linux/VPS khi reboot
+pm2 save && pm2 startup
+```
+
+---
+
 ## 🛠️ Danh sách Endpoints API
 
 | Endpoint | Mô tả |
