@@ -291,6 +291,13 @@ async def vsmov_catalog_handler(request: Request, type: str, id: str, extra: Opt
             search_query = params["search"][0]
         if "genre" in params:
             genre_query = params["genre"][0]
+            if genre_query not in VSMOV_GENRES_MAP and genre_query not in VSMOV_COUNTRIES_MAP:
+                if genre_query.rstrip() + "+" in VSMOV_GENRES_MAP:
+                    genre_query = genre_query.rstrip() + "+"
+                elif genre_query.strip() in VSMOV_GENRES_MAP:
+                    genre_query = genre_query.strip()
+                elif genre_query.strip() in VSMOV_COUNTRIES_MAP:
+                    genre_query = genre_query.strip()
         if "skip" in params and params["skip"][0].isdigit():
             skip = int(params["skip"][0])
 

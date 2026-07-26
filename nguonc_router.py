@@ -1,8 +1,10 @@
 import logging
+import asyncio
 import urllib.parse
 import re
 import base64
 import json
+import time
 from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, Request, HTTPException, Query
 from fastapi.responses import JSONResponse, HTMLResponse, StreamingResponse, Response
@@ -69,6 +71,45 @@ COUNTRY_OPTIONS = list(COUNTRIES_MAP.keys())
 YEAR_OPTIONS = YEARS_LIST
 
 ALL_FILTER_OPTIONS = GENRE_OPTIONS + COUNTRY_OPTIONS + YEAR_OPTIONS
+
+CATALOG_CACHE: Dict[str, Any] = {}
+CACHE_TTL = 300  # 5 minutes in seconds
+
+async def fetch_nguonc_json(url: str) -> Dict[str, Any]:
+    """Fetch JSON from NguonC API with in-memory TTL caching."""
+    now = time.time()
+    if url in CATALOG_CACHE:
+        data, ts = CATALOG_CACHE[url]
+        if now - ts < CACHE_TTL:
+            return data
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://phim.nguonc.com/'
+    }
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            res = await client.get(url, headers=headers)
+            if res.status_code == 200:
+                data = res.json()
+                if len(CATALOG_CACHE) > 500:
+                    CATALOG_CACHE.clear()
+                CATALOG_CACHE[url] = (data, now)
+                return data
+    except Exception as e:
+        logger.warning(f"Error fetching NguonC API {url}: {e}")
+    return {}
+
+async def prefetch_next_pages(base_api_url: str, start_page: int, count: int = 4):
+    """Pre-fetch upcoming catalog pages in the background into CATALOG_CACHE for instant scrolling."""
+    tasks = []
+    for p in range(start_page, start_page + count):
+        url = f"{base_api_url}?page={p}"
+        now = time.time()
+        if url not in CATALOG_CACHE or (now - CATALOG_CACHE[url][1] >= CACHE_TTL):
+            tasks.append(fetch_nguonc_json(url))
+    if tasks:
+        await asyncio.gather(*tasks, return_exceptions=True)
 
 async def extract_m3u8_from_embed(embed_url: str) -> str:
     """Extract direct m3u8 playlist URL from streamc embed page."""
@@ -338,61 +379,74 @@ async def nguonc_catalog_handler(type: str, catalog_id: str, extra: str = None):
             search_query = params["search"][0]
         if "genre" in params:
             genre_query = params["genre"][0]
+            if genre_query not in GENRES_MAP and genre_query not in COUNTRIES_MAP:
+                if genre_query.rstrip() + "+" in GENRES_MAP:
+                    genre_query = genre_query.rstrip() + "+"
+                elif genre_query.strip() in GENRES_MAP:
+                    genre_query = genre_query.strip()
+                elif genre_query.strip() in COUNTRIES_MAP:
+                    genre_query = genre_query.strip()
 
-    # Calculate NguonC page (10 items per page)
-    page = (skip // 10) + 1
+    # Fetch 2 NguonC pages concurrently (20 items) per Stremio skip request
+    # to satisfy Stremio's infinite scroll threshold and enable automatic page fetching
+    start_page = (skip // 10) + 1
+    page1 = start_page
+    page2 = start_page + 1
 
-    api_url = ""
+    base_api_url = ""
     if search_query:
-        api_url = f"{NGUONC_API_BASE}/films/search?keyword={urllib.parse.quote(search_query)}&page={page}"
+        base_api_url = f"{NGUONC_API_BASE}/films/search?keyword={urllib.parse.quote(search_query)}"
     elif genre_query:
         if genre_query in GENRES_MAP:
             slug = GENRES_MAP[genre_query]
-            api_url = f"{NGUONC_API_BASE}/films/the-loai/{slug}?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/the-loai/{slug}"
         elif genre_query in COUNTRIES_MAP:
             slug = COUNTRIES_MAP[genre_query]
-            api_url = f"{NGUONC_API_BASE}/films/quoc-gia/{slug}?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/quoc-gia/{slug}"
         elif genre_query.isdigit() and len(genre_query) == 4:
-            api_url = f"{NGUONC_API_BASE}/films/nam-phat-hanh/{genre_query}?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/nam-phat-hanh/{genre_query}"
         else:
-            api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat"
     else:
         if catalog_id in ["nguonc_phim_moi_movie", "nguonc_phim_moi", "nguonc_phim_moi_series"]:
-            api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat"
         elif catalog_id == "nguonc_phim_le":
-            api_url = f"{NGUONC_API_BASE}/films/danh-sach/phim-le?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/danh-sach/phim-le"
         elif catalog_id == "nguonc_phim_bo":
-            api_url = f"{NGUONC_API_BASE}/films/danh-sach/phim-bo?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/danh-sach/phim-bo"
         elif catalog_id == "nguonc_dang_chieu":
-            api_url = f"{NGUONC_API_BASE}/films/danh-sach/dang-chieu?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/danh-sach/dang-chieu"
         elif catalog_id == "nguonc_tv_shows":
-            api_url = f"{NGUONC_API_BASE}/films/danh-sach/tv-shows?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/danh-sach/tv-shows"
         elif catalog_id in ["nguonc_the_loai", "nguonc_the_loai_series"]:
-            api_url = f"{NGUONC_API_BASE}/films/the-loai/hanh-dong?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/the-loai/hanh-dong"
         elif catalog_id in ["nguonc_quoc_gia", "nguonc_quoc_gia_series"]:
-            api_url = f"{NGUONC_API_BASE}/films/quoc-gia/au-my?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/quoc-gia/au-my"
         elif catalog_id in ["nguonc_nam", "nguonc_nam_series"]:
-            api_url = f"{NGUONC_API_BASE}/films/nam-phat-hanh/2026?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/nam-phat-hanh/2026"
         else:
-            api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat?page={page}"
+            base_api_url = f"{NGUONC_API_BASE}/films/phim-moi-cap-nhat"
+
+    url1 = f"{base_api_url}?page={page1}"
+    url2 = f"{base_api_url}?page={page2}"
 
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            res = await client.get(api_url)
-            if res.status_code != 200:
-                return {"metas": []}
-            data = res.json()
-            items = data.get("items", [])
-            metas = []
-            for item in items:
-                m = item_to_stremio_meta(item)
-                # Filter type if needed
-                if type == "movie" and m["type"] != "movie":
-                    continue
-                if type == "series" and m["type"] != "series":
-                    continue
-                metas.append(m)
-            return {"metas": metas}
+        data1, data2 = await asyncio.gather(fetch_nguonc_json(url1), fetch_nguonc_json(url2))
+        
+        # Fire-and-forget background pre-fetch for the next 4 pages in advance
+        asyncio.create_task(prefetch_next_pages(base_api_url, page2 + 1, count=4))
+
+        items = (data1.get("items", []) or []) + (data2.get("items", []) or [])
+        metas = []
+        for item in items:
+            m = item_to_stremio_meta(item)
+            # Filter type if needed
+            if type == "movie" and m["type"] != "movie":
+                continue
+            if type == "series" and m["type"] != "series":
+                continue
+            metas.append(m)
+        return {"metas": metas}
     except Exception as e:
         logger.error(f"Error fetching catalog {catalog_id}: {e}")
         return {"metas": []}
@@ -407,16 +461,11 @@ async def nguonc_meta_handler(type: str, id: str):
     slug = id.replace("nguonc:", "")
     api_url = f"{NGUONC_API_BASE}/film/{slug}"
 
-
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            res = await client.get(api_url)
-            if res.status_code != 200:
-                return {"meta": {}}
-            data = res.json()
-            movie = data.get("movie")
-            if not movie:
-                return {"meta": {}}
+        data = await fetch_nguonc_json(api_url)
+        movie = data.get("movie")
+        if not movie:
+            return {"meta": {}}
 
             meta = item_to_stremio_meta(movie)
             

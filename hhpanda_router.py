@@ -6,7 +6,12 @@ from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, Request, HTTPException, Query
 from fastapi.responses import JSONResponse, HTMLResponse, Response
 import httpx
-from bs4 import BeautifulSoup
+
+# Try importing BeautifulSoup if available, otherwise use regex fallback
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    BeautifulSoup = None
 
 logger = logging.getLogger("hhpanda_addon")
 
@@ -109,44 +114,65 @@ async def get_manifest():
 
 def parse_movie_items_from_html(html_text: str) -> List[Dict[str, Any]]:
     """Parse list of movies from HTML page."""
-    soup = BeautifulSoup(html_text, "html.parser")
+    if BeautifulSoup:
+        soup = BeautifulSoup(html_text, "html.parser")
+        items = []
+        seen_ids = set()
+
+        for el in soup.select("article, .halim-item, .top-slide"):
+            a_tag = el.select_one("a")
+            if not a_tag:
+                continue
+
+            href = a_tag.get("href", "")
+            if not href or href == "#":
+                continue
+
+            href_clean = href.rstrip("/").split("/")[-1]
+            if not href_clean or href_clean in seen_ids:
+                continue
+            seen_ids.add(href_clean)
+
+            title_el = el.select_one(".entry-title, .title, .halim-trending-title-text, h2, h3")
+            title = title_el.get_text(strip=True) if title_el else a_tag.get("title", href_clean)
+
+            img_el = el.select_one("img")
+            poster = ""
+            if img_el:
+                poster = img_el.get("src") or img_el.get("data-src") or img_el.get("data-original", "")
+
+            eps_el = el.select_one(".episode, .halim-episode, .halim-post-quality, .halim-label")
+            badge = eps_el.get_text(strip=True) if eps_el else ""
+
+            items.append({
+                "id": f"hhpanda:{href_clean}",
+                "type": "series",
+                "name": title,
+                "poster": poster,
+                "description": f"{title} {(' - ' + badge) if badge else ''}".strip(),
+                "genres": ["Hoạt Hình 3D"]
+            })
+
+        return items
+
+    # Pure Regex Fallback
     items = []
     seen_ids = set()
-
-    for el in soup.select("article, .halim-item, .top-slide"):
-        a_tag = el.select_one("a")
-        if not a_tag:
+    matches = re.findall(r'<a[^>]+href=["\']https?://hhpanda\.st/([^"\']+)["\'][^>]*title=["\']([^"\']+)["\'][^>]*>', html_text)
+    
+    for slug, title in matches:
+        slug = slug.strip("/")
+        if not slug or slug in seen_ids or any(k in slug for k in ["the-loai", "country", "showtimes", "page", "account"]):
             continue
-
-        href = a_tag.get("href", "")
-        if not href or href == "#":
-            continue
-
-        href_clean = href.rstrip("/").split("/")[-1]
-        if not href_clean or href_clean in seen_ids:
-            continue
-        seen_ids.add(href_clean)
-
-        title_el = el.select_one(".entry-title, .title, .halim-trending-title-text, h2, h3")
-        title = title_el.get_text(strip=True) if title_el else a_tag.get("title", href_clean)
-
-        img_el = el.select_one("img")
-        poster = ""
-        if img_el:
-            poster = img_el.get("src") or img_el.get("data-src") or img_el.get("data-original", "")
-
-        eps_el = el.select_one(".episode, .halim-episode, .halim-post-quality, .halim-label")
-        badge = eps_el.get_text(strip=True) if eps_el else ""
-
+        seen_ids.add(slug)
         items.append({
-            "id": f"hhpanda:{href_clean}",
+            "id": f"hhpanda:{slug}",
             "type": "series",
             "name": title,
-            "poster": poster,
-            "description": f"{title} {(' - ' + badge) if badge else ''}".strip(),
+            "poster": "https://hhpanda.st/wp-content/uploads/default-poster.jpg",
+            "description": title,
             "genres": ["Hoạt Hình 3D"]
         })
-
     return items
 
 
@@ -280,51 +306,80 @@ async def get_meta(type: str, id: str):
         if r.status_code != 200:
             raise HTTPException(status_code=404, detail="Movie not found on HHPanda")
 
-        soup = BeautifulSoup(r.text, "html.parser")
+        html_text = r.text
 
-        title_el = soup.select_one(".entry-title, h1.title, .film-title")
-        title = title_el.get_text(strip=True) if title_el else slug
+        title = slug
+        poster = ""
+        description = ""
+        rating = None
 
-        # Poster
-        og_img = soup.find("meta", property="og:image")
-        poster = og_img["content"] if og_img and og_img.get("content") else ""
+        if BeautifulSoup:
+            soup = BeautifulSoup(html_text, "html.parser")
 
-        # Description
-        og_desc = soup.find("meta", property="og:description")
-        description = og_desc["content"] if og_desc and og_desc.get("content") else ""
-        if not description:
-            desc_el = soup.select_one(".entry-content, .film-content, .description")
-            if desc_el:
-                description = desc_el.get_text(strip=True)
+            title_el = soup.select_one(".entry-title, h1.title, .film-title")
+            title = title_el.get_text(strip=True) if title_el else slug
 
-        # Rating
-        rating_el = soup.select_one(".halim-trending-rating-value, .rating-val")
-        rating = rating_el.get_text(strip=True) if rating_el else None
+            og_img = soup.find("meta", property="og:image")
+            poster = og_img["content"] if og_img and og_img.get("content") else ""
+
+            og_desc = soup.find("meta", property="og:description")
+            description = og_desc["content"] if og_desc and og_desc.get("content") else ""
+            if not description:
+                desc_el = soup.select_one(".entry-content, .film-content, .description")
+                if desc_el:
+                    description = desc_el.get_text(strip=True)
+
+            rating_el = soup.select_one(".halim-trending-rating-value, .rating-val")
+            rating = rating_el.get_text(strip=True) if rating_el else None
+        else:
+            og_t = re.search(r'<meta\s+property=["\']og:title["\']\s+content=["\']([^"\']+)["\']', html_text)
+            og_i = re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html_text)
+            og_d = re.search(r'<meta\s+property=["\']og:description["\']\s+content=["\']([^"\']+)["\']', html_text)
+            if og_t: title = og_t.group(1)
+            if og_i: poster = og_i.group(1)
+            if og_d: description = og_d.group(1)
 
         # Parse episode links deduplicated by (post_id, data_ep)
         episodes_dict = {}
-        ep_elements = soup.select(".halim-episode a")
-        
-        for idx, a in enumerate(ep_elements):
-            ep_title = a.get_text(strip=True)
-            post_id = a.get("data-post-id", "")
-            data_ep = a.get("data-ep", "")
-            
-            if not post_id or not data_ep:
-                continue
 
-            ep_match = re.search(r'\d+', ep_title)
-            ep_num = int(ep_match.group(0)) if ep_match else (idx + 1)
-            
-            key = (post_id, data_ep)
-            if key not in episodes_dict:
-                episodes_dict[key] = {
-                    "id": f"hhpanda:{slug}:{post_id}:{data_ep}",
-                    "title": f"Tập {ep_num} (Thuyết Minh & VietSub)",
-                    "episode": ep_num,
-                    "season": 1,
-                    "released": "2026-01-01T00:00:00.000Z"
-                }
+        if BeautifulSoup:
+            soup = BeautifulSoup(html_text, "html.parser")
+            ep_elements = soup.select(".halim-episode a")
+            for idx, a in enumerate(ep_elements):
+                ep_title = a.get_text(strip=True)
+                post_id = a.get("data-post-id", "")
+                data_ep = a.get("data-ep", "")
+                if not post_id or not data_ep:
+                    continue
+                ep_match = re.search(r'\d+', ep_title)
+                ep_num = int(ep_match.group(0)) if ep_match else (idx + 1)
+                key = (post_id, data_ep)
+                if key not in episodes_dict:
+                    episodes_dict[key] = {
+                        "id": f"hhpanda:{slug}:{post_id}:{data_ep}",
+                        "title": f"Tập {ep_num} (Thuyết Minh & VietSub)",
+                        "episode": ep_num,
+                        "season": 1,
+                        "released": "2026-01-01T00:00:00.000Z"
+                    }
+        else:
+            ep_matches = re.findall(
+                r'data-post-id=["\'](\d+)["\'][\s\S]*?data-ep=["\']([^"\']+)["\'][\s\S]*?>(.*?)</a>',
+                html_text
+            )
+            for idx, (post_id, data_ep, ep_title_raw) in enumerate(ep_matches):
+                ep_title = re.sub(r'<[^>]+>', '', ep_title_raw).strip()
+                ep_match = re.search(r'\d+', ep_title)
+                ep_num = int(ep_match.group(0)) if ep_match else (idx + 1)
+                key = (post_id, data_ep)
+                if key not in episodes_dict:
+                    episodes_dict[key] = {
+                        "id": f"hhpanda:{slug}:{post_id}:{data_ep}",
+                        "title": f"Tập {ep_num} (Thuyết Minh & VietSub)",
+                        "episode": ep_num,
+                        "season": 1,
+                        "released": "2026-01-01T00:00:00.000Z"
+                    }
 
         videos = list(episodes_dict.values())
         videos.sort(key=lambda v: v["episode"])
@@ -360,20 +415,20 @@ async def fetch_single_stream(client: httpx.AsyncClient, player_url: str, post_i
             "type": sv_type
         })
         if r.status_code == 200:
-            soup = BeautifulSoup(r.text, "html.parser")
-            iframe = soup.find("iframe")
-            if iframe and iframe.get("src") and "not-found" not in iframe.get("src"):
-                iframe_src = iframe.get("src")
-                proxy_url = f"{base_host}/hhpanda/player_proxy?src={urllib.parse.quote(iframe_src)}"
-                
-                badge_icon = "🎙️ [Thuyết Minh]" if sv == "2" else "💬 [VietSub]"
-                sv_title = "4K Ultra HD V2" if sv_type == "pro" else "4K Ultra HD V1"
-                
-                results.append({
-                    "name": "HHPanda 4K Proxy",
-                    "title": f"🌐 {badge_icon} HHPanda {sv_title} (Player Proxy)",
-                    "externalUrl": proxy_url
-                })
+            iframe_match = re.search(r'<iframe[^>]+src=["\']([^"\']+)["\']', r.text)
+            if iframe_match:
+                iframe_src = iframe_match.group(1)
+                if "not-found" not in iframe_src:
+                    proxy_url = f"{base_host}/hhpanda/player_proxy?src={urllib.parse.quote(iframe_src)}"
+                    
+                    badge_icon = "🎙️ [Thuyết Minh]" if sv == "2" else "💬 [VietSub]"
+                    sv_title = "4K Ultra HD V2" if sv_type == "pro" else "4K Ultra HD V1"
+                    
+                    results.append({
+                        "name": "HHPanda 4K Proxy",
+                        "title": f"🌐 {badge_icon} HHPanda {sv_title} (Player Proxy)",
+                        "externalUrl": proxy_url
+                    })
     except Exception as e:
         logger.warning(f"Error fetching stream sv={sv} type={sv_type}: {e}")
     return results
@@ -396,7 +451,6 @@ async def get_stream(request: Request, type: str, id: str):
     base_host = str(request.base_url).rstrip("/")
     player_url = f"{HHPANDA_BASE}/player/player.php"
 
-    # Direct Web Links on HHPanda.st (Guaranteed to work 100% natively in browser)
     streams = [
         {
             "name": "🎙️ Thuyết Minh 4K",
@@ -516,7 +570,7 @@ async def player_proxy(request: Request, src: str):
 @hhpanda_router.get("/hhpanda/embed_frame")
 @hhpanda_router.get("/embed_frame")
 async def embed_frame(request: Request, src: str):
-    """Inner iframe content server-side fetched with Referer & Document.Referer Patch."""
+    """Inner iframe content server-side fetched with Referer, DevTools Bypass & Document.Referer Patch."""
     iframe_src = urllib.parse.unquote(src)
     base_host = str(request.base_url).rstrip("/")
     proxy_endpoint = f"{base_host}/hhpanda/streamfree_proxy?path="
@@ -625,3 +679,24 @@ async def embed_frame(request: Request, src: str):
 </body>
 </html>"""
     return HTMLResponse(content=fallback_html)
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app = FastAPI(title="HHPanda Stremio Addon")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.include_router(hhpanda_router, prefix="/hhpanda")
+    app.include_router(hhpanda_router)
+    
+    port = int(os.getenv("PORT", 7071))
+    print(f"🚀 Starting HHPanda Stremio Addon on http://127.0.0.1:{port}/hhpanda/manifest.json")
+    uvicorn.run(app, host="0.0.0.0", port=port)

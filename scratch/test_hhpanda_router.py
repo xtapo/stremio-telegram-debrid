@@ -81,5 +81,14 @@ class TestHHPandaRouter(unittest.TestCase):
         self.assertTrue("<base href=" in res.text or "<iframe" in res.text or "<div" in res.text)
         print("✅ Player proxy test passed")
 
+    def test_player_proxy_igv1zufv(self):
+        res = client.get("/hhpanda/player_proxy?src=https%3A%2F%2Fstreamfree.vip%2Fembed%2Fv%2FIGv1ZUfv")
+        self.assertEqual(res.status_code, 200)
+        res_frame = client.get("/hhpanda/embed_frame?src=https%3A%2F%2Fstreamfree.vip%2Fembed%2Fv%2FIGv1ZUfv")
+        self.assertEqual(res_frame.status_code, 200)
+        self.assertIn("window.console.log = noop", res_frame.text)
+        self.assertIn("https://hhpanda.st/", res_frame.text)
+        print("✅ Player proxy IGv1ZUfv test passed")
+
 if __name__ == "__main__":
     unittest.main()

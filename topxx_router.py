@@ -604,3 +604,24 @@ async def topxx_stream_proxy(request: Request, url: str, referer: Optional[str] 
         await client.aclose()
         logger.error(f"TopXX stream proxy error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+if __name__ == "__main__":
+    import os
+    import uvicorn
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+
+    app = FastAPI(title="TopXX Stremio Addon")
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    app.include_router(topxx_router, prefix="/topxx")
+    app.include_router(topxx_router)
+    
+    port = int(os.getenv("PORT", 7071))
+    print(f"🚀 Starting TopXX Stremio Addon on http://127.0.0.1:{port}/topxx/manifest.json")
+    uvicorn.run(app, host="0.0.0.0", port=port)
