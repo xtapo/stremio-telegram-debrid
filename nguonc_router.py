@@ -467,39 +467,39 @@ async def nguonc_meta_handler(type: str, id: str):
         if not movie:
             return {"meta": {}}
 
-            meta = item_to_stremio_meta(movie)
+        meta = item_to_stremio_meta(movie)
+        
+        # Cast & Director
+        casts = movie.get("casts")
+        if isinstance(casts, str) and casts.strip():
+            meta["cast"] = [c.strip() for c in casts.split(",") if c.strip()]
+        director = movie.get("director")
+        if isinstance(director, str) and director.strip():
+            meta["director"] = [d.strip() for d in director.split(",") if d.strip()]
+
+        # Handle Series Videos (Episodes)
+        episodes_data = movie.get("episodes", [])
+        if meta["type"] == "series" and episodes_data:
+            videos = []
+            # Use primary server (index 0) for season 1 episode structure
+            primary_server = episodes_data[0]
+            ep_items = primary_server.get("items", [])
             
-            # Cast & Director
-            casts = movie.get("casts")
-            if isinstance(casts, str) and casts.strip():
-                meta["cast"] = [c.strip() for c in casts.split(",") if c.strip()]
-            director = movie.get("director")
-            if isinstance(director, str) and director.strip():
-                meta["director"] = [d.strip() for d in director.split(",") if d.strip()]
-
-            # Handle Series Videos (Episodes)
-            episodes_data = movie.get("episodes", [])
-            if meta["type"] == "series" and episodes_data:
-                videos = []
-                # Use primary server (index 0) for season 1 episode structure
-                primary_server = episodes_data[0]
-                ep_items = primary_server.get("items", [])
+            for idx, ep_item in enumerate(ep_items, 1):
+                ep_name = ep_item.get("name", str(idx))
+                ep_slug = ep_item.get("slug", f"tap-{idx}")
                 
-                for idx, ep_item in enumerate(ep_items, 1):
-                    ep_name = ep_item.get("name", str(idx))
-                    ep_slug = ep_item.get("slug", f"tap-{idx}")
-                    
-                    # Video ID format: nguonc:{slug}:0:{ep_slug}
-                    videos.append({
-                        "id": f"nguonc:{slug}:0:{ep_slug}",
-                        "title": f"Tập {ep_name}",
-                        "season": 1,
-                        "episode": idx,
-                        "released": movie.get("modified") or movie.get("created")
-                    })
-                meta["videos"] = videos
+                # Video ID format: nguonc:{slug}:0:{ep_slug}
+                videos.append({
+                    "id": f"nguonc:{slug}:0:{ep_slug}",
+                    "title": f"Tập {ep_name}",
+                    "season": 1,
+                    "episode": idx,
+                    "released": movie.get("modified") or movie.get("created")
+                })
+            meta["videos"] = videos
 
-            return {"meta": meta}
+        return {"meta": meta}
     except Exception as e:
         logger.error(f"Error fetching meta for {id}: {e}")
         return {"meta": {}}
