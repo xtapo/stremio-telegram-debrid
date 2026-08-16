@@ -25,6 +25,18 @@ GOOGLE_TRANSLATE_ENDPOINT = "https://translate.googleapis.com/translate_a/single
 GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/"
 OPENSUBTITLES_BASE = "https://opensubtitles-v3.strem.io/subtitles/"
 
+# Manual timing correction in seconds, applied to every generated track.
+# Positive value = subtitles appear later. Set SUBTITLE_TIME_OFFSET in .env when a
+# fallback (OpenSubtitles) track belongs to a different release than the video.
+try:
+    SUBTITLE_TIME_OFFSET = float(
+        getattr(Config, "SUBTITLE_TIME_OFFSET", None)
+        or os.getenv("SUBTITLE_TIME_OFFSET", "0")
+        or 0
+    )
+except (TypeError, ValueError):
+    SUBTITLE_TIME_OFFSET = 0.0
+
 # Text based subtitle codecs: ffmpeg can convert these straight to SRT.
 TEXT_SUB_CODECS = {
     "subrip", "srt", "ass", "ssa", "webvtt", "vtt", "mov_text", "text",
@@ -39,54 +51,91 @@ IMAGE_SUB_CODECS = {
     "dvb_subtitle", "dvbsub", "dvb_teletext", "xsub",
 }
 
+
+def parse_time_to_seconds(t_str: str) -> float:
+    """Parses 'hh:mm:ss,mmm', 'hh:mm:ss.mmm', 'mm:ss.mmm' or plain seconds."""
+    t_str = (t_str or "").strip().replace(",", ".")
+    if not t_str:
+        return 0.0
+    sign = -1.0 if t_str.startswith("-") else 1.0
+    t_str = t_str.lstrip("+-")
+    parts = t_str.split(":")
+    try:
+        if len(parts) == 3:
+            h, m, s = parts
+            return sign * (float(h) * 3600 + float(m) * 60 + float(s))
+        if len(parts) == 2:
+            m, s = parts
+            return sign * (float(m) * 60 + float(s))
+        return sign * float(t_str)
+    except ValueError:
+        return 0.0
+
+
+def format_timestamp(seconds: float, as_vtt: bool = False) -> str:
+    """Formats seconds as an SRT (comma) or WebVTT (dot) timestamp."""
+    if seconds is None or seconds < 0:
+        seconds = 0.0
+    total_ms = int(round(seconds * 1000))
+    h, rem = divmod(total_ms, 3600000)
+    m, rem = divmod(rem, 60000)
+    s, ms = divmod(rem, 1000)
+    sep = "." if as_vtt else ","
+    return f"{h:02d}:{m:02d}:{s:02d}{sep}{ms:03d}"
+
+
+def is_time_line(line: str) -> bool:
+    """True when the line is a cue timing line ('00:01:02,500 --> 00:01:05,000')."""
+    return "-->" in line and bool(re.search(r"\d{1,3}\s*:\s*\d{1,2}", line))
+
+
+def _split_time_line(time_line: str) -> tuple:
+    """Returns (start_raw, end_raw, trailing_cue_settings)."""
+    left, right = time_line.split("-->", 1)
+    right = right.strip()
+    match = re.match(r"^(\S+)\s*(.*)$", right)
+    if match:
+        return left.strip(), match.group(1), match.group(2).strip()
+    return left.strip(), right, ""
+
+
+def normalize_time_line(time_line: str, as_vtt: bool = False) -> str:
+    """Rewrites a cue timing line into a canonical SRT or WebVTT form."""
+    if not time_line or "-->" not in time_line:
+        return (time_line or "").strip()
+    start_raw, end_raw, settings = _split_time_line(time_line)
+    line = (
+        format_timestamp(parse_time_to_seconds(start_raw), as_vtt)
+        + " --> "
+        + format_timestamp(parse_time_to_seconds(end_raw), as_vtt)
+    )
+    if settings:
+        line += " " + settings
+    return line
+
+
 def shift_time_str(time_str: str, offset_seconds: float) -> str:
-    parts = time_str.split("-->")
-    if len(parts) != 2:
+    """Shifts a cue timing line by offset_seconds while keeping its SRT/VTT style."""
+    if not time_str or "-->" not in time_str:
         return time_str
-    
-    start_part = parts[0].strip()
-    end_part = parts[1].strip()
-    
-    def parse_single_time(t_str: str) -> float:
-        t_str_norm = t_str.replace(",", ".")
-        time_parts = t_str_norm.split(":")
-        try:
-            if len(time_parts) == 3:
-                h, m, s = time_parts
-                return float(h) * 3600 + float(m) * 60 + float(s)
-            elif len(time_parts) == 2:
-                m, s = time_parts
-                return float(m) * 60 + float(s)
-            else:
-                return float(t_str_norm)
-        except ValueError:
-            return 0.0
+    start_raw, end_raw, settings = _split_time_line(time_str)
+    as_vtt = "." in start_raw
+    line = (
+        format_timestamp(parse_time_to_seconds(start_raw) + offset_seconds, as_vtt)
+        + " --> "
+        + format_timestamp(parse_time_to_seconds(end_raw) + offset_seconds, as_vtt)
+    )
+    if settings:
+        line += " " + settings
+    return line
 
-    def format_single_time(seconds: float, is_vtt: bool = False) -> str:
-        if seconds < 0:
-            seconds = 0.0
-        h = int(seconds // 3600)
-        m = int((seconds % 3600) // 60)
-        s = seconds % 60
-        sec_int = int(s)
-        ms = int(round((s - sec_int) * 1000))
-        if ms >= 1000:
-            ms = 0
-            sec_int += 1
-            if sec_int >= 60:
-                sec_int = 0
-                m += 1
-                if m >= 60:
-                    m = 0
-                    h += 1
-        sep = "." if is_vtt else ","
-        return f"{h:02d}:{m:02d}:{sec_int:02d}{sep}{ms:03d}"
 
-    is_vtt = "." in time_str
-    new_start_sec = parse_single_time(start_part) + offset_seconds
-    new_end_sec = parse_single_time(end_part) + offset_seconds
-    
-    return f"{format_single_time(new_start_sec, is_vtt)} --> {format_single_time(new_end_sec, is_vtt)}"
+def shifted_time(time_line: str) -> str:
+    """Applies the global SUBTITLE_TIME_OFFSET correction (no-op when it is 0)."""
+    if not SUBTITLE_TIME_OFFSET:
+        return time_line
+    return shift_time_str(time_line, SUBTITLE_TIME_OFFSET)
+
 
 def shift_srt_content(srt_content: str, offset_seconds: float) -> str:
     if not srt_content.strip() or offset_seconds == 0:
@@ -96,46 +145,68 @@ def shift_srt_content(srt_content: str, offset_seconds: float) -> str:
         b["time"] = shift_time_str(b["time"], offset_seconds)
     return rebuild_subtitles(header, blocks)
 
+
 def parse_subtitles(content: str) -> tuple:
     """
     Parses SRT or VTT subtitle content.
     Returns (header, blocks) where blocks is a list of dicts:
     {"prefix": str, "time": str, "text": str}
+
+    Splitting is driven by the TIMESTAMP lines, not by blank lines. Subtitle files in
+    the wild are single spaced, double spaced, or contain stray blank lines inside a
+    cue; the previous blank-line splitter collapsed such files into one giant cue,
+    which destroyed the timing of every single line.
     """
-    content = content.replace('\r\n', '\n')
-    
-    # Normalize double-spaced subtitles (very common in translated/OpenSubtitles files)
-    if "\n\n\n" in content:
-        content = re.sub(r'\n{3,}', '__BLOCK_SEP__', content)
-        content = content.replace('\n\n', '\n')
-        content = content.replace('__BLOCK_SEP__', '\n\n')
+    if not content:
+        return "", []
+
+    content = content.replace("\r\n", "\n").replace("\r", "\n").replace("\ufeff", "")
+
     header = ""
-    if content.strip().startswith("WEBVTT"):
-        parts = re.split(r'\n\s*\n', content, maxsplit=1)
-        if len(parts) > 1 and "-->" not in parts[0]:
-            header = parts[0] + "\n\n"
-            content = parts[1]
-            
+    body = content
+    if content.lstrip().startswith("WEBVTT"):
+        stripped = content.lstrip()
+        first_line, _, rest = stripped.partition("\n")
+        header = first_line.strip() + "\n\n"
+        body = rest
+
+    lines = body.split("\n")
+    time_indexes = [i for i, line in enumerate(lines) if is_time_line(line)]
+    if not time_indexes:
+        return header, []
+
+    def has_id_line_above(t_idx: int) -> bool:
+        prev_idx = t_idx - 1
+        if prev_idx < 0:
+            return False
+        candidate = lines[prev_idx].strip()
+        if not candidate:
+            return False
+        if re.fullmatch(r"\d+", candidate):
+            return True
+        above = lines[prev_idx - 1].strip() if prev_idx - 1 >= 0 else ""
+        return not above and " " not in candidate and len(candidate) <= 40
+
     blocks = []
-    raw_blocks = re.split(r'\n\s*\n', content.strip())
-    for raw_block in raw_blocks:
-        lines = [l.strip() for l in raw_block.split('\n') if l.strip()]
-        time_idx = -1
-        for idx, line in enumerate(lines):
-            if "-->" in line:
-                time_idx = idx
-                break
-        if time_idx != -1:
-            index_lines = lines[:time_idx]
-            time_line = lines[time_idx]
-            text_lines = lines[time_idx+1:]
-            
-            blocks.append({
-                "prefix": "\n".join(index_lines) if index_lines else "",
-                "time": time_line,
-                "text": "\n".join(text_lines)
-            })
+    for n, t_idx in enumerate(time_indexes):
+        prefix = lines[t_idx - 1].strip() if has_id_line_above(t_idx) else ""
+
+        if n + 1 < len(time_indexes):
+            next_idx = time_indexes[n + 1]
+            end = next_idx - 1 if has_id_line_above(next_idx) else next_idx
+        else:
+            end = len(lines)
+
+        text_lines = [l.strip() for l in lines[t_idx + 1:end]]
+        text = "\n".join([l for l in text_lines if l])
+
+        blocks.append({
+            "prefix": prefix,
+            "time": normalize_time_line(lines[t_idx]),
+            "text": text,
+        })
     return header, blocks
+
 
 def rebuild_subtitles(header: str, blocks: list) -> str:
     lines = []
@@ -150,6 +221,68 @@ def rebuild_subtitles(header: str, blocks: list) -> str:
         lines.append("")
     return "\n".join(lines)
 
+
+def build_vtt(blocks: list, offset_seconds: float = 0.0) -> str:
+    """
+    Serializes cues as a VALID WebVTT file.
+    WebVTT requires a dot as the millisecond separator; the previous code emitted a
+    'WEBVTT' header on top of SRT comma timestamps, so players silently dropped or
+    mis-timed the cues.
+    """
+    lines = ["WEBVTT", ""]
+    counter = 0
+    for b in blocks:
+        text = (b.get("text") or "").strip()
+        if not text:
+            continue
+        time_line = b.get("time", "")
+        if offset_seconds:
+            time_line = shift_time_str(time_line, offset_seconds)
+        counter += 1
+        lines.append(str(counter))
+        lines.append(normalize_time_line(time_line, as_vtt=True))
+        lines.append(text)
+        lines.append("")
+    return "\n".join(lines)
+
+
+def apply_translated_blocks(target_blocks: list, parsed: list) -> int:
+    """
+    Copies translated text onto the ORIGINAL cues without ever touching their timing.
+
+    AI engines regularly merge, drop or split a cue. The old code mapped results by
+    position, so a single missing cue shifted every following line onto the wrong
+    timestamp for the rest of the chunk. Matching is done by timecode first and by the
+    numeric cue id second; unmatched cues simply keep their original text.
+    Returns the number of cues that were actually replaced.
+    """
+    if not parsed:
+        return 0
+
+    by_time = {}
+    by_index = {}
+    for p in parsed:
+        key = normalize_time_line(p.get("time", ""))
+        if key:
+            by_time.setdefault(key, []).append(p)
+        pid = (p.get("prefix") or "").strip()
+        if re.fullmatch(r"\d+", pid):
+            by_index.setdefault(int(pid), p)
+
+    applied = 0
+    for pos, b in enumerate(target_blocks):
+        match = None
+        bucket = by_time.get(normalize_time_line(b.get("time", "")))
+        if bucket:
+            match = bucket.pop(0)
+        elif (pos + 1) in by_index:
+            match = by_index.pop(pos + 1)
+        if match and (match.get("text") or "").strip():
+            b["text"] = match["text"].strip()
+            applied += 1
+    return applied
+
+
 def reindex_srt(srt_content: str) -> str:
     _, blocks = parse_subtitles(srt_content)
     lines = []
@@ -160,6 +293,7 @@ def reindex_srt(srt_content: str) -> str:
         lines.append("")
     return "\n".join(lines)
 
+
 def clean_subtitle_text(text: str) -> str:
     """Removes ASS/SSA override tags and font tags left over after ffmpeg conversion."""
     if not text:
@@ -169,6 +303,7 @@ def clean_subtitle_text(text: str) -> str:
     text = re.sub(r"\\N|\\n", "\n", text)
     lines = [l.strip() for l in text.split("\n")]
     return "\n".join([l for l in lines if l]).strip()
+
 
 def clean_extracted_srt(srt_content: str) -> str:
     """Cleans styling tags of an extracted embedded subtitle and drops empty cues."""
@@ -187,6 +322,7 @@ def clean_extracted_srt(srt_content: str) -> str:
         lines.append(f"{b['text']}")
         lines.append("")
     return "\n".join(lines).strip()
+
 
 def get_banner_block(progress: int) -> dict:
     return {
@@ -220,6 +356,8 @@ async def translate_gemini(text: str, api_key: str, target_lang: str = "vi") -> 
     prompt = (
         f"Translate the following subtitles into natural, conversational Vietnamese. "
         f"Keep all timestamps, line numbers, and formatting exactly as they are. "
+        f"Never merge, split, drop or reorder subtitle blocks: return exactly one block "
+        f"per input block, with the same number and the same timestamp line. "
         f"Output only the translated SRT subtitles and nothing else:\n\n{text}"
     )
     
@@ -255,6 +393,8 @@ async def translate_custom_ai(text: str, target_lang: str = "vi") -> str:
     prompt = (
         f"Translate the following subtitles into natural, conversational Vietnamese. "
         f"Keep all timestamps, line numbers, and formatting exactly as they are. "
+        f"Never merge, split, drop or reorder subtitle blocks: return exactly one block "
+        f"per input block, with the same number and the same timestamp line. "
         f"Output only the translated SRT subtitles and nothing else:\n\n{text}"
     )
     
@@ -315,6 +455,7 @@ async def translate_blocks(blocks: list, api_key: str = None, target_lang: str =
     for i in range(0, len(blocks), batch_size):
         chunk = blocks[i:i+batch_size]
         success = False
+        min_aligned = max(1, int(len(chunk) * 0.8))
         
         # Build SRT formatting block for AI models
         chunk_srt = ""
@@ -329,17 +470,14 @@ async def translate_blocks(blocks: list, api_key: str = None, target_lang: str =
                 translated_srt = await translate_custom_ai(chunk_srt, target_lang)
                 _, parsed_chunk = parse_subtitles(translated_srt)
                 
-                if len(parsed_chunk) == len(chunk):
-                    for b_orig, b_trans in zip(chunk, parsed_chunk):
-                        translated_blocks.append({
-                            "prefix": b_orig["prefix"],
-                            "time": b_orig["time"],
-                            "text": b_trans["text"].strip()
-                        })
+                candidate = [dict(b) for b in chunk]
+                applied = apply_translated_blocks(candidate, parsed_chunk)
+                if applied >= min_aligned:
+                    translated_blocks.extend(candidate)
                     success = True
-                    logger.info(f"Batch {i//batch_size + 1} translated successfully via Custom AI.")
+                    logger.info(f"Batch {i//batch_size + 1} translated successfully via Custom AI ({applied}/{len(chunk)} cues aligned).")
                 else:
-                    logger.warning(f"Custom AI translation returned mismatch block count: expected {len(chunk)}, got {len(parsed_chunk)}.")
+                    logger.warning(f"Custom AI translation aligned only {applied}/{len(chunk)} cues for batch {i//batch_size + 1}.")
             except Exception as e:
                 logger.error(f"Custom AI translation failed for batch {i//batch_size + 1}: {e}.")
         
@@ -350,17 +488,14 @@ async def translate_blocks(blocks: list, api_key: str = None, target_lang: str =
                 translated_srt = await translate_gemini(chunk_srt, api_key, target_lang)
                 _, parsed_chunk = parse_subtitles(translated_srt)
                 
-                if len(parsed_chunk) == len(chunk):
-                    for b_orig, b_trans in zip(chunk, parsed_chunk):
-                        translated_blocks.append({
-                            "prefix": b_orig["prefix"],
-                            "time": b_orig["time"],
-                            "text": b_trans["text"].strip()
-                        })
+                candidate = [dict(b) for b in chunk]
+                applied = apply_translated_blocks(candidate, parsed_chunk)
+                if applied >= min_aligned:
+                    translated_blocks.extend(candidate)
                     success = True
-                    logger.info(f"Batch {i//batch_size + 1} translated successfully via Gemini.")
+                    logger.info(f"Batch {i//batch_size + 1} translated successfully via Gemini ({applied}/{len(chunk)} cues aligned).")
                 else:
-                    logger.warning(f"Gemini translation returned mismatch block count: expected {len(chunk)}, got {len(parsed_chunk)}. Falling back to Google Translate.")
+                    logger.warning(f"Gemini translation aligned only {applied}/{len(chunk)} cues for batch {i//batch_size + 1}. Falling back to Google Translate.")
             except Exception as e:
                 logger.error(f"Gemini translation failed for batch {i//batch_size + 1}: {e}. Falling back to Google Translate.")
         
@@ -629,9 +764,12 @@ async def process_audio_chunk(
         
         ffmpeg_path = get_ffmpeg_path()
         
+        # -accurate_seek keeps the chunk start exactly at start_sec, otherwise ffmpeg may
+        # land on the previous keyframe and every transcribed cue of the chunk is shifted.
         cmd = [
             ffmpeg_path, "-y",
             *get_remote_input_opts(video_url),
+            "-accurate_seek",
             "-ss", str(start_sec),
             "-t", str(duration_sec),
             "-i", video_url,
@@ -706,6 +844,8 @@ async def process_audio_chunk(
                 prompt = (
                     "You are a professional transcriber. Transcribe the audio chunk into Vietnamese. "
                     "Generate standard SRT subtitle format. "
+                    "Timestamps must start at 00:00:00,000 (relative to the beginning of THIS audio chunk) "
+                    "and must match what is actually heard. "
                     "Output only the raw SRT subtitle content, with no markdown code blocks, no explanation, and no extra characters."
                 )
                 
@@ -922,7 +1062,7 @@ class SubtitleGeneratorManager:
                 lines = []
                 for idx, b in enumerate(merged_blocks):
                     lines.append(f"{idx + 1}")
-                    lines.append(f"{b['time']}")
+                    lines.append(shifted_time(b['time']))
                     lines.append(f"{b['text']}")
                     lines.append("")
                 
@@ -1065,7 +1205,7 @@ class SubtitleGeneratorManager:
                 lines = []
                 for idx, b in enumerate(final_blocks):
                     lines.append(f"{idx + 1}")
-                    lines.append(f"{b['time']}")
+                    lines.append(shifted_time(b['time']))
                     lines.append(f"{b['text']}")
                     lines.append("")
                     
@@ -1170,10 +1310,10 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", re
     """
     Translates an SRT/VTT file to Vietnamese concurrently maintaining exact timestamps.
     Engines are tried in order (Gemini -> Lingva -> Custom AI) and the FIRST successful one wins.
+    Output is always a valid WebVTT document (dot milliseconds).
     When return_status=True returns (vtt_content, translated_ok).
     """
     header, blocks = parse_subtitles(srt_content)
-    vtt_header = "WEBVTT\n\n"
     
     if not blocks:
         return (srt_content, False) if return_status else srt_content
@@ -1189,7 +1329,9 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", re
         return changed / max(1, len(blocks))
 
     def finish(ok: bool):
-        content = rebuild_subtitles(vtt_header, blocks)
+        # build_vtt writes real WebVTT timestamps; emitting SRT commas under a WEBVTT
+        # header made players drop or mis-time every cue.
+        content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
         return (content, ok) if return_status else content
 
     # 1. OPTION A: Translate via Gemini AI (Cinema-Grade, Natural Context, Fast)
@@ -1207,14 +1349,13 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", re
                     res = re.sub(r"^```[a-zA-Z0-9]*\n", "", res)
                     res = re.sub(r"\n```$", "", res)
                 _, parsed = parse_subtitles(res.strip())
-                if len(parsed) == len(chunk_blocks):
-                    for b_orig, b_trans in zip(chunk_blocks, parsed):
-                        b_orig["text"] = b_trans["text"].strip()
-                elif parsed:
-                    for idx, p in enumerate(parsed[:len(chunk_blocks)]):
-                        chunk_blocks[idx]["text"] = p["text"].strip()
-                else:
-                    raise Exception("Empty Gemini translation response")
+                # Cues are matched by timecode/id, never by position: a merged or dropped
+                # line used to shift all following translations onto the wrong timestamps.
+                applied = apply_translated_blocks(chunk_blocks, parsed)
+                if applied == 0:
+                    raise Exception("Gemini translation could not be aligned with the original cues")
+                if applied < len(chunk_blocks):
+                    logger.warning(f"Gemini aligned {applied}/{len(chunk_blocks)} cues; the rest keep their original text.")
 
             sem = asyncio.Semaphore(2)
             async def limited_gemini(c):
@@ -1261,8 +1402,10 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", re
                             i = int(m.group(1))
                             t = m.group(2).strip()
                             extracted[i] = t
+                        # Only the explicitly tagged indexes are written back, so a dropped
+                        # line never shifts the following cues.
                         for idx, b in enumerate(chunk_blocks):
-                            if idx in extracted:
+                            if idx in extracted and extracted[idx]:
                                 b["text"] = extracted[idx]
                         return
                 except Exception:
@@ -1290,140 +1433,4 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", re
             
             async def translate_custom_chunk(chunk_blocks):
                 raw_chunk_srt = "\n\n".join(f"{idx+1}\n{b['time']}\n{b['text']}" for idx, b in enumerate(chunk_blocks))
-                res = await translate_custom_ai(raw_chunk_srt, target_lang)
-                if res.startswith("```"):
-                    res = re.sub(r"^```[a-zA-Z0-9]*\n", "", res)
-                    res = re.sub(r"\n```$", "", res)
-                _, parsed = parse_subtitles(res.strip())
-                if len(parsed) == len(chunk_blocks):
-                    for b_orig, b_trans in zip(chunk_blocks, parsed):
-                        b_orig["text"] = b_trans["text"].strip()
-                elif parsed:
-                    for idx, p in enumerate(parsed[:len(chunk_blocks)]):
-                        chunk_blocks[idx]["text"] = p["text"].strip()
-                else:
-                    raise Exception("Empty Custom AI translation response")
-
-            await asyncio.gather(*[translate_custom_chunk(c) for c in chunks])
-            if translated_ratio() >= 0.5:
-                logger.info("Custom AI translation completed successfully.")
-                return finish(True)
-            logger.warning("Custom AI translated too few blocks.")
-        except Exception as e:
-            logger.warning(f"Custom AI translation failed: {e}")
-
-    logger.error("All translation engines failed; returning the original (untranslated) subtitle.")
-    return finish(translated_ratio() >= 0.5)
-
-# In-memory mapping of item_id -> active stream video_url
-STREAM_VIDEO_URL_CACHE = {}
-
-async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: Optional[str] = None) -> Optional[str]:
-    """Retrieves or instantly generates an exact synced Vietnamese VTT subtitle track from embedded subtitle or OpenSubtitles."""
-    clean_id = item_id.replace(":", "_").replace("/", "_")
-    cache_file = os.path.join(CACHE_DIR, f"vi_sync_{clean_id}.vtt")
-    
-    if os.path.exists(cache_file) and os.path.getsize(cache_file) > 100:
-        try:
-            with open(cache_file, "r", encoding="utf-8") as f:
-                return f.read()
-        except Exception:
-            pass
-
-    base_srt = None
-    base_source = None
-    target_video_url = (
-        video_url
-        or STREAM_VIDEO_URL_CACHE.get(item_id)
-        or STREAM_VIDEO_URL_CACHE.get(clean_id)
-        or STREAM_VIDEO_URL_CACHE.get(item_id.replace("_", ":"))
-    )
-
-    # 1. Primary Method: extract the subtitle embedded in the video itself.
-    # It is always perfectly in sync with this exact release, unlike OpenSubtitles files.
-    if target_video_url:
-        try:
-            logger.info(f"Extracting embedded subtitle directly from video: {str(target_video_url)[:80]}...")
-            embedded_srt = await extract_embedded_subtitle(target_video_url)
-            if embedded_srt and len(embedded_srt) > 100:
-                logger.info(f"Successfully extracted embedded subtitle ({len(embedded_srt)} bytes) from video.")
-                base_srt = embedded_srt
-                base_source = "embedded"
-            else:
-                logger.info("No usable embedded subtitle track found, falling back to OpenSubtitles.")
-        except Exception as e:
-            logger.warning(f"Failed to extract embedded subtitle from video: {e}")
-    else:
-        logger.info(f"No video URL known for {item_id}; skipping embedded subtitle extraction.")
-
-    # 2. Fallback Method: fetch a base English subtitle from OpenSubtitles (0.2s response time)
-    if not base_srt:
-        imdb_id = item_id
-        if "_" in imdb_id and ":" not in imdb_id and not imdb_id.startswith("moviesdrive:"):
-            parts = imdb_id.split("_")
-            if len(parts) >= 3 and parts[0].startswith("tt"):
-                imdb_id = f"{parts[0]}:{parts[1]}:{parts[2]}"
-            elif len(parts) == 2 and parts[0].startswith("tt"):
-                imdb_id = f"{parts[0]}:{parts[1]}"
-                
-        if imdb_id.startswith("moviesdrive:"):
-            from moviesdrive_router import find_imdb_for_moviesdrive_id
-            resolved = await find_imdb_for_moviesdrive_id(media_type, item_id)
-            if resolved:
-                imdb_id = resolved
-
-        eng_subs = []
-        if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
-            url = (
-                OPENSUBTITLES_BASE
-                + urllib.parse.quote(str(media_type))
-                + "/"
-                + urllib.parse.quote(imdb_id)
-                + ".json"
-            )
-            try:
-                async with httpx.AsyncClient(timeout=4.0) as client:
-                    resp = await client.get(url)
-                    if resp.status_code == 200:
-                        subs = resp.json().get("subtitles", [])
-                        for s in subs:
-                            if s.get("lang") in ("eng", "en"):
-                                eng_subs.append(s.get("url"))
-                        if not eng_subs and subs:
-                            eng_subs.append(subs[0].get("url"))
-            except Exception as e:
-                logger.warning(f"Failed to fetch base subtitle for sync translation: {e}")
-
-        for sub_url in eng_subs[:2]:
-            try:
-                async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
-                    resp = await client.get(sub_url)
-                    if resp.status_code == 200 and len(resp.text) > 200:
-                        base_srt = resp.text
-                        base_source = "opensubtitles"
-                        break
-            except Exception:
-                continue
-
-    if not base_srt:
-        return None
-
-    logger.info(f"Translating base subtitle (source={base_source}) to Vietnamese...")
-
-    # 3. Fast Batch Translate to Vietnamese
-    vtt_content, translated_ok = await translate_srt_fast_batch(base_srt, target_lang="vi", return_status=True)
-    if not vtt_content:
-        return None
-        
-    # Never cache an untranslated subtitle, otherwise the English track sticks around forever.
-    if translated_ok:
-        try:
-            os.makedirs(os.path.dirname(cache_file), exist_ok=True)
-            with open(cache_file, "w", encoding="utf-8") as f:
-                f.write(vtt_content)
-        except Exception as e:
-            logger.warning(f"Failed to write cache for {cache_file}: {e}")
-    else:
-        logger.warning(f"Translation failed for {item_id}; serving the untranslated track without caching it.")
-        
-    return vtt_content
+                res = await translate_custom_ai(raw_chunk
