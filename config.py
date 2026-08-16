@@ -6,6 +6,23 @@ try:
 except ImportError:
     pass
 
+
+def _env_float(name, default):
+    """Read a float from the environment, falling back on any bad value."""
+    raw = os.getenv(name)
+    if raw is None or str(raw).strip() == "":
+        return float(default)
+    try:
+        return float(raw)
+    except (TypeError, ValueError):
+        return float(default)
+
+
+def _env_int(name, default):
+    """Read an int from the environment, falling back on any bad value."""
+    return int(_env_float(name, float(default)))
+
+
 class Config:
     PORT = int(os.getenv("PORT", 7860))
     ADDON_URL = os.getenv("ADDON_URL", f"http://localhost:{PORT}").rstrip("/")
@@ -37,6 +54,21 @@ class Config:
     CUSTOM_AI_MODEL = os.getenv("CUSTOM_AI_MODEL", "cc/claude-opus-4-6")
     CUSTOM_AI_STREAM = os.getenv("CUSTOM_AI_STREAM", "True").lower() == "true"
     SUBTITLE_TRANSLATION_SOURCE = os.getenv("SUBTITLE_TRANSLATION_SOURCE", "sub")
+
+    # Subtitle timing.
+    # Positive shifts subtitles later, negative shows them earlier.
+    # Used by subtitle_utils when building SRT/VTT output.
+    SUBTITLE_TIME_OFFSET = _env_float("SUBTITLE_TIME_OFFSET", 0.0)
+
+    # Progressive VTT flow (sync_vtt_service).
+    # The first slice of the film is translated inline and returned right away,
+    # the rest is translated in the background.
+    # SYNC_VTT_HEAD_SECONDS: how many seconds of the film to translate inline.
+    SYNC_VTT_HEAD_SECONDS = _env_float("SYNC_VTT_HEAD_SECONDS", 300.0)
+    # SYNC_VTT_HEAD_MAX_BLOCKS: hard cap on the inline batch, protects dense subs.
+    SYNC_VTT_HEAD_MAX_BLOCKS = _env_int("SYNC_VTT_HEAD_MAX_BLOCKS", 400)
+    # SYNC_VTT_BACKGROUND_SLICE: cue count per background chunk.
+    SYNC_VTT_BACKGROUND_SLICE = _env_int("SYNC_VTT_BACKGROUND_SLICE", 150)
 
     API_ID = os.getenv("API_ID")
     API_HASH = os.getenv("API_HASH")
