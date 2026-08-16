@@ -9,6 +9,7 @@ import logging
 import shutil
 import subprocess
 import tempfile
+from typing import Optional
 from config import Config
 
 logger = logging.getLogger("subtitles_service")
@@ -16,6 +17,20 @@ logger = logging.getLogger("subtitles_service")
 # Ensure subtitles cache directory exists (in system temp to prevent Uvicorn reload loops)
 CACHE_DIR = os.path.join(tempfile.gettempdir(), "stremio_telegram_subtitles")
 os.makedirs(CACHE_DIR, exist_ok=True)
+
+# Text based subtitle codecs: ffmpeg can convert these straight to SRT.
+TEXT_SUB_CODECS = {
+    "subrip", "srt", "ass", "ssa", "webvtt", "vtt", "mov_text", "text",
+    "microdvd", "subviewer", "subviewer1", "jacosub", "sami", "realtext",
+    "mpl2", "pjs", "vplayer", "stl", "eia_608", "hdmv_text_subtitle",
+}
+
+# Bitmap (image) based subtitle codecs: ffmpeg CANNOT turn these into text without OCR.
+# Selecting one of them used to make the whole embedded-subtitle extraction fail silently.
+IMAGE_SUB_CODECS = {
+    "hdmv_pgs_subtitle", "pgssub", "dvd_subtitle", "dvdsub",
+    "dvb_subtitle", "dvbsub", "dvb_teletext", "xsub",
+}
 
 def shift_time_str(time_str: str, offset_seconds: float) -> str:
     parts = time_str.split("-->")
@@ -137,6 +152,34 @@ def reindex_srt(srt_content: str) -> str:
         lines.append(f"{b['text']}")
         lines.append("")
     return "\n".join(lines)
+
+def clean_subtitle_text(text: str) -> str:
+    """Removes ASS/SSA override tags and font tags left over after ffmpeg conversion."""
+    if not text:
+        return ""
+    text = re.sub(r"\{\\[^}]*\}", "", text)
+    text = re.sub(r"</?font[^>]*>", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\\N|\\n", "\n", text)
+    lines = [l.strip() for l in text.split("\n")]
+    return "\n".join([l for l in lines if l]).strip()
+
+def clean_extracted_srt(srt_content: str) -> str:
+    """Cleans styling tags of an extracted embedded subtitle and drops empty cues."""
+    _, blocks = parse_subtitles(srt_content)
+    cleaned = []
+    for b in blocks:
+        text = clean_subtitle_text(b["text"])
+        if text:
+            cleaned.append({"prefix": "", "time": b["time"], "text": text})
+    if not cleaned:
+        return ""
+    lines = []
+    for idx, b in enumerate(cleaned):
+        lines.append(f"{idx + 1}")
+        lines.append(f"{b['time']}")
+        lines.append(f"{b['text']}")
+        lines.append("")
+    return "\n".join(lines).strip()
 
 def get_banner_block(progress: int) -> dict:
     return {
@@ -359,12 +402,120 @@ def get_ffprobe_path() -> str:
         return proj_bin
     return shutil.which("ffprobe") or "ffprobe"
 
-async def extract_embedded_subtitle(video_url: str) -> str:
+def get_remote_input_opts(video_url: str) -> list:
+    """HTTP options so ffmpeg/ffprobe survive debrid/Telegram stream hiccups and UA checks."""
+    if not video_url or not str(video_url).lower().startswith(("http://", "https://")):
+        return []
+    return [
+        "-user_agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "-reconnect", "1",
+        "-reconnect_streamed", "1",
+        "-reconnect_delay_max", "5",
+    ]
+
+def select_embedded_subtitle_stream(streams: list, prefer_langs: tuple = ("eng", "en")) -> Optional[dict]:
+    """
+    Picks the best TEXT based subtitle stream.
+    Bitmap streams (PGS/DVD/DVB/XSUB) are skipped because ffmpeg cannot convert them to SRT.
+    Forced / signs-only tracks are de-prioritized because they contain just a handful of cues.
+    """
+    text_streams = []
+    unknown_streams = []
+    
+    for rel_idx, s in enumerate(streams):
+        codec = (s.get("codec_name") or "").lower()
+        tags = s.get("tags") or {}
+        disposition = s.get("disposition") or {}
+        entry = {
+            "abs_index": s.get("index"),
+            "rel_index": rel_idx,
+            "codec": codec,
+            "lang": (tags.get("language") or "").lower(),
+            "title": (tags.get("title") or "").lower(),
+            "forced": int(disposition.get("forced", 0) or 0),
+            "hearing_impaired": int(disposition.get("hearing_impaired", 0) or 0),
+        }
+        if codec in IMAGE_SUB_CODECS:
+            logger.info(f"Skipping bitmap subtitle stream {entry['abs_index']} ({codec}) - cannot be converted to text.")
+            continue
+        if codec in TEXT_SUB_CODECS:
+            text_streams.append(entry)
+        else:
+            unknown_streams.append(entry)
+            
+    candidates = text_streams or unknown_streams
+    if not candidates:
+        return None
+        
+    def score(entry: dict) -> float:
+        value = 0.0
+        if entry["lang"] in prefer_langs or "english" in entry["title"] or "eng" in entry["title"]:
+            value -= 100.0
+        if entry["forced"] or "forced" in entry["title"] or "signs" in entry["title"] or "songs" in entry["title"]:
+            value += 60.0
+        if entry["hearing_impaired"] or "sdh" in entry["title"]:
+            value += 5.0
+        value += entry["rel_index"] * 0.1
+        return value
+        
+    return sorted(candidates, key=score)[0]
+
+async def _ffmpeg_extract_stream(video_url: str, map_arg: str, timeout: int = 180) -> Optional[str]:
+    """Runs ffmpeg to extract one subtitle stream to SRT. Returns raw SRT text or None."""
+    ffmpeg_bin = get_ffmpeg_path()
+    fd, tmp_srt_path = tempfile.mkstemp(suffix=".srt", dir=CACHE_DIR)
+    os.close(fd)
+    
+    cmd_extract = [
+        ffmpeg_bin, "-y",
+        "-nostdin",
+        *get_remote_input_opts(video_url),
+        "-analyzeduration", "100000000",
+        "-probesize", "100000000",
+        "-i", video_url,
+        "-map", map_arg,
+        "-c:s", "subrip",
+        "-f", "srt",
+        tmp_srt_path
+    ]
+    
+    logger.info(f"Running ffmpeg extraction for stream {map_arg}...")
+    try:
+        def run_extract():
+            return subprocess.run(cmd_extract, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=timeout)
+        extract_res = await asyncio.to_thread(run_extract)
+        
+        srt_content = None
+        if os.path.exists(tmp_srt_path) and os.path.getsize(tmp_srt_path) > 10:
+            with open(tmp_srt_path, "r", encoding="utf-8", errors="ignore") as f:
+                srt_content = f.read()
+                
+        if srt_content and srt_content.strip():
+            return srt_content.strip()
+            
+        err_output = extract_res.stderr.decode("utf-8", errors="ignore") if extract_res and extract_res.stderr else ""
+        logger.warning(f"ffmpeg extraction of {map_arg} yielded no data (code {extract_res.returncode}). Stderr tail: {err_output[-500:]}")
+    except subprocess.TimeoutExpired:
+        logger.warning(f"ffmpeg extraction of {map_arg} timed out after {timeout}s.")
+    except Exception as e:
+        logger.warning(f"ffmpeg extraction of {map_arg} raised: {e}")
+    finally:
+        if os.path.exists(tmp_srt_path):
+            try:
+                os.remove(tmp_srt_path)
+            except Exception:
+                pass
+    return None
+
+async def extract_embedded_subtitle(video_url: str, prefer_langs: tuple = ("eng", "en")) -> Optional[str]:
     """
     Inspects video_url using ffprobe for embedded subtitle streams.
-    Extracts the best matching text subtitle stream (English or first available) to SRT format.
-    Returns SRT content string, or None if no text subtitle stream found/extracted.
+    Extracts the best matching TEXT subtitle stream (English or first available) to SRT format.
+    Returns cleaned SRT content string, or None if no text subtitle stream found/extracted.
     """
+    if not video_url:
+        return None
+        
     ffprobe_bin = get_ffprobe_path()
     cmd_probe = [
         ffprobe_bin,
@@ -372,15 +523,16 @@ async def extract_embedded_subtitle(video_url: str) -> str:
         "-print_format", "json",
         "-show_streams",
         "-select_streams", "s",
-        "-analyzeduration", "10000000",
-        "-probesize", "10000000",
+        *get_remote_input_opts(video_url),
+        "-analyzeduration", "100000000",
+        "-probesize", "100000000",
         video_url
     ]
     
-    logger.info(f"Running ffprobe to detect embedded subtitles on {video_url}...")
+    logger.info(f"Running ffprobe to detect embedded subtitles on {str(video_url)[:120]}...")
     try:
         def run_probe():
-            return subprocess.run(cmd_probe, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=25)
+            return subprocess.run(cmd_probe, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=90)
         
         probe_res = await asyncio.to_thread(run_probe)
         if probe_res.returncode != 0 or not probe_res.stdout:
@@ -394,78 +546,40 @@ async def extract_embedded_subtitle(video_url: str) -> str:
         if not streams:
             return None
             
-        text_codecs = {"subrip", "srt", "ass", "ssa", "webvtt", "mov_text", "text", "sub", "hdmv_pgs_subtitle"}
-        chosen_stream_index = None
-        
-        # 1. Prefer English text-based subtitle stream
-        for s in streams:
-            codec = s.get("codec_name", "").lower()
-            tags = s.get("tags", {})
-            lang = tags.get("language", "").lower()
-            title = tags.get("title", "").lower()
-            
-            if (lang in ("eng", "en") or "english" in title or "eng" in title):
-                chosen_stream_index = s.get("index")
-                logger.info(f"Selected English embedded subtitle stream index {chosen_stream_index} ({codec}, lang={lang}, title={title}).")
-                break
-                
-        # 2. Prefer any text-based subtitle stream
-        if chosen_stream_index is None:
-            for s in streams:
-                codec = s.get("codec_name", "").lower()
-                if codec in text_codecs:
-                    chosen_stream_index = s.get("index")
-                    logger.info(f"Selected text-based embedded subtitle stream index {chosen_stream_index} ({codec}).")
-                    break
-                    
-        # 3. Fallback to first subtitle stream overall
-        if chosen_stream_index is None and streams:
-            chosen_stream_index = streams[0].get("index")
-            logger.info(f"Fallback to first embedded subtitle stream index {chosen_stream_index}.")
-            
-        if chosen_stream_index is None:
+        chosen = select_embedded_subtitle_stream(streams, prefer_langs)
+        if not chosen:
+            logger.warning(
+                "Only bitmap (PGS/DVD/DVB) subtitle streams are embedded in this video; "
+                "they cannot be converted to text. Falling back to other subtitle sources."
+            )
             return None
             
-        # Extract stream via ffmpeg
-        ffmpeg_bin = get_ffmpeg_path()
-        with tempfile.NamedTemporaryFile(suffix=".srt", delete=False) as tmp:
-            tmp_srt_path = tmp.name
-            
-        cmd_extract = [
-            ffmpeg_bin, "-y",
-            "-analyzeduration", "10000000",
-            "-probesize", "10000000",
-            "-i", video_url,
-            "-map", f"0:{chosen_stream_index}",
-            "-c:s", "subrip",
-            "-f", "srt",
-            tmp_srt_path
-        ]
+        logger.info(
+            f"Selected embedded subtitle stream index {chosen['abs_index']} "
+            f"(codec={chosen['codec']}, lang={chosen['lang']}, title={chosen['title']}, forced={chosen['forced']})."
+        )
         
-        logger.info(f"Running ffmpeg extraction for stream 0:{chosen_stream_index}...")
-        def run_extract():
-            return subprocess.run(cmd_extract, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
-            
-        extract_res = await asyncio.to_thread(run_extract)
-        logger.info(f"ffmpeg extraction completed with status code {extract_res.returncode}.")
-        
+        # Try absolute stream index first, then the relative subtitle index (0:s:N) as a retry.
         srt_content = None
-        if os.path.exists(tmp_srt_path):
-            if os.path.getsize(tmp_srt_path) > 10:
-                with open(tmp_srt_path, "r", encoding="utf-8", errors="ignore") as f:
-                    srt_content = f.read()
-            try:
-                os.remove(tmp_srt_path)
-            except Exception:
-                pass
-                
-        if srt_content and srt_content.strip():
-            logger.info(f"Successfully extracted embedded subtitle ({len(srt_content)} bytes, {len(srt_content.splitlines())} lines).")
-            return srt_content.strip()
-        else:
-            err_output = extract_res.stderr.decode('utf-8', errors='ignore') if extract_res else ""
-            logger.warning(f"ffmpeg extraction yielded 0 bytes. Stderr: {err_output}")
+        if chosen.get("abs_index") is not None:
+            srt_content = await _ffmpeg_extract_stream(video_url, f"0:{chosen['abs_index']}")
+        if not srt_content:
+            srt_content = await _ffmpeg_extract_stream(video_url, f"0:s:{chosen['rel_index']}")
             
+        if not srt_content:
+            logger.warning("Embedded subtitle extraction produced no usable SRT content.")
+            return None
+            
+        cleaned = clean_extracted_srt(srt_content)
+        if not cleaned:
+            logger.warning("Extracted embedded subtitle contained no text cues after cleaning.")
+            return None
+            
+        logger.info(f"Successfully extracted embedded subtitle ({len(cleaned)} bytes, {len(cleaned.splitlines())} lines).")
+        return cleaned
+        
+    except subprocess.TimeoutExpired:
+        logger.warning("ffprobe timed out while detecting embedded subtitles.")
     except Exception as e:
         logger.warning(f"Failed to extract embedded subtitle: {e}")
         
@@ -501,6 +615,7 @@ async def process_audio_chunk(
         
         cmd = [
             ffmpeg_path, "-y",
+            *get_remote_input_opts(video_url),
             "-ss", str(start_sec),
             "-t", str(duration_sec),
             "-i", video_url,
@@ -836,7 +951,14 @@ class SubtitleGeneratorManager:
             embedded_srt = await extract_embedded_subtitle(video_url)
             if embedded_srt:
                 logger.info(f"Embedded subtitle track extracted successfully! Translating for {cache_key}...")
-                await self._run_translation(cache_key, content=embedded_srt, video_url=video_url)
+                # allow_video_fallback=False: the content already comes from this video,
+                # retrying the same video flow on failure would recurse forever.
+                await self._run_translation(
+                    cache_key,
+                    content=embedded_srt,
+                    video_url=video_url,
+                    allow_video_fallback=False
+                )
             else:
                 translation_source = getattr(Config, "SUBTITLE_TRANSLATION_SOURCE", "sub").lower()
                 if translation_source == "audio" and Config.GEMINI_API_KEY:
@@ -850,7 +972,14 @@ class SubtitleGeneratorManager:
             if cache_key in self.active_tasks and not self.active_tasks[cache_key].get("orig_blocks") and not self.active_tasks[cache_key].get("chunks"):
                 del self.active_tasks[cache_key]
 
-    async def _run_translation(self, cache_key: str, source_url: str = None, content: str = None, video_url: str = None):
+    async def _run_translation(
+        self,
+        cache_key: str,
+        source_url: str = None,
+        content: str = None,
+        video_url: str = None,
+        allow_video_fallback: bool = True
+    ):
         logger.info(f"Starting background subtitle translation for {cache_key}...")
         self.active_tasks[cache_key] = {
             "type": "translation",
@@ -863,7 +992,7 @@ class SubtitleGeneratorManager:
             if not content:
                 if not source_url:
                     raise Exception("Neither source_url nor content provided for translation")
-                async with httpx.AsyncClient(timeout=15.0) as client:
+                async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
                     resp = await client.get(source_url)
                     if resp.status_code != 200:
                         raise Exception(f"Failed to fetch original subtitle: {resp.status_code}")
@@ -939,7 +1068,7 @@ class SubtitleGeneratorManager:
                     logger.error(f"Failed to start background TTS generation: {tts_e}")
         except Exception as e:
             logger.error(f"Error in background translation for {cache_key}: {e}")
-            if video_url:
+            if video_url and allow_video_fallback:
                 logger.info(f"Subtitle translation failed, attempting video fallback (embedded sub / audio transcription) for {cache_key}...")
                 try:
                     await self._start_video_translation_flow(cache_key, video_url)
@@ -1021,11 +1150,31 @@ class SubtitleGeneratorManager:
 # Export singleton instance
 subtitle_generator = SubtitleGeneratorManager()
 
-async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi") -> str:
-    """Translates an SRT/VTT file to Vietnamese concurrently in 1-2 seconds maintaining exact timestamps."""
+async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi", return_status: bool = False):
+    """
+    Translates an SRT/VTT file to Vietnamese concurrently maintaining exact timestamps.
+    Engines are tried in order (Gemini -> Lingva -> Custom AI) and the FIRST successful one wins.
+    When return_status=True returns (vtt_content, translated_ok).
+    """
     header, blocks = parse_subtitles(srt_content)
+    vtt_header = "WEBVTT\n\n"
+    
     if not blocks:
-        return srt_content
+        return (srt_content, False) if return_status else srt_content
+
+    original_texts = [b["text"] for b in blocks]
+
+    def restore_original():
+        for b, original in zip(blocks, original_texts):
+            b["text"] = original
+
+    def translated_ratio() -> float:
+        changed = sum(1 for b, original in zip(blocks, original_texts) if b["text"].strip() != original.strip())
+        return changed / max(1, len(blocks))
+
+    def finish(ok: bool):
+        content = rebuild_subtitles(vtt_header, blocks)
+        return (content, ok) if return_status else content
 
     # 1. OPTION A: Translate via Gemini AI (Cinema-Grade, Natural Context, Fast)
     gemini_key = Config.GEMINI_API_KEY
@@ -1057,9 +1206,15 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi") ->
                     await translate_gemini_chunk(c)
 
             await asyncio.gather(*[limited_gemini(c) for c in chunks])
-            vtt_header = "WEBVTT\n\n"
+            
+            if translated_ratio() >= 0.5:
+                logger.info("Gemini translation completed successfully.")
+                return finish(True)
+            logger.warning("Gemini translated too few blocks. Falling back to High-Speed Lingva Engine...")
+            restore_original()
         except Exception as e:
             logger.warning(f"Gemini translation failed: {e}. Falling back to High-Speed Lingva Engine...")
+            restore_original()
 
     # 2. OPTION B: Lingva High-Speed Multi-Instance Translator (No Bot Block, No Quota Limits)
     lingva_instances = [
@@ -1100,10 +1255,14 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi") ->
         async with httpx.AsyncClient(timeout=10.0) as client:
             await asyncio.gather(*[translate_lingva_chunk(c, client) for c in chunks], return_exceptions=True)
             
-        vtt_header = "WEBVTT\n\n"
-        return rebuild_subtitles(vtt_header, blocks)
+        if translated_ratio() >= 0.5:
+            logger.info("Lingva translation completed successfully.")
+            return finish(True)
+        logger.warning("Lingva translated too few blocks. Falling back to Custom AI...")
+        restore_original()
     except Exception as e:
         logger.warning(f"Lingva translation failed: {e}. Falling back to Custom AI...")
+        restore_original()
 
     # 3. OPTION C: Custom AI
     custom_ai_url = Config.CUSTOM_AI_API_URL
@@ -1130,13 +1289,15 @@ async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi") ->
                     raise Exception("Empty Custom AI translation response")
 
             await asyncio.gather(*[translate_custom_chunk(c) for c in chunks])
-            vtt_header = "WEBVTT\n\n"
-            return rebuild_subtitles(vtt_header, blocks)
+            if translated_ratio() >= 0.5:
+                logger.info("Custom AI translation completed successfully.")
+                return finish(True)
+            logger.warning("Custom AI translated too few blocks.")
         except Exception as e:
             logger.warning(f"Custom AI translation failed: {e}")
 
-    vtt_header = "WEBVTT\n\n"
-    return rebuild_subtitles(vtt_header, blocks)
+    logger.error("All translation engines failed; returning the original (untranslated) subtitle.")
+    return finish(translated_ratio() >= 0.5)
 
 # In-memory mapping of item_id -> active stream video_url
 STREAM_VIDEO_URL_CACHE = {}
@@ -1154,6 +1315,7 @@ async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: O
             pass
 
     base_srt = None
+    base_source = None
     target_video_url = (
         video_url
         or STREAM_VIDEO_URL_CACHE.get(item_id)
@@ -1161,70 +1323,85 @@ async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: O
         or STREAM_VIDEO_URL_CACHE.get(item_id.replace("_", ":"))
     )
 
-    # 1. Ultra-Fast Method: Fetch base English subtitle from OpenSubtitles (0.2s response time)
-    imdb_id = item_id
-    if "_" in imdb_id and ":" not in imdb_id and not imdb_id.startswith("moviesdrive:"):
-        parts = imdb_id.split("_")
-        if len(parts) >= 3 and parts[0].startswith("tt"):
-            imdb_id = f"{parts[0]}:{parts[1]}:{parts[2]}"
-        elif len(parts) == 2 and parts[0].startswith("tt"):
-            imdb_id = f"{parts[0]}:{parts[1]}"
-            
-    if imdb_id.startswith("moviesdrive:"):
-        from moviesdrive_router import find_imdb_for_moviesdrive_id
-        resolved = await find_imdb_for_moviesdrive_id(media_type, item_id)
-        if resolved:
-            imdb_id = resolved
-
-    eng_subs = []
-    if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
-        url = f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/{urllib.parse.quote(imdb_id)}.json"
+    # 1. Primary Method: extract the subtitle embedded in the video itself.
+    # It is always perfectly in sync with this exact release, unlike OpenSubtitles files.
+    if target_video_url:
         try:
-            async with httpx.AsyncClient(timeout=4.0) as client:
-                resp = await client.get(url)
-                if resp.status_code == 200:
-                    subs = resp.json().get("subtitles", [])
-                    for s in subs:
-                        if s.get("lang") in ("eng", "en"):
-                            eng_subs.append(s.get("url"))
-                    if not eng_subs and subs:
-                        eng_subs.append(subs[0].get("url"))
-        except Exception as e:
-            logger.warning(f"Failed to fetch base subtitle for sync translation: {e}")
-
-    for sub_url in eng_subs[:2]:
-        try:
-            async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
-                resp = await client.get(sub_url)
-                if resp.status_code == 200 and len(resp.text) > 200:
-                    base_srt = resp.text
-                    break
-        except Exception:
-            continue
-
-    # 2. Secondary Method: Extract embedded subtitle directly from the video stream if OpenSubtitles was empty
-    if not base_srt and target_video_url:
-        try:
-            logger.info(f"Extracting embedded subtitle directly from video: {target_video_url[:80]}...")
+            logger.info(f"Extracting embedded subtitle directly from video: {str(target_video_url)[:80]}...")
             embedded_srt = await extract_embedded_subtitle(target_video_url)
             if embedded_srt and len(embedded_srt) > 100:
                 logger.info(f"Successfully extracted embedded subtitle ({len(embedded_srt)} bytes) from video.")
                 base_srt = embedded_srt
+                base_source = "embedded"
+            else:
+                logger.info("No usable embedded subtitle track found, falling back to OpenSubtitles.")
         except Exception as e:
-            logger.warning(f"Failed to extract embedded subtitle from video {target_video_url}: {e}")
+            logger.warning(f"Failed to extract embedded subtitle from video: {e}")
+    else:
+        logger.info(f"No video URL known for {item_id}; skipping embedded subtitle extraction.")
+
+    # 2. Fallback Method: fetch a base English subtitle from OpenSubtitles (0.2s response time)
+    if not base_srt:
+        imdb_id = item_id
+        if "_" in imdb_id and ":" not in imdb_id and not imdb_id.startswith("moviesdrive:"):
+            parts = imdb_id.split("_")
+            if len(parts) >= 3 and parts[0].startswith("tt"):
+                imdb_id = f"{parts[0]}:{parts[1]}:{parts[2]}"
+            elif len(parts) == 2 and parts[0].startswith("tt"):
+                imdb_id = f"{parts[0]}:{parts[1]}"
+                
+        if imdb_id.startswith("moviesdrive:"):
+            from moviesdrive_router import find_imdb_for_moviesdrive_id
+            resolved = await find_imdb_for_moviesdrive_id(media_type, item_id)
+            if resolved:
+                imdb_id = resolved
+
+        eng_subs = []
+        if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
+            url = f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/{urllib.parse.quote(imdb_id)}.json"
+            try:
+                async with httpx.AsyncClient(timeout=4.0) as client:
+                    resp = await client.get(url)
+                    if resp.status_code == 200:
+                        subs = resp.json().get("subtitles", [])
+                        for s in subs:
+                            if s.get("lang") in ("eng", "en"):
+                                eng_subs.append(s.get("url"))
+                        if not eng_subs and subs:
+                            eng_subs.append(subs[0].get("url"))
+            except Exception as e:
+                logger.warning(f"Failed to fetch base subtitle for sync translation: {e}")
+
+        for sub_url in eng_subs[:2]:
+            try:
+                async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
+                    resp = await client.get(sub_url)
+                    if resp.status_code == 200 and len(resp.text) > 200:
+                        base_srt = resp.text
+                        base_source = "opensubtitles"
+                        break
+            except Exception:
+                continue
 
     if not base_srt:
         return None
 
+    logger.info(f"Translating base subtitle (source={base_source}) to Vietnamese...")
+
     # 3. Fast Batch Translate to Vietnamese
-    vtt_content = await translate_srt_fast_batch(base_srt, target_lang="vi")
-    if vtt_content:
+    vtt_content, translated_ok = await translate_srt_fast_batch(base_srt, target_lang="vi", return_status=True)
+    if not vtt_content:
+        return None
+        
+    # Never cache an untranslated subtitle, otherwise the English track sticks around forever.
+    if translated_ok:
         try:
             os.makedirs(os.path.dirname(cache_file), exist_ok=True)
             with open(cache_file, "w", encoding="utf-8") as f:
                 f.write(vtt_content)
         except Exception as e:
             logger.warning(f"Failed to write cache for {cache_file}: {e}")
-        return vtt_content
-    return None
-
+    else:
+        logger.warning(f"Translation failed for {item_id}; serving the untranslated track without caching it.")
+        
+    return vtt_content
