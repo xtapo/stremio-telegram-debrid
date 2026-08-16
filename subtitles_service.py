@@ -189,7 +189,10 @@ def get_banner_block(progress: int) -> dict:
     }
 
 async def translate_google(text: str, target_lang: str = "vi") -> str:
-    url = f"https://translate.googleapis.com/translate_a/single?client=gtx&dt=t&sl=auto&tl={target_lang}&q={urllib.parse.quote(text)}"
+    url = (
+        "https://translate.googleapis.com/translate_a/single"
+        f"?client=gtx&dt=t&sl=auto&tl={target_lang}&q={urllib.parse.quote(text)}"
+    )
     async with httpx.AsyncClient(timeout=15.0) as client:
         resp = await client.get(url)
         if resp.status_code == 200:
@@ -199,8 +202,15 @@ async def translate_google(text: str, target_lang: str = "vi") -> str:
         else:
             raise Exception(f"Google Translate API status {resp.status_code}")
 
+def get_gemini_endpoint(api_key: str, model: str = None) -> str:
+    model = model or Config.GEMINI_MODEL
+    return (
+        f"https://generativelanguage.googleapis.com/v1beta/models/{model}"
+        f":generateContent?key={api_key}"
+    )
+
 async def translate_gemini(text: str, api_key: str, target_lang: str = "vi") -> str:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{Config.GEMINI_MODEL}:generateContent?key={api_key}"
+    url = get_gemini_endpoint(api_key)
     prompt = (
         f"Translate the following subtitles into natural, conversational Vietnamese. "
         f"Keep all timestamps, line numbers, and formatting exactly as they are. "
@@ -685,7 +695,7 @@ async def process_audio_chunk(
                     audio_bytes = f.read()
                 audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
                 
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/{Config.GEMINI_MODEL}:generateContent?key={api_key}"
+                url = get_gemini_endpoint(api_key)
                 
                 prompt = (
                     "You are a professional transcriber. Transcribe the audio chunk into Vietnamese. "
@@ -1358,7 +1368,10 @@ async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: O
 
         eng_subs = []
         if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
-            url = f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/{urllib.parse.quote(imdb_id)}.json"
+            url = (
+                f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/"
+                f"{urllib.parse.quote(imdb_id)}.json"
+            )
             try:
                 async with httpx.AsyncClient(timeout=4.0) as client:
                     resp = await client.get(url)
