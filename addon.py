@@ -740,6 +740,12 @@ async def catalog_handler(
     extra: str = None,
     api_key: str = ""
 ):
+    if catalog_id.startswith("moviesdrive_") or catalog_id.startswith("moviesdrive:"):
+        from moviesdrive_router import catalog_extra_endpoint, catalog_endpoint
+        if extra:
+            return await catalog_extra_endpoint(type, catalog_id, extra)
+        return await catalog_endpoint(type, catalog_id)
+
     if type not in ["movie", "series"]:
         return {"metas": []}
         

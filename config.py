@@ -44,11 +44,15 @@ class Config:
     QBITTORRENT_PASS = os.getenv("QBITTORRENT_PASS", "adminadmin")
     QBITTORRENT_PLAY_DIR = os.getenv("QBITTORRENT_PLAY_DIR", "")
     AUTO_VIET_SUB = os.getenv("AUTO_VIET_SUB", "True").lower() == "true"
+    
+    # Gemini AI translation settings
+    ENABLE_GEMINI = os.getenv("ENABLE_GEMINI", os.getenv("GEMINI_ENABLED", "True")).lower() == "true"
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
     GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
     AUTO_THUYET_MINH = os.getenv("AUTO_THUYET_MINH", "True").lower() == "true"
     
     # Custom AI translation settings
+    ENABLE_CUSTOM_AI = os.getenv("ENABLE_CUSTOM_AI", os.getenv("CUSTOM_AI_ENABLED", "True")).lower() == "true"
     CUSTOM_AI_API_KEY = os.getenv("CUSTOM_AI_API_KEY", "")
     CUSTOM_AI_API_URL = os.getenv("CUSTOM_AI_API_URL", "")
     CUSTOM_AI_MODEL = os.getenv("CUSTOM_AI_MODEL", "cc/claude-opus-4-6")

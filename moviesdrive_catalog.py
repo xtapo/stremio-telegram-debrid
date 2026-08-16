@@ -152,6 +152,65 @@ def _catalog_url(cat_type: str, cat_id: str, genre: Optional[str], page: int) ->
     return url
 
 
+def _extract_img_src(img_tag) -> str:
+    if not img_tag:
+        return ""
+    src = (
+        img_tag.get("data-lazy-src")
+        or img_tag.get("data-src")
+        or img_tag.get("data-original")
+        or img_tag.get("src")
+        or ""
+    )
+    if not src or src.startswith("data:"):
+        srcset = img_tag.get("srcset") or img_tag.get("data-srcset") or ""
+        if srcset:
+            src = srcset.split(",")[0].strip().split(" ")[0]
+    return src.strip()
+
+
+def _is_noise_image(src: str) -> bool:
+    if not src or src.startswith("data:"):
+        return True
+    s = src.lower()
+    return any(
+        bad in s
+        for bad in (
+            "log.png", "logo", "telegram", "/t.jpg", "join",
+            "banner", "screenshot", "imgshare", "default-poster",
+            "search", "icon"
+        )
+    )
+
+
+def _extract_meta_poster(soup) -> str:
+    post = soup.find(
+        "div",
+        class_=lambda c: c and any(
+            k in c for k in ("post-layout", "entry-content", "thecontent", "post-content", "post-body")
+        ),
+    ) or soup
+
+    candidates = []
+    for img in post.find_all("img"):
+        src = _extract_img_src(img)
+        if _is_noise_image(src):
+            continue
+        src_lower = src.lower()
+        alt = (img.get("alt") or "").lower()
+        if (
+            "poster" in alt
+            or "cover" in alt
+            or any(d in src_lower for d in ("tmdb.org", "media-amazon.com", "m.media-amazon.com", "imdb.com", "fanart.tv"))
+        ):
+            return absolute(src)
+        candidates.append(src)
+
+    if candidates:
+        return absolute(candidates[0])
+    return ""
+
+
 def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
     soup = make_soup(html_text)
     nodes = soup.find_all("div", class_="poster-card") or soup.find_all("article")
@@ -184,7 +243,9 @@ def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
 
         thumb = ""
         if img_tag:
-            thumb = img_tag.get("src") or img_tag.get("data-src") or ""
+            thumb = _extract_img_src(img_tag)
+            if _is_noise_image(thumb):
+                thumb = ""
 
         items.append(
             {
@@ -285,8 +346,7 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
     name = title_tag.get_text(strip=True) if title_tag else slug.replace("-", " ").title()
 
     content = post_content(page_html)
-    img_tag = content.find("img") if content else None
-    poster = absolute(img_tag.get("src")) if img_tag else ""
+    poster = _extract_meta_poster(soup)
 
     description = ""
     for p in (content.find_all("p") if content else []):
@@ -317,6 +377,14 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
                     "released": "2026-01-01T00:00:00.000Z",
                 }
             )
+
+    # Fallback to Cinemeta if page poster was missing
+    if not poster:
+        imdb_id = await find_imdb_for_moviesdrive_id(media_type, item_id)
+        if imdb_id:
+            cine_meta = await get_cinemeta_title(media_type, imdb_id.split(":")[0])
+            if cine_meta and cine_meta.get("poster"):
+                poster = cine_meta.get("poster")
 
     meta_obj: Dict[str, Any] = {
         "id": item_id,

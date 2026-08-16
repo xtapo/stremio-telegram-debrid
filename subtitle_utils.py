@@ -461,11 +461,12 @@ async def translate_custom_ai(text: str, target_lang: str = "vi") -> str:
 async def translate_blocks(blocks: list, api_key: str = None, target_lang: str = "vi") -> list:
     translated_blocks = []
     batch_size = 40
+    api_key = api_key or Config.GEMINI_API_KEY
 
     for i in range(0, len(blocks), batch_size):
         chunk = blocks[i:i+batch_size]
         success = False
-        min_aligned = max(1, int(len(chunk) * 0.8))
+        min_aligned = max(1, int(len(chunk) * 0.4))
 
         # Build SRT formatting block for AI models
         chunk_srt = ""
@@ -473,8 +474,26 @@ async def translate_blocks(blocks: list, api_key: str = None, target_lang: str =
             prefix = b["prefix"] if b["prefix"] else str(idx + 1)
             chunk_srt += f"{prefix}\n{b['time']}\n{b['text']}\n\n"
 
-        # 1. Try Custom AI API if configured
-        if Config.CUSTOM_AI_API_URL:
+        # 1. Try Gemini API first if configured and enabled
+        if api_key and getattr(Config, "ENABLE_GEMINI", True):
+            try:
+                logger.info(f"Translating batch {i//batch_size + 1} using Gemini API (Model: {Config.GEMINI_MODEL})...")
+                translated_srt = await translate_gemini(chunk_srt, api_key, target_lang)
+                _, parsed_chunk = parse_subtitles(translated_srt)
+
+                candidate = [dict(b) for b in chunk]
+                applied = apply_translated_blocks(candidate, parsed_chunk)
+                if applied >= min_aligned:
+                    translated_blocks.extend(candidate)
+                    success = True
+                    logger.info(f"Batch {i//batch_size + 1} translated via Gemini ({applied}/{len(chunk)} cues aligned).")
+                else:
+                    logger.warning(f"Gemini aligned only {applied}/{len(chunk)} cues for batch {i//batch_size + 1}.")
+            except Exception as e:
+                logger.error(f"Gemini translation failed for batch {i//batch_size + 1}: {e}.")
+
+        # 2. Try Custom AI API if Gemini failed, disabled, or unconfigured
+        if not success and Config.CUSTOM_AI_API_URL and getattr(Config, "ENABLE_CUSTOM_AI", True):
             try:
                 logger.info(f"Translating batch {i//batch_size + 1} using Custom AI API (Model: {Config.CUSTOM_AI_MODEL})...")
                 translated_srt = await translate_custom_ai(chunk_srt, target_lang)
@@ -491,61 +510,10 @@ async def translate_blocks(blocks: list, api_key: str = None, target_lang: str =
             except Exception as e:
                 logger.error(f"Custom AI translation failed for batch {i//batch_size + 1}: {e}.")
 
-        # 2. Try Gemini API if Custom AI is not configured or failed
-        if not success and api_key:
-            try:
-                logger.info(f"Falling back to Gemini API (Model: {Config.GEMINI_MODEL}) for batch {i//batch_size + 1}...")
-                translated_srt = await translate_gemini(chunk_srt, api_key, target_lang)
-                _, parsed_chunk = parse_subtitles(translated_srt)
-
-                candidate = [dict(b) for b in chunk]
-                applied = apply_translated_blocks(candidate, parsed_chunk)
-                if applied >= min_aligned:
-                    translated_blocks.extend(candidate)
-                    success = True
-                    logger.info(f"Batch {i//batch_size + 1} translated via Gemini ({applied}/{len(chunk)} cues aligned).")
-                else:
-                    logger.warning(f"Gemini aligned only {applied}/{len(chunk)} cues for batch {i//batch_size + 1}. Falling back to Google Translate.")
-            except Exception as e:
-                logger.error(f"Gemini translation failed for batch {i//batch_size + 1}: {e}. Falling back to Google Translate.")
-
+        # 3. If both AI models failed, keep original cues to avoid crashing or spamming 302 errors
         if not success:
-            sub_batch_size = 30
-            for j in range(0, len(chunk), sub_batch_size):
-                sub_chunk = chunk[j:j+sub_batch_size]
-                chunk_texts = [b["text"].replace("\n", " <br> ") for b in sub_chunk]
-                batch_text = "\n".join(chunk_texts)
-
-                try:
-                    translated_raw = await translate_google(batch_text, target_lang)
-                    translated_lines = translated_raw.replace('\r\n', '\n').split('\n')
-                    if len(translated_lines) > len(sub_chunk) and not translated_lines[-1].strip():
-                        translated_lines.pop()
-
-                    if len(translated_lines) == len(sub_chunk):
-                        for block, trans_line in zip(sub_chunk, translated_lines):
-                            trans_text = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', trans_line, flags=re.IGNORECASE)
-                            translated_blocks.append({
-                                "prefix": block["prefix"],
-                                "time": block["time"],
-                                "text": trans_text.strip()
-                            })
-                    else:
-                        raise ValueError(f"Size mismatch: expected {len(sub_chunk)}, got {len(translated_lines)}")
-                except Exception as ex:
-                    logger.warning(f"Google Translate batch failed for sub-batch {j//sub_batch_size}: {ex}. Falling back to block-by-block.")
-                    for block in sub_chunk:
-                        try:
-                            trans_val = await translate_google(block["text"].replace("\n", " <br> "), target_lang)
-                            trans_text = re.sub(r'\s*<\s*br\s*/?\s*>\s*', '\n', trans_val, flags=re.IGNORECASE)
-                            translated_blocks.append({
-                                "prefix": block["prefix"],
-                                "time": block["time"],
-                                "text": trans_text.strip()
-                            })
-                        except Exception as block_ex:
-                            logger.error(f"Failed to translate block: {block_ex}")
-                            translated_blocks.append(block)
+            logger.warning(f"Batch {i//batch_size + 1} translation failed across AI models; preserving original text for this chunk.")
+            translated_blocks.extend(chunk)
 
     return translated_blocks
 

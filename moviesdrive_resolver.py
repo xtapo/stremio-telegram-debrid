@@ -129,11 +129,21 @@ def post_content(html_text: str):
     """Parse only the post body when possible - these pages are huge."""
     if not html_text:
         return make_soup("")
-    scoped = make_soup(html_text, only=SoupStrainer("div", class_="entry-content"))
-    if scoped.contents:
-        return scoped
+    for cls in ("entry-content", "post-layout", "thecontent", "post-content"):
+        scoped = make_soup(html_text, only=SoupStrainer("div", class_=cls))
+        if scoped and scoped.contents:
+            return scoped
     full = make_soup(html_text)
-    return full.find("div", class_="entry-content") or full.find("article") or full
+    return (
+        full.find(
+            "div",
+            class_=lambda c: c and any(
+                k in c for k in ("entry-content", "post-layout", "thecontent", "post-content")
+            ),
+        )
+        or full.find("article")
+        or full
+    )
 
 
 # ------------------------------------------------------------------

@@ -337,7 +337,7 @@ class SubtitleGeneratorManager:
         if cache_key not in self.active_tasks:
             translation_source = getattr(Config, "SUBTITLE_TRANSLATION_SOURCE", "sub").lower()
 
-            if translation_source == "audio" and video_url and Config.GEMINI_API_KEY:
+            if translation_source == "audio" and video_url and Config.GEMINI_API_KEY and getattr(Config, "ENABLE_GEMINI", True):
                 asyncio.create_task(self._run_transcription(cache_key, video_url, Config.GEMINI_API_KEY))
             else:
                 if source_url:
@@ -441,7 +441,7 @@ class SubtitleGeneratorManager:
                 )
             else:
                 translation_source = getattr(Config, "SUBTITLE_TRANSLATION_SOURCE", "sub").lower()
-                if translation_source == "audio" and Config.GEMINI_API_KEY:
+                if translation_source == "audio" and Config.GEMINI_API_KEY and getattr(Config, "ENABLE_GEMINI", True):
                     logger.info(f"No embedded subtitle track found. Falling back to Gemini audio transcription for {cache_key}...")
                     await self._run_transcription(cache_key, video_url, Config.GEMINI_API_KEY)
                 else:

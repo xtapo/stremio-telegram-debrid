@@ -70,9 +70,30 @@ def _read_flag(name: str, default: bool) -> bool:
 # ---------------------------------------------------------------------------
 # Engine order per track
 # ---------------------------------------------------------------------------
-# Track 1: latency matters most. Google is only used when Lingva fails outright.
-FAST_ENGINE_ORDER = ("lingva", "google")
+# Track 1: Fast track using Gemini, Custom AI, and Lingva (no Google Translate)
+def get_fast_engine_order() -> tuple:
+    engines = []
+    if getattr(Config, "ENABLE_GEMINI", True) and Config.GEMINI_API_KEY:
+        engines.append("gemini")
+    if getattr(Config, "ENABLE_CUSTOM_AI", True) and Config.CUSTOM_AI_API_URL:
+        engines.append("custom")
+    engines.append("lingva")
+    return tuple(engines)
+
+
 # Track 2: quality matters most. Gemini uses Config.GEMINI_MODEL.
+def get_quality_engine_order() -> tuple:
+    engines = []
+    if getattr(Config, "ENABLE_GEMINI", True) and Config.GEMINI_API_KEY:
+        engines.append("gemini")
+    if getattr(Config, "ENABLE_CUSTOM_AI", True) and Config.CUSTOM_AI_API_URL:
+        engines.append("custom")
+    if not engines:
+        engines.append("lingva")
+    return tuple(engines)
+
+
+FAST_ENGINE_ORDER = ("gemini", "custom", "lingva")
 QUALITY_ENGINE_ORDER = ("gemini", "custom")
 # Older callers imported this name; keep it pointing at the background order.
 BACKGROUND_ENGINE_ORDER = QUALITY_ENGINE_ORDER
@@ -136,9 +157,10 @@ def _get_lock(store: dict, key: str) -> asyncio.Lock:
 
 
 def _strip_code_fence(text: str) -> str:
+    text = text.strip()
     if text.startswith("```"):
-        text = re.sub(r"^```[a-zA-Z0-9]*\n", "", text)
-        text = re.sub(r"\n```$", "", text)
+        text = re.sub(r"^```[a-zA-Z0-9_-]*\s*\n?", "", text)
+        text = re.sub(r"\n?```\s*$", "", text)
     return text.strip()
 
 
@@ -199,7 +221,10 @@ async def _engine_ai(
     sem = asyncio.Semaphore(concurrency)
 
     async def run_chunk(offset: int, chunk_blocks: list):
+        chunk_num = offset // chunk_size + 1
+        total_chunks = len(ranges)
         async with sem:
+            logger.info(f"{label}: translating chunk {chunk_num}/{total_chunks} ({len(chunk_blocks)} cues)...")
             raw = "\n\n".join(
                 f"{idx + 1}\n{b['time']}\n{b['text']}" for idx, b in enumerate(chunk_blocks)
             )
@@ -213,6 +238,8 @@ async def _engine_ai(
                 logger.warning(
                     f"{label} aligned {applied}/{len(chunk_blocks)} cues; the rest keep their original text."
                 )
+            else:
+                logger.info(f"{label}: successfully translated chunk {chunk_num}/{total_chunks} ({applied}/{len(chunk_blocks)} cues).")
             if on_chunk:
                 try:
                     on_chunk(offset, len(chunk_blocks))
@@ -274,6 +301,8 @@ async def _run_engine(name: str, blocks: list, target_lang: str, on_chunk=None):
         await _engine_lingva(blocks, target_lang)
         return
     if name == "gemini":
+        if not getattr(Config, "ENABLE_GEMINI", True):
+            raise Exception("Gemini translation is disabled (ENABLE_GEMINI=False)")
         api_key = Config.GEMINI_API_KEY
         if not api_key:
             raise Exception("GEMINI_API_KEY is not configured")
@@ -287,6 +316,8 @@ async def _run_engine(name: str, blocks: list, target_lang: str, on_chunk=None):
         )
         return
     if name == "custom":
+        if not getattr(Config, "ENABLE_CUSTOM_AI", True):
+            raise Exception("Custom AI translation is disabled (ENABLE_CUSTOM_AI=False)")
         if not Config.CUSTOM_AI_API_URL:
             raise Exception("CUSTOM_AI_API_URL is not configured")
         await _engine_ai(
@@ -370,7 +401,7 @@ async def translate_srt_fast_batch(
     if not blocks:
         return (srt_content, False) if return_status else srt_content
 
-    order = tuple(engine_order) if engine_order else FAST_ENGINE_ORDER
+    order = tuple(engine_order) if engine_order else get_fast_engine_order()
     ok = await translate_block_list(blocks, order, target_lang)
     content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
     return (content, ok) if return_status else content
@@ -575,13 +606,14 @@ async def get_or_generate_fast_vtt(
             logger.warning(f"Base subtitle for {item_id} (source={base_source}) contained no cues.")
             return None
 
+        fast_order = get_fast_engine_order()
         started = time.time()
         logger.info(
             f"Track 1: translating all {len(blocks)} cues of {item_id} "
-            f"(source={base_source}, engines={'/'.join(FAST_ENGINE_ORDER)}, "
+            f"(source={base_source}, engines={'/'.join(fast_order)}, "
             f"concurrency={LINGVA_CONCURRENCY})..."
         )
-        ok = await translate_block_list(blocks, FAST_ENGINE_ORDER, "vi")
+        ok = await translate_block_list(blocks, fast_order, "vi")
         content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
         logger.info(
             f"Track 1 finished for {item_id} in {time.time() - started:.1f}s (translated={ok})."
@@ -668,16 +700,17 @@ async def _translate_quality(clean_id: str, cache_file: str, target_lang: str = 
             state["ready"][idx] = False
         state["progress"] = 0.0
 
+    quality_order = get_quality_engine_order()
     try:
         if QUALITY_ONE_PASS:
             logger.info(
                 f"Track 2 for {clean_id}: all {total} cues in one pass "
-                f"via {'/'.join(QUALITY_ENGINE_ORDER)} "
+                f"via {'/'.join(quality_order)} "
                 f"(chunk={GEMINI_CHUNK}, concurrency={GEMINI_CONCURRENCY})..."
             )
             translated_ok = await translate_block_list(
                 blocks,
-                QUALITY_ENGINE_ORDER,
+                quality_order,
                 target_lang,
                 on_chunk=mark_ready,
                 on_reset=reset_ready,
@@ -691,9 +724,9 @@ async def _translate_quality(clean_id: str, cache_file: str, target_lang: str = 
                 slice_blocks = blocks[i:i + BACKGROUND_SLICE]
                 logger.info(
                     f"Track 2 for {clean_id}: cues {i + 1}-{i + len(slice_blocks)}/{total} "
-                    f"via {'/'.join(QUALITY_ENGINE_ORDER)}..."
+                    f"via {'/'.join(quality_order)}..."
                 )
-                ok = await translate_block_list(slice_blocks, QUALITY_ENGINE_ORDER, target_lang)
+                ok = await translate_block_list(slice_blocks, quality_order, target_lang)
                 if ok:
                     translated_ok = True
                     mark_ready(i, len(slice_blocks))
