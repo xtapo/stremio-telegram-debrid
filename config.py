@@ -28,7 +28,7 @@ class Config:
     QBITTORRENT_PLAY_DIR = os.getenv("QBITTORRENT_PLAY_DIR", "")
     AUTO_VIET_SUB = os.getenv("AUTO_VIET_SUB", "True").lower() == "true"
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
-    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
+    GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.5-flash")
     AUTO_THUYET_MINH = os.getenv("AUTO_THUYET_MINH", "True").lower() == "true"
     
     # Custom AI translation settings

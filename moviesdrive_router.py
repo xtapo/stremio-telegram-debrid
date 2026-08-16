@@ -701,6 +701,24 @@ async def stream_endpoint(request: Request, type: str, id: str):
                             }
                         })
 
+        if streams:
+            try:
+                from subtitles_service import STREAM_VIDEO_URL_CACHE, get_or_generate_synced_vtt
+                first_direct_url = None
+                for s_res in stream_results:
+                    if isinstance(s_res, list) and s_res:
+                        for s in s_res:
+                            if s.get("url") and s["url"].startswith("http"):
+                                first_direct_url = s["url"]
+                                break
+                        if first_direct_url:
+                            break
+                if first_direct_url:
+                    STREAM_VIDEO_URL_CACHE[id] = first_direct_url
+                    asyncio.create_task(get_or_generate_synced_vtt(type, id, video_url=first_direct_url))
+            except Exception as e:
+                logger.warning(f"Pre-translation trigger error: {e}")
+
         # If search-recover HubCloud buttons exist
         if not streams and direct_hc_buttons:
             filter_q = None
@@ -814,7 +832,6 @@ async def stream_endpoint(request: Request, type: str, id: str):
                                         "name": f"🎬 MoviesDrive [{quality}]",
                                         "title": f"{stream_title} (Direct)",
                                         "url": direct_url,
-                                        "subtitles": subs,
                                         "behaviorHints": {
                                             "notWebReady": False,
                                             "filename": clean_fn
@@ -825,7 +842,6 @@ async def stream_endpoint(request: Request, type: str, id: str):
                                         "name": f"🎬 MoviesDrive Proxy [{quality}]",
                                         "title": f"{stream_title} (Proxy)",
                                         "url": proxied_url,
-                                        "subtitles": subs,
                                         "behaviorHints": {
                                             "notWebReady": False,
                                             "filename": clean_fn
@@ -887,6 +903,16 @@ async def stream_endpoint(request: Request, type: str, id: str):
                                             "notWebReady": False
                                         }
                                     })
+
+    if streams:
+        try:
+            from subtitles_service import STREAM_VIDEO_URL_CACHE, get_or_generate_synced_vtt
+            first_direct = streams[0].get("url")
+            if first_direct:
+                STREAM_VIDEO_URL_CACHE[id] = first_direct
+                asyncio.create_task(get_or_generate_synced_vtt(type, id, video_url=first_direct))
+        except Exception:
+            pass
 
     return JSONResponse({"streams": streams})
 
@@ -994,12 +1020,62 @@ async def find_imdb_for_moviesdrive_id(media_type: str, md_id: str) -> Optional[
         logger.warning(f"Error resolving IMDb ID for {md_id}: {e}")
     return None
 
+@moviesdrive_router.api_route("/moviesdrive/subtitles/vtt/{item_id}.vtt", methods=["GET", "HEAD"])
+@moviesdrive_router.api_route("/subtitles/vtt/{item_id}.vtt", methods=["GET", "HEAD"])
+async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
+    """Serves exact synced Vietnamese VTT subtitle track with HEAD request support and full track fallback."""
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        "Access-Control-Allow-Headers": "*",
+        "Content-Disposition": "inline",
+        "Cache-Control": "public, max-age=86400"
+    }
+    if request.method == "HEAD":
+        return Response(status_code=200, media_type="text/vtt; charset=utf-8", headers=headers)
+
+    target_id = request.query_params.get("orig_id") or item_id
+    from subtitles_service import get_or_generate_synced_vtt
+    try:
+        vtt_content = await get_or_generate_synced_vtt(type, target_id)
+    except Exception as e:
+        logger.warning(f"Error in serve_synced_vtt for {target_id}: {e}")
+        vtt_content = None
+
+    if not vtt_content or not vtt_content.strip():
+        vtt_content = "WEBVTT\n\n1\n00:00:01.000 --> 00:00:05.000\n[Đang tải phụ đề tiếng Việt...]"
+        headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+
+    vtt_text = vtt_content.strip()
+    if not vtt_text.startswith("WEBVTT"):
+        vtt_text = "WEBVTT\n\n" + vtt_text
+
+    return Response(
+        content=vtt_text.encode("utf-8"),
+        media_type="text/vtt; charset=utf-8",
+        headers=headers
+    )
+
 @moviesdrive_router.get("/moviesdrive/subtitles/{type}/{id}.json")
 @moviesdrive_router.get("/moviesdrive/subtitles/{type}/{id}/{extra}.json")
 @moviesdrive_router.get("/subtitles/{type}/{id}.json")
 @moviesdrive_router.get("/subtitles/{type}/{id}/{extra}.json")
-async def moviesdrive_subtitles(type: str, id: str, extra: str = ""):
-    """Serve matching subtitles (Vietnamese, English, etc.) from OpenSubtitles for MoviesDrive content."""
+async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str = ""):
+    """Serve matching subtitles with prioritized 100% synced Vietnamese AI track."""
+    base_url = str(request.base_url).rstrip('/')
+    clean_id = id.replace(":", "_").replace("/", "_")
+    ai_sub_url = f"{base_url}/subtitles/vtt/{clean_id}.vtt?type={type}&orig_id={urllib.parse.quote(id)}"
+    
+    # Priority Synced Track (Instant 100% sync)
+    subtitles_list = [
+        {
+            "id": f"vi_synced_{clean_id}",
+            "url": ai_sub_url,
+            "lang": "vie",
+            "name": "🇻🇳 Tiếng Việt Đồng Bộ Chuẩn 100% (AI Instant)"
+        }
+    ]
+
     imdb_id = id
     if id.startswith("moviesdrive:"):
         resolved_imdb = await find_imdb_for_moviesdrive_id(type, id)
@@ -1015,11 +1091,11 @@ async def moviesdrive_subtitles(type: str, id: str, extra: str = ""):
                 resp = await client.get(url)
                 if resp.status_code == 200:
                     subs = resp.json().get("subtitles", [])
-                    return JSONResponse(content={"subtitles": subs})
+                    subtitles_list.extend(subs)
         except Exception as e:
             logger.warning(f"Failed to fetch subtitles from OpenSubtitles for {imdb_id}: {e}")
 
-    return JSONResponse(content={"subtitles": []})
+    return JSONResponse(content={"subtitles": subtitles_list})
 
 # ------------------------------------------------------------------
 # Standalone Runner

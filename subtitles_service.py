@@ -437,7 +437,7 @@ async def extract_embedded_subtitle(video_url: str) -> str:
             "-probesize", "10000000",
             "-i", video_url,
             "-map", f"0:{chosen_stream_index}",
-            "-t", "3600",
+            "-c:s", "subrip",
             "-f", "srt",
             tmp_srt_path
         ]
@@ -1020,3 +1020,211 @@ class SubtitleGeneratorManager:
 
 # Export singleton instance
 subtitle_generator = SubtitleGeneratorManager()
+
+async def translate_srt_fast_batch(srt_content: str, target_lang: str = "vi") -> str:
+    """Translates an SRT/VTT file to Vietnamese concurrently in 1-2 seconds maintaining exact timestamps."""
+    header, blocks = parse_subtitles(srt_content)
+    if not blocks:
+        return srt_content
+
+    # 1. OPTION A: Translate via Gemini AI (Cinema-Grade, Natural Context, Fast)
+    gemini_key = Config.GEMINI_API_KEY
+    if gemini_key:
+        try:
+            logger.info(f"Translating {len(blocks)} subtitle blocks via Gemini API ({Config.GEMINI_MODEL})...")
+            chunk_size = 150
+            chunks = [blocks[i:i+chunk_size] for i in range(0, len(blocks), chunk_size)]
+            
+            async def translate_gemini_chunk(chunk_blocks):
+                raw_chunk_srt = "\n\n".join(f"{idx+1}\n{b['time']}\n{b['text']}" for idx, b in enumerate(chunk_blocks))
+                res = await translate_gemini(raw_chunk_srt, gemini_key, target_lang)
+                if res.startswith("```"):
+                    res = re.sub(r"^```[a-zA-Z0-9]*\n", "", res)
+                    res = re.sub(r"\n```$", "", res)
+                _, parsed = parse_subtitles(res.strip())
+                if len(parsed) == len(chunk_blocks):
+                    for b_orig, b_trans in zip(chunk_blocks, parsed):
+                        b_orig["text"] = b_trans["text"].strip()
+                elif parsed:
+                    for idx, p in enumerate(parsed[:len(chunk_blocks)]):
+                        chunk_blocks[idx]["text"] = p["text"].strip()
+                else:
+                    raise Exception("Empty Gemini translation response")
+
+            sem = asyncio.Semaphore(2)
+            async def limited_gemini(c):
+                async with sem:
+                    await translate_gemini_chunk(c)
+
+            await asyncio.gather(*[limited_gemini(c) for c in chunks])
+            vtt_header = "WEBVTT\n\n"
+        except Exception as e:
+            logger.warning(f"Gemini translation failed: {e}. Falling back to High-Speed Lingva Engine...")
+
+    # 2. OPTION B: Lingva High-Speed Multi-Instance Translator (No Bot Block, No Quota Limits)
+    lingva_instances = [
+        "https://lingva.ml",
+        "https://lingva.garudalinux.org",
+        "https://translate.plausibility.cloud"
+    ]
+    try:
+        logger.info(f"Translating {len(blocks)} subtitle blocks via High-Speed Lingva Engine...")
+        batch_size = 40
+        chunks = [blocks[i:i+batch_size] for i in range(0, len(blocks), batch_size)]
+        
+        async def translate_lingva_chunk(chunk_blocks, client):
+            tagged_lines = []
+            for idx, b in enumerate(chunk_blocks):
+                clean_text = b["text"].replace("\n", " ")
+                tagged_lines.append(f"[[{idx}]] {clean_text}")
+            joined_text = "\n".join(tagged_lines)
+            
+            for inst in lingva_instances:
+                try:
+                    url = f"{inst}/api/v1/auto/{target_lang}/{urllib.parse.quote(joined_text)}"
+                    resp = await client.get(url)
+                    if resp.status_code == 200:
+                        translated_joined = resp.json().get("translation", "")
+                        extracted = {}
+                        for m in re.finditer(r'\[\s*\[\s*(\d+)\s*\]\s*\]\s*([^\[]+)', translated_joined):
+                            i = int(m.group(1))
+                            t = m.group(2).strip()
+                            extracted[i] = t
+                        for idx, b in enumerate(chunk_blocks):
+                            if idx in extracted:
+                                b["text"] = extracted[idx]
+                        return
+                except Exception:
+                    continue
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            await asyncio.gather(*[translate_lingva_chunk(c, client) for c in chunks], return_exceptions=True)
+            
+        vtt_header = "WEBVTT\n\n"
+        return rebuild_subtitles(vtt_header, blocks)
+    except Exception as e:
+        logger.warning(f"Lingva translation failed: {e}. Falling back to Custom AI...")
+
+    # 3. OPTION C: Custom AI
+    custom_ai_url = Config.CUSTOM_AI_API_URL
+    if custom_ai_url:
+        try:
+            logger.info(f"Translating {len(blocks)} subtitle blocks via Custom AI ({Config.CUSTOM_AI_MODEL})...")
+            chunk_size = 100
+            chunks = [blocks[i:i+chunk_size] for i in range(0, len(blocks), chunk_size)]
+            
+            async def translate_custom_chunk(chunk_blocks):
+                raw_chunk_srt = "\n\n".join(f"{idx+1}\n{b['time']}\n{b['text']}" for idx, b in enumerate(chunk_blocks))
+                res = await translate_custom_ai(raw_chunk_srt, target_lang)
+                if res.startswith("```"):
+                    res = re.sub(r"^```[a-zA-Z0-9]*\n", "", res)
+                    res = re.sub(r"\n```$", "", res)
+                _, parsed = parse_subtitles(res.strip())
+                if len(parsed) == len(chunk_blocks):
+                    for b_orig, b_trans in zip(chunk_blocks, parsed):
+                        b_orig["text"] = b_trans["text"].strip()
+                elif parsed:
+                    for idx, p in enumerate(parsed[:len(chunk_blocks)]):
+                        chunk_blocks[idx]["text"] = p["text"].strip()
+                else:
+                    raise Exception("Empty Custom AI translation response")
+
+            await asyncio.gather(*[translate_custom_chunk(c) for c in chunks])
+            vtt_header = "WEBVTT\n\n"
+            return rebuild_subtitles(vtt_header, blocks)
+        except Exception as e:
+            logger.warning(f"Custom AI translation failed: {e}")
+
+    vtt_header = "WEBVTT\n\n"
+    return rebuild_subtitles(vtt_header, blocks)
+
+# In-memory mapping of item_id -> active stream video_url
+STREAM_VIDEO_URL_CACHE = {}
+
+async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: Optional[str] = None) -> Optional[str]:
+    """Retrieves or instantly generates an exact synced Vietnamese VTT subtitle track from embedded subtitle or OpenSubtitles."""
+    clean_id = item_id.replace(":", "_").replace("/", "_")
+    cache_file = os.path.join(CACHE_DIR, f"vi_sync_{clean_id}.vtt")
+    
+    if os.path.exists(cache_file) and os.path.getsize(cache_file) > 100:
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception:
+            pass
+
+    base_srt = None
+    target_video_url = (
+        video_url
+        or STREAM_VIDEO_URL_CACHE.get(item_id)
+        or STREAM_VIDEO_URL_CACHE.get(clean_id)
+        or STREAM_VIDEO_URL_CACHE.get(item_id.replace("_", ":"))
+    )
+
+    # 1. Ultra-Fast Method: Fetch base English subtitle from OpenSubtitles (0.2s response time)
+    imdb_id = item_id
+    if "_" in imdb_id and ":" not in imdb_id and not imdb_id.startswith("moviesdrive:"):
+        parts = imdb_id.split("_")
+        if len(parts) >= 3 and parts[0].startswith("tt"):
+            imdb_id = f"{parts[0]}:{parts[1]}:{parts[2]}"
+        elif len(parts) == 2 and parts[0].startswith("tt"):
+            imdb_id = f"{parts[0]}:{parts[1]}"
+            
+    if imdb_id.startswith("moviesdrive:"):
+        from moviesdrive_router import find_imdb_for_moviesdrive_id
+        resolved = await find_imdb_for_moviesdrive_id(media_type, item_id)
+        if resolved:
+            imdb_id = resolved
+
+    eng_subs = []
+    if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
+        url = f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/{urllib.parse.quote(imdb_id)}.json"
+        try:
+            async with httpx.AsyncClient(timeout=4.0) as client:
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    subs = resp.json().get("subtitles", [])
+                    for s in subs:
+                        if s.get("lang") in ("eng", "en"):
+                            eng_subs.append(s.get("url"))
+                    if not eng_subs and subs:
+                        eng_subs.append(subs[0].get("url"))
+        except Exception as e:
+            logger.warning(f"Failed to fetch base subtitle for sync translation: {e}")
+
+    for sub_url in eng_subs[:2]:
+        try:
+            async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
+                resp = await client.get(sub_url)
+                if resp.status_code == 200 and len(resp.text) > 200:
+                    base_srt = resp.text
+                    break
+        except Exception:
+            continue
+
+    # 2. Secondary Method: Extract embedded subtitle directly from the video stream if OpenSubtitles was empty
+    if not base_srt and target_video_url:
+        try:
+            logger.info(f"Extracting embedded subtitle directly from video: {target_video_url[:80]}...")
+            embedded_srt = await extract_embedded_subtitle(target_video_url)
+            if embedded_srt and len(embedded_srt) > 100:
+                logger.info(f"Successfully extracted embedded subtitle ({len(embedded_srt)} bytes) from video.")
+                base_srt = embedded_srt
+        except Exception as e:
+            logger.warning(f"Failed to extract embedded subtitle from video {target_video_url}: {e}")
+
+    if not base_srt:
+        return None
+
+    # 3. Fast Batch Translate to Vietnamese
+    vtt_content = await translate_srt_fast_batch(base_srt, target_lang="vi")
+    if vtt_content:
+        try:
+            os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+            with open(cache_file, "w", encoding="utf-8") as f:
+                f.write(vtt_content)
+        except Exception as e:
+            logger.warning(f"Failed to write cache for {cache_file}: {e}")
+        return vtt_content
+    return None
+

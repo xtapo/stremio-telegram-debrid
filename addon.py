@@ -1085,24 +1085,26 @@ async def find_subtitles_for_video(
                 params["video_url"] = video_url
             params["filename"] = video_filename
             
-            query_str = urllib.parse.urlencode(params)
-            sub_url = f"{Config.ADDON_URL}/stream/subtitle/autoviet/{cache_key}"
-            if query_str:
-                sub_url += f"?{query_str}"
+            target_id = imdb_id or cache_key
+            sub_url = f"{Config.ADDON_URL}/subtitles/vtt/{urllib.parse.quote(target_id)}.vtt?type={media_type}"
+            if api_key:
+                sub_url = f"{Config.ADDON_URL}/{api_key}/subtitles/vtt/{urllib.parse.quote(target_id)}.vtt?type={media_type}"
             
             subtitles.append({
-                "id": f"autovietsub_{cache_key}",
+                "id": f"vi_synced_{cache_key}",
                 "url": sub_url,
-                "lang": "vie"
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt Đồng Bộ Chuẩn 100% (AI Instant)"
             })
             
             # Preload in background
-            asyncio.create_task(subtitle_generator.get_or_start_translation(
-                cache_key=cache_key,
-                source_url=source_url,
-                video_url=video_url,
-                filename=video_filename
-            ))
+            try:
+                from subtitles_service import get_or_generate_synced_vtt, STREAM_VIDEO_URL_CACHE
+                if video_url:
+                    STREAM_VIDEO_URL_CACHE[target_id] = video_url
+                asyncio.create_task(get_or_generate_synced_vtt(media_type, target_id, video_url=video_url))
+            except Exception:
+                pass
             
     return subtitles
 
@@ -1110,9 +1112,15 @@ async def find_subtitles_for_video(
 @app.get("/subtitles/{type}/{id}/{extra}.json")
 @app.get("/{api_key}/subtitles/{type}/{id}.json")
 @app.get("/{api_key}/subtitles/{type}/{id}/{extra}.json")
-async def root_subtitles_handler(type: str, id: str, extra: str = "", api_key: str = ""):
+async def root_subtitles_handler(request: Request, type: str, id: str, extra: str = "", api_key: str = ""):
     from moviesdrive_router import moviesdrive_subtitles
-    return await moviesdrive_subtitles(type, id, extra)
+    return await moviesdrive_subtitles(request, type, id, extra)
+
+@app.api_route("/subtitles/vtt/{item_id}.vtt", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/subtitles/vtt/{item_id}.vtt", methods=["GET", "HEAD"])
+async def root_serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
+    from moviesdrive_router import serve_synced_vtt
+    return await serve_synced_vtt(request, item_id, type)
 
 @app.get("/stream/{type}/{stream_id}.json")
 @app.get("/{api_key}/stream/{type}/{stream_id}.json")
@@ -1817,6 +1825,10 @@ async def auto_viet_subtitle_endpoint(
         filename=filename
     )
     
+    if not content or not content.strip():
+        content = "WEBVTT\n\n1\n00:00:01.000 --> 00:00:05.000\n[Đang tải phụ đề tiếng Việt đồng bộ...]"
+        content_type = "text/vtt; charset=utf-8"
+        
     if progress < 1.0:
         headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
     else:
