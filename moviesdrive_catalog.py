@@ -53,7 +53,8 @@ META_STALE_TTL = perf._env_int("MD_META_STALE_TTL", 7200)
 CINEMETA_TTL = perf._env_int("MD_CINEMETA_TTL", 3600)
 IMDB_TTL = perf._env_int("MD_IMDB_TTL", 86400)
 SUBS_TTL = perf._env_int("MD_SUBS_TTL", 900)
-PAGE_SIZE = perf._env_int("MD_CATALOG_PAGE_SIZE", 18)
+MD_ITEMS_PER_PAGE = 24
+CATALOG_BATCH_SIZE = perf._env_int("MD_CATALOG_PAGE_SIZE", 72)
 
 CATEGORIES_MAP = {
     "Action": "action",
@@ -140,13 +141,14 @@ async def search_moviesdrive_api(query: str, page: int = 1) -> Dict[str, Any]:
 # ------------------------------------------------------------------
 def _catalog_url(cat_type: str, cat_id: str, genre: Optional[str], page: int) -> str:
     base = current_base()
-    url = base + "/"
     if cat_id == "moviesdrive_movies_4k":
         url = base + "/category/2160p-4k/"
     elif genre and genre in CATEGORIES_MAP:
         url = base + "/category/" + CATEGORIES_MAP[genre] + "/"
-    elif cat_type == "series":
+    elif cat_type == "series" or cat_id == "moviesdrive_series_latest":
         url = base + "/category/web/"
+    else:
+        url = base + "/category/movies/"
     if page > 1:
         url = url + "page/" + str(page) + "/"
     return url
@@ -211,6 +213,36 @@ def _extract_meta_poster(soup) -> str:
     return ""
 
 
+def clean_title(title: str) -> str:
+    t = title or ""
+    # Strip any leading non-alphanumeric unicode icons
+    t = re.sub(r"^[^\w\s]+", "", t).strip()
+    # Remove leading Download / Watch
+    t = re.sub(r"^(?:Download|Watch)\s+", "", t, flags=re.I)
+    # Remove quality / codec / channel / episode / platform noise tags in brackets
+    t = re.sub(
+        r"[\(\[\{]\s*(?:WEB-DL|WEBRip|BluRay|HDTC|DS4K|4K|1080p|720p|480p|2160p|HEVC|10Bit|x264|x265|Dual Audio|Hindi|English|Tamil|Telugu|Punjabi|ESubs?|Multi Audio|Full Movie|ALL Episodes|NF Series|AMZN-Series|PrimeVideo Series|Amazon Original|Disney\+|Hotstar|SonyLIV|Zee5|JioHotstar|Anime Movie|HD x264|In English)[^\)\]\}]*[\)\]\}]",
+        "",
+        t,
+        flags=re.I,
+    )
+    t = re.sub(
+        r"\b(?:Disney\+\s*Hotstar|Disney\+|Hotstar|Netflix|Amazon Original|PrimeVideo|SonyLIV|Zee5|JioHotstar|JioCinema|Full Movie)\b",
+        "",
+        t,
+        flags=re.I,
+    )
+    t = re.sub(
+        r"\b(?:WEB-DL|WEBRip|BluRay|HDTC|DS4K|4K|1080p|720p|480p|2160p|HEVC|10Bit|x264|x265|Dual Audio|Hindi|English|Tamil|Telugu|Punjabi|ESubs?|Multi Audio|Full Movie|ALL Episodes|NF Series|AMZN-Series|PrimeVideo Series)\b.*",
+        "",
+        t,
+        flags=re.I,
+    )
+    t = re.sub(r"[\–\-\|]\s*(?:MoviesDrive|Dual Audio|Hindi|English|480p|720p|1080p|2160p|4K|Full Movie|Disney\+|Hotstar|AMZN|Amazon).*", "", t, flags=re.I)
+    t = re.sub(r"[\[\]\(\)\|\-–—]", " ", t)
+    return re.sub(r"\s+", " ", t).strip()
+
+
 def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
     soup = make_soup(html_text)
     nodes = soup.find_all("div", class_="poster-card") or soup.find_all("article")
@@ -241,6 +273,8 @@ def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
         if not title:
             title = slug.replace("-", " ").title()
 
+        cleaned_name = clean_title(title) or title
+
         thumb = ""
         if img_tag:
             thumb = _extract_img_src(img_tag)
@@ -251,7 +285,7 @@ def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
             {
                 "id": "moviesdrive:" + slug,
                 "type": "series" if looks_like_series(title) else "movie",
-                "name": title,
+                "name": cleaned_name,
                 "poster": absolute(thumb),
                 "posterShape": "poster",
             }
@@ -273,10 +307,9 @@ async def get_catalog_items(
     search: Optional[str] = None,
     skip: int = 0,
 ) -> List[Dict[str, Any]]:
-    page = (skip // PAGE_SIZE) + 1
-
     if search:
-        data = await search_moviesdrive_api(search, page=page)
+        search_page = (skip // 20) + 1
+        data = await search_moviesdrive_api(search, page=search_page)
         items: List[Dict[str, Any]] = []
         for hit in data.get("hits", []):
             doc = hit.get("document", {})
@@ -284,26 +317,50 @@ async def get_catalog_items(
             if not slug:
                 continue
             title = doc.get("post_title", "Untitled")
+            cleaned_name = clean_title(title) or title
             items.append(
                 {
                     "id": "moviesdrive:" + slug,
                     "type": "series" if looks_like_series(title) else "movie",
-                    "name": title,
+                    "name": cleaned_name,
                     "poster": absolute(doc.get("post_thumbnail", "")),
                     "posterShape": "poster",
                 }
             )
         return items
 
-    url = _catalog_url(cat_type, cat_id, genre, page)
-    items = await cached_call(
-        "cat:" + strip_base(url),
-        lambda: _scrape_catalog(url),
-        ttl=CATALOG_TTL,
-        stale_ttl=CATALOG_STALE_TTL,
-        negative_ttl=NEGATIVE_TTL,
-    )
-    return items or []
+    target_start = max(0, skip)
+    target_end = target_start + CATALOG_BATCH_SIZE
+    start_page = (target_start // MD_ITEMS_PER_PAGE) + 1
+    end_page = ((target_end - 1) // MD_ITEMS_PER_PAGE) + 1
+    offset_in_first_page = target_start % MD_ITEMS_PER_PAGE
+
+    page_urls = [
+        _catalog_url(cat_type, cat_id, genre, p)
+        for p in range(start_page, end_page + 1)
+    ]
+    tasks = [
+        cached_call(
+            "cat:" + strip_base(u),
+            lambda u=u: _scrape_catalog(u),
+            ttl=CATALOG_TTL,
+            stale_ttl=CATALOG_STALE_TTL,
+            negative_ttl=NEGATIVE_TTL,
+        )
+        for u in page_urls
+    ]
+    results = await asyncio.gather(*tasks)
+    all_items: List[Dict[str, Any]] = []
+    seen = set()
+    for res in results:
+        if res:
+            for item in res:
+                item_id = item.get("id")
+                if item_id and item_id not in seen:
+                    seen.add(item_id)
+                    all_items.append(item)
+
+    return all_items[offset_in_first_page : offset_in_first_page + CATALOG_BATCH_SIZE]
 
 
 # ------------------------------------------------------------------
@@ -343,26 +400,130 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
 
     soup = make_soup(page_html)
     title_tag = soup.find("h1") or soup.find("h2")
-    name = title_tag.get_text(strip=True) if title_tag else slug.replace("-", " ").title()
+    raw_title = title_tag.get_text(strip=True) if title_tag else slug.replace("-", " ").title()
+    cleaned_name = clean_title(raw_title) or raw_title
 
     content = post_content(page_html)
     poster = _extract_meta_poster(soup)
 
-    description = ""
-    for p in (content.find_all("p") if content else []):
-        txt = p.get_text(strip=True)
-        if len(txt) > 80 and not any(
-            word in txt.lower()
-            for word in ("download", "link", "click here", "telegram", "join")
-        ):
-            description = txt
+    # 1. Search for IMDb ID in links or resolve via title lookup
+    imdb_id = None
+    for a in soup.find_all("a", href=True):
+        m = re.search(r"(tt\d{7,10})", a["href"])
+        if m:
+            imdb_id = m.group(1)
             break
+    if not imdb_id:
+        resolved_id = await find_imdb_for_moviesdrive_id(media_type, item_id)
+        if resolved_id:
+            imdb_id = resolved_id.split(":")[0]
 
-    is_series = bool(media_type == "series" or re.search(r"season|s\d+|series", name, re.I))
+    # 2. Fetch Cinemeta official metadata if IMDb ID found
+    cm_meta = None
+    if imdb_id:
+        cm_meta = await get_cinemeta_title(media_type, imdb_id)
+
+    # 3. Extract Storyline / Synopsis
+    synopsis = ""
+    if cm_meta and cm_meta.get("description"):
+        synopsis = cm_meta["description"]
+
+    if not synopsis:
+        for header in soup.find_all(["h1", "h2", "h3", "h4", "h5", "p", "span", "strong"]):
+            htxt = header.get_text(strip=True)
+            if any(kw in htxt.lower() for kw in ("storyline", "story:", "plot:", "about movie", "overview", "synopsis")):
+                target = header
+                for sib in target.next_siblings:
+                    if hasattr(sib, "get_text"):
+                        st = sib.get_text(" ", strip=True)
+                        if st and len(st) > 20 and not any(bad in st.lower() for bad in ("screenshot", "download", "click here")):
+                            synopsis = st.strip()
+                            break
+                if not synopsis and header.parent:
+                    for sib in header.parent.next_siblings:
+                        if hasattr(sib, "get_text"):
+                            st = sib.get_text(" ", strip=True)
+                            if st and len(st) > 20 and not any(bad in st.lower() for bad in ("screenshot", "download", "click here")):
+                                synopsis = st.strip()
+                                break
+                if synopsis:
+                    break
+
+    # 4. Extract Movie / Series Info box (IMDb rating, Audio/Language, Quality, Year)
+    info_dict: Dict[str, str] = {}
+    for p in soup.find_all(["p", "div"]):
+        txt = p.get_text("\n", strip=True)
+        if "Movie Info:" in txt or "Series Info:" in txt or "IMDb Rating" in txt:
+            for line in txt.split("\n"):
+                line = line.strip()
+                if "imdb rating" in line.lower():
+                    m = re.search(r"(\d+(?:\.\d+)?\s*/\s*10)", line)
+                    if m:
+                        info_dict["rating"] = m.group(1).replace(" ", "")
+                elif "language" in line.lower() or "audio" in line.lower():
+                    val = re.sub(r"^[^\w\s\{\}\[\]\+]+", "", line).strip()
+                    val = re.sub(r"^(?:language|audio)\s*:\s*", "", val, flags=re.I).strip()
+                    if val:
+                        info_dict["audio"] = val
+                elif "quality" in line.lower():
+                    val = re.sub(r"^quality\s*:\s*", "", line, flags=re.I).strip()
+                    if val:
+                        info_dict["quality"] = val
+                elif "release year" in line.lower() or "year" in line.lower():
+                    val = re.search(r"\b(19\d\d|20\d\d)\b", line)
+                    if val:
+                        info_dict["year"] = val.group(1)
+
+    # 5. Extract metadata fields
+    rating = (cm_meta.get("imdbRating") if cm_meta else None) or info_dict.get("rating") or ""
+    year = (cm_meta.get("year") if cm_meta else None) or (cm_meta.get("releaseInfo") if cm_meta else None) or info_dict.get("year") or ""
+    genres = (cm_meta.get("genres") if cm_meta else None) or ["Action", "HD", "Dual Audio"]
+    genre_str = ", ".join(genres) if isinstance(genres, list) else str(genres)
+    audio = info_dict.get("audio") or "Dual Audio (Hindi + English / Original)"
+
+    if not poster and cm_meta and cm_meta.get("poster"):
+        poster = cm_meta.get("poster")
+    background = (cm_meta.get("background") if cm_meta else None) or poster or ""
+    logo = (cm_meta.get("logo") if cm_meta else None) or ""
+    final_name = (cm_meta.get("name") if cm_meta else None) or cleaned_name or raw_title
+
+    # 6. Translate Synopsis & Build Vietnamese Rich Description
+    vi_synopsis = ""
+    if synopsis:
+        try:
+            from translation_service import translate_to_vietnamese
+            vi_synopsis = await translate_to_vietnamese(synopsis)
+        except Exception:
+            vi_synopsis = synopsis
+
+    header_parts = []
+    if rating:
+        header_parts.append(f"⭐ IMDb: {rating}")
+    if year:
+        header_parts.append(f"📅 Năm: {year}")
+    if genre_str:
+        header_parts.append(f"🎭 Thể loại: {genre_str}")
+
+    desc_lines = []
+    if header_parts:
+        desc_lines.append(" | ".join(header_parts))
+    desc_lines.append(f"🔊 Âm thanh: {audio}")
+    desc_lines.append("🇻🇳 Phụ đề: Tiếng Việt tự động (AI Fast & Quality)")
+    desc_lines.append("⚡ Máy chủ phát: Direct CDN 10Gbps / Local Proxy Stream")
+    desc_lines.append("")
+    if vi_synopsis:
+        desc_lines.append("📝 Tóm tắt nội dung:")
+        desc_lines.append(vi_synopsis)
+    else:
+        desc_lines.append(f"🎬 Xem phim {final_name} trên MoviesDrive với chất lượng 4K UHD, 1080p FHD, 720p HD, hỗ trợ phụ đề tiếng Việt và phát trực tuyến tốc độ cao.")
+
+    formatted_description = "\n".join(desc_lines)
+
+    is_series = bool(media_type == "series" or re.search(r"season|s\d+|series", raw_title, re.I))
     videos: List[Dict[str, Any]] = []
 
     if is_series:
-        season_match = re.search(r"season\s*(\d+)|s(\d+)", name, re.I)
+        season_match = re.search(r"season\s*(\d+)|s(\d+)", raw_title, re.I)
         season_num = (
             int(season_match.group(1) or season_match.group(2)) if season_match else 1
         )
@@ -371,30 +532,25 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
             videos.append(
                 {
                     "id": "moviesdrive:" + slug + ":" + str(season_num) + ":" + str(ep),
-                    "title": "Tap " + str(ep) + " (Episode " + str(ep) + ")",
+                    "title": "Tập " + str(ep) + " (Episode " + str(ep) + ")",
                     "season": season_num,
                     "episode": ep,
                     "released": "2026-01-01T00:00:00.000Z",
                 }
             )
 
-    # Fallback to Cinemeta if page poster was missing
-    if not poster:
-        imdb_id = await find_imdb_for_moviesdrive_id(media_type, item_id)
-        if imdb_id:
-            cine_meta = await get_cinemeta_title(media_type, imdb_id.split(":")[0])
-            if cine_meta and cine_meta.get("poster"):
-                poster = cine_meta.get("poster")
-
     meta_obj: Dict[str, Any] = {
         "id": item_id,
         "type": "series" if is_series else "movie",
-        "name": name,
+        "name": final_name,
         "poster": poster,
-        "background": poster,
-        "description": description
-        or ("Watch " + name + " on MoviesDrive in 4K UHD, 1080p, 720p."),
-        "genres": ["Action", "HD", "Dual Audio"],
+        "background": background,
+        "logo": logo,
+        "description": formatted_description,
+        "genres": genres if isinstance(genres, list) else [genres],
+        "releaseInfo": str(year) if year else "",
+        "imdbRating": str(rating) if rating else "",
+        "imdb_id": imdb_id or "",
         "posterShape": "poster",
     }
     if videos:

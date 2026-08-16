@@ -489,6 +489,36 @@ async def _load_base_subtitle(media_type: str, item_id: str, clean_id: str, vide
     return None, None
 
 
+def _get_addon_base_url() -> str:
+    try:
+        from config import Config
+        if getattr(Config, "ADDON_URL", None):
+            return Config.ADDON_URL.rstrip("/")
+        port = getattr(Config, "PORT", 8000)
+        return f"http://localhost:{port}"
+    except Exception:
+        return "http://localhost:8000"
+
+
+def _log_sub_banner(title: str, clean_id: str, media_type: str, track: str, file_path: str, extra_info: str = ""):
+    base_url = _get_addon_base_url()
+    download_url = f"{base_url}/subtitles/vtt/{clean_id}.vtt?type={media_type}&track={track}"
+    sep = "=" * 80
+    lines = [
+        "",
+        sep,
+        f"🎯 {title}: {clean_id}",
+        f"   🔗 Link tải phụ đề trực tiếp:",
+        f"      👉 {download_url}",
+        f"   📁 File lưu tại máy:",
+        f"      👉 {file_path}",
+    ]
+    if extra_info:
+        lines.append(f"   ℹ️ {extra_info}")
+    lines.append(sep)
+    logger.info("\n".join(lines))
+
+
 async def _get_base_subtitle(media_type: str, item_id: str, clean_id: str, video_url: str = None) -> tuple:
     """_load_base_subtitle plus memory and disk caching.
 
@@ -511,6 +541,14 @@ async def _get_base_subtitle(media_type: str, item_id: str, clean_id: str, video
                     content = f.read()
                 if content.strip():
                     _BASE_SUBS[clean_id] = (content, "cache")
+                    _log_sub_banner(
+                        "ĐÃ TÁCH PHỤ ĐỀ GỐC (CACHE SẴN CÓ)",
+                        clean_id,
+                        media_type,
+                        "base",
+                        base_file,
+                        f"Đã nạp {len(content.splitlines())} dòng phụ đề gốc từ cache",
+                    )
                     return _BASE_SUBS[clean_id]
             except Exception:
                 pass
@@ -519,6 +557,14 @@ async def _get_base_subtitle(media_type: str, item_id: str, clean_id: str, video
         if base_srt:
             _BASE_SUBS[clean_id] = (base_srt, source)
             _write_cache(base_file, base_srt)
+            _log_sub_banner(
+                f"ĐÃ TÁCH PHỤ ĐỀ GỐC ({source.upper()})",
+                clean_id,
+                media_type,
+                "base",
+                base_file,
+                f"Đã trích xuất {len(base_srt.splitlines())} dòng phụ đề gốc",
+            )
         return base_srt, source
 
 
@@ -590,6 +636,14 @@ async def get_or_generate_fast_vtt(
 
     cached = _read_cache(cache_file)
     if cached:
+        _log_sub_banner(
+            "PHỤ ĐỀ TIẾNG VIỆT FAST (CACHE SẴN CÓ)",
+            clean_id,
+            media_type,
+            "fast",
+            cache_file,
+            "Đã sẵn sàng tải xuống từ cache",
+        )
         return cached
 
     async with _get_lock(_FAST_LOCKS, clean_id):
@@ -624,6 +678,14 @@ async def get_or_generate_fast_vtt(
             # it has not upgraded yet.
             _FAST_BLOCKS[clean_id] = [dict(b) for b in blocks]
             _write_cache(cache_file, content)
+            _log_sub_banner(
+                "ĐÃ DỊCH PHỤ ĐỀ TIẾNG VIỆT (FAST)",
+                clean_id,
+                media_type,
+                "fast",
+                cache_file,
+                f"Dịch hoàn tất trong {time.time() - started:.1f}s ({len(blocks)} câu)",
+            )
             if AUTO_START_QUALITY:
                 _start_quality_task(media_type, item_id, clean_id)
 
@@ -743,6 +805,14 @@ async def _translate_quality(clean_id: str, cache_file: str, target_lang: str = 
                     f"Track 2 finished and cached for {clean_id} in {time.time() - started:.1f}s "
                     f"({upgraded}/{total} cues upgraded by AI)."
                 )
+                _log_sub_banner(
+                    "ĐÃ DỊCH PHỤ ĐỀ TIẾNG VIỆT (AI QUALITY / GEMINI)",
+                    clean_id,
+                    state.get("media_type") or "movie",
+                    "quality",
+                    cache_file,
+                    f"Nâng cấp AI hoàn tất trong {time.time() - started:.1f}s ({upgraded}/{total} câu)",
+                )
                 SYNC_VTT_TASKS.pop(clean_id, None)
         else:
             logger.warning(f"Track 2 produced nothing usable for {clean_id}; not cached.")
@@ -779,6 +849,8 @@ async def _prepare_quality_state(
         "done": False,
         "translated_ok": False,
         "source": base_source,
+        "media_type": media_type,
+        "item_id": item_id,
     }
     SYNC_VTT_TASKS[clean_id] = state
     state["task"] = asyncio.create_task(
@@ -822,6 +894,14 @@ async def get_or_generate_quality_vtt(
 
     cached = _read_cache(cache_file)
     if cached:
+        _log_sub_banner(
+            "PHỤ ĐỀ TIẾNG VIỆT AI QUALITY (CACHE SẴN CÓ)",
+            clean_id,
+            media_type,
+            "quality",
+            cache_file,
+            "Đã sẵn sàng tải xuống từ cache",
+        )
         return cached
 
     async with _get_lock(_QUALITY_LOCKS, clean_id):
@@ -854,6 +934,14 @@ async def get_track_vtt(
     media_type: str, item_id: str, track: str = "fast", video_url: Optional[str] = None
 ) -> Optional[str]:
     """Dispatch helper used by the /subtitles/vtt endpoint."""
-    if (track or "fast").lower() in ("quality", "ai", "gemini", "2"):
+    t = (track or "fast").lower()
+    if t in ("quality", "ai", "gemini", "2"):
         return await get_or_generate_quality_vtt(media_type, item_id, video_url)
+    elif t in ("base", "raw", "original", "extracted", "eng", "en"):
+        clean_id = _clean(item_id)
+        base_srt, _ = await _get_base_subtitle(media_type, item_id, clean_id, video_url)
+        if base_srt:
+            _, blocks = parse_subtitles(base_srt)
+            return build_vtt(blocks, SUBTITLE_TIME_OFFSET) if blocks else base_srt
+        return None
     return await get_or_generate_fast_vtt(media_type, item_id, video_url)

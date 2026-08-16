@@ -93,6 +93,7 @@ from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
 from topxx_router import topxx_router
 from moviesdrive_router import moviesdrive_router
+from hdhub4u_router import hdhub4u_router
 
 app = FastAPI(lifespan=lifespan)
 
@@ -108,6 +109,7 @@ app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
 app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
 app.include_router(moviesdrive_router, prefix="/moviesdrive", tags=["MoviesDrive Cinema"])
+app.include_router(hdhub4u_router, prefix="/hdhub4u", tags=["HDHub4u Cinema"])
 
 
 
@@ -735,6 +737,7 @@ async def manifest_endpoint(api_key: str = ""):
 @app.get("/{api_key}/catalog/{type}/{catalog_id}.json", dependencies=[Depends(verify_api_key)])
 @app.get("/{api_key}/catalog/{type}/{catalog_id}/{extra}.json", dependencies=[Depends(verify_api_key)])
 async def catalog_handler(
+    request: Request,
     type: str, 
     catalog_id: str, 
     extra: str = None,
@@ -743,8 +746,14 @@ async def catalog_handler(
     if catalog_id.startswith("moviesdrive_") or catalog_id.startswith("moviesdrive:"):
         from moviesdrive_router import catalog_extra_endpoint, catalog_endpoint
         if extra:
-            return await catalog_extra_endpoint(type, catalog_id, extra)
-        return await catalog_endpoint(type, catalog_id)
+            return await catalog_extra_endpoint(request, type, catalog_id, extra)
+        return await catalog_endpoint(request, type, catalog_id)
+
+    if catalog_id.startswith("hdhub4u_") or catalog_id.startswith("hdhub4u:"):
+        from hdhub4u_router import catalog_extra_endpoint as hdh_cat_extra, catalog_endpoint as hdh_cat
+        if extra:
+            return await hdh_cat_extra(type, catalog_id, extra)
+        return await hdh_cat(type, catalog_id)
 
     if type not in ["movie", "series"]:
         return {"metas": []}
@@ -866,6 +875,9 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
     if meta_id.startswith("moviesdrive:"):
         from moviesdrive_router import meta_endpoint as md_meta
         return await md_meta(type, meta_id)
+    if meta_id.startswith("hdhub4u:"):
+        from hdhub4u_router import meta_endpoint as hdh_meta
+        return await hdh_meta(type, meta_id)
     if not meta_id.startswith("tgfile_"):
         return {"meta": {}}
         
@@ -1147,6 +1159,10 @@ async def stream_handler(
     if stream_id.startswith("moviesdrive:"):
         from moviesdrive_router import stream_endpoint as md_stream
         return await md_stream(request, type, stream_id)
+
+    if stream_id.startswith("hdhub4u:"):
+        from hdhub4u_router import stream_endpoint as hdh_stream
+        return await hdh_stream(request, type, stream_id)
 
     if stream_id.startswith("tgfile_"):
         if "//" in stream_id:
@@ -1504,6 +1520,18 @@ async def stream_handler(
                     streams.append(s)
         except Exception as e:
             logger.warning(f"Failed to fetch MoviesDrive streams for IMDb {stream_id}: {e}")
+
+        # 4. HDHub4u Direct Fast Stream Integration
+        try:
+            from hdhub4u_router import stream_endpoint as hdh_stream
+            hdh_resp = await hdh_stream(request, type, stream_id)
+            if hasattr(hdh_resp, "body"):
+                import json
+                hdh_data = json.loads(hdh_resp.body.decode("utf-8"))
+                for s in hdh_data.get("streams", []):
+                    streams.append(s)
+        except Exception as e:
+            logger.warning(f"Failed to fetch HDHub4u streams for IMDb {stream_id}: {e}")
             
     # Interleave Thuyết Minh AI streams if enabled
     if Config.AUTO_THUYET_MINH and streams:

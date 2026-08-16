@@ -271,6 +271,7 @@ async def get_manifest():
 
 
 async def catalog_endpoint(
+    request: Request,
     type: str,
     id: str,
     genre: Optional[str] = None,
@@ -278,16 +279,21 @@ async def catalog_endpoint(
     skip: Optional[int] = 0,
 ):
     start_background_tasks()
-    metas = await get_catalog_items(type, id, genre=genre, search=search, skip=skip or 0)
+    qp = request.query_params if request else {}
+    final_genre = genre or qp.get("genre")
+    final_search = search or qp.get("search")
+    final_skip = skip if skip is not None else int(qp.get("skip", 0) if str(qp.get("skip", "")).isdigit() else 0)
+    metas = await get_catalog_items(type, id, genre=final_genre, search=final_search, skip=final_skip or 0)
     return JSONResponse({"metas": metas})
 
 
-async def catalog_extra_endpoint(type: str, id: str, extra: str):
+async def catalog_extra_endpoint(request: Request, type: str, id: str, extra: str = ""):
     start_background_tasks()
     genre = None
     search = None
     skip = 0
-    for pair in (extra or "").split("&"):
+    clean_extra = (extra or "").replace(".json", "")
+    for pair in clean_extra.split("&"):
         if "=" not in pair:
             continue
         k, v = pair.split("=", 1)
@@ -301,6 +307,15 @@ async def catalog_extra_endpoint(type: str, id: str, extra: str):
                 skip = int(v)
             except ValueError:
                 pass
+    if request:
+        qp = request.query_params
+        if not genre and "genre" in qp:
+            genre = qp.get("genre")
+        if not search and "search" in qp:
+            search = qp.get("search")
+        if skip == 0 and "skip" in qp and str(qp.get("skip")).isdigit():
+            skip = int(qp.get("skip"))
+
     metas = await get_catalog_items(type, id, genre=genre, search=search, skip=skip)
     return JSONResponse({"metas": metas})
 
@@ -508,7 +523,7 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
     ?track=quality Gemini -> Custom AI, served progressively while it runs.
     """
     track = (request.query_params.get("track") or TRACK_FAST).lower()
-    if track not in (TRACK_FAST, TRACK_QUALITY):
+    if track not in (TRACK_FAST, TRACK_QUALITY, "base", "raw", "original"):
         track = TRACK_FAST
 
     headers = {
@@ -520,7 +535,7 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
         # cached by the player or the user would be stuck on an early version.
         "Cache-Control": (
             "public, max-age=86400"
-            if track == TRACK_FAST
+            if track in (TRACK_FAST, "base", "raw", "original")
             else "no-store, no-cache, must-revalidate"
         ),
     }
@@ -552,24 +567,47 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
 
 
 async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str = ""):
-    """Serve subtitles: the fast Lingva track first, then the AI quality track."""
+    """Serve subtitles: fast Lingva track, AI quality track, and base extracted track."""
     base_url = _base_url(request)
     clean_id = id.replace(":", "_").replace("/", "_")
+
+    fast_url = _subtitle_url(base_url, clean_id, type, id, TRACK_FAST)
+    quality_url = _subtitle_url(base_url, clean_id, type, id, TRACK_QUALITY)
+    base_sub_url = _subtitle_url(base_url, clean_id, type, id, "base")
 
     subtitles_list: List[Dict[str, Any]] = [
         {
             "id": "vi_fast_" + clean_id,
-            "url": _subtitle_url(base_url, clean_id, type, id, TRACK_FAST),
+            "url": fast_url,
             "lang": "vie",
             "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
         },
         {
             "id": "vi_quality_" + clean_id,
-            "url": _subtitle_url(base_url, clean_id, type, id, TRACK_QUALITY),
+            "url": quality_url,
             "lang": "vie",
             "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
         },
+        {
+            "id": "vi_base_" + clean_id,
+            "url": base_sub_url,
+            "lang": "eng",
+            "name": "📥 Phụ đề Gốc đã tách (Base / English)",
+        },
     ]
+
+    sep = "=" * 80
+    logger.info(
+        f"\n{sep}\n"
+        f"🎯 [SUBTITLE DOWNLOAD LINKS] PHIM: {id}\n"
+        f"   🔗 1. Tiếng Việt (Fast):\n"
+        f"      👉 {fast_url}\n"
+        f"   🔗 2. Tiếng Việt (AI Gemini Quality):\n"
+        f"      👉 {quality_url}\n"
+        f"   🔗 3. Phụ đề gốc (Base/English):\n"
+        f"      👉 {base_sub_url}\n"
+        f"{sep}"
+    )
 
     imdb_id = id
     if id.startswith("moviesdrive:"):

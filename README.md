@@ -72,6 +72,7 @@ Deploy your own instance of the Telegram Stremio Addon instantly using any of th
 - **High-Speed Range Proxy**: Supports HTTP `206 Partial Content` streaming, enabling instant scrub/seek (fast-forwarding/rewinding) on players like ExoPlayer, VLC, and MPV (for direct files and stitched split streams).
 - **Zero-Storage Footprint**: Streams files chunk-by-chunk in memory directly from Telegram DCs. No temporary server storage is consumed (except for temporary torrent caches if auto-upload is enabled).
 - **MoviesDrive 4K & Dual Audio Integration**: Stream 4K UHD, 1080p, 720p Movies & Series directly from MoviesDrive with high-speed CDN streaming and IMDb ID resolution. See [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md).
+- **HDHub4u 4K & Dual Audio Integration**: Stream 4K UHD, 1080p, 720p Movies & Series directly from HDHub4u with Cloudflare R2 / 10Gbps CDN streaming and IMDb ID resolution. See [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md).
 - **Online Cinema Addons**: Built-in fast scrapers and streaming routers for VSMov ([VSMOV_GUIDE.md](VSMOV_GUIDE.md)), NguonC ([NGUONC_GUIDE.md](NGUONC_GUIDE.md)), and TopXX ([TOPXX_GUIDE.md](TOPXX_GUIDE.md)).
 - **Custom Logging**: Log streaming activity directly back to a separate private Telegram channel.
 

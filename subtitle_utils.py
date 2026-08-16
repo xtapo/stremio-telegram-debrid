@@ -604,9 +604,10 @@ async def _ffmpeg_extract_stream(video_url: str, map_arg: str, timeout: int = 18
         ffmpeg_bin, "-y",
         "-nostdin",
         *get_remote_input_opts(video_url),
-        "-analyzeduration", "100000000",
-        "-probesize", "100000000",
+        "-analyzeduration", "50000000",
+        "-probesize", "50000000",
         "-i", video_url,
+        "-vn", "-an", "-dn",
         "-map", map_arg,
         "-c:s", "subrip",
         "-f", "srt",
@@ -710,7 +711,14 @@ async def extract_embedded_subtitle(video_url: str, prefer_langs: tuple = ("eng"
             logger.warning("Extracted embedded subtitle contained no text cues after cleaning.")
             return None
 
-        logger.info(f"Successfully extracted embedded subtitle ({len(cleaned)} bytes, {len(cleaned.splitlines())} lines).")
+        sep = "=" * 80
+        logger.info(
+            f"\n{sep}\n"
+            f"🎯 [EMBEDDED SUBTITLE EXTRACTED] ĐÃ TRÍCH XUẤT PHỤ ĐỀ NHÚNG TỪ VIDEO!\n"
+            f"   🎬 Stream index: {chosen['abs_index']} (ngôn ngữ: {chosen['lang']}, codec: {chosen['codec']})\n"
+            f"   📊 Dung lượng: {len(cleaned)} bytes ({len(cleaned.splitlines())} dòng phụ đề)\n"
+            f"{sep}"
+        )
         return cleaned
 
     except subprocess.TimeoutExpired:
