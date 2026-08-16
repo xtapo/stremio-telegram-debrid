@@ -14,6 +14,12 @@ resolve the single chosen stream on Play and answer with a 302 redirect.
 The top candidates are resolved in the background while the user is still
 looking at the list, so the redirect is normally served straight from cache.
 
+Subtitles are offered as two separate Vietnamese tracks (see sync_vtt_service):
+track "fast" is Lingva over the whole file and is the default, track "quality"
+is the Gemini -> Custom AI pass that keeps improving in the background. They
+have different URLs on purpose, so switching track in Stremio really downloads
+the other file instead of reusing the cached one.
+
 Every public name of the old module is re-exported here, so importers such as
 addon.py and sync_vtt_service.py keep working unchanged.
 """
@@ -74,6 +80,10 @@ moviesdrive_router = APIRouter(prefix="", tags=["moviesdrive"])
 
 GAMERXYT_REFERER = "https://gamerxyt.com/"
 
+# Query value -> Stremio track. Keep these in sync with sync_vtt_service.get_track_vtt.
+TRACK_FAST = "fast"
+TRACK_QUALITY = "quality"
+
 
 class SafeStreamingResponse(StreamingResponse):
     async def __call__(self, scope, receive, send) -> None:
@@ -104,7 +114,7 @@ class SafeStreamingResponse(StreamingResponse):
 # ------------------------------------------------------------------
 MANIFEST = {
     "id": "com.stremio.moviesdrive.addon",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "name": "MoviesDrive - 4K Movies & Series",
     "description": "Watch Hollywood, Bollywood, Dual Audio 4K UHD, 1080p, 720p Movies & TV Series from MoviesDrive with fast streaming.",
     "resources": [
@@ -209,6 +219,20 @@ def _safe_name(text: str) -> str:
     return "".join(ch if ch.isalnum() or ch in "-_. " else "_" for ch in (text or "video")).strip()
 
 
+def _subtitle_url(base_url: str, clean_id: str, media_type: str, item_id: str, track: str) -> str:
+    return (
+        base_url
+        + "/subtitles/vtt/"
+        + clean_id
+        + ".vtt?type="
+        + media_type
+        + "&orig_id="
+        + urllib.parse.quote(item_id)
+        + "&track="
+        + track
+    )
+
+
 async def _warm_and_translate(
     media_type: str, item_id: str, candidates: List[Dict[str, Any]]
 ) -> None:
@@ -217,6 +241,8 @@ async def _warm_and_translate(
     This warms the /resolve cache so pressing Play is instant, and registers the
     real CDN URL - never the proxied one - for the subtitle pipeline, so ffprobe
     reads the file directly instead of looping back through our own proxy.
+    Track 1 (Lingva) is generated right away; track 2 (Gemini -> Custom AI)
+    starts on its own as soon as track 1 is done.
     """
     try:
         best = await warm_candidates(candidates)
@@ -224,12 +250,12 @@ async def _warm_and_translate(
             return
         direct_url = best["url"]
         try:
-            from subtitles_service import STREAM_VIDEO_URL_CACHE, get_or_generate_synced_vtt
+            from sync_vtt_service import STREAM_VIDEO_URL_CACHE, get_or_generate_fast_vtt
         except Exception as exc:
             logger.warning("Subtitle service unavailable: %s", exc)
             return
         STREAM_VIDEO_URL_CACHE[item_id] = direct_url
-        await get_or_generate_synced_vtt(media_type, item_id, video_url=direct_url)
+        await get_or_generate_fast_vtt(media_type, item_id, video_url=direct_url)
     except asyncio.CancelledError:
         raise
     except Exception as exc:
@@ -476,13 +502,27 @@ async def moviesdrive_stream_proxy(request: Request, url: str, referer: Optional
 
 
 async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
-    """Serve the synced Vietnamese VTT track, with HEAD support and a fallback cue."""
+    """Serve one of the two Vietnamese tracks, with HEAD support and a fallback cue.
+
+    ?track=fast    (default) Lingva over the whole file, final on first answer.
+    ?track=quality Gemini -> Custom AI, served progressively while it runs.
+    """
+    track = (request.query_params.get("track") or TRACK_FAST).lower()
+    if track not in (TRACK_FAST, TRACK_QUALITY):
+        track = TRACK_FAST
+
     headers = {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
         "Access-Control-Allow-Headers": "*",
         "Content-Disposition": "inline",
-        "Cache-Control": "public, max-age=86400",
+        # The quality track keeps changing until it is done, so it must not be
+        # cached by the player or the user would be stuck on an early version.
+        "Cache-Control": (
+            "public, max-age=86400"
+            if track == TRACK_FAST
+            else "no-store, no-cache, must-revalidate"
+        ),
     }
     if request.method == "HEAD":
         return Response(status_code=200, media_type="text/vtt; charset=utf-8", headers=headers)
@@ -490,11 +530,11 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
     target_id = request.query_params.get("orig_id") or item_id
     vtt_content = None
     try:
-        from subtitles_service import get_or_generate_synced_vtt
+        from sync_vtt_service import get_track_vtt
 
-        vtt_content = await get_or_generate_synced_vtt(type, target_id)
+        vtt_content = await get_track_vtt(type, target_id, track)
     except Exception as e:
-        logger.warning("Error in serve_synced_vtt for %s: %s", target_id, e)
+        logger.warning("Error in serve_synced_vtt for %s (track=%s): %s", target_id, track, e)
 
     if not vtt_content or not vtt_content.strip():
         vtt_content = "WEBVTT\n\n1\n00:00:01.000 --> 00:00:05.000\n[Đang tải phụ đề tiếng Việt...]"
@@ -512,26 +552,23 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
 
 
 async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str = ""):
-    """Serve subtitles, with the AI-synced Vietnamese track first."""
+    """Serve subtitles: the fast Lingva track first, then the AI quality track."""
     base_url = _base_url(request)
     clean_id = id.replace(":", "_").replace("/", "_")
-    ai_sub_url = (
-        base_url
-        + "/subtitles/vtt/"
-        + clean_id
-        + ".vtt?type="
-        + type
-        + "&orig_id="
-        + urllib.parse.quote(id)
-    )
 
     subtitles_list: List[Dict[str, Any]] = [
         {
-            "id": "vi_synced_" + clean_id,
-            "url": ai_sub_url,
+            "id": "vi_fast_" + clean_id,
+            "url": _subtitle_url(base_url, clean_id, type, id, TRACK_FAST),
             "lang": "vie",
-            "name": "🇻🇳 Tiếng Việt Đồng Bộ Chuẩn 100% (AI Instant)",
-        }
+            "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+        },
+        {
+            "id": "vi_quality_" + clean_id,
+            "url": _subtitle_url(base_url, clean_id, type, id, TRACK_QUALITY),
+            "lang": "vie",
+            "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+        },
     ]
 
     imdb_id = id
