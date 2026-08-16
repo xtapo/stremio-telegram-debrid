@@ -26,6 +26,13 @@ from typing import Any, Awaitable, Callable, Dict, Iterable, List, Optional, Tup
 import httpx
 from bs4 import BeautifulSoup, SoupStrainer
 
+try:  # the MD_* knobs below are read at import time, so .env must be loaded
+    from dotenv import load_dotenv  # noqa: E402
+
+    load_dotenv()
+except Exception:  # pragma: no cover - python-dotenv is optional
+    pass
+
 logger = logging.getLogger("moviesdrive_addon")
 
 
