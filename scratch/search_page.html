@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Movies & WEB-Series - MoviesDrive</title>
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <!-- 1. LINK YOUR THEME CSS (Exact version provided) -->
+    <link rel="stylesheet" href="/wp-content/themes/wptheme/styles.css?ver=6c515fdcd3a7b6cd70eab86a839040c1">
+    
+    <!-- Icons (Standard for most themes) -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+    <style>
+        /* --- STANDALONE OVERRIDES --- */
+        /* Only styles strictly necessary for the search interface elements 
+           that don't exist in your theme are kept here. Everything else uses theme CSS. */
+
+        body {
+            /* Ensure dark background matches theme default if CSS fails to load immediately */
+            background-color: #121212; 
+            margin: 0;
+        }
+
+        /* Wrapper to simulate the main content container usually opened in header.php */
+        .site-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px;
+            min-height: 80vh; /* Pushes footer down */
+        }
+
+        /* --- SEARCH UI (Custom elements not in theme) --- */
+        .search-interface-wrapper { margin-bottom: 10px; margin-top: 0; }
+        
+        .search-bar-container { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+            max-width: 100%;
+        }
+        
+        /* Using generic classes to hopefully inherit theme input styles */
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .search-btn {
+            background: #007bff;
+            border: none;
+            color: white;
+            padding: 0 25px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* --- TRENDING TAGS (Dynamic) --- */
+        .popular-searches-wrapper { margin-bottom: 25px; }
+        .popular-header { 
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 10px; font-size: 0.9em; color: #aaa; 
+        }
+        
+        .tags-container { 
+            display: flex; gap: 8px; overflow-x: auto; 
+            padding-bottom: 10px; scrollbar-width: none; 
+        }
+        .tags-container::-webkit-scrollbar { display: none; }
+
+        .search-tag {
+            background: #222; border: 1px solid #333; color: #ccc;
+            padding: 5px 15px; border-radius: 20px; font-size: 13px;
+            white-space: nowrap; cursor: pointer; transition: 0.2s;
+        }
+        .search-tag:hover { background: #333; color: #fff; border-color: #555; }
+
+        .search-status-bar {
+            display: flex; justify-content: space-between; align-items: baseline;
+            border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px;
+        }
+        .page-title { margin: 0; font-size: 24px; font-weight: 600; color: inherit; }
+
+        /* --- LOADER & MODAL --- */
+        .loading-overlay { display: none; text-align: center; padding: 60px 0; color: #888; }
+        .loading-overlay.active { display: block; }
+        .spinner {
+            display: inline-block;
+            border: 3px solid #333; border-top: 3px solid #007bff; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 0.8s linear infinite; margin-bottom: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.85); z-index: 99999; 
+            display: none; align-items: center; justify-content: center; 
+            backdrop-filter: blur(5px); 
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-content { 
+            background: #151515; width: 90%; max-width: 600px; max-height: 80vh; 
+            border-radius: 8px; display: flex; flex-direction: column; border: 1px solid #333; 
+        }
+        .modal-header { 
+            padding: 15px; border-bottom: 1px solid #333; 
+            display: flex; justify-content: space-between; align-items: center; color: #fff;
+        }
+        .close-modal { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+        .modal-body { padding: 20px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 8px; }
+        .content-section { padding: 10px !important; }
+        .logo-image { padding-top: 5px !important; }
+        
+        @media (max-width: 480px) {
+          .logo-image { padding-top: 0 !important;  }
+        }
+        /* Note: Pagination styles removed to use Theme CSS classes (.pagination, .page-btn, .page-numbers) */
+    </style>
+</head>
+<body class="home blog"> <!-- Added standard WP body classes -->
+
+<div class="site-wrapper">
+    
+    <!-- Simple Standalone Header -->
+    <header style="padding: 20px 0; border-bottom: 1px solid #333; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        
+        <div class="logo">
+            <span class="logo-text">
+                <a href="/">
+                    <img class="logo-image" src="/wp-content/uploads/2026/01/log.png" alt="moviesdrives">
+                </a>
+            </span>
+        </div>
+        
+        <span>Search Page</span>
+    </header>
+
+    <!-- Breadcrumb (Matches index.php structure) -->
+    <nav class="breadcrumb">
+        <a href="/">Home</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Search</span>
+    </nav>
+
+    <!-- Content Section (Matches index.php structure) -->
+    <section class="content-section">
+        
+        <!-- Search UI -->
+        <div class="search-interface-wrapper">
+            <div class="search-bar-container">
+                <input type="text" id="main-search-input" class="search-input" placeholder="Type to search..." autocomplete="off">
+                <button id="main-search-btn" class="search-btn">
+                    <i class="fa fa-search"></i>
+                </button>
+            </div>
+
+            <div class="popular-searches-wrapper" id="popular-wrapper" style="display:none;">
+                <div class="popular-header">
+                    <span class="popular-label">Trending (24h) 🔥</span>
+                    <span class="view-all-btn" onclick="openTrendingModal()" style="color:#007bff; cursor:pointer;">View All</span>
+                </div>
+                <div id="popular-tags" class="tags-container"></div>
+            </div>
+
+            <div class="search-status-bar">
+                <h1 class="page-title" id="page-title">Search Results</h1>
+                <span class="search-meta" id="result-count"></span>
+            </div>
+        </div>
+
+        <!-- Results Grid (Uses Theme Classes) -->
+        <div class="movies-grid" id="moviesGridMain"></div>
+        
+        <!-- Loader -->
+        <div class="loading-overlay" id="loader">
+            <div class="spinner"></div>
+            <p>Searching database...</p>
+        </div>
+
+    </section>
+
+    <!-- Pagination Structure Matches Theme -->
+    <nav class="pagination" id="pagination-wrapper" style="display:none; justify-content: center; padding: 40px 0;"></nav>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="trending-modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 style="margin:0; font-size:18px;">Top 50 Trending 🔥</h2>
+            <button class="close-modal" onclick="closeTrendingModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="modal-tags-body"></div>
+    </div>
+</div>
+
+<!-- Logic -->
+<script>
+    const CONFIG = {
+        proxyUrl: "/search.php",
+        popularUrl: "/popular_searches/documents/search",
+        perPage: 18
+    };
+
+    /* ---------- HELPERS ---------- */
+
+    // Escape HTML to prevent broken markup / XSS from dynamic strings (titles, urls, etc.)
+    function escapeHtml(str) {
+        if (str === null || str === undefined) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function getMovieQuality(title) {
+        if (!title) return 'HD';
+        const t = title.toLowerCase();
+        if (t.includes('imax')) return 'IMAX';
+        if (/(hdcam|hdtc|hdts|pre-hd|camprip|dvdrip)/i.test(title)) return 'CAM';
+        if (t.includes('2160p') || t.includes('4k')) return '4K';
+        if (t.includes('bluray')) return 'BluRay';
+        if (t.includes('1080p')) return 'FHD';
+        if (t.includes('720p')) return 'HD';
+        return 'HD';
+    }
+
+    /* ---------- TRENDING TAGS ---------- */
+
+    window.allTrendingTags = [];
+    
+    window.triggerSearch = function(term) {
+        const input = document.getElementById('main-search-input');
+        if (input) {
+            input.value = term;
+            document.dispatchEvent(new CustomEvent('trigger-search-logic', { detail: term }));
+            closeTrendingModal();
+        }
+    };
+
+    window.openTrendingModal = function() {
+        const modalBody = document.getElementById('modal-tags-body');
+        if (window.allTrendingTags.length > 0) {
+            const html = window.allTrendingTags.map(item => {
+                const safeTerm = escapeHtml(item.term);
+                return `<div class="search-tag" onclick="triggerSearch('${safeTerm}')">${safeTerm}</div>`;
+            }).join('');
+            modalBody.innerHTML = html;
+        } else {
+            modalBody.innerHTML = '<p style="color:#666;">No trending data available.</p>';
+        }
+        document.getElementById('trending-modal').classList.add('open');
+    };
+
+    window.closeTrendingModal = function() {
+        document.getElementById('trending-modal').classList.remove('open');
+    };
+
+    document.getElementById('trending-modal').addEventListener('click', function(e) {
+        if (e.target === this) closeTrendingModal();
+    });
+
+    /* ---------- MAIN ---------- */
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const els = {
+            grid: document.getElementById('moviesGridMain'),
+            paginationWrapper: document.getElementById('pagination-wrapper'),
+            loader: document.getElementById('loader'),
+            count: document.getElementById('result-count'),
+            title: document.getElementById('page-title'),
+            searchInput: document.getElementById('main-search-input'),
+            searchBtn: document.getElementById('main-search-btn'),
+            popularWrapper: document.getElementById('popular-wrapper'),
+            popularTags: document.getElementById('popular-tags')
+        };
+
+        let currentState = { query: '', page: 1 };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialQuery = urlParams.get('q');
+        const initialPage = parseInt(urlParams.get('page')) || 1;
+
+        // fetchPopularSearches();
+
+        if (initialQuery) {
+            els.searchInput.value = initialQuery;
+            updateStateAndFetch(initialQuery, initialPage, false);
+        } else {
+            els.grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 60px 0; opacity: 0.7;">Type a movie name above to start searching.</div>';
+        }
+
+        els.searchBtn.addEventListener('click', () => handleSearchInput(els.searchInput.value));
+        
+        els.searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSearchInput(els.searchInput.value);
+        });
+
+        document.addEventListener('trigger-search-logic', (e) => handleSearchInput(e.detail));
+
+        window.addEventListener('popstate', (event) => {
+            const params = new URLSearchParams(window.location.search);
+            const q = params.get('q');
+            const p = parseInt(params.get('page')) || 1;
+            if (q) {
+                els.searchInput.value = q;
+                updateStateAndFetch(q, p, false);
+            } else {
+                els.searchInput.value = '';
+                els.title.innerText = "Search";
+                els.grid.innerHTML = '';
+                els.paginationWrapper.style.display = 'none';
+            }
+        });
+
+        // Event Delegation for Pagination
+        els.paginationWrapper.addEventListener('click', (e) => {
+            const target = e.target.closest('[data-page]');
+            if (target) {
+                e.preventDefault();
+                const newPage = parseInt(target.getAttribute('data-page'));
+                if (newPage && newPage !== currentState.page) {
+                    updateStateAndFetch(currentState.query, newPage, true);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }
+        });
+
+        function handleSearchInput(rawVal) {
+            const val = (rawVal || '').trim();
+            if (!val) return;
+            updateStateAndFetch(val, 1, true);
+            els.searchInput.blur();
+        }
+
+        async function updateStateAndFetch(query, page, pushToHistory) {
+            currentState.query = query;
+            currentState.page = page;
+            
+            if (pushToHistory) {
+                const newUrl = `?q=${encodeURIComponent(query)}&page=${page}`; 
+                window.history.pushState({ query, page }, '', newUrl);
+            }
+            
+            els.title.innerText = `Results for "${query}"`;
+            await fetchResults(query, page);
+        }
+
+        async function fetchPopularSearches() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const yDate = new Date(); yDate.setDate(yDate.getDate() - 1);
+                const yesterday = yDate.toISOString().split('T')[0];
+
+                const apiUrl = new URL(CONFIG.popularUrl, window.location.origin);
+                apiUrl.searchParams.append('q', '*');
+                apiUrl.searchParams.append('query_by', 'q');
+                apiUrl.searchParams.append('filter_by', `analytics_tag:=[${today},${yesterday}]`);
+                apiUrl.searchParams.append('sort_by', 'count:desc');
+                apiUrl.searchParams.append('per_page', 50);
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) return;
+                const data = await response.json();
+                
+                if (!data.hits || data.hits.length === 0) return;
+
+                const mergedMap = new Map();
+                data.hits.forEach(hit => {
+                    const term = hit.document.q;
+                    const count = hit.document.count;
+                    mergedMap.set(term, (mergedMap.get(term) || 0) + count);
+                });
+
+                const sortedTags = Array.from(mergedMap.entries())
+                    .map(([term, count]) => ({ term, count }))
+                    .sort((a, b) => b.count - a.count);
+
+                if (sortedTags.length === 0) return;
+
+                window.allTrendingTags = sortedTags;
+                const top15 = sortedTags.slice(0, 15);
+                const html = top15.map(item => {
+                    const safeTerm = escapeHtml(item.term);
+                    return `<div class="search-tag" onclick="triggerSearch('${safeTerm}')">${safeTerm}</div>`;
+                }).join('');
+                
+                els.popularTags.innerHTML = html;
+                els.popularWrapper.style.display = 'block';
+
+            } catch (err) { console.warn("Popular tags error", err); }
+        }
+
+        async function fetchResults(query, page) {
+            els.loader.classList.add('active');
+            els.grid.style.opacity = '0.5';
+            
+            try {
+                const apiUrl = new URL(CONFIG.proxyUrl, window.location.origin);
+                apiUrl.searchParams.append('q', query);
+                apiUrl.searchParams.append('page', page);
+
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error("Search failed");
+                const data = await response.json();
+                renderPage(data);
+            } catch (error) {
+                els.grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px; color: #ff6b6b;">Error: ${escapeHtml(error.message)}</div>`;
+            } finally {
+                els.loader.classList.remove('active');
+                els.grid.style.opacity = '1';
+            }
+        }
+
+        function renderPage(data) {
+            if (!data || data.found === 0 || !data.hits || data.hits.length === 0) {
+                els.count.innerText = "0 items";
+                els.grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;">No results found. Try a different keyword.</div>';
+                els.paginationWrapper.style.display = 'none';
+                return;
+            }
+            
+            els.count.innerText = `${data.found} items`;
+
+            const fallbackPoster = '/wp-content/themes/vegamoviesofficial/images/default-poster.jpg';
+
+            const html = data.hits.map(hit => {
+                const doc     = hit.document || {};
+                const title   = escapeHtml(doc.post_title || 'Untitled');
+                const link    = escapeHtml(doc.permalink || '#');
+                const thumb   = escapeHtml(doc.post_thumbnail || fallbackPoster);
+                const quality = getMovieQuality(doc.post_title);
+
+                return `
+                <a href="${link}">
+                    <div class="poster-card">
+                        <div class="poster-inner">
+                            <div class="poster-image">
+                                <img src="${thumb}" alt="${title}" loading="lazy"
+                                     onerror="this.onerror=null;this.src='${fallbackPoster}'">
+                                ${quality ? `<span class="poster-quality">${escapeHtml(quality)}</span>` : ''}
+                            </div>
+                            <div class="poster-info">
+                                <p class="poster-title">${title}</p>
+                            </div>
+                        </div>
+                    </div>
+                </a>`;
+            }).join('');
+
+            els.grid.innerHTML = html;
+            renderPagination(data.found);
+        }
+
+        function renderPagination(totalHits) {
+            const totalPages = Math.ceil(totalHits / CONFIG.perPage);
+            const p = currentState.page;
+            const wrapper = els.paginationWrapper;
+            
+            if (totalPages <= 1) { 
+                wrapper.style.display = 'none'; 
+                return; 
+            }
+            
+            wrapper.style.display = 'flex'; 
+            let html = '';
+            
+            // PREV BUTTON
+            const prevIcon = '<svg viewBox="0 0 24 24" fill="none" width="24" height="24"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2"></path></svg>';
+            if (p > 1) {
+                html += `<a href="javascript:void(0)" class="page-btn prev-btn" data-page="${p - 1}">${prevIcon}</a>`;
+            } else {
+                html += `<button class="page-btn prev-btn" disabled>${prevIcon}</button>`;
+            }
+
+            // PAGE NUMBERS
+            html += '<div class="page-numbers">';
+            const createNum = (pageNum, isActive) => {
+                if (isActive) return `<span aria-current="page" class="page-num active">${pageNum}</span>`;
+                return `<a class="page-num" href="javascript:void(0)" data-page="${pageNum}">${pageNum}</a>`;
+            };
+            const createDots = () => `<span class="page-dots">...</span>`;
+
+            let rangeStart = Math.max(1, p - 2);
+            let rangeEnd = Math.min(totalPages, p + 2);
+
+            if (rangeStart > 1) {
+                html += createNum(1, false);
+                if (rangeStart > 2) html += createDots();
+            }
+
+            for (let i = rangeStart; i <= rangeEnd; i++) {
+                html += createNum(i, i === p);
+            }
+
+            if (rangeEnd < totalPages) {
+                if (rangeEnd < totalPages - 1) html += createDots();
+                html += createNum(totalPages, false);
+            }
+            html += '</div>';
+
+            // NEXT BUTTON
+            const nextIcon = '<svg viewBox="0 0 24 24" fill="none" width="24" height="24"><path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2"></path></svg>';
+            if (p < totalPages) {
+                html += `<a href="javascript:void(0)" class="page-btn next-btn" data-page="${p + 1}">${nextIcon}</a>`;
+            } else {
+                html += `<button class="page-btn next-btn" disabled>${nextIcon}</button>`;
+            }
+            
+            wrapper.innerHTML = html;
+        }
+    });
+    
+</script>
+
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4f94c40b3cee4e8fb1083072f2f2b90c","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+import urllib.request
+import urllib.parse
+import re
+
+url_link = "https://video-downloads.googleusercontent.com/ADGPM2micSXWAFGvwavGPfnBx3MtSv1JDFIs3fKRN4y1dQCoiytss_aS9gia_t_yGQbR-8yYnAhgUpfpIcuWSaADYBRNcoLUMFi3KPyUj5jXGQ9e3nszZgJTsKE2VuGufV2Nl4Yhk6Phy6wH61-BOrnSQ4xuBQNLT_0V3O5nVaMV0kzpSQwJgKGIqf6xTibvGwDFp4A4u5bGQkbkBTihDYCFbG_pFXFaKEbaLyiTbX8KkCwPv8Gk-s_A6A8pCUK0MM0OHbYvDAcz"
+
+req = urllib.request.Request(url_link, headers={
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Range': 'bytes=0-100'
+})
+
+try:
+    with urllib.request.urlopen(req, timeout=10) as resp:
+        print("Status:", resp.status)
+        print("Headers:", resp.headers)
+        data = resp.read()
+        print("Data hex:", data.hex())
+except Exception as e:
+    print("Error:", e)

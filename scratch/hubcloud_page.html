@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HubCloud - File Search</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; margin: 0; padding: 24px; background: #0f1115; color: #e6e6e6; }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 0 0 16px; font-weight: 600; }
+  .bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  input[type=text] { flex: 1; min-width: 200px; padding: 10px 12px; background: #1a1d24; border: 1px solid #2a2f3a; color: #e6e6e6; border-radius: 6px; font-size: 14px; }
+  input[type=text]:focus { outline: none; border-color: #4c8bf5; }
+  input[type=text]:read-only { background: #14171d; color: #8a8f99; cursor: not-allowed; border-style: dashed; }
+  input[type=text]:disabled  { background: #14171d; color: #555; cursor: not-allowed; }
+  .meta { color: #8a8f99; font-size: 13px; margin-bottom: 12px; min-height: 1.5em; }
+  .err { background: #3a1a1a; color: #ffb4b4; padding: 12px; border-radius: 6px; margin-bottom: 16px; white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: 12px; }
+  ul.list { list-style: none; padding: 0; margin: 0; }
+
+  /* Row layout — filename column + prominent size card on the right */
+  li.row {
+    padding: 14px;
+    background: #1a1d24;
+    border: 1px solid #2a2f3a;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 14px;
+    align-items: start;
+  }
+  li.row:hover { border-color: #3a4150; }
+  .row-content { min-width: 0; }
+  .name { font-weight: 600; color: #fff; word-break: break-all; font-size: 15px; }
+  .sub { color: #8a8f99; font-size: 12px; margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Size card — prominent visual chip */
+  .size-card {
+    background: linear-gradient(135deg, #2d4a3a 0%, #1f3a2c 100%);
+    border: 1px solid #3a6a4d;
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+    min-width: 84px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  }
+  .size-card .size-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #7fb594;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .size-card .size-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #d8f3df;
+    font-variant-numeric: tabular-nums;
+  }
+  @media (max-width: 540px) {
+    li.row { grid-template-columns: 1fr; }
+    .size-card { justify-self: start; }
+  }
+
+  .actions { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .actions .open {
+    font-size: 14px; font-weight: 600; padding: 10px 20px;
+    background: #1d3557; border: 1px solid #2a5285; color: #cfe2ff;
+    border-radius: 6px; text-decoration: none; display: inline-block;
+  }
+  .actions .open:hover { background: #244068; border-color: #3a6aa8; }
+  .actions .copy {
+    font-size: 12px; padding: 8px 12px; border-radius: 5px; cursor: pointer;
+    border: 1px solid #2a2f3a; background: #14171d; color: #cfd3da; font-family: inherit;
+  }
+  .actions .copy:hover { background: #1f242d; border-color: #3a4150; }
+  .url { font-family: ui-monospace, monospace; font-size: 11px; color: #6a7280; margin-top: 8px; word-break: break-all; }
+
+  .empty, .hint { text-align: center; color: #8a8f99; padding: 40px 0; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #1f7a3d; color: #fff; padding: 8px 16px; border-radius: 6px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .toast.on { opacity: 1; }
+  .loader { text-align: center; padding: 20px; color: #8a8f99; font-size: 13px; }
+  .loader.hidden { display: none; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #2a2f3a; border-top-color: #4c8bf5; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .end-mark { text-align: center; color: #6a7280; font-size: 12px; padding: 16px 0; }
+  .end-mark.hidden { display: none; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; margin-left: 8px; }
+  .badge.ok   { background: #14331f; color: #8be0a4; border: 1px solid #1f5a35; }
+  .badge.bad  { background: #3a1a1a; color: #ffb4b4; border: 1px solid #5a2a2a; }
+  .badge.lock { background: #1a2435; color: #cfe2ff; border: 1px solid #2a5285; }
+  .gate { background: #3a2a14; color: #ffd9a4; padding: 14px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #5a4225; font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 style="display:none">
+    File Search
+    <span id="health-badge" class="badge">checking…</span>
+    <span class="badge lock">🔒 filtered</span>    <span class="badge lock">🔒 query locked</span>  </h1>
+
+  
+  <div class="bar">
+    <input
+      type="text" id="q"
+      placeholder="Search file name…"
+      value="Download Deadpool &amp;#038; Wolverine 2024 480p"
+      autocomplete="off"
+      readonly                >
+  </div>
+
+  <div class="meta" id="meta"></div>
+  <div id="err-box"></div>
+
+  <ul class="list" id="results"></ul>
+  <div id="loader"   class="loader hidden"><span class="spinner"></span>Loading…</div>
+  <div id="end-mark" class="end-mark hidden">— end of results —</div>
+  <div id="hint" class="hint" style="">
+    Searching for the locked query…  </div>
+  <div id="sentinel"></div>
+</div>
+
+<div id="toast" class="toast">Copied!</div>
+
+<script>
+const PER_PAGE        = 20;
+const SEARCH_ENABLED  = true;
+const Q_LOCKED        = true;
+const Q_INITIAL       = "Download Deadpool \u0026#038; Wolverine 2024 480p";
+const FROM_AC_TOKEN   = "1t-OBKtmgGvpSMlAAfO11hFHSn4zjs6pxm1u9URmZBsBZqta4ESI";
+
+const $ = (id) => document.getElementById(id);
+const qEl       = $('q');
+const list      = $('results');
+const meta      = $('meta');
+const errBox    = $('err-box');
+const loader    = $('loader');
+const endMark   = $('end-mark');
+const hint      = $('hint');
+const sentinel  = $('sentinel');
+const healthBadge = $('health-badge');
+
+let state = { q: Q_INITIAL || '', page: 1, found: 0, loaded: 0, loading: false, done: false, reqId: 0 };
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function renderRow(d) {
+  const subs = [];
+  if (d.mimeType) subs.push(`<span>${esc(d.mimeType)}</span>`);
+  if (d.date)     subs.push(`<span>${esc(d.date)}</span>`);
+  const url = d.url || '';
+  const sizeCard = d.size
+    ? `<div class="size-card"><span class="size-value">${esc(d.size)}</span></div>`
+    : '';
+  return `
+    <li class="row">
+      <div class="row-content">
+        <div class="name">${esc(d.file_name || '(no name)')}</div>
+        <div class="sub">${subs.join('')}</div>
+        <div class="actions">
+          <a class="open" href="${esc(url)}" target="_blank" rel="noopener">Open ↗</a>
+          <button type="button" class="copy" data-copy="${esc(url)}">Copy link</button>
+          
+          ${sizeCard}
+          
+        </div>
+        <div class="url">${esc(url)}</div>
+      </div>
+      
+    </li>`;
+}
+
+function showError(msg, raw) {
+  errBox.innerHTML = `<div class="err">${esc(msg)}${raw ? '\n\n' + esc(raw) : ''}</div>`;
+}
+function clearError() { errBox.innerHTML = ''; }
+
+async function fetchPage(page) {
+  const params = new URLSearchParams({
+    api: 'search',
+    q: state.q,
+    page: String(page),
+    from_ac: FROM_AC_TOKEN,
+  });
+  const res  = await fetch('?' + params.toString(), { headers: { 'Accept': 'application/json' } });
+  const data = await res.json().catch(() => ({ error: 'Bad JSON from server' }));
+  if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+}
+
+async function runSearch(reset = true) {
+  if (!SEARCH_ENABLED) return;
+
+  if (reset) {
+    state.reqId++;
+    const myReq = state.reqId;
+    state.page = 1; state.loaded = 0; state.done = false;
+    list.innerHTML = '';
+    endMark.classList.add('hidden');
+    hint.style.display = 'none';
+    clearError();
+    meta.textContent = 'Searching…';
+    try {
+      const data = await fetchPage(1);
+      if (myReq !== state.reqId) return;
+      state.found  = data.found || 0;
+      state.loaded = (data.hits || []).length;
+      list.innerHTML = (data.hits || []).map(renderRow).join('');
+      meta.innerHTML = `<span>${state.loaded.toLocaleString()} of ${state.found.toLocaleString()} result${state.found === 1 ? '' : 's'}</span>` +
+                      ` <span style="color:#6a7280">· ${data.took_ms ?? '?'} ms -  HubCloud Search</span>`;
+      if (state.loaded === 0) list.innerHTML = `<div class="empty">No matches- HubCloud Search</div>`;
+      if (state.loaded >= state.found) {
+        state.done = true;
+        if (state.found > 0) endMark.classList.remove('hidden');
+      }
+    } catch (err) {
+      if (myReq !== state.reqId) return;
+      meta.textContent = '';
+      showError('Search failed', err.message);
+    }
+  } else {
+    if (state.loading || state.done) return;
+    state.loading = true;
+    loader.classList.remove('hidden');
+    try {
+      state.page += 1;
+      const data = await fetchPage(state.page);
+      const hits = data.hits || [];
+      if (hits.length) {
+        list.insertAdjacentHTML('beforeend', hits.map(renderRow).join(''));
+        state.loaded += hits.length;
+        if (meta.firstElementChild) {
+          meta.firstElementChild.textContent =
+            `${state.loaded.toLocaleString()} of ${state.found.toLocaleString()} result${state.found === 1 ? '' : 's'}`;
+        }
+      }
+      if (hits.length < PER_PAGE || state.loaded >= state.found) {
+        state.done = true;
+        endMark.classList.remove('hidden');
+      }
+    } catch (err) {
+      state.page -= 1;
+      showError('Load more failed', err.message);
+    } finally {
+      loader.classList.add('hidden');
+      state.loading = false;
+    }
+  }
+}
+
+// Live input — only attach if search is enabled AND q is not locked
+if (SEARCH_ENABLED && !Q_LOCKED) {
+  let debounceTimer = null;
+  qEl.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      state.q = qEl.value.trim();
+      runSearch(true);
+    }, 250);
+  });
+}
+
+// Copy buttons (delegated)
+document.addEventListener('click', function (e) {
+  const btn = e.target.closest('[data-copy]');
+  if (!btn) return;
+  const text = btn.getAttribute('data-copy');
+  const done = () => { const t = $('toast'); t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1200); };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done);
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); done(); } finally { ta.remove(); }
+  }
+});
+
+// Infinite scroll
+new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) runSearch(false);
+}, { rootMargin: '400px 0px' }).observe(sentinel);
+
+// Health check + initial search
+(async () => {
+  try {
+    const res  = await fetch('?api=health', { headers: { 'Accept': 'application/json' } });
+    const data = await res.json();
+    if (data.ok) {
+      healthBadge.className = 'badge ok';
+      healthBadge.textContent = `HEALTH:OK`;
+      if (SEARCH_ENABLED) runSearch(true);   // browse latest, or run locked-q search
+    } else {
+      healthBadge.className = 'badge bad';
+      healthBadge.textContent = 'Typesense unreachable';
+      showError('Cannot reach Typesense or collection "files" missing', JSON.stringify(data, null, 2));
+    }
+  } catch (err) {
+    healthBadge.className = 'badge bad';
+    healthBadge.textContent = 'health check failed';
+    showError('Health check failed', err.message);
+  }
+})();
+</script>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"6f33f7d03262464ea48798e2d2d0b0a7","r":1}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -21,15 +21,21 @@ class SafeStreamingResponse(StreamingResponse):
             try:
                 await send(message)
             except RuntimeError as e:
-                if "Response content shorter than Content-Length" in str(e):
+                err_str = str(e)
+                if "shorter than Content-Length" in err_str or "longer than Content-Length" in err_str:
                     return
                 raise e
+            except Exception:
+                return
         try:
             await super().__call__(scope, receive, safe_send)
         except RuntimeError as e:
-            if "Response content shorter than Content-Length" in str(e):
+            err_str = str(e)
+            if "shorter than Content-Length" in err_str or "longer than Content-Length" in err_str:
                 return
             raise e
+        except Exception:
+            return
 
 from config import Config
 from tg_client import tg_client_manager
@@ -86,6 +92,7 @@ async def lifespan(app: FastAPI):
 from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
 from topxx_router import topxx_router
+from moviesdrive_router import moviesdrive_router
 
 app = FastAPI(lifespan=lifespan)
 
@@ -100,6 +107,7 @@ app.add_middleware(
 app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
 app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
+app.include_router(moviesdrive_router, prefix="/moviesdrive", tags=["MoviesDrive Cinema"])
 
 
 
@@ -849,6 +857,9 @@ async def get_banner():
 @app.get("/meta/{type}/{meta_id}.json", dependencies=[Depends(verify_api_key)])
 @app.get("/{api_key}/meta/{type}/{meta_id}.json", dependencies=[Depends(verify_api_key)])
 async def meta_handler(type: str, meta_id: str, api_key: str = ""):
+    if meta_id.startswith("moviesdrive:"):
+        from moviesdrive_router import meta_endpoint as md_meta
+        return await md_meta(type, meta_id)
     if not meta_id.startswith("tgfile_"):
         return {"meta": {}}
         
@@ -1095,6 +1106,14 @@ async def find_subtitles_for_video(
             
     return subtitles
 
+@app.get("/subtitles/{type}/{id}.json")
+@app.get("/subtitles/{type}/{id}/{extra}.json")
+@app.get("/{api_key}/subtitles/{type}/{id}.json")
+@app.get("/{api_key}/subtitles/{type}/{id}/{extra}.json")
+async def root_subtitles_handler(type: str, id: str, extra: str = "", api_key: str = ""):
+    from moviesdrive_router import moviesdrive_subtitles
+    return await moviesdrive_subtitles(type, id, extra)
+
 @app.get("/stream/{type}/{stream_id}.json")
 @app.get("/{api_key}/stream/{type}/{stream_id}.json")
 async def stream_handler(
@@ -1110,6 +1129,10 @@ async def stream_handler(
         
     streams = []
     query_param = f"?api_key={api_key}" if api_key else ""
+
+    if stream_id.startswith("moviesdrive:"):
+        from moviesdrive_router import stream_endpoint as md_stream
+        return await md_stream(request, type, stream_id)
 
     if stream_id.startswith("tgfile_"):
         if "//" in stream_id:
@@ -1455,6 +1478,18 @@ async def stream_handler(
                             })
         except Exception as e:
             logger.error(f"Cinemeta search/resolve failed: {e}")
+            
+        # 3. MoviesDrive Direct Fast Stream Integration
+        try:
+            from moviesdrive_router import stream_endpoint as md_stream
+            md_resp = await md_stream(request, type, stream_id)
+            if hasattr(md_resp, "body"):
+                import json
+                md_data = json.loads(md_resp.body.decode("utf-8"))
+                for s in md_data.get("streams", []):
+                    streams.append(s)
+        except Exception as e:
+            logger.warning(f"Failed to fetch MoviesDrive streams for IMDb {stream_id}: {e}")
             
     # Interleave Thuyết Minh AI streams if enabled
     if Config.AUTO_THUYET_MINH and streams:
