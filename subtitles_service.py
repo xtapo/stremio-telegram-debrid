@@ -18,6 +18,13 @@ logger = logging.getLogger("subtitles_service")
 CACHE_DIR = os.path.join(tempfile.gettempdir(), "stremio_telegram_subtitles")
 os.makedirs(CACHE_DIR, exist_ok=True)
 
+# API endpoints are built with plain string concatenation on purpose:
+# f-strings previously wrapped these URLs in stray curly braces, which produced
+# invalid URLs like "{https://...}" and made every request fail.
+GOOGLE_TRANSLATE_ENDPOINT = "https://translate.googleapis.com/translate_a/single"
+GEMINI_API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/"
+OPENSUBTITLES_BASE = "https://opensubtitles-v3.strem.io/subtitles/"
+
 # Text based subtitle codecs: ffmpeg can convert these straight to SRT.
 TEXT_SUB_CODECS = {
     "subrip", "srt", "ass", "ssa", "webvtt", "vtt", "mov_text", "text",
@@ -190,8 +197,9 @@ def get_banner_block(progress: int) -> dict:
 
 async def translate_google(text: str, target_lang: str = "vi") -> str:
     url = (
-        "https://translate.googleapis.com/translate_a/single"
-        f"?client=gtx&dt=t&sl=auto&tl={target_lang}&q={urllib.parse.quote(text)}"
+        GOOGLE_TRANSLATE_ENDPOINT
+        + "?client=gtx&dt=t&sl=auto&tl=" + urllib.parse.quote(target_lang)
+        + "&q=" + urllib.parse.quote(text)
     )
     async with httpx.AsyncClient(timeout=15.0) as client:
         resp = await client.get(url)
@@ -203,11 +211,9 @@ async def translate_google(text: str, target_lang: str = "vi") -> str:
             raise Exception(f"Google Translate API status {resp.status_code}")
 
 def get_gemini_endpoint(api_key: str, model: str = None) -> str:
+    """Builds the Gemini generateContent endpoint without any f-string braces."""
     model = model or Config.GEMINI_MODEL
-    return (
-        f"https://generativelanguage.googleapis.com/v1beta/models/{model}"
-        f":generateContent?key={api_key}"
-    )
+    return GEMINI_API_BASE + str(model) + ":generateContent?key=" + str(api_key)
 
 async def translate_gemini(text: str, api_key: str, target_lang: str = "vi") -> str:
     url = get_gemini_endpoint(api_key)
@@ -1369,8 +1375,11 @@ async def get_or_generate_synced_vtt(media_type: str, item_id: str, video_url: O
         eng_subs = []
         if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
             url = (
-                f"https://opensubtitles-v3.strem.io/subtitles/{media_type}/"
-                f"{urllib.parse.quote(imdb_id)}.json"
+                OPENSUBTITLES_BASE
+                + urllib.parse.quote(str(media_type))
+                + "/"
+                + urllib.parse.quote(imdb_id)
+                + ".json"
             )
             try:
                 async with httpx.AsyncClient(timeout=4.0) as client:
