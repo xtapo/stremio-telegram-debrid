@@ -1,24 +1,25 @@
 """
-Progressive (partial result) Vietnamese VTT generation for the Stremio /subtitles endpoint.
+Two Vietnamese subtitle tracks for the Stremio /subtitles endpoint.
 
-Stremio blocks while it waits for the subtitle response, so translating a whole movie
-inline (1500+ cues) makes the client time out and show "no subtitles" even though the
-backend is still working. The work is therefore split into two passes:
+Track 1 - "fast" (the default track, listed first in Stremio):
+    Lingva translates the WHOLE subtitle file in parallel and the result is
+    returned inline. No banner and no second pass: what you see is the final
+    text of that track. Google Translate is only a safety net for when every
+    Lingva instance refuses the batch.
 
-  1. head pass  - the first SYNC_VTT_HEAD_SECONDS (default 300s = 5 minutes) of the movie
-                  are translated inline with the FASTEST engine order and returned right
-                  away, so playback starts with Vietnamese subtitles almost immediately.
-  2. background - the rest of the movie is translated slice by slice in a background task
-                  with the QUALITY engine order. Every following /subtitles request serves
-                  whatever is ready so far plus a progress banner, and the finished track
-                  is written to the disk cache.
+Track 2 - "quality" (translated in the background):
+    Gemini first, Custom AI second, slice by slice in a background task. Every
+    following request serves whatever is ready plus a progress banner, and the
+    finished track is written to the disk cache. Cues that Gemini has not
+    reached yet are served with the Lingva text from track 1, so track 2 reads
+    as Vietnamese from the first second and is upgraded slice by slice.
 
-Engine order (configurable through the constants below):
-  fast pass       : Lingva -> Gemini -> Custom AI     (latency matters most)
-  background pass : Custom AI -> Gemini -> Google Translate  (quality matters most)
+Both tracks share one base subtitle (embedded track or OpenSubtitles), so the
+expensive ffmpeg extraction only happens once per item.
 """
 import os
 import re
+import time
 import httpx
 import urllib.parse
 import asyncio
@@ -56,15 +57,33 @@ def _read_number(name: str, default: float) -> float:
         return float(default)
 
 
-# How much of the movie is translated inline before answering Stremio.
-HEAD_WINDOW_SECONDS = _read_number("SYNC_VTT_HEAD_SECONDS", 300.0)
-# Hard cap so a very dense subtitle file cannot block the response either.
-HEAD_MAX_BLOCKS = int(_read_number("SYNC_VTT_HEAD_MAX_BLOCKS", 400))
-# Size of one background slice: smaller = partial results appear more often.
-BACKGROUND_SLICE = int(_read_number("SYNC_VTT_BACKGROUND_SLICE", 150))
+def _read_flag(name: str, default: bool) -> bool:
+    raw = getattr(Config, name, None)
+    if raw in (None, ""):
+        raw = os.getenv(name)
+    if raw in (None, ""):
+        return default
+    return str(raw).strip().lower() in ("1", "true", "yes", "on")
 
-FAST_ENGINE_ORDER = ("lingva", "gemini", "custom")
-BACKGROUND_ENGINE_ORDER = ("custom", "gemini", "google")
+
+# ---------------------------------------------------------------------------
+# Engine order per track
+# ---------------------------------------------------------------------------
+# Track 1: latency matters most. Google is only used when Lingva fails outright.
+FAST_ENGINE_ORDER = ("lingva", "google")
+# Track 2: quality matters most. Gemini uses Config.GEMINI_MODEL.
+QUALITY_ENGINE_ORDER = ("gemini", "custom")
+# Older callers imported this name; keep it pointing at the background order.
+BACKGROUND_ENGINE_ORDER = QUALITY_ENGINE_ORDER
+
+# Cues per background slice: smaller = the banner percentage moves more often.
+BACKGROUND_SLICE = int(_read_number("SYNC_VTT_BACKGROUND_SLICE", 150))
+# Start track 2 automatically as soon as track 1 finished.
+AUTO_START_QUALITY = _read_flag("SYNC_VTT_AUTO_QUALITY", True)
+
+# Kept so existing imports and scratch tests keep working.
+HEAD_WINDOW_SECONDS = _read_number("SYNC_VTT_HEAD_SECONDS", 300.0)
+HEAD_MAX_BLOCKS = int(_read_number("SYNC_VTT_HEAD_MAX_BLOCKS", 400))
 
 LINGVA_INSTANCES = [
     "https://lingva.ml",
@@ -72,33 +91,43 @@ LINGVA_INSTANCES = [
     "https://translate.plausibility.cloud",
 ]
 
-# Chunk size / concurrency per engine. Lingva used to fire every chunk at once, which
-# got the public instances to rate limit us on long movies, hence the semaphore.
-LINGVA_BATCH = 40
-LINGVA_CONCURRENCY = 4
-GEMINI_CHUNK = 150
-GEMINI_CONCURRENCY = 2
-CUSTOM_CHUNK = 100
-CUSTOM_CONCURRENCY = 2
+# Chunk size / concurrency per engine. Lingva runs the whole movie now, so the
+# concurrency is the main speed knob; lower it if the public instances start
+# rate limiting you.
+LINGVA_BATCH = int(_read_number("SYNC_VTT_LINGVA_BATCH", 40))
+LINGVA_CONCURRENCY = int(_read_number("SYNC_VTT_LINGVA_CONCURRENCY", 8))
+GEMINI_CHUNK = int(_read_number("SYNC_VTT_GEMINI_CHUNK", 150))
+GEMINI_CONCURRENCY = int(_read_number("SYNC_VTT_GEMINI_CONCURRENCY", 2))
+CUSTOM_CHUNK = int(_read_number("SYNC_VTT_CUSTOM_CHUNK", 100))
+CUSTOM_CONCURRENCY = int(_read_number("SYNC_VTT_CUSTOM_CONCURRENCY", 2))
 GOOGLE_BATCH = 30
 GOOGLE_CONCURRENCY = 3
 
-# A cue is considered translated when at least this share of the batch changed.
+# A cue batch counts as translated when at least this share of it changed.
 MIN_TRANSLATED_RATIO = 0.5
 
 # In-memory mapping of item_id -> active stream video_url (registered by addon.py).
 STREAM_VIDEO_URL_CACHE = {}
 
-# clean_id -> {"blocks", "head_count", "progress", "done", "translated_ok", "source", "task"}
+# clean_id -> {"blocks", "ready", "fallback", "progress", "done", "translated_ok", "task"}
 SYNC_VTT_TASKS = {}
-_SYNC_VTT_LOCKS = {}
+# clean_id -> the Lingva-translated cues of track 1, used as track 2's stand-in text.
+_FAST_BLOCKS = {}
+# clean_id -> (base_srt, source)
+_BASE_SUBS = {}
+
+_FAST_LOCKS = {}
+_QUALITY_LOCKS = {}
+_BASE_LOCKS = {}
+# Old name, kept so existing imports do not break.
+_SYNC_VTT_LOCKS = _FAST_LOCKS
 
 
-def _get_lock(clean_id: str) -> asyncio.Lock:
-    lock = _SYNC_VTT_LOCKS.get(clean_id)
+def _get_lock(store: dict, key: str) -> asyncio.Lock:
+    lock = store.get(key)
     if lock is None:
         lock = asyncio.Lock()
-        _SYNC_VTT_LOCKS[clean_id] = lock
+        store[key] = lock
     return lock
 
 
@@ -305,23 +334,19 @@ async def translate_srt_fast_batch(
     return_status: bool = False,
     engine_order: tuple = None,
 ):
-    """
-    Translates a whole SRT/VTT document at once and returns a valid WebVTT string.
-    Kept for callers/tests that want the blocking behaviour; the Stremio endpoint uses
-    the progressive get_or_generate_synced_vtt below instead.
-    """
+    """Translates a whole SRT/VTT document at once and returns a valid WebVTT string."""
     _, blocks = parse_subtitles(srt_content)
     if not blocks:
         return (srt_content, False) if return_status else srt_content
 
-    order = tuple(engine_order) if engine_order else FAST_ENGINE_ORDER + ("google",)
+    order = tuple(engine_order) if engine_order else FAST_ENGINE_ORDER
     ok = await translate_block_list(blocks, order, target_lang)
     content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
     return (content, ok) if return_status else content
 
 
 # ---------------------------------------------------------------------------
-# Base subtitle lookup
+# Base subtitle lookup (shared by both tracks)
 # ---------------------------------------------------------------------------
 
 def _resolve_imdb_id(item_id: str) -> str:
@@ -402,8 +427,41 @@ async def _load_base_subtitle(media_type: str, item_id: str, clean_id: str, vide
     return None, None
 
 
+async def _get_base_subtitle(media_type: str, item_id: str, clean_id: str, video_url: str = None) -> tuple:
+    """_load_base_subtitle plus memory and disk caching.
+
+    Both tracks need the same source text, and pulling it means either an ffmpeg
+    pass over a remote video or an OpenSubtitles round trip, so it is cached.
+    """
+    cached = _BASE_SUBS.get(clean_id)
+    if cached and cached[0]:
+        return cached
+
+    base_file = os.path.join(CACHE_DIR, f"base_{clean_id}.srt")
+    async with _get_lock(_BASE_LOCKS, clean_id):
+        cached = _BASE_SUBS.get(clean_id)
+        if cached and cached[0]:
+            return cached
+
+        if os.path.exists(base_file) and os.path.getsize(base_file) > 200:
+            try:
+                with open(base_file, "r", encoding="utf-8") as f:
+                    content = f.read()
+                if content.strip():
+                    _BASE_SUBS[clean_id] = (content, "cache")
+                    return _BASE_SUBS[clean_id]
+            except Exception:
+                pass
+
+        base_srt, source = await _load_base_subtitle(media_type, item_id, clean_id, video_url)
+        if base_srt:
+            _BASE_SUBS[clean_id] = (base_srt, source)
+            _write_cache(base_file, base_srt)
+        return base_srt, source
+
+
 # ---------------------------------------------------------------------------
-# Progressive flow
+# Shared helpers
 # ---------------------------------------------------------------------------
 
 def _block_start_seconds(block: dict) -> float:
@@ -414,7 +472,7 @@ def _block_start_seconds(block: dict) -> float:
 
 
 def _head_block_count(blocks: list) -> int:
-    """Number of cues that fall inside the inline (fast) translation window."""
+    """Cues inside HEAD_WINDOW_SECONDS. Only used by older callers/tests now."""
     count = 0
     for b in blocks:
         if _block_start_seconds(b) < HEAD_WINDOW_SECONDS:
@@ -422,23 +480,6 @@ def _head_block_count(blocks: list) -> int:
         else:
             break
     return max(1, min(count or 1, HEAD_MAX_BLOCKS, len(blocks)))
-
-
-def _render_state(state: dict) -> str:
-    blocks = state["blocks"]
-    if state.get("done"):
-        return build_vtt(blocks, SUBTITLE_TIME_OFFSET)
-
-    percent = int(state.get("progress", 0.0) * 100)
-    banner = {
-        "prefix": "",
-        "time": "00:00:00,000 --> 00:00:08,000",
-        "text": (
-            f"<b>[Đang dịch phần còn lại bằng AI: {percent}% "
-            "- tải lại phụ đề sau vài phút để có bản đầy đủ]</b>"
-        ),
-    }
-    return build_vtt([banner] + blocks, SUBTITLE_TIME_OFFSET)
 
 
 def _write_cache(cache_file: str, content: str) -> bool:
@@ -452,78 +493,49 @@ def _write_cache(cache_file: str, content: str) -> bool:
         return False
 
 
-async def _translate_remaining(clean_id: str, cache_file: str, target_lang: str = "vi"):
-    """Background pass: translates everything after the head window, slice by slice."""
-    state = SYNC_VTT_TASKS.get(clean_id)
-    if not state:
-        return
-
-    blocks = state["blocks"]
-    total = len(blocks)
-    start = state["head_count"]
-    translated_ok = state.get("translated_ok", False)
-
-    try:
-        for i in range(start, total, BACKGROUND_SLICE):
-            slice_blocks = blocks[i:i + BACKGROUND_SLICE]
-            logger.info(
-                f"Background translation for {clean_id}: cues {i + 1}-{i + len(slice_blocks)}/{total}..."
-            )
-            ok = await translate_block_list(slice_blocks, BACKGROUND_ENGINE_ORDER, target_lang)
-            translated_ok = translated_ok or ok
-            state["progress"] = min(0.99, (i + len(slice_blocks)) / max(1, total))
-
-        state["progress"] = 1.0
-        state["translated_ok"] = translated_ok
-        state["done"] = True
-
-        # Never cache an untranslated track, otherwise the English text sticks around forever.
-        if translated_ok:
-            if _write_cache(cache_file, build_vtt(blocks, SUBTITLE_TIME_OFFSET)):
-                logger.info(f"Background translation finished and cached for {clean_id}.")
-                SYNC_VTT_TASKS.pop(clean_id, None)
-        else:
-            logger.warning(f"Background translation produced nothing usable for {clean_id}; not cached.")
-    except Exception as e:
-        logger.error(f"Background translation for {clean_id} failed: {e}")
-        state["done"] = True
+def _read_cache(cache_file: str) -> Optional[str]:
+    if os.path.exists(cache_file) and os.path.getsize(cache_file) > 100:
+        try:
+            with open(cache_file, "r", encoding="utf-8") as f:
+                return f.read()
+        except Exception:
+            return None
+    return None
 
 
-async def get_or_generate_synced_vtt(
+def _fast_cache_file(clean_id: str) -> str:
+    return os.path.join(CACHE_DIR, f"vi_fast_{clean_id}.vtt")
+
+
+def _quality_cache_file(clean_id: str) -> str:
+    return os.path.join(CACHE_DIR, f"vi_quality_{clean_id}.vtt")
+
+
+def _clean(item_id: str) -> str:
+    return item_id.replace(":", "_").replace("/", "_")
+
+
+# ---------------------------------------------------------------------------
+# Track 1: Lingva over the whole file
+# ---------------------------------------------------------------------------
+
+async def get_or_generate_fast_vtt(
     media_type: str, item_id: str, video_url: Optional[str] = None
 ) -> Optional[str]:
-    """
-    Returns a Vietnamese WebVTT track for this item, WITHOUT making Stremio wait for the
-    whole movie: the first few minutes are translated inline, the rest keeps translating
-    in the background and is served progressively on the following requests.
-    """
-    clean_id = item_id.replace(":", "_").replace("/", "_")
-    cache_file = os.path.join(CACHE_DIR, f"vi_sync_{clean_id}.vtt")
+    """Default track: Lingva translates every cue in parallel, then we answer."""
+    clean_id = _clean(item_id)
+    cache_file = _fast_cache_file(clean_id)
 
-    def read_cache() -> Optional[str]:
-        if os.path.exists(cache_file) and os.path.getsize(cache_file) > 100:
-            try:
-                with open(cache_file, "r", encoding="utf-8") as f:
-                    return f.read()
-            except Exception:
-                return None
-        return None
-
-    cached = read_cache()
+    cached = _read_cache(cache_file)
     if cached:
         return cached
 
-    async with _get_lock(clean_id):
-        # Another request may have finished the whole job while we waited for the lock.
-        cached = read_cache()
+    async with _get_lock(_FAST_LOCKS, clean_id):
+        cached = _read_cache(cache_file)
         if cached:
             return cached
 
-        state = SYNC_VTT_TASKS.get(clean_id)
-        if state:
-            return _render_state(state)
-
-        base_srt, base_source = await _load_base_subtitle(media_type, item_id, clean_id, video_url)
+        base_srt, base_source = await _get_base_subtitle(media_type, item_id, clean_id, video_url)
         if not base_srt:
             return None
 
@@ -532,35 +544,215 @@ async def get_or_generate_synced_vtt(
             logger.warning(f"Base subtitle for {item_id} (source={base_source}) contained no cues.")
             return None
 
-        head_count = _head_block_count(blocks)
+        started = time.time()
         logger.info(
-            f"Translating the first {head_count}/{len(blocks)} cues inline "
-            f"(source={base_source}, engines={'/'.join(FAST_ENGINE_ORDER)})..."
+            f"Track 1: translating all {len(blocks)} cues of {item_id} "
+            f"(source={base_source}, engines={'/'.join(FAST_ENGINE_ORDER)}, "
+            f"concurrency={LINGVA_CONCURRENCY})..."
         )
-        # blocks[:head_count] shares the same dicts as blocks, so this updates them in place.
-        head_ok = await translate_block_list(blocks[:head_count], FAST_ENGINE_ORDER, "vi")
+        ok = await translate_block_list(blocks, FAST_ENGINE_ORDER, "vi")
+        content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
+        logger.info(
+            f"Track 1 finished for {item_id} in {time.time() - started:.1f}s (translated={ok})."
+        )
 
-        state = {
-            "blocks": blocks,
-            "head_count": head_count,
-            "progress": head_count / max(1, len(blocks)),
-            "done": head_count >= len(blocks),
-            "translated_ok": head_ok,
-            "source": base_source,
-        }
-        SYNC_VTT_TASKS[clean_id] = state
+        if ok:
+            # Keep the Vietnamese cues around: track 2 shows them for every cue
+            # it has not upgraded yet.
+            _FAST_BLOCKS[clean_id] = [dict(b) for b in blocks]
+            _write_cache(cache_file, content)
+            if AUTO_START_QUALITY:
+                _start_quality_task(media_type, item_id, clean_id)
 
-        if head_count >= len(blocks):
-            state["progress"] = 1.0
-            content = build_vtt(blocks, SUBTITLE_TIME_OFFSET)
-            if head_ok and _write_cache(cache_file, content):
+        return content
+
+
+# ---------------------------------------------------------------------------
+# Track 2: Gemini, then Custom AI, in the background
+# ---------------------------------------------------------------------------
+
+def _merged_blocks(state: dict) -> list:
+    """Upgraded cues where ready, Lingva text everywhere else."""
+    blocks = state["blocks"]
+    ready = state.get("ready") or []
+    fallback = state.get("fallback") or []
+    if not fallback:
+        return blocks
+
+    merged = []
+    for idx, b in enumerate(blocks):
+        if idx < len(ready) and ready[idx]:
+            merged.append(b)
+        elif idx < len(fallback) and fallback[idx]:
+            merged.append({"prefix": b.get("prefix", ""), "time": b["time"], "text": fallback[idx]})
+        else:
+            merged.append(b)
+    return merged
+
+
+def _render_state(state: dict) -> str:
+    merged = _merged_blocks(state)
+    if state.get("done"):
+        return build_vtt(merged, SUBTITLE_TIME_OFFSET)
+
+    percent = int(state.get("progress", 0.0) * 100)
+    banner = {
+        "prefix": "",
+        "time": "00:00:00,000 --> 00:00:08,000",
+        "text": (
+            f"<b>[Bản AI chất lượng cao: {percent}% "
+            "- tải lại phụ đề sau vài phút để có bản đầy đủ]</b>"
+        ),
+    }
+    return build_vtt([banner] + merged, SUBTITLE_TIME_OFFSET)
+
+
+async def _translate_quality(clean_id: str, cache_file: str, target_lang: str = "vi"):
+    """Background pass for track 2: Gemini first, Custom AI second, slice by slice."""
+    state = SYNC_VTT_TASKS.get(clean_id)
+    if not state:
+        return
+
+    blocks = state["blocks"]
+    total = len(blocks)
+    started = time.time()
+    translated_ok = False
+
+    try:
+        for i in range(0, total, BACKGROUND_SLICE):
+            slice_blocks = blocks[i:i + BACKGROUND_SLICE]
+            logger.info(
+                f"Track 2 for {clean_id}: cues {i + 1}-{i + len(slice_blocks)}/{total} "
+                f"via {'/'.join(QUALITY_ENGINE_ORDER)}..."
+            )
+            ok = await translate_block_list(slice_blocks, QUALITY_ENGINE_ORDER, target_lang)
+            if ok:
+                translated_ok = True
+                for idx in range(i, min(i + len(slice_blocks), total)):
+                    state["ready"][idx] = True
+            state["progress"] = min(0.99, (i + len(slice_blocks)) / max(1, total))
+
+        state["progress"] = 1.0
+        state["translated_ok"] = translated_ok
+        state["done"] = True
+
+        # Never cache a track that no engine could translate.
+        if translated_ok:
+            if _write_cache(cache_file, build_vtt(_merged_blocks(state), SUBTITLE_TIME_OFFSET)):
+                logger.info(
+                    f"Track 2 finished and cached for {clean_id} in {time.time() - started:.1f}s."
+                )
                 SYNC_VTT_TASKS.pop(clean_id, None)
-            return content
+        else:
+            logger.warning(f"Track 2 produced nothing usable for {clean_id}; not cached.")
+    except Exception as e:
+        logger.error(f"Track 2 for {clean_id} failed: {e}")
+        state["done"] = True
 
-        state["task"] = asyncio.create_task(_translate_remaining(clean_id, cache_file))
-        logger.info(
-            f"Serving the first {head_count} cues now; the remaining "
-            f"{len(blocks) - head_count} cues are translated in the background "
-            f"(engines={'/'.join(BACKGROUND_ENGINE_ORDER)})."
-        )
+
+async def _prepare_quality_state(
+    media_type: str, item_id: str, clean_id: str, video_url: Optional[str] = None
+) -> Optional[dict]:
+    """Creates the track 2 state and starts its background task."""
+    base_srt, base_source = await _get_base_subtitle(media_type, item_id, clean_id, video_url)
+    if not base_srt:
+        return None
+
+    _, blocks = parse_subtitles(base_srt)
+    if not blocks:
+        logger.warning(f"Base subtitle for {item_id} (source={base_source}) contained no cues.")
+        return None
+
+    # Gemini always translates from the original text; the Lingva result is only
+    # used as the stand-in for cues it has not reached yet.
+    fast_blocks = _FAST_BLOCKS.get(clean_id) or []
+    fallback = (
+        [b.get("text", "") for b in fast_blocks] if len(fast_blocks) == len(blocks) else []
+    )
+
+    state = {
+        "blocks": blocks,
+        "ready": [False] * len(blocks),
+        "fallback": fallback,
+        "progress": 0.0,
+        "done": False,
+        "translated_ok": False,
+        "source": base_source,
+    }
+    SYNC_VTT_TASKS[clean_id] = state
+    state["task"] = asyncio.create_task(
+        _translate_quality(clean_id, _quality_cache_file(clean_id))
+    )
+    logger.info(
+        f"Track 2 started for {item_id}: {len(blocks)} cues, "
+        f"{'with' if fallback else 'without'} a Lingva stand-in."
+    )
+    return state
+
+
+def _start_quality_task(media_type: str, item_id: str, clean_id: str) -> None:
+    """Fire track 2 off in the background, ignoring the result."""
+    if clean_id in SYNC_VTT_TASKS or _read_cache(_quality_cache_file(clean_id)):
+        return
+
+    async def runner():
+        try:
+            async with _get_lock(_QUALITY_LOCKS, clean_id):
+                if clean_id in SYNC_VTT_TASKS or _read_cache(_quality_cache_file(clean_id)):
+                    return
+                await _prepare_quality_state(media_type, item_id, clean_id)
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            logger.warning(f"Could not start track 2 for {item_id}: {e}")
+
+    try:
+        asyncio.create_task(runner())
+    except RuntimeError:
+        pass
+
+
+async def get_or_generate_quality_vtt(
+    media_type: str, item_id: str, video_url: Optional[str] = None
+) -> Optional[str]:
+    """Second track: served progressively while Gemini / Custom AI work through it."""
+    clean_id = _clean(item_id)
+    cache_file = _quality_cache_file(clean_id)
+
+    cached = _read_cache(cache_file)
+    if cached:
+        return cached
+
+    async with _get_lock(_QUALITY_LOCKS, clean_id):
+        cached = _read_cache(cache_file)
+        if cached:
+            return cached
+
+        state = SYNC_VTT_TASKS.get(clean_id)
+        if state:
+            return _render_state(state)
+
+        state = await _prepare_quality_state(media_type, item_id, clean_id, video_url)
+        if not state:
+            return None
         return _render_state(state)
+
+
+# ---------------------------------------------------------------------------
+# Compatibility
+# ---------------------------------------------------------------------------
+
+async def get_or_generate_synced_vtt(
+    media_type: str, item_id: str, video_url: Optional[str] = None
+) -> Optional[str]:
+    """The default track. Kept under the old name for addon.py and the tests."""
+    return await get_or_generate_fast_vtt(media_type, item_id, video_url)
+
+
+async def get_track_vtt(
+    media_type: str, item_id: str, track: str = "fast", video_url: Optional[str] = None
+) -> Optional[str]:
+    """Dispatch helper used by the /subtitles/vtt endpoint."""
+    if (track or "fast").lower() in ("quality", "ai", "gemini", "2"):
+        return await get_or_generate_quality_vtt(media_type, item_id, video_url)
+    return await get_or_generate_fast_vtt(media_type, item_id, video_url)
