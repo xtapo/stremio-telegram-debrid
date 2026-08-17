@@ -393,23 +393,47 @@ async def stream_endpoint(request: Request, type: str, id: str):
 
         target_year = _safe_year(year)
 
-        matched_hit = None
+        valid_hits = []
         for hit in hits:
             doc = hit.get("document", {})
             p_title = _norm_str(doc.get("post_title", ""))
             p_slug = _norm_str(doc.get("permalink", "").replace("-", " "))
             
-            # Check year matching if year is present
-            p_year = _safe_year(doc.get("post_title", "") + " " + doc.get("permalink", ""))
-            if target_year and p_year and abs(target_year - p_year) > 1:
+            # Check title match
+            is_title_match = (target_norm in p_title or target_norm in p_slug or 
+                              all(w in p_title or w in p_slug for w in target_words))
+            if not is_title_match:
                 continue
 
-            if target_norm in p_title or target_norm in p_slug:
-                matched_hit = hit
-                break
-            if all(w in p_title or w in p_slug for w in target_words):
-                matched_hit = hit
-                break
+            p_year = _safe_year(doc.get("post_title", "") + " " + doc.get("permalink", ""))
+            # For movies, year must match closely (+- 1 year)
+            if type == "movie":
+                if target_year and p_year and abs(target_year - p_year) > 1:
+                    continue
+            else:
+                # For series, later seasons can be released years after series start year
+                if target_year and p_year and p_year < (target_year - 1):
+                    continue
+
+            valid_hits.append(hit)
+
+        matched_hit = None
+        if type == "series" and season_num:
+            s_num = int(season_num)
+            # Prioritize post explicitly matching the requested season
+            for hit in valid_hits:
+                doc = hit.get("document", {})
+                raw_text = (doc.get("post_title", "") + " " + doc.get("permalink", "")).lower()
+                if (f"season {s_num}" in raw_text or 
+                    f"season-{s_num}" in raw_text or 
+                    f"s{s_num:02d}" in raw_text or
+                    f"s{s_num}" in raw_text or 
+                    re.search(rf"season\s*1\s*[-–]\s*(\d+)", raw_text)):
+                    matched_hit = hit
+                    break
+
+        if not matched_hit and valid_hits:
+            matched_hit = valid_hits[0]
 
         if not matched_hit:
             logger.info("No matching MoviesDrive post found for Cinemeta title '%s' (IMDb: %s)", display, imdb_id)
