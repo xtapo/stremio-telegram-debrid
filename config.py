@@ -59,7 +59,23 @@ class Config:
     CUSTOM_AI_API_URL = os.getenv("CUSTOM_AI_API_URL", "")
     CUSTOM_AI_MODEL = os.getenv("CUSTOM_AI_MODEL", "cc/claude-opus-4-6")
     CUSTOM_AI_STREAM = os.getenv("CUSTOM_AI_STREAM", "True").lower() == "true"
-    SUBTITLE_TRANSLATION_SOURCE = os.getenv("SUBTITLE_TRANSLATION_SOURCE", "sub")
+    # Movie Sources Enable/Disable Toggles
+    ENABLE_SOURCE_TELEGRAM = os.getenv("ENABLE_SOURCE_TELEGRAM", "True").lower() == "true"
+    ENABLE_SOURCE_NGUONC = os.getenv("ENABLE_SOURCE_NGUONC", "True").lower() == "true"
+    ENABLE_SOURCE_VSMOV = os.getenv("ENABLE_SOURCE_VSMOV", "True").lower() == "true"
+    ENABLE_SOURCE_HHPANDA = os.getenv("ENABLE_SOURCE_HHPANDA", "True").lower() == "true"
+    ENABLE_SOURCE_MOVIESDRIVE = os.getenv("ENABLE_SOURCE_MOVIESDRIVE", "True").lower() == "true"
+    ENABLE_SOURCE_HDHUB4U = os.getenv("ENABLE_SOURCE_HDHUB4U", "True").lower() == "true"
+    ENABLE_SOURCE_TOPXX = os.getenv("ENABLE_SOURCE_TOPXX", "True").lower() == "true"
+
+    # Stremio Board (Home Screen) vs Discover Only Toggles
+    ENABLE_BOARD_TELEGRAM = os.getenv("ENABLE_BOARD_TELEGRAM", "True").lower() == "true"
+    ENABLE_BOARD_NGUONC = os.getenv("ENABLE_BOARD_NGUONC", "True").lower() == "true"
+    ENABLE_BOARD_VSMOV = os.getenv("ENABLE_BOARD_VSMOV", "True").lower() == "true"
+    ENABLE_BOARD_HHPANDA = os.getenv("ENABLE_BOARD_HHPANDA", "True").lower() == "true"
+    ENABLE_BOARD_MOVIESDRIVE = os.getenv("ENABLE_BOARD_MOVIESDRIVE", "True").lower() == "true"
+    ENABLE_BOARD_HDHUB4U = os.getenv("ENABLE_BOARD_HDHUB4U", "True").lower() == "true"
+    ENABLE_BOARD_TOPXX = os.getenv("ENABLE_BOARD_TOPXX", "False").lower() == "true"
 
     # Subtitle timing.
     # Positive shifts subtitles later, negative shows them earlier.

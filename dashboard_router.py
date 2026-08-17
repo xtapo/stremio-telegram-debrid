@@ -714,6 +714,33 @@ async def api_update_config(request: Request):
         env_updates["DASHBOARD_PASSWORD"] = val
         logger.info("Dashboard updated config DASHBOARD_PASSWORD")
 
+    # Source Enablement Toggles & Board Display Toggles
+    source_keys = {
+        "enable_source_telegram": "ENABLE_SOURCE_TELEGRAM",
+        "enable_source_telegram_debrid": "ENABLE_SOURCE_TELEGRAM",
+        "enable_source_nguonc": "ENABLE_SOURCE_NGUONC",
+        "enable_source_vsmov": "ENABLE_SOURCE_VSMOV",
+        "enable_source_hhpanda": "ENABLE_SOURCE_HHPANDA",
+        "enable_source_moviesdrive": "ENABLE_SOURCE_MOVIESDRIVE",
+        "enable_source_hdhub4u": "ENABLE_SOURCE_HDHUB4U",
+        "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
+        # Board (Home Screen) Toggles
+        "enable_board_telegram": "ENABLE_BOARD_TELEGRAM",
+        "enable_board_telegram_debrid": "ENABLE_BOARD_TELEGRAM",
+        "enable_board_nguonc": "ENABLE_BOARD_NGUONC",
+        "enable_board_vsmov": "ENABLE_BOARD_VSMOV",
+        "enable_board_hhpanda": "ENABLE_BOARD_HHPANDA",
+        "enable_board_moviesdrive": "ENABLE_BOARD_MOVIESDRIVE",
+        "enable_board_hdhub4u": "ENABLE_BOARD_HDHUB4U",
+        "enable_board_topxx": "ENABLE_BOARD_TOPXX",
+    }
+    for req_k, cfg_k in source_keys.items():
+        if req_k in data:
+            val = bool(data[req_k]) if not isinstance(data[req_k], str) else (data[req_k].lower() == "true")
+            setattr(Config, cfg_k, val)
+            env_updates[cfg_k] = str(val)
+            logger.info(f"Dashboard updated config {cfg_k} -> {val}")
+
     if env_updates:
         update_env_file(env_updates)
 
@@ -728,6 +755,24 @@ async def api_update_config(request: Request):
             "auto_upload": Config.AUTO_UPLOAD_TO_TELEGRAM,
             "subtitle_offset": Config.SUBTITLE_TIME_OFFSET,
             "admin_username": Config.DASHBOARD_USERNAME
+        },
+        "sources": {
+            "telegram": getattr(Config, "ENABLE_SOURCE_TELEGRAM", True),
+            "nguonc": getattr(Config, "ENABLE_SOURCE_NGUONC", True),
+            "vsmov": getattr(Config, "ENABLE_SOURCE_VSMOV", True),
+            "hhpanda": getattr(Config, "ENABLE_SOURCE_HHPANDA", True),
+            "moviesdrive": getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True),
+            "hdhub4u": getattr(Config, "ENABLE_SOURCE_HDHUB4U", True),
+            "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
+        },
+        "board": {
+            "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
+            "nguonc": getattr(Config, "ENABLE_BOARD_NGUONC", True),
+            "vsmov": getattr(Config, "ENABLE_BOARD_VSMOV", True),
+            "hhpanda": getattr(Config, "ENABLE_BOARD_HHPANDA", True),
+            "moviesdrive": getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True),
+            "hdhub4u": getattr(Config, "ENABLE_BOARD_HDHUB4U", True),
+            "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
         }
     }
 
@@ -748,6 +793,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-telegram",
             "badge": "Core Engine",
             "badge_color": "blue",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_TELEGRAM", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_TELEGRAM", True)),
             "description": "Phát phim trực tiếp từ kênh Telegram riêng tư, Range Requests tua nhanh tức thì, Debrid CDN stream & tải torrent qBittorrent.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/manifest.json{api_key_suffix}",
@@ -764,6 +811,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-film",
             "badge": "22 Thể Loại",
             "badge_color": "emerald",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_NGUONC", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_NGUONC", True)),
             "description": "Tích hợp toàn bộ API NguonC với Phim Lẻ, Phim Bộ, TV Shows, Hoạt Hình. Tự động giải mã HLS .m3u8 proxy.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/nguonc/manifest.json",
@@ -780,6 +829,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-play-circle",
             "badge": "Tốc Độ Cao",
             "badge_color": "purple",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_VSMOV", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_VSMOV", True)),
             "description": "Kho phim Châu Á và Âu Mỹ vietsub/thuyết minh tốc độ cao, chất lượng sắc nét Full HD / 4K không quảng cáo.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/vsmov/manifest.json",
@@ -796,6 +847,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-dragon",
             "badge": "Tu Tiên / Kiếm Hiệp",
             "badge_color": "cyan",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_HHPANDA", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_HHPANDA", True)),
             "description": "Kho phim Hoạt Hình 3D Trung Quốc siêu nét 4K/1080P: Tiên Nghịch, Đấu Phá Thương Khung, Thế Giới Hoàn Mỹ, Phàm Nhân Tu Tiên...",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/hhpanda/manifest.json",
@@ -812,6 +865,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-clapperboard",
             "badge": "4K HDR",
             "badge_color": "amber",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True)),
             "description": "Phim bom tấn 4K UHD, 1080p từ MoviesDrive. Tự động giải mã link HubCloud, GDFlix, DoodStream và khớp mã IMDb khi duyệt phim.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/moviesdrive/manifest.json",
@@ -828,6 +883,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-bolt",
             "badge": "Cloudflare R2",
             "badge_color": "rose",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_HDHUB4U", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_HDHUB4U", True)),
             "description": "Kho phim Hollywood / Bollywood Dual Audio chất lượng cao, hạ tầng CDN Cloudflare R2 / FastDL 10Gbps phát mượt mà.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/hdhub4u/manifest.json",
@@ -844,6 +901,8 @@ async def api_system_addons(request: Request):
             "icon": "fa-heart",
             "badge": "18+ Only",
             "badge_color": "red",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_TOPXX", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_TOPXX", False)),
             "description": "Kho phim giải trí 18+ chất lượng cao phân loại theo thể loại, diễn viên và hỗ trợ phát trực tiếp trên Stremio.",
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/topxx/manifest.json",
@@ -901,13 +960,16 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
                     items_list = data.get("items", []) or data.get("data", {}).get("items", [])
                     for item in items_list[:12]:
                         slug = item.get("slug", "")
+                        poster = item.get("thumb_url", "") or item.get("poster_url", "")
+                        if poster and not poster.startswith("http"):
+                            poster = f"https://phim.nguonc.com{poster}" if poster.startswith("/") else f"https://phim.nguonc.com/{poster}"
                         items.append({
                             "id": f"nguonc:{slug}",
                             "title": item.get("name", "Unknown"),
                             "original_title": item.get("original_name", ""),
                             "source": "NguonC Cinema",
                             "source_id": "nguonc",
-                            "poster": item.get("poster_url", "") or item.get("thumb_url", ""),
+                            "poster": poster,
                             "year": item.get("year", "2025"),
                             "quality": item.get("quality", "HD"),
                             "type": "movie" if item.get("type") == "single" else "series",
@@ -1097,19 +1159,19 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
         return items
 
     tasks = []
-    if not source or source == "all" or source == "nguonc":
+    if getattr(Config, "ENABLE_SOURCE_NGUONC", True) and (not source or source == "all" or source == "nguonc"):
         tasks.append(search_nguonc())
-    if not source or source == "all" or source == "vsmov":
+    if getattr(Config, "ENABLE_SOURCE_VSMOV", True) and (not source or source == "all" or source == "vsmov"):
         tasks.append(search_vsmov())
-    if not source or source == "all" or source == "hhpanda":
+    if getattr(Config, "ENABLE_SOURCE_HHPANDA", True) and (not source or source == "all" or source == "hhpanda"):
         tasks.append(search_hhpanda())
-    if not source or source == "all" or source == "moviesdrive":
+    if getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True) and (not source or source == "all" or source == "moviesdrive"):
         tasks.append(search_moviesdrive())
-    if not source or source == "all" or source == "hdhub4u":
+    if getattr(Config, "ENABLE_SOURCE_HDHUB4U", True) and (not source or source == "all" or source == "hdhub4u"):
         tasks.append(search_hdhub4u())
-    if not source or source == "all" or source == "topxx":
+    if getattr(Config, "ENABLE_SOURCE_TOPXX", True) and (not source or source == "all" or source == "topxx"):
         tasks.append(search_topxx())
-    if not source or source == "all" or source == "telegram":
+    if getattr(Config, "ENABLE_SOURCE_TELEGRAM", True) and (not source or source == "all" or source == "telegram"):
         tasks.append(search_telegram())
 
     results_lists = await asyncio.gather(*tasks, return_exceptions=True)
@@ -1752,6 +1814,17 @@ async def dashboard_ui(request: Request):
             border-color: var(--border-accent);
             transform: translateY(-3px);
             box-shadow: var(--shadow-glow);
+        }
+
+        .addon-card.card-disabled {
+            opacity: 0.65;
+            border-color: rgba(239, 68, 68, 0.25);
+            background: rgba(20, 20, 24, 0.7);
+        }
+
+        .addon-card.card-disabled:hover {
+            opacity: 0.9;
+            border-color: rgba(239, 68, 68, 0.45);
         }
 
         .addon-header {
@@ -3155,8 +3228,54 @@ async def dashboard_ui(request: Request):
             }
         }
 
+        async function toggleMovieSource(sourceId, isEnabled, sourceName) {
+            const configKey = `enable_source_${sourceId.replace('_debrid', '')}`;
+            try {
+                const res = await fetch('/api/config/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [configKey]: isEnabled })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`${isEnabled ? 'Đã BẬT' : 'Đã TẮT'} nguồn ${sourceName}!`, isEnabled ? 'fa-toggle-on' : 'fa-toggle-off');
+                    fetchAddons();
+                    fetchSystemStatus();
+                } else {
+                    showToast('Lỗi khi cập nhật trạng thái nguồn', 'fa-triangle-exclamation');
+                }
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'fa-triangle-exclamation');
+            }
+        }
+
+        async function toggleBoardDisplay(sourceId, isBoardEnabled, sourceName) {
+            const configKey = `enable_board_${sourceId.replace('_debrid', '')}`;
+            try {
+                const res = await fetch('/api/config/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ [configKey]: isBoardEnabled })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(
+                        isBoardEnabled 
+                            ? `Đã BẬT ${sourceName} ra Màn hình chính (Board)!` 
+                            : `Đã ẨN ${sourceName} khỏi Board (Vẫn hiện đầy đủ ở Discover)!`,
+                        isBoardEnabled ? 'fa-tv' : 'fa-compass'
+                    );
+                    fetchAddons();
+                } else {
+                    showToast('Lỗi khi cập nhật cấu hình Board', 'fa-triangle-exclamation');
+                }
+            } catch (err) {
+                showToast('Lỗi: ' + err.message, 'fa-triangle-exclamation');
+            }
+        }
+
         function renderAddonCards() {
-            const env = document.getElementById('envUrlSelector').value || 'lan';
+            const env = document.getElementById('envUrlSelector')?.value || 'lan';
             const fullGrid = document.getElementById('fullAddonsGrid');
             const overviewGrid = document.getElementById('overviewAddonsGrid');
 
@@ -3164,12 +3283,20 @@ async def dashboard_ui(request: Request):
             let overviewHtml = '';
 
             cachedAddonsData.forEach(addon => {
+                const isEnabled = addon.enabled !== false;
+                const isBoardEnabled = addon.board_enabled !== false;
                 const manifestUrl = addon.manifests[env] || addon.manifests['lan'];
                 const stremioInstallUrl = manifestUrl.replace('http://', 'stremio://').replace('https://', 'stremio://');
                 const stremioWebUrl = `https://web.stremio.com/#/addons?addon=${encodeURIComponent(manifestUrl)}`;
 
+                const statusBadge = isEnabled
+                    ? `<span class="badge-tag" style="background:rgba(16,185,129,0.15);color:var(--success);border-color:rgba(16,185,129,0.3);font-size:11px;"><i class="fa-solid fa-circle-check" style="margin-right:4px;"></i>Bật</span>`
+                    : `<span class="badge-tag" style="background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);font-size:11px;"><i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>Đã Tắt</span>`;
+
+                const cardDisabledClass = isEnabled ? '' : 'card-disabled';
+
                 const cardHtml = `
-                    <div class="addon-card">
+                    <div class="addon-card ${cardDisabledClass}">
                         <div class="addon-header">
                             <div class="addon-title-group">
                                 <div class="addon-icon">
@@ -3180,9 +3307,35 @@ async def dashboard_ui(request: Request):
                                     <span>${addon.category}</span>
                                 </div>
                             </div>
-                            <span class="badge-tag">${addon.badge}</span>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                ${statusBadge}
+                                <label class="switch" title="${isEnabled ? 'Nhấp để TẮT nguồn này' : 'Nhấp để BẬT nguồn này'}">
+                                    <input type="checkbox" ${isEnabled ? 'checked' : ''} onchange="toggleMovieSource('${addon.id}', this.checked, '${addon.name}')">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
                         </div>
                         <p class="addon-desc">${addon.description}</p>
+
+                        <!-- Stremio Board vs Discover Setting -->
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid ${isBoardEnabled ? 'fa-tv' : 'fa-compass'}" style="color:${isBoardEnabled ? 'var(--primary)' : 'var(--text-dim)'}; font-size:14px;"></i>
+                                <div>
+                                    <div style="font-size:12px; font-weight:700; color:#fff;">Màn hình chính Stremio (Board)</div>
+                                    <div style="font-size:11px; color:${isBoardEnabled ? 'var(--cyan)' : 'var(--text-dim)'};">
+                                        ${isBoardEnabled ? '✨ Hiện ngoài Trang chủ & Khám phá' : '🔍 Chỉ hiện trong Khám phá (Discover)'}
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="switch" style="transform:scale(0.85);" title="${isBoardEnabled ? 'Nhấp để ẨN khỏi Trang chủ (Chỉ xem trong mục Khám phá)' : 'Nhấp để HIỆN thanh phim ra Màn hình chính Stremio'}">
+                                <input type="checkbox" ${isBoardEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} onchange="toggleBoardDisplay('${addon.id}', this.checked, '${addon.name}')">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        ${!isEnabled ? '<div style="font-size:11.5px; color:#f87171; background:rgba(239,68,68,0.1); border:1px dashed rgba(239,68,68,0.3); border-radius:6px; padding:6px 10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Nguồn này đang tắt (Không hiển thị trong tìm kiếm)</div>' : ''}
+
                         <div class="manifest-selector">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
                                 <span style="font-size:11px; font-weight:600; color:var(--text-dim);">Manifest URL (${env.toUpperCase()}):</span>
@@ -3195,10 +3348,10 @@ async def dashboard_ui(request: Request):
                             </div>
                         </div>
                         <div class="addon-actions">
-                            <a href="${stremioInstallUrl}" class="btn btn-primary btn-sm" style="justify-content:center;">
+                            <a href="${stremioInstallUrl}" class="btn btn-primary btn-sm" style="justify-content:center; ${!isEnabled ? 'opacity:0.5; pointer-events:none;' : ''}">
                                 <i class="fa-solid fa-download"></i> Cài Stremio
                             </a>
-                            <a href="${stremioWebUrl}" target="_blank" class="btn btn-secondary btn-sm" style="justify-content:center;">
+                            <a href="${stremioWebUrl}" target="_blank" class="btn btn-secondary btn-sm" style="justify-content:center; ${!isEnabled ? 'opacity:0.5; pointer-events:none;' : ''}">
                                 <i class="fa-solid fa-globe"></i> Mở Web
                             </a>
                         </div>

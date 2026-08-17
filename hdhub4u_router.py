@@ -77,60 +77,66 @@ class SafeStreamingResponse(StreamingResponse):
 
 
 # ------------------------------------------------------------------
-# Manifest
-# ------------------------------------------------------------------
-MANIFEST = {
-    "id": "com.stremio.hdhub4u.addon",
-    "version": "1.0.0",
-    "name": "HDHub4u - 4K Movies & Series",
-    "description": "Watch Hollywood, Bollywood, Dual Audio 4K UHD, 1080p, 720p Movies & TV Series from HDHub4u with high-speed direct CDN streaming.",
-    "resources": [
-        "catalog",
-        {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
-        {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
-        {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
-    ],
-    "types": ["movie", "series"],
-    "catalogs": [
-        {
-            "type": "movie",
-            "id": "hdhub4u_movies_latest",
-            "name": "HDHub4u - Phim Mới Cập Nhật",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-        {
-            "type": "movie",
-            "id": "hdhub4u_movies_hollywood",
-            "name": "HDHub4u - Hollywood Movies",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-        {
-            "type": "movie",
-            "id": "hdhub4u_movies_bollywood",
-            "name": "HDHub4u - Bollywood Movies",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-        {
-            "type": "series",
-            "id": "hdhub4u_series_latest",
-            "name": "HDHub4u - Phim Bộ (Web Series)",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-    ],
-}
+def get_hdhub4u_manifest() -> Dict[str, Any]:
+    from config import Config
+    show_on_board = getattr(Config, "ENABLE_BOARD_HDHUB4U", True)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.hdhub4u.addon",
+        "version": "1.0.0",
+        "name": "HDHub4u - 4K Movies & Series",
+        "description": "Watch Hollywood, Bollywood, Dual Audio 4K UHD, 1080p, 720p Movies & TV Series from HDHub4u with high-speed direct CDN streaming.",
+        "resources": [
+            "catalog",
+            {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
+            {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
+            {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
+        ],
+        "types": ["movie", "series"],
+        "catalogs": [
+            {
+                "type": "movie",
+                "id": "hdhub4u_movies_latest",
+                "name": "HDHub4u - Phim Mới Cập Nhật",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + GENRE_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+            {
+                "type": "movie",
+                "id": "hdhub4u_movies_hollywood",
+                "name": "HDHub4u - Hollywood Movies",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+            {
+                "type": "movie",
+                "id": "hdhub4u_movies_bollywood",
+                "name": "HDHub4u - Bollywood Movies",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+            {
+                "type": "series",
+                "id": "hdhub4u_series_latest",
+                "name": "HDHub4u - Phim Bộ (Web Series)",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+        ],
+    }
 
 
 # ------------------------------------------------------------------
@@ -178,7 +184,6 @@ def _resolve_url(base: str, candidate: Dict[str, Any], mode: str = "direct") -> 
         "raw_url": candidate.get("raw_url", ""),
         "mode": mode,
         "post": candidate.get("post_url", ""),
-        "ep": str(candidate.get("episode") or 1),
     }
     return base + "/hdhub4u/resolve?" + urllib.parse.urlencode(params)
 
@@ -227,7 +232,7 @@ async def _warm_and_translate(
 # ------------------------------------------------------------------
 async def get_manifest():
     start_background_tasks()
-    return JSONResponse(MANIFEST)
+    return JSONResponse(get_hdhub4u_manifest())
 
 
 manifest_endpoint = get_manifest

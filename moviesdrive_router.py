@@ -112,50 +112,56 @@ class SafeStreamingResponse(StreamingResponse):
 # ------------------------------------------------------------------
 # Manifest
 # ------------------------------------------------------------------
-MANIFEST = {
-    "id": "com.stremio.moviesdrive.addon",
-    "version": "1.2.0",
-    "name": "MoviesDrive - 4K Movies & Series",
-    "description": "Watch Hollywood, Bollywood, Dual Audio 4K UHD, 1080p, 720p Movies & TV Series from MoviesDrive with fast streaming.",
-    "resources": [
-        "catalog",
-        {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
-        {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
-        {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
-    ],
-    "types": ["movie", "series"],
-    "catalogs": [
-        {
-            "type": "movie",
-            "id": "moviesdrive_movies_latest",
-            "name": "MoviesDrive - Phim Mới",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-        {
-            "type": "movie",
-            "id": "moviesdrive_movies_4k",
-            "name": "MoviesDrive - Phim 4K UHD",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-        {
-            "type": "series",
-            "id": "moviesdrive_series_latest",
-            "name": "MoviesDrive - Phim Bộ (Series)",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False},
-            ],
-        },
-    ],
-}
+def get_moviesdrive_manifest() -> Dict[str, Any]:
+    from config import Config
+    show_on_board = getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.moviesdrive.addon",
+        "version": "1.2.0",
+        "name": "MoviesDrive - 4K Movies & Series",
+        "description": "Watch Hollywood, Bollywood, Dual Audio 4K UHD, 1080p, 720p Movies & TV Series from MoviesDrive with fast streaming.",
+        "resources": [
+            "catalog",
+            {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
+            {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
+            {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
+        ],
+        "types": ["movie", "series"],
+        "catalogs": [
+            {
+                "type": "movie",
+                "id": "moviesdrive_movies_latest",
+                "name": "MoviesDrive - Phim Mới",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + GENRE_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+            {
+                "type": "movie",
+                "id": "moviesdrive_movies_4k",
+                "name": "MoviesDrive - Phim 4K UHD",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+            {
+                "type": "series",
+                "id": "moviesdrive_series_latest",
+                "name": "MoviesDrive - Phim Bộ (Series)",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + GENRE_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False},
+                ],
+            },
+        ],
+    }
 
 
 # ------------------------------------------------------------------

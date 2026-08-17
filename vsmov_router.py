@@ -113,117 +113,125 @@ GENRE_OPTIONS = list(VSMOV_GENRES_MAP.keys())
 COUNTRY_OPTIONS = list(VSMOV_COUNTRIES_MAP.keys())
 ALL_FILTER_OPTIONS = GENRE_OPTIONS + COUNTRY_OPTIONS
 
-MANIFEST = {
-    "id": "com.stremio.vsmov.addon",
-    "version": "1.0.0",
-    "name": "VSMov - Phim Miễn Phí",
-    "description": "Xem phim Việt Nam miễn phí từ VSMov (HLS HD Trực Tiếp)",
-    "resources": [
-        "catalog",
-        {
-            "name": "meta",
-            "types": ["movie", "series"],
-            "idPrefixes": ["vsmov:"]
-        },
-        {
-            "name": "stream",
-            "types": ["movie", "series"],
-            "idPrefixes": ["vsmov:"]
-        }
-    ],
-    "types": ["movie", "series"],
-    "catalogs": [
-        {
-            "type": "movie",
-            "id": "vsmov_phim_moi",
-            "name": "VSMov - Phim Mới Cập Nhật",
-            "extra": [
-                {"name": "genre", "options": ALL_FILTER_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "vsmov_the_loai",
-            "name": "VSMov - Phim Theo Thể Loại",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "vsmov_quoc_gia",
-            "name": "VSMov - Phim Theo Quốc Gia",
-            "extra": [
-                {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "vsmov_phim_moi_series",
-            "name": "VSMov - Phim Mới Cập Nhật",
-            "extra": [
-                {"name": "genre", "options": ALL_FILTER_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "vsmov_the_loai_series",
-            "name": "VSMov - Phim Theo Thể Loại",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "vsmov_quoc_gia_series",
-            "name": "VSMov - Phim Theo Quốc Gia",
-            "extra": [
-                {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "vsmov_trung_quoc",
-            "name": "VSMov - Phim Trung Quốc",
-            "extra": [
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "vsmov_han_quoc",
-            "name": "VSMov - Phim Hàn Quốc",
-            "extra": [
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "vsmov_au_my",
-            "name": "VSMov - Phim Âu Mỹ",
-            "extra": [
-                {"name": "skip", "isRequired": False}
-            ]
-        }
-    ]
-}
+def get_vsmov_manifest() -> Dict[str, Any]:
+    from config import Config
+    show_on_board = getattr(Config, "ENABLE_BOARD_VSMOV", True)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.vsmov.addon",
+        "version": "1.0.0",
+        "name": "VSMov - Phim Miễn Phí",
+        "description": "Xem phim Việt Nam miễn phí từ VSMov (HLS HD Trực Tiếp)",
+        "resources": [
+            "catalog",
+            {
+                "name": "meta",
+                "types": ["movie", "series"],
+                "idPrefixes": ["vsmov:"]
+            },
+            {
+                "name": "stream",
+                "types": ["movie", "series"],
+                "idPrefixes": ["vsmov:"]
+            }
+        ],
+        "types": ["movie", "series"],
+        "catalogs": [
+            {
+                "type": "movie",
+                "id": "vsmov_phim_moi",
+                "name": "VSMov - Phim Mới Cập Nhật",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + ALL_FILTER_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "vsmov_the_loai",
+                "name": "VSMov - Phim Theo Thể Loại",
+                "extra": [
+                    {"name": "genre", "options": GENRE_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "vsmov_quoc_gia",
+                "name": "VSMov - Phim Theo Quốc Gia",
+                "extra": [
+                    {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "vsmov_phim_moi_series",
+                "name": "VSMov - Phim Mới Cập Nhật",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + ALL_FILTER_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "vsmov_the_loai_series",
+                "name": "VSMov - Phim Theo Thể Loại",
+                "extra": [
+                    {"name": "genre", "options": GENRE_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "vsmov_quoc_gia_series",
+                "name": "VSMov - Phim Theo Quốc Gia",
+                "extra": [
+                    {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "vsmov_trung_quoc",
+                "name": "VSMov - Phim Trung Quốc",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "vsmov_han_quoc",
+                "name": "VSMov - Phim Hàn Quốc",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "vsmov_au_my",
+                "name": "VSMov - Phim Âu Mỹ",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "skip", "isRequired": False}
+                ]
+            }
+        ]
+    }
 
 @vsmov_router.get("/vsmov/manifest.json")
 @vsmov_router.get("/manifest.json")
 async def get_manifest():
-    return JSONResponse(MANIFEST)
+    return JSONResponse(get_vsmov_manifest())
 
 # ------------------------------------------------------------------
 # Helper Functions

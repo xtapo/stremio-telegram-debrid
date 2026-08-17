@@ -32,73 +32,78 @@ COUNTRY_OPTIONS = [
 
 ALL_FILTER_OPTIONS = list(dict.fromkeys(GENRE_OPTIONS + COUNTRY_OPTIONS))
 
-MANIFEST = {
-    "id": "com.stremio.topxx.addon",
-    "version": "1.0.1",
-    "name": "TopXX - Phim 18+ Vietsub",
-    "description": "Xem phim Adult 18+ Vietsub từ TopXX API (HLS HD Trực Tiếp)",
-    "resources": [
-        "catalog",
-        {
-            "name": "meta",
-            "types": ["movie"],
-            "idPrefixes": ["topxx:"]
-        },
-        {
-            "name": "stream",
-            "types": ["movie"],
-            "idPrefixes": ["topxx:"]
-        }
-    ],
-    "types": ["movie"],
-    "catalogs": [
-        {
-            "type": "movie",
-            "id": "topxx_phim_hom_nay",
-            "name": "TopXX - Phim Đăng Hôm Nay (Today)",
-            "extra": [
-                {"name": "genre", "options": ALL_FILTER_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "topxx_phim_moi",
-            "name": "TopXX - Phim Mới Cập Nhật (Latest)",
-            "extra": [
-                {"name": "genre", "options": ALL_FILTER_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "topxx_the_loai",
-            "name": "TopXX - Thể Loại",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "movie",
-            "id": "topxx_quoc_gia",
-            "name": "TopXX - Quốc Gia",
-            "extra": [
-                {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        }
-    ]
-}
+def get_topxx_manifest() -> Dict[str, Any]:
+    from config import Config
+    show_on_board = getattr(Config, "ENABLE_BOARD_TOPXX", False)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.topxx.addon",
+        "version": "1.0.1",
+        "name": "TopXX - Phim 18+ Vietsub",
+        "description": "Xem phim Adult 18+ Vietsub từ TopXX API (HLS HD Trực Tiếp)",
+        "resources": [
+            "catalog",
+            {
+                "name": "meta",
+                "types": ["movie"],
+                "idPrefixes": ["topxx:"]
+            },
+            {
+                "name": "stream",
+                "types": ["movie"],
+                "idPrefixes": ["topxx:"]
+            }
+        ],
+        "types": ["movie"],
+        "catalogs": [
+            {
+                "type": "movie",
+                "id": "topxx_phim_hom_nay",
+                "name": "TopXX - Phim Đăng Hôm Nay (Today)",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + ALL_FILTER_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "topxx_phim_moi",
+                "name": "TopXX - Phim Mới Cập Nhật (Latest)",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + ALL_FILTER_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "topxx_the_loai",
+                "name": "TopXX - Thể Loại",
+                "extra": [
+                    {"name": "genre", "options": GENRE_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "movie",
+                "id": "topxx_quoc_gia",
+                "name": "TopXX - Quốc Gia",
+                "extra": [
+                    {"name": "genre", "options": COUNTRY_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            }
+        ]
+    }
 
 @topxx_router.get("/topxx/manifest.json")
 @topxx_router.get("/manifest.json")
 async def get_manifest():
-    return JSONResponse(MANIFEST)
+    return JSONResponse(get_topxx_manifest())
 
 # Dynamic mapping caches: maps normalized key -> item code
 GENRES_CACHE: Dict[str, str] = {}

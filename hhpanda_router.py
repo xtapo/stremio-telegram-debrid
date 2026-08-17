@@ -41,71 +41,78 @@ GENRES_MAP = {
 
 GENRE_OPTIONS = list(GENRES_MAP.keys())
 
-MANIFEST = {
-    "id": "com.stremio.hhpanda.addon",
-    "version": "1.0.0",
-    "name": "HHPanda - Hoạt Hình 3D 4K",
-    "description": "Xem Phim Hoạt Hình 3D Trung Quốc Thuyết Minh & VietSub 4K sắc nét nhất từ HHPanda (hhpanda.st)",
-    "resources": [
-        "catalog",
-        {
-            "name": "meta",
-            "types": ["series", "movie"],
-            "idPrefixes": ["hhpanda:"]
-        },
-        {
-            "name": "stream",
-            "types": ["series", "movie"],
-            "idPrefixes": ["hhpanda:"]
-        }
-    ],
-    "types": ["series", "movie"],
-    "catalogs": [
-        {
-            "type": "series",
-            "id": "hhpanda_moi_cap_nhat",
-            "name": "HHPanda - Mới Cập Nhật",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "hhpanda_the_loai",
-            "name": "HHPanda - Thể Loại",
-            "extra": [
-                {"name": "genre", "options": GENRE_OPTIONS, "isRequired": False},
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "hhpanda_hoan_thanh",
-            "name": "HHPanda - Phim Hoàn Thành",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        },
-        {
-            "type": "series",
-            "id": "hhpanda_top_xem_nhieu",
-            "name": "HHPanda - Top Xem Nhiều",
-            "extra": [
-                {"name": "search", "isRequired": False},
-                {"name": "skip", "isRequired": False}
-            ]
-        }
-    ]
-}
+def get_hhpanda_manifest() -> Dict[str, Any]:
+    from config import Config
+    show_on_board = getattr(Config, "ENABLE_BOARD_HHPANDA", True)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.hhpanda.addon",
+        "version": "1.0.0",
+        "name": "HHPanda - Hoạt Hình 3D 4K",
+        "description": "Xem Phim Hoạt Hình 3D Trung Quốc Thuyết Minh & VietSub 4K sắc nét nhất từ HHPanda (hhpanda.st)",
+        "resources": [
+            "catalog",
+            {
+                "name": "meta",
+                "types": ["series", "movie"],
+                "idPrefixes": ["hhpanda:"]
+            },
+            {
+                "name": "stream",
+                "types": ["series", "movie"],
+                "idPrefixes": ["hhpanda:"]
+            }
+        ],
+        "types": ["series", "movie"],
+        "catalogs": [
+            {
+                "type": "series",
+                "id": "hhpanda_moi_cap_nhat",
+                "name": "HHPanda - Mới Cập Nhật",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + GENRE_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "hhpanda_the_loai",
+                "name": "HHPanda - Thể Loại",
+                "extra": [
+                    {"name": "genre", "options": GENRE_OPTIONS, "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "hhpanda_hoan_thanh",
+                "name": "HHPanda - Phim Hoàn Thành",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "series",
+                "id": "hhpanda_top_xem_nhieu",
+                "name": "HHPanda - Top Xem Nhiều",
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": True},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            }
+        ]
+    }
 
 @hhpanda_router.get("/hhpanda/manifest.json")
 @hhpanda_router.get("/manifest.json")
 async def get_manifest():
-    return JSONResponse(MANIFEST)
+    return JSONResponse(get_hhpanda_manifest())
 
 
 # ------------------------------------------------------------------

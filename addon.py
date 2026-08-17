@@ -165,6 +165,9 @@ def verify_api_key(request: Request):
 
 def get_manifest(api_key: str = ""):
     query_suffix = f"?api_key={api_key}" if api_key else ""
+    show_on_board = getattr(Config, "ENABLE_BOARD_TELEGRAM", True)
+    main_req = not show_on_board
+
     return {
         "id": "community.telegram.stremio.addon",
         "version": "1.0.0",
@@ -178,13 +181,21 @@ def get_manifest(api_key: str = ""):
                 "type": "movie",
                 "id": "telegram_movies",
                 "name": "Telegram Movies",
-                "extra": [{"name": "search", "isRequired": False}, {"name": "skip", "isRequired": False}]
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
             },
             {
                 "type": "series",
                 "id": "telegram_series",
                 "name": "Telegram Series",
-                "extra": [{"name": "search", "isRequired": False}, {"name": "skip", "isRequired": False}]
+                "extra": [
+                    {"name": "genre", "options": ["Tất cả"], "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
             }
         ],
         "behaviorHints": {

@@ -184,9 +184,17 @@ def item_to_stremio_meta(item: Dict[str, Any]) -> Dict[str, Any]:
         except ValueError:
             pass
             
-    poster = item.get("poster_url") or item.get("thumb_url") or ""
-    thumb = item.get("thumb_url") or poster
-    
+    # In NguonC API:
+    # thumb_url is the vertical 2:3 poster (e.g. 400x600, 300x450)
+    # poster_url is the horizontal 16:9 backdrop banner (e.g. 1920x1080, 700x390)
+    vertical_poster = item.get("thumb_url") or item.get("poster_url") or ""
+    if vertical_poster and not vertical_poster.startswith("http"):
+        vertical_poster = f"https://phim.nguonc.com{vertical_poster}" if vertical_poster.startswith("/") else f"https://phim.nguonc.com/{vertical_poster}"
+
+    horizontal_backdrop = item.get("poster_url") or item.get("thumb_url") or ""
+    if horizontal_backdrop and not horizontal_backdrop.startswith("http"):
+        horizontal_backdrop = f"https://phim.nguonc.com{horizontal_backdrop}" if horizontal_backdrop.startswith("/") else f"https://phim.nguonc.com/{horizontal_backdrop}"
+
     description = item.get("description") or ""
     orig_name = item.get("original_name")
     quality = item.get("quality")
@@ -208,17 +216,21 @@ def item_to_stremio_meta(item: Dict[str, Any]) -> Dict[str, Any]:
         "id": f"nguonc:{slug}",
         "type": m_type,
         "name": item.get("name", "Phim NguonC"),
-        "poster": poster,
+        "poster": vertical_poster,
         "posterShape": "poster",
-        "banner": poster,
-        "background": poster,
+        "banner": horizontal_backdrop,
+        "background": horizontal_backdrop,
         "description": description,
         "genres": parse_genres(item),
         "releaseInfo": str(year) if year else None
     }
 
 def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
+    from config import Config
     base_url = str(request.base_url).rstrip("/")
+    show_on_board = getattr(Config, "ENABLE_BOARD_NGUONC", True)
+    main_req = not show_on_board  # If False, isRequired=True to hide from Home Board
+
     return {
         "id": "com.stremio.nguonc.phim",
         "version": "1.0.0",
@@ -233,6 +245,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_phim_moi_movie",
                 "name": "NguonC - Phim Mới Cập Nhật",
                 "extra": [
+                    {"name": "genre", "isRequired": main_req, "options": ["Tất cả"] + ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -242,7 +255,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_phim_le",
                 "name": "NguonC - Phim Lẻ",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": ALL_FILTER_OPTIONS},
+                    {"name": "genre", "isRequired": main_req, "options": ["Tất cả"] + ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -252,7 +265,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_the_loai",
                 "name": "NguonC - Phim Theo Thể Loại",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": GENRE_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": GENRE_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -262,7 +275,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_quoc_gia",
                 "name": "NguonC - Phim Theo Quốc Gia",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": COUNTRY_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": COUNTRY_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -272,7 +285,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_nam",
                 "name": "NguonC - Phim Theo Năm",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": YEAR_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": YEAR_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -282,6 +295,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_phim_moi_series",
                 "name": "NguonC - Phim Mới Cập Nhật",
                 "extra": [
+                    {"name": "genre", "isRequired": main_req, "options": ["Tất cả"] + ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -291,7 +305,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_phim_bo",
                 "name": "NguonC - Phim Bộ",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": ALL_FILTER_OPTIONS},
+                    {"name": "genre", "isRequired": main_req, "options": ["Tất cả"] + ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -301,7 +315,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_dang_chieu",
                 "name": "NguonC - Phim Đang Chiếu",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": ALL_FILTER_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -311,7 +325,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_tv_shows",
                 "name": "NguonC - TV Shows",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": ALL_FILTER_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": ALL_FILTER_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -321,7 +335,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_the_loai_series",
                 "name": "NguonC - Phim Theo Thể Loại",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": GENRE_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": GENRE_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -331,7 +345,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_quoc_gia_series",
                 "name": "NguonC - Phim Theo Quốc Gia",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": COUNTRY_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": COUNTRY_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
@@ -341,7 +355,7 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
                 "id": "nguonc_nam_series",
                 "name": "NguonC - Phim Theo Năm",
                 "extra": [
-                    {"name": "genre", "isRequired": False, "options": YEAR_OPTIONS},
+                    {"name": "genre", "isRequired": True, "options": YEAR_OPTIONS},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False}
                 ]
