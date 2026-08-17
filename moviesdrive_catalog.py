@@ -54,7 +54,7 @@ CINEMETA_TTL = perf._env_int("MD_CINEMETA_TTL", 3600)
 IMDB_TTL = perf._env_int("MD_IMDB_TTL", 86400)
 SUBS_TTL = perf._env_int("MD_SUBS_TTL", 900)
 MD_ITEMS_PER_PAGE = 24
-CATALOG_BATCH_SIZE = perf._env_int("MD_CATALOG_PAGE_SIZE", 72)
+CATALOG_BATCH_SIZE = perf._env_int("MD_CATALOG_PAGE_SIZE", 20)
 
 CATEGORIES_MAP = {
     "Action": "action",
@@ -339,11 +339,12 @@ async def _scrape_catalog(url: str) -> Optional[List[Dict[str, Any]]]:
 def _enrich_item_from_meta(item: dict, meta: dict) -> None:
     if not isinstance(meta, dict):
         return
-    if meta.get("name"):
+    # Preserve original item name to prevent showing wrong film name
+    if not item.get("name") and meta.get("name"):
         item["name"] = meta["name"]
     if meta.get("imdbRating"):
         item["imdbRating"] = str(meta["imdbRating"])
-    if meta.get("description"):
+    if meta.get("description") and not item.get("description"):
         item["description"] = meta["description"]
     if meta.get("releaseInfo") or meta.get("year"):
         item["releaseInfo"] = str(meta.get("releaseInfo") or meta.get("year"))
@@ -457,7 +458,7 @@ async def get_catalog_items(
             pass
 
     # 3. Background pre-warm remaining items on this page
-    for item in selected[8:24]:
+    for item in selected[8:20]:
         slug = item["id"].replace("moviesdrive:", "").split(":")[0].strip("/")
         mtype = item.get("type", "movie")
         if not perf.get_cached("meta:" + mtype + ":" + slug):
@@ -584,11 +585,13 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
     genre_str = ", ".join(genres) if isinstance(genres, list) else str(genres)
     audio = info_dict.get("audio") or "Dual Audio (Hindi + English / Original)"
 
+    # Prioritize original post poster if present
     if not poster and cm_meta and cm_meta.get("poster"):
         poster = cm_meta.get("poster")
     background = (cm_meta.get("background") if cm_meta else None) or poster or ""
     logo = (cm_meta.get("logo") if cm_meta else None) or ""
-    final_name = (cm_meta.get("name") if cm_meta else None) or cleaned_name or raw_title
+    # Always keep original cleaned movie title so we never replace it with a wrong movie
+    final_name = cleaned_name or raw_title
 
     # 6. Translate Synopsis & Build Vietnamese Rich Description
     vi_synopsis = ""
@@ -722,7 +725,7 @@ async def fetch_opensubtitles(imdb_id: str, media_type: str = "movie", extra: st
     return subs or []
 
 
-async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: int):
+async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: int, year: Optional[str] = None):
     url = (
         CINEMETA_CATALOG
         + "/"
@@ -737,8 +740,47 @@ async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: 
     metas = data.get("metas") or []
     if not metas:
         return None
-    imdb_id = metas[0].get("imdb_id") or metas[0].get("id")
-    if not imdb_id:
+
+    # Strict title & year validation: DO NOT pick a random result if title does not match
+    def _norm(s: str) -> str:
+        s = re.sub(r"[^\w\s]", "", (s or "").lower())
+        return re.sub(r"\s+", " ", s).strip()
+
+    target_norm = _norm(clean_title)
+    if not target_norm:
+        return None
+
+    target_words = [w for w in target_norm.split() if w not in ('a', 'an', 'the', 'and', 'or', 'of', 'in', 'to', 'for', 'with') and len(w) > 1]
+    if not target_words:
+        target_words = target_norm.split()
+
+    matched_meta = None
+    for m in metas:
+        m_name = _norm(m.get("name", ""))
+        if not m_name:
+            continue
+        # Exact match or starts with
+        if m_name == target_norm or m_name.startswith(target_norm) or target_norm.startswith(m_name):
+            m_year = str(m.get("year") or m.get("releaseInfo") or "")
+            if year and m_year and abs(int(year) - int(m_year)) > 1:
+                continue
+            matched_meta = m
+            break
+        # All major words must be in m_name and word count difference must not be large
+        if all(w in m_name for w in target_words):
+            m_words = m_name.split()
+            if abs(len(m_words) - len(target_norm.split())) <= 2:
+                m_year = str(m.get("year") or m.get("releaseInfo") or "")
+                if year and m_year and abs(int(year) - int(m_year)) > 1:
+                    continue
+                matched_meta = m
+                break
+
+    if not matched_meta:
+        return None
+
+    imdb_id = matched_meta.get("imdb_id") or matched_meta.get("id")
+    if not imdb_id or not imdb_id.startswith("tt"):
         return None
     if media_type == "series":
         return imdb_id + ":" + str(season) + ":" + str(episode)
@@ -757,6 +799,10 @@ async def find_imdb_for_moviesdrive_id(media_type: str, md_id: str) -> Optional[
     clean = slug
     for word in NOISE_WORDS:
         clean = re.sub(r"\b" + word + r"\b", "", clean, flags=re.I)
+    
+    year_match = re.search(r"\b(19\d\d|20\d\d)\b", clean)
+    year = year_match.group(1) if year_match else None
+
     clean_title = re.sub(r"\b(19\d\d|20\d\d)\b", "", clean)
     clean_title = re.sub(r"season-\d+", "", clean_title, flags=re.I)
     clean_title = clean_title.replace("-", " ").strip()
@@ -765,7 +811,7 @@ async def find_imdb_for_moviesdrive_id(media_type: str, md_id: str) -> Optional[
 
     return await cached_call(
         "md_to_imdb:" + md_id,
-        lambda: _lookup_imdb(media_type, clean_title, season, episode),
+        lambda: _lookup_imdb(media_type, clean_title, season, episode, year=year),
         ttl=IMDB_TTL,
         negative_ttl=perf._env_int("MD_IMDB_NEGATIVE_TTL", 600),
     )
