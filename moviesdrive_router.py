@@ -375,10 +375,23 @@ async def stream_endpoint(request: Request, type: str, id: str):
         def _norm_str(s: str) -> str:
             return re.sub(r"[^\w\s]", "", (s or "").lower()).strip()
 
+        def _safe_year(val: Any) -> Optional[int]:
+            if not val:
+                return None
+            m = re.search(r"\b(19\d\d|20\d\d)\b", str(val))
+            if m:
+                try:
+                    return int(m.group(1))
+                except Exception:
+                    return None
+            return None
+
         target_norm = _norm_str(display)
         target_words = [w for w in target_norm.split() if w not in ('a', 'an', 'the', 'and', 'or', 'of', 'in', 'to', 'for', 'with') and len(w) > 1]
         if not target_words:
             target_words = target_norm.split()
+
+        target_year = _safe_year(year)
 
         matched_hit = None
         for hit in hits:
@@ -387,9 +400,8 @@ async def stream_endpoint(request: Request, type: str, id: str):
             p_slug = _norm_str(doc.get("permalink", "").replace("-", " "))
             
             # Check year matching if year is present
-            year_match = re.search(r"\b(19\d\d|20\d\d)\b", doc.get("post_title", "") + " " + doc.get("permalink", ""))
-            p_year = year_match.group(1) if year_match else ""
-            if year and p_year and abs(int(year) - int(p_year)) > 1:
+            p_year = _safe_year(doc.get("post_title", "") + " " + doc.get("permalink", ""))
+            if target_year and p_year and abs(target_year - p_year) > 1:
                 continue
 
             if target_norm in p_title or target_norm in p_slug:

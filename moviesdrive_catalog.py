@@ -746,6 +746,17 @@ async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: 
         s = re.sub(r"[^\w\s]", "", (s or "").lower())
         return re.sub(r"\s+", " ", s).strip()
 
+    def _safe_year(val: Any) -> Optional[int]:
+        if not val:
+            return None
+        m = re.search(r"\b(19\d\d|20\d\d)\b", str(val))
+        if m:
+            try:
+                return int(m.group(1))
+            except Exception:
+                return None
+        return None
+
     target_norm = _norm(clean_title)
     if not target_norm:
         return None
@@ -754,15 +765,17 @@ async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: 
     if not target_words:
         target_words = target_norm.split()
 
+    target_year = _safe_year(year)
+
     matched_meta = None
     for m in metas:
         m_name = _norm(m.get("name", ""))
         if not m_name:
             continue
+        m_year = _safe_year(m.get("year") or m.get("releaseInfo"))
         # Exact match or starts with
         if m_name == target_norm or m_name.startswith(target_norm) or target_norm.startswith(m_name):
-            m_year = str(m.get("year") or m.get("releaseInfo") or "")
-            if year and m_year and abs(int(year) - int(m_year)) > 1:
+            if target_year and m_year and abs(target_year - m_year) > 1:
                 continue
             matched_meta = m
             break
@@ -770,8 +783,7 @@ async def _lookup_imdb(media_type: str, clean_title: str, season: int, episode: 
         if all(w in m_name for w in target_words):
             m_words = m_name.split()
             if abs(len(m_words) - len(target_norm.split())) <= 2:
-                m_year = str(m.get("year") or m.get("releaseInfo") or "")
-                if year and m_year and abs(int(year) - int(m_year)) > 1:
+                if target_year and m_year and abs(target_year - m_year) > 1:
                     continue
                 matched_meta = m
                 break
