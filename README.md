@@ -506,6 +506,19 @@ ADDON_URL=https://stremio-tg.yourdomain.com
 
 
 
+## 🎛️ Addon Studio Management Dashboard (Giao Diện Quản Lý Trực Quan)
+
+Addon tích hợp sẵn giao diện quản trị **Dashboard** hiện đại và tiện lợi tại đường dẫn:
+```text
+http://localhost:7860/dashboard   (hoặc http://<IP_LAN>:7860/dashboard)
+```
+- 📊 **Tổng quan hệ thống**: Trạng thái kết nối Telegram, Uptime máy chủ, dịch vụ Debrid và bộ nhớ đệm cache.
+- 🧩 **Trung tâm cài đặt 7 nguồn**: Cài đặt 1-chạm vào Stremio, tự động chuyển đổi giữa link Local/LAN/Public URL.
+- 🔍 **Tìm phim & Web Player**: Tìm kiếm phim xuyên suốt các nguồn và xem thử trực tiếp ngay trên trình duyệt (tích hợp HLS Player).
+- 📜 **Xem Live Logs & Quản lý Cache**: Theo dõi request trực tiếp và xóa bộ nhớ đệm nhanh chóng.
+
+---
+
 ## 🎬 All Available Sources & Cinema Addons (Tổng Hợp Các Nguồn Phim & Addon)
 
 Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phim cá nhân Telegram, Debrid/Torrents đến các kho phim trực tuyến Vietsub, Thuyết minh, Hoạt hình 3D, Hollywood 4K và Bollywood.

@@ -95,6 +95,7 @@ from topxx_router import topxx_router
 from hhpanda_router import hhpanda_router
 from moviesdrive_router import moviesdrive_router
 from hdhub4u_router import hdhub4u_router
+from dashboard_router import dashboard_router
 
 app = FastAPI(lifespan=lifespan)
 
@@ -106,6 +107,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(dashboard_router)
 app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
 app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
@@ -556,7 +558,11 @@ async def landing(request: Request):
                         </svg>
                         Stremio Telegram Addon
                     </div>
-                    <div class="header-actions">
+                    <div class="header-actions" style="display: flex; gap: 8px;">
+                        <a href="/dashboard" class="star-badge" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            Bảng Quản Lý (Dashboard)
+                        </a>
                         <a href="https://github.com/SunilRoy-dev/stremio-telegram-debrid" target="_blank" class="star-badge">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="margin-right: 4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                             Star on GitHub
