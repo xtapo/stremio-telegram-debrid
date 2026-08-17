@@ -27,6 +27,8 @@ class Config:
     PORT = int(os.getenv("PORT", 7860))
     ADDON_URL = os.getenv("ADDON_URL", f"http://localhost:{PORT}").rstrip("/")
     API_KEY = os.getenv("API_KEY", "")
+    DASHBOARD_USERNAME = os.getenv("DASHBOARD_USERNAME", os.getenv("ADMIN_USERNAME", "admin"))
+    DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", os.getenv("ADMIN_PASSWORD", os.getenv("API_KEY", "")))
     CACHE_TTL = int(os.getenv("CACHE_TTL", 1800))
     TIMEZONE = os.getenv("TIMEZONE", "UTC")
     STREAM_CACHE_SIZE_MB = int(os.getenv("STREAM_CACHE_SIZE_MB", 256))

@@ -174,6 +174,13 @@ Configure these settings in your deployment dashboard or local `.env` file:
 | `BOT_TOKEN` | **Conditional** | Bot Token from `@BotFather` (required if `USER_SESSION_STRING` is not configured). |
 | `USER_SESSION_STRING` | **Conditional** | Pyrogram Session String (highly recommended to bypass bot limits, see details below). |
 | `API_KEY` | No | Add a secret key (e.g. `mykey123`) to secure your addon endpoint with `?api_key=mykey123`. |
+| `DASHBOARD_USERNAME` | No | Tên tài khoản quản trị Dashboard (Mặc định: `admin`). |
+| `DASHBOARD_PASSWORD` | No | Mật khẩu bảo vệ trang Dashboard `/dashboard` và trang đăng nhập `/login`. |
+| `AUTO_VIET_SUB` | No | Bật/tắt tự động dịch phụ đề Tiếng Việt bằng AI (`True`/`False`, mặc định: `True`). |
+| `AUTO_THUYET_MINH` | No | Bật/tắt giọng đọc thuyết minh AI (`True`/`False`, mặc định: `True`). |
+| `ENABLE_GEMINI` | No | Bật/tắt engine dịch Google Gemini AI (`True`/`False`, mặc định: `True`). |
+| `ENABLE_CUSTOM_AI` | No | Bật/tắt engine dịch Custom AI / OpenAI / Claude endpoint (`True`/`False`, mặc định: `True`). |
+| `SUBTITLE_TIME_OFFSET` | No | Độ lệch thời gian sub tính bằng giây (+/-), ví dụ: `1.5` hoặc `-0.5` (mặc định: `0.0`). |
 | `ADDON_URL` | **Yes** | The public HTTP URL where your server is deployed (e.g. `https://myaddon.onrender.com`). |
 | `LOG_CHANNEL_ID` | No | Telegram channel ID where play/stream logs are recorded. |
 | `TIMEZONE` | No | Timezone for logs (e.g., `Asia/Kolkata`, `UTC+05:30`). Defaults to `UTC`. |
@@ -506,16 +513,40 @@ ADDON_URL=https://stremio-tg.yourdomain.com
 
 
 
-## 🎛️ Addon Studio Management Dashboard (Giao Diện Quản Lý Trực Quan)
+## 🎛️ Addon Studio Management Dashboard (Giao Diện Quản Lý & Bảo Mật)
 
 Addon tích hợp sẵn giao diện quản trị **Dashboard** hiện đại và tiện lợi tại đường dẫn:
 ```text
 http://localhost:7860/dashboard   (hoặc http://<IP_LAN>:7860/dashboard)
 ```
-- 📊 **Tổng quan hệ thống**: Trạng thái kết nối Telegram, Uptime máy chủ, dịch vụ Debrid và bộ nhớ đệm cache.
-- 🧩 **Trung tâm cài đặt 7 nguồn**: Cài đặt 1-chạm vào Stremio, tự động chuyển đổi giữa link Local/LAN/Public URL.
-- 🔍 **Tìm phim & Web Player**: Tìm kiếm phim xuyên suốt các nguồn và xem thử trực tiếp ngay trên trình duyệt (tích hợp HLS Player).
-- 📜 **Xem Live Logs & Quản lý Cache**: Theo dõi request trực tiếp và xóa bộ nhớ đệm nhanh chóng.
+
+### 🌟 Các tính năng chính của Dashboard:
+
+1. 🔐 **Trang Đăng Nhập & Bảo Mật Máy Chủ (`/login`)**:
+   - Giao diện đăng nhập Glassmorphism bảo vệ trang quản trị khi cấu hình `DASHBOARD_PASSWORD` (hoặc `API_KEY`).
+   - Hỗ trợ lưu phiên đăng nhập an toàn 30 ngày (Remember Me Cookie) và nút **Đăng Xuất (Logout)** 1-chạm.
+   - Có thể đổi tên đăng nhập (`DASHBOARD_USERNAME`) và mật khẩu trực tiếp trong Dashboard mà không cần can thiệp code.
+
+2. 🧩 **Trung Tâm Cài Đặt 7 Nguồn Addon**:
+   - Cài đặt 1-chạm vào Stremio Desktop / Stremio Web.
+   - Tự động chuyển đổi giữa Manifest URL theo môi trường: **Mạng LAN** (Android TV / Phone), **Localhost** (Máy tính cục bộ), hoặc **Public Host** (VPS / Domain).
+
+3. 🔍 **Tra Cứu Phim & Trình Phát Thử (Universal Search & Player)**:
+   - Tìm kiếm phim song song trên **toàn bộ 7 nguồn** cùng một lúc (hoặc lọc từng nguồn riêng biệt).
+   - Tích hợp **Hybrid Video Player**: Tự động phát luồng HLS `.m3u8` / MP4 / Telegram qua HTML5 Video Player và luồng Web Player qua Iframe không quảng cáo.
+
+4. 🎛️ **Cấu Hình Dịch Phụ Đề & AI Thời Gian Thực**:
+   - Công tắc BẬT / TẮT **Tự động dịch phụ đề Tiếng Việt (`AUTO_VIET_SUB`)**.
+   - Công tắc BẬT / TẮT **Thuyết minh giọng đọc AI (`AUTO_THUYET_MINH`)**.
+   - Bật / tắt **Gemini AI (`ENABLE_GEMINI`)** và **Custom AI Endpoint (`ENABLE_CUSTOM_AI`)**.
+   - Chỉnh độ lệch thời gian sub (**Subtitle Offset** +/- giây) để khớp khẩu hình.
+   - Bật / tắt **Tự động sao lưu lên kênh Telegram (`AUTO_UPLOAD_TO_TELEGRAM`)**.
+   - *Mọi thay đổi trên Dashboard có hiệu lực ngay lập tức và tự động lưu vào file `.env`.*
+
+5. 📜 **Nhật Ký Trực Quan (Live Logs) & Quản Lý Cache**:
+   - Theo dõi log thời gian thực với màu sắc phân biệt theo mức độ (`INFO`, `WARN`, `ERROR`, `DEBUG`) và module badge (`NguonC`, `VSMov`, `HHPanda`, `MoviesDrive`, `HDHub4u`, `TopXX`, `Telegram`, `Debrid`, `Subtitles`).
+   - Cú pháp mã HTTP (200, 206, 404, 500...), đường dẫn stream, IP được highlight rõ nét.
+   - Bộ lọc cấp độ log, thanh tìm kiếm từ khóa, nút **Sao Chép Logs** và nút **Xóa Cache Hệ Thống**.
 
 ---
 

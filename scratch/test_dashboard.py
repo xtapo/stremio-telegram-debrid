@@ -31,6 +31,31 @@ def test_dashboard():
     res = client.get("/api/system/logs")
     assert res.status_code == 200
 
+    print("Testing /api/search with all sources...")
+    res = client.get("/api/search?q=avatar&source=all")
+    assert res.status_code == 200
+    search_data = res.json()
+    print(f"Universal Search found {search_data.get('total', 0)} results across sources.")
+
+    print("Testing /api/search with specific sources...")
+    for s in ["nguonc", "vsmov", "moviesdrive", "hdhub4u", "topxx"]:
+        r = client.get(f"/api/search?q=spider&source={s}")
+        assert r.status_code == 200
+        print(f" - Source [{s}]: {r.json().get('total', 0)} results")
+
+    print("Testing /api/config/update (toggle auto_vietsub & offset)...")
+    res = client.post("/api/config/update", json={"auto_vietsub": True, "subtitle_offset": 1.5})
+    assert res.status_code == 200
+    res_data = res.json()
+    assert res_data["success"] is True
+    assert res_data["services"]["auto_vietsub"] is True
+    assert res_data["services"]["subtitle_offset"] == 1.5
+
+    # Toggle it off
+    res = client.post("/api/config/update", json={"auto_vietsub": False})
+    assert res.status_code == 200
+    assert res.json()["services"]["auto_vietsub"] is False
+
     print("All Dashboard tests passed successfully!")
 
 if __name__ == "__main__":
