@@ -781,7 +781,7 @@ async def api_update_config(request: Request):
 async def api_system_addons(request: Request):
     lan_ip = get_lan_ip()
     port = Config.PORT
-    base_url = str(request.base_url).rstrip("/")
+    domain_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) else str(request.base_url).rstrip("/")
     api_key_suffix = f"?api_key={urllib.parse.quote(Config.API_KEY)}" if Config.API_KEY else ""
 
     addons = [
@@ -799,7 +799,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/manifest.json{api_key_suffix}",
                 "lan": f"http://{lan_ip}:{port}/manifest.json{api_key_suffix}",
-                "public": f"{base_url}/manifest.json{api_key_suffix}"
+                "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
         },
@@ -817,7 +817,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/nguonc/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/nguonc/manifest.json",
-                "public": f"{base_url}/nguonc/manifest.json"
+                "public": f"{domain_url}/nguonc/manifest.json"
             },
             "routes": ["/nguonc/manifest.json", "/nguonc/catalog", "/nguonc/stream"]
         },
@@ -835,7 +835,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/vsmov/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/vsmov/manifest.json",
-                "public": f"{base_url}/vsmov/manifest.json"
+                "public": f"{domain_url}/vsmov/manifest.json"
             },
             "routes": ["/vsmov/manifest.json", "/vsmov/catalog", "/vsmov/stream"]
         },
@@ -853,7 +853,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/hhpanda/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/hhpanda/manifest.json",
-                "public": f"{base_url}/hhpanda/manifest.json"
+                "public": f"{domain_url}/hhpanda/manifest.json"
             },
             "routes": ["/hhpanda/manifest.json", "/hhpanda/catalog", "/hhpanda/stream"]
         },
@@ -871,7 +871,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/moviesdrive/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/moviesdrive/manifest.json",
-                "public": f"{base_url}/moviesdrive/manifest.json"
+                "public": f"{domain_url}/moviesdrive/manifest.json"
             },
             "routes": ["/moviesdrive/manifest.json", "/moviesdrive/catalog", "/moviesdrive/stream"]
         },
@@ -889,7 +889,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/hdhub4u/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/hdhub4u/manifest.json",
-                "public": f"{base_url}/hdhub4u/manifest.json"
+                "public": f"{domain_url}/hdhub4u/manifest.json"
             },
             "routes": ["/hdhub4u/manifest.json", "/hdhub4u/catalog", "/hdhub4u/stream"]
         },
@@ -907,7 +907,7 @@ async def api_system_addons(request: Request):
             "manifests": {
                 "local": f"http://127.0.0.1:{port}/topxx/manifest.json",
                 "lan": f"http://{lan_ip}:{port}/topxx/manifest.json",
-                "public": f"{base_url}/topxx/manifest.json"
+                "public": f"{domain_url}/topxx/manifest.json"
             },
             "routes": ["/topxx/manifest.json", "/topxx/catalog", "/topxx/stream"]
         }
@@ -2688,11 +2688,11 @@ async def dashboard_ui(request: Request):
 
                         <div class="stat-card" style="--card-color: var(--cyan);">
                             <div class="stat-icon-wrapper">
-                                <i class="fa-solid fa-network-wired"></i>
+                                <i class="fa-solid fa-globe"></i>
                             </div>
                             <div class="stat-info">
-                                <h4>Địa Chỉ LAN IP</h4>
-                                <h3 id="statLanIp">Đang tải...</h3>
+                                <h4 id="statNetworkTitle">Tên Miền / Địa Chỉ IP</h4>
+                                <h3 id="statLanIp" style="font-size: 14px; word-break: break-all;">Đang tải...</h3>
                             </div>
                         </div>
 
@@ -2744,9 +2744,9 @@ async def dashboard_ui(request: Request):
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <label style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Môi trường URL:</label>
                             <select id="envUrlSelector" class="source-select" style="height: 36px;" onchange="renderAddonCards()">
-                                <option value="lan">Mạng LAN (Android TV / Điện thoại)</option>
-                                <option value="local">Máy tính cục bộ (127.0.0.1)</option>
-                                <option value="public">Tên miền Host hiện tại</option>
+                                <option value="public" selected>🌐 Tên miền Public / Domain (Khuyên dùng)</option>
+                                <option value="lan">📱 Mạng LAN (Android TV / Cùng Wi-Fi)</option>
+                                <option value="local">💻 Máy tính cục bộ (127.0.0.1)</option>
                             </select>
                         </div>
                     </div>
@@ -3070,7 +3070,13 @@ async def dashboard_ui(request: Request):
                 const data = await res.json();
 
                 document.getElementById('statUptime').textContent = data.uptime || 'N/A';
-                document.getElementById('statLanIp').textContent = `${data.lan_ip}:${data.port}`;
+                if (data.configured_url && !data.configured_url.includes('localhost') && !data.configured_url.includes('127.0.0.1')) {
+                    document.getElementById('statNetworkTitle').textContent = '🌐 Tên Miền Addon';
+                    document.getElementById('statLanIp').textContent = data.configured_url;
+                } else {
+                    document.getElementById('statNetworkTitle').textContent = '📱 Địa Chỉ LAN IP';
+                    document.getElementById('statLanIp').textContent = `${data.lan_ip}:${data.port}`;
+                }
                 document.getElementById('statCacheEntries').textContent = `${data.stats.moviesdrive_cache_entries || 0} mục`;
 
                 if (data.telegram.connected) {
@@ -3275,7 +3281,7 @@ async def dashboard_ui(request: Request):
         }
 
         function renderAddonCards() {
-            const env = document.getElementById('envUrlSelector')?.value || 'lan';
+            const env = document.getElementById('envUrlSelector')?.value || 'public';
             const fullGrid = document.getElementById('fullAddonsGrid');
             const overviewGrid = document.getElementById('overviewAddonsGrid');
 
@@ -3285,7 +3291,7 @@ async def dashboard_ui(request: Request):
             cachedAddonsData.forEach(addon => {
                 const isEnabled = addon.enabled !== false;
                 const isBoardEnabled = addon.board_enabled !== false;
-                const manifestUrl = addon.manifests[env] || addon.manifests['lan'];
+                const manifestUrl = addon.manifests[env] || addon.manifests['public'] || addon.manifests['lan'];
                 const stremioInstallUrl = manifestUrl.replace('http://', 'stremio://').replace('https://', 'stremio://');
                 const stremioWebUrl = `https://web.stremio.com/#/addons?addon=${encodeURIComponent(manifestUrl)}`;
 

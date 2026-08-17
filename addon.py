@@ -75,6 +75,17 @@ async def lifespan(app: FastAPI):
         
         Config.validate()
         await tg_client_manager.start()
+        
+        from dashboard_router import get_lan_ip
+        lan_ip = get_lan_ip()
+        print("=" * 60)
+        print("   STREMIO MULTI-SOURCE CINEMA HUB READY")
+        if getattr(Config, "ADDON_URL", None) and not Config.ADDON_URL.startswith("http://localhost"):
+            print(f"   🌐 Public Domain:   {Config.ADDON_URL}/manifest.json")
+            print(f"   🎛️ Domain Hub:      {Config.ADDON_URL}")
+        print(f"   📱 LAN Network:     http://{lan_ip}:{Config.PORT}/manifest.json")
+        print(f"   💻 Localhost:       http://127.0.0.1:{Config.PORT}/manifest.json")
+        print("=" * 60 + "\n")
         yield
     finally:
         await tg_client_manager.stop()
