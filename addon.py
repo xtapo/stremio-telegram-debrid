@@ -1,5 +1,6 @@
 import logging
 import asyncio
+from typing import Optional, List, Dict, Any, Union, Tuple
 
 # Fix Pyrogram event loop crash on Python 3.10+ / 3.12 / 3.14
 try:
