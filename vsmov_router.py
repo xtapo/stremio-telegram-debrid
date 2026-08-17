@@ -4,13 +4,65 @@ import httpx
 import urllib.parse
 import re
 import logging
-from typing import Optional
+import time
+import asyncio
+from typing import Optional, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
 vsmov_router = APIRouter(prefix="", tags=["vsmov"])
 
 VSMOV_API_BASE = "https://vsmov.com/api"
+
+# In-memory cache & client pool
+_vsmov_cache: Dict[str, Tuple[Dict[str, Any], float]] = {}
+VSMOV_CACHE_TTL = 600  # 10 minutes
+
+_vsmov_client: Optional[httpx.AsyncClient] = None
+
+def get_vsmov_client() -> httpx.AsyncClient:
+    global _vsmov_client
+    if _vsmov_client is None or _vsmov_client.is_closed:
+        _vsmov_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(15.0, connect=6.0),
+            follow_redirects=True,
+            limits=httpx.Limits(max_keepalive_connections=30, max_connections=60),
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+        )
+    return _vsmov_client
+
+async def vsmov_fetch_json(url: str, ttl: int = VSMOV_CACHE_TTL) -> Optional[dict]:
+    now = time.time()
+    if url in _vsmov_cache:
+        data, exp = _vsmov_cache[url]
+        if now < exp:
+            return data
+
+    client = get_vsmov_client()
+    for attempt in range(2):
+        try:
+            res = await client.get(url)
+            if res.status_code == 200:
+                data = res.json()
+                _vsmov_cache[url] = (data, now + ttl)
+                return data
+            elif res.status_code == 404:
+                return None
+            else:
+                logger.warning(f"VSMov API {url} returned status {res.status_code}")
+                if attempt == 0:
+                    await asyncio.sleep(0.4)
+                    continue
+                return None
+        except Exception as e:
+            if attempt == 0:
+                await asyncio.sleep(0.4)
+                continue
+            logger.error(f"VSMov fetch failed for {url}: {e}")
+            return None
+    return None
 
 # ------------------------------------------------------------------
 # Manifest
@@ -332,32 +384,30 @@ async def vsmov_catalog_handler(request: Request, type: str, id: str, extra: Opt
     }
 
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            res = await client.get(api_url, headers=headers)
-            if res.status_code != 200:
-                return {"metas": []}
-            data = res.json()
-            items = data.get("items", [])
+        data = await vsmov_fetch_json(api_url, ttl=300)
+        if not data:
+            return {"metas": []}
+        items = data.get("items", [])
 
-            metas = []
-            for item in items:
-                slug = item.get("slug")
-                if not slug:
-                    continue
-                
-                poster = item.get("thumb_url") or item.get("poster_url") or ""
-                if poster and not poster.startswith("http"):
-                    poster = f"https://vsmov.com{poster}" if poster.startswith("/") else f"https://vsmov.com/{poster}"
+        metas = []
+        for item in items:
+            slug = item.get("slug")
+            if not slug:
+                continue
+            
+            poster = item.get("thumb_url") or item.get("poster_url") or ""
+            if poster and not poster.startswith("http"):
+                poster = f"https://vsmov.com{poster}" if poster.startswith("/") else f"https://vsmov.com/{poster}"
 
-                metas.append({
-                    "id": f"vsmov:{slug}",
-                    "type": type,
-                    "name": item.get("name", "Unknown"),
-                    "poster": poster,
-                    "description": f"Chất lượng: {item.get('quality', 'HD')} | Tập: {item.get('episode_current', 'Full')}"
-                })
+            metas.append({
+                "id": f"vsmov:{slug}",
+                "type": type,
+                "name": item.get("name", "Unknown"),
+                "poster": poster,
+                "description": f"Chất lượng: {item.get('quality', 'HD')} | Tập: {item.get('episode_current', 'Full')}"
+            })
 
-            return {"metas": metas}
+        return {"metas": metas}
     except Exception as e:
         logger.error(f"Error fetching VSMov catalog: {e}")
         return {"metas": []}
@@ -370,74 +420,68 @@ async def vsmov_catalog_handler(request: Request, type: str, id: str, extra: Opt
 async def vsmov_meta_handler(type: str, id: str):
     slug = id.replace("vsmov:", "")
     api_url = f"{VSMOV_API_BASE}/phim/{slug}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-    }
 
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            res = await client.get(api_url, headers=headers)
-            if res.status_code != 200:
-                return {"meta": {}}
-            data = res.json()
-            movie = data.get("movie")
-            if not movie:
-                return {"meta": {}}
+        data = await vsmov_fetch_json(api_url, ttl=600)
+        if not data:
+            return {"meta": {}}
+        movie = data.get("movie")
+        if not movie:
+            return {"meta": {}}
 
-            poster = movie.get("thumb_url") or movie.get("poster_url") or ""
-            if poster and not poster.startswith("http"):
-                poster = f"https://vsmov.com{poster}" if poster.startswith("/") else f"https://vsmov.com/{poster}"
+        poster = movie.get("thumb_url") or movie.get("poster_url") or ""
+        if poster and not poster.startswith("http"):
+            poster = f"https://vsmov.com{poster}" if poster.startswith("/") else f"https://vsmov.com/{poster}"
 
-            backdrop = movie.get("poster_url") or poster
+        backdrop = movie.get("poster_url") or poster
 
-            genres = [g.get("name") for g in movie.get("category", []) if isinstance(g, dict)]
+        genres = [g.get("name") for g in movie.get("category", []) if isinstance(g, dict)]
 
-            created_data = movie.get("created")
-            if isinstance(created_data, dict):
-                created_str = created_data.get("time", "")
-            else:
-                created_str = str(created_data) if created_data else ""
+        created_data = movie.get("created")
+        if isinstance(created_data, dict):
+            created_str = created_data.get("time", "")
+        else:
+            created_str = str(created_data) if created_data else ""
 
-            episodes_data = data.get("episodes", [])
-            videos = []
+        episodes_data = data.get("episodes", [])
+        videos = []
 
-            for s_idx, server in enumerate(episodes_data):
-                server_name = server.get("server_name", f"Server #{s_idx + 1}")
-                items = server.get("server_data", []) or server.get("items", [])
+        for s_idx, server in enumerate(episodes_data):
+            server_name = server.get("server_name", f"Server #{s_idx + 1}")
+            items = server.get("server_data", []) or server.get("items", [])
 
-                for ep in items:
-                    ep_name = ep.get("name", "1")
-                    ep_slug = ep.get("slug", f"tap-{ep_name}")
-                    
-                    ep_num = 1
-                    ep_num_match = re.search(r'\d+', ep_name)
-                    if ep_num_match:
-                        ep_num = int(ep_num_match.group(0))
+            for ep in items:
+                ep_name = ep.get("name", "1")
+                ep_slug = ep.get("slug", f"tap-{ep_name}")
+                
+                ep_num = 1
+                ep_num_match = re.search(r'\d+', ep_name)
+                if ep_num_match:
+                    ep_num = int(ep_num_match.group(0))
 
-                    videos.append({
-                        "id": f"vsmov:{slug}:{s_idx}:{ep_slug}",
-                        "title": f"Tập {ep_name} [{server_name}]",
-                        "season": 1,
-                        "episode": ep_num,
-                        "released": created_str
-                    })
+                videos.append({
+                    "id": f"vsmov:{slug}:{s_idx}:{ep_slug}",
+                    "title": f"Tập {ep_name} [{server_name}]",
+                    "season": 1,
+                    "episode": ep_num,
+                    "released": created_str
+                })
 
+        is_series = len(videos) > 1 or movie.get("type") in ["hoathinh", "series", "tvshows"] or type == "series"
 
-            is_series = len(videos) > 1 or movie.get("type") in ["hoathinh", "series", "tvshows"] or type == "series"
+        meta = {
+            "id": f"vsmov:{slug}",
+            "type": type,
+            "name": movie.get("name", "Unknown"),
+            "poster": poster,
+            "background": backdrop,
+            "description": movie.get("content", "").replace("<p>", "").replace("</p>", "").replace("\r\n", " "),
+            "genres": genres,
+            "releaseInfo": str(movie.get("year", "")),
+            "videos": videos if is_series else []
+        }
 
-            meta = {
-                "id": f"vsmov:{slug}",
-                "type": type,
-                "name": movie.get("name", "Unknown"),
-                "poster": poster,
-                "background": backdrop,
-                "description": movie.get("content", "").replace("<p>", "").replace("</p>", "").replace("\r\n", " "),
-                "genres": genres,
-                "releaseInfo": str(movie.get("year", "")),
-                "videos": videos if is_series else []
-            }
-
-            return {"meta": meta}
+        return {"meta": meta}
 
     except Exception as e:
         logger.error(f"Error fetching VSMov meta for {id}: {e}")
@@ -456,79 +500,77 @@ async def vsmov_stream_handler(request: Request, type: str, id: str):
     api_url = f"{VSMOV_API_BASE}/phim/{slug}"
 
     try:
-        async with httpx.AsyncClient(timeout=8.0) as client:
-            res = await client.get(api_url)
-            if res.status_code != 200:
-                return {"streams": []}
-            data = res.json()
-            movie = data.get("movie")
-            if not movie:
-                return {"streams": []}
+        data = await vsmov_fetch_json(api_url, ttl=300)
+        if not data:
+            return {"streams": []}
+        movie = data.get("movie")
+        if not movie:
+            return {"streams": []}
 
-            episodes_data = data.get("episodes", [])
-            streams = []
+        episodes_data = data.get("episodes", [])
+        streams = []
 
-            base_url = str(request.base_url).rstrip("/")
-            movie_name = movie.get("name", "")
-            quality = movie.get("quality", "HD")
+        base_url = str(request.base_url).rstrip("/")
+        movie_name = movie.get("name", "")
+        quality = movie.get("quality", "HD")
 
-            for s_idx, server in enumerate(episodes_data):
-                server_name = server.get("server_name", f"Server #{s_idx + 1}").strip()
-                items = server.get("server_data", []) or server.get("items", [])
+        for s_idx, server in enumerate(episodes_data):
+            server_name = server.get("server_name", f"Server #{s_idx + 1}").strip()
+            items = server.get("server_data", []) or server.get("items", [])
 
-                target_item = None
-                if target_ep_slug:
-                    for item in items:
-                        if item.get("slug") == target_ep_slug:
-                            target_item = item
-                            break
-                if not target_item and items:
-                    target_item = items[0]
+            target_item = None
+            if target_ep_slug:
+                for item in items:
+                    if item.get("slug") == target_ep_slug:
+                        target_item = item
+                        break
+            if not target_item and items:
+                target_item = items[0]
 
-                if target_item:
-                    embed_url = target_item.get("link_embed") or target_item.get("embed") or ""
-                    m3u8_direct = target_item.get("link_m3u8") or extract_m3u8_url(embed_url)
-                    ep_title = target_item.get("name", "")
+            if target_item:
+                embed_url = target_item.get("link_embed") or target_item.get("embed") or ""
+                m3u8_direct = target_item.get("link_m3u8") or extract_m3u8_url(embed_url)
+                ep_title = target_item.get("name", "")
+                
+                if m3u8_direct:
+                    proxy_stream_url = f"{base_url}/vsmov/stream_proxy?url={urllib.parse.quote(m3u8_direct, safe='')}&referer={urllib.parse.quote(embed_url or 'https://vsmov.com/', safe='')}"
                     
-                    if m3u8_direct:
-                        proxy_stream_url = f"{base_url}/vsmov/stream_proxy?url={urllib.parse.quote(m3u8_direct, safe='')}&referer={urllib.parse.quote(embed_url or 'https://vsmov.com/', safe='')}"
-                        
-                        # 1. Native Stremio Internal Video Player (PRIMARY - 100% HLS Playback Success)
-                        streams.append({
-                            "name": f"VSMov Proxy [{server_name}]",
-                            "title": f"▶ Phát Trực Tiếp trong Stremio [{server_name}] - Tập {ep_title}\n🎬 {movie_name}\n⚡ {quality} | HLS HD Mượt Mà\n⚡ Trình phát mặc định Stremio (LibVLC/ExoPlayer)",
-                            "url": proxy_stream_url,
-                            "behaviorHints": {
-                                "notSupported": False,
-                                "requestHeaders": {
-                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                                    "Referer": embed_url or "https://vsmov.com/"
-                                }
+                    # 1. Native Stremio Internal Video Player (PRIMARY - 100% HLS Playback Success)
+                    streams.append({
+                        "name": f"VSMov Proxy [{server_name}]",
+                        "title": f"▶ Phát Trực Tiếp trong Stremio [{server_name}] - Tập {ep_title}\n🎬 {movie_name}\n⚡ {quality} | HLS HD Mượt Mà\n⚡ Trình phát mặc định Stremio (LibVLC/ExoPlayer)",
+                        "url": proxy_stream_url,
+                        "behaviorHints": {
+                            "notSupported": False,
+                            "requestHeaders": {
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                                "Referer": embed_url or "https://vsmov.com/"
                             }
-                        })
+                        }
+                    })
 
-                        # 2. Direct HLS Stream
-                        streams.append({
-                            "name": f"VSMov Direct [{server_name}]",
-                            "title": f"⚡ Direct HLS Stream [{server_name}] - Tập {ep_title}",
-                            "url": m3u8_direct,
-                            "behaviorHints": {
-                                "notSupported": False,
-                                "requestHeaders": {
-                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                                    "Referer": embed_url or "https://vsmov.com/"
-                                }
+                    # 2. Direct HLS Stream
+                    streams.append({
+                        "name": f"VSMov Direct [{server_name}]",
+                        "title": f"⚡ Direct HLS Stream [{server_name}] - Tập {ep_title}",
+                        "url": m3u8_direct,
+                        "behaviorHints": {
+                            "notSupported": False,
+                            "requestHeaders": {
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                                "Referer": embed_url or "https://vsmov.com/"
                             }
-                        })
+                        }
+                    })
 
-                    if embed_url:
-                        streams.append({
-                            "name": f"VSMov Web [{server_name}]",
-                            "title": f"🌐 Mở Trình Duyệt Web [{server_name}] - Tập {ep_title}",
-                            "externalUrl": embed_url
-                        })
+                if embed_url:
+                    streams.append({
+                        "name": f"VSMov Web [{server_name}]",
+                        "title": f"🌐 Mở Trình Duyệt Web [{server_name}] - Tập {ep_title}",
+                        "externalUrl": embed_url
+                    })
 
-            return {"streams": streams}
+        return {"streams": streams}
     except Exception as e:
         logger.error(f"Error fetching VSMov streams for {id}: {e}")
         return {"streams": []}
