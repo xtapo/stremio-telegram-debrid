@@ -92,6 +92,7 @@ async def lifespan(app: FastAPI):
 from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
 from topxx_router import topxx_router
+from hhpanda_router import hhpanda_router
 from moviesdrive_router import moviesdrive_router
 from hdhub4u_router import hdhub4u_router
 
@@ -108,6 +109,7 @@ app.add_middleware(
 app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
 app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
+app.include_router(hhpanda_router, prefix="/hhpanda", tags=["HHPanda Anime 3D"])
 app.include_router(moviesdrive_router, prefix="/moviesdrive", tags=["MoviesDrive Cinema"])
 app.include_router(hdhub4u_router, prefix="/hdhub4u", tags=["HDHub4u Cinema"])
 
@@ -1139,6 +1141,14 @@ async def root_subtitles_handler(request: Request, type: str, id: str, extra: st
 async def root_serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
     from moviesdrive_router import serve_synced_vtt
     return await serve_synced_vtt(request, item_id, type)
+
+@app.api_route("/subtitles/srt/{item_id}.srt", methods=["GET", "HEAD"])
+@app.api_route("/subtitles/srt/{item_id}", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/subtitles/srt/{item_id}.srt", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/subtitles/srt/{item_id}", methods=["GET", "HEAD"])
+async def root_serve_synced_srt(request: Request, item_id: str, type: str = "movie"):
+    from moviesdrive_router import serve_synced_srt
+    return await serve_synced_srt(request, item_id, type)
 
 @app.get("/stream/{type}/{stream_id}.json")
 @app.get("/{api_key}/stream/{type}/{stream_id}.json")

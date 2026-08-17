@@ -542,7 +542,8 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
     if request.method == "HEAD":
         return Response(status_code=200, media_type="text/vtt; charset=utf-8", headers=headers)
 
-    target_id = request.query_params.get("orig_id") or item_id
+    raw_id = request.query_params.get("orig_id") or item_id
+    target_id = raw_id[:-4] if raw_id.endswith((".srt", ".vtt")) else raw_id
     vtt_content = None
     try:
         from sync_vtt_service import get_track_vtt
@@ -566,6 +567,40 @@ async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
     )
 
 
+async def serve_synced_srt(request: Request, item_id: str, type: str = "movie"):
+    """Serve one of the tracks in standard .SRT format with attachment download headers."""
+    track = (request.query_params.get("track") or "base").lower()
+    raw_id = request.query_params.get("orig_id") or item_id
+    target_id = raw_id[:-4] if raw_id.endswith((".srt", ".vtt")) else raw_id
+
+    clean_name = item_id[:-4] if item_id.endswith((".srt", ".vtt")) else item_id
+    filename = _safe_name(clean_name) + ("_vi" if track in (TRACK_FAST, TRACK_QUALITY) else "_eng") + ".srt"
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        "Content-Disposition": f'attachment; filename="{filename}"',
+        "Cache-Control": "public, max-age=86400",
+    }
+    if request.method == "HEAD":
+        return Response(status_code=200, media_type="text/plain; charset=utf-8", headers=headers)
+
+    srt_content = None
+    try:
+        from sync_vtt_service import get_track_srt
+        srt_content = await get_track_srt(type, target_id, track)
+    except Exception as e:
+        logger.warning("Error in serve_synced_srt for %s (track=%s): %s", target_id, track, e)
+
+    if not srt_content or not srt_content.strip():
+        srt_content = "1\n00:00:01,000 --> 00:00:05,000\n[Đang tải phụ đề...]\n"
+
+    return Response(
+        content=srt_content.strip().encode("utf-8"),
+        media_type="text/plain; charset=utf-8",
+        headers=headers,
+    )
+
+
 async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str = ""):
     """Serve subtitles: fast Lingva track, AI quality track, and base extracted track."""
     base_url = _base_url(request)
@@ -574,6 +609,7 @@ async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str
     fast_url = _subtitle_url(base_url, clean_id, type, id, TRACK_FAST)
     quality_url = _subtitle_url(base_url, clean_id, type, id, TRACK_QUALITY)
     base_sub_url = _subtitle_url(base_url, clean_id, type, id, "base")
+    base_srt_url = f"{base_url}/subtitles/srt/{clean_id}.srt?type={type}&orig_id={urllib.parse.quote(id)}&track=base"
 
     subtitles_list: List[Dict[str, Any]] = [
         {
@@ -600,12 +636,12 @@ async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str
     logger.info(
         f"\n{sep}\n"
         f"🎯 [SUBTITLE DOWNLOAD LINKS] PHIM: {id}\n"
-        f"   🔗 1. Tiếng Việt (Fast):\n"
+        f"   📥 LINK TẢI FILE .SRT GỐC (Trực tiếp):\n"
+        f"      👉 {base_srt_url}\n"
+        f"   🔗 Link tải Tiếng Việt Fast (.VTT):\n"
         f"      👉 {fast_url}\n"
-        f"   🔗 2. Tiếng Việt (AI Gemini Quality):\n"
+        f"   🔗 Link tải Tiếng Việt AI Quality (.VTT):\n"
         f"      👉 {quality_url}\n"
-        f"   🔗 3. Phụ đề gốc (Base/English):\n"
-        f"      👉 {base_sub_url}\n"
         f"{sep}"
     )
 
@@ -642,6 +678,8 @@ _add("/stream/{type}/{id}.json", stream_endpoint)
 _add("/resolve", moviesdrive_resolve, ["GET", "HEAD"])
 _add("/stream_proxy", moviesdrive_stream_proxy)
 _add("/subtitles/vtt/{item_id}.vtt", serve_synced_vtt, ["GET", "HEAD"])
+_add("/subtitles/srt/{item_id}.srt", serve_synced_srt, ["GET", "HEAD"])
+_add("/subtitles/srt/{item_id}", serve_synced_srt, ["GET", "HEAD"])
 _add("/subtitles/{type}/{id}.json", moviesdrive_subtitles)
 _add("/subtitles/{type}/{id}/{extra}.json", moviesdrive_subtitles)
 _add("/cache_stats", moviesdrive_cache_stats)

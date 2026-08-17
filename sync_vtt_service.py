@@ -33,6 +33,7 @@ from subtitle_utils import (
     OPENSUBTITLES_BASE,
     SUBTITLE_TIME_OFFSET,
     apply_translated_blocks,
+    build_srt,
     build_vtt,
     extract_embedded_subtitle,
     parse_subtitles,
@@ -97,6 +98,58 @@ FAST_ENGINE_ORDER = ("gemini", "custom", "lingva")
 QUALITY_ENGINE_ORDER = ("gemini", "custom")
 # Older callers imported this name; keep it pointing at the background order.
 BACKGROUND_ENGINE_ORDER = QUALITY_ENGINE_ORDER
+
+
+# ---------------------------------------------------------------------------
+# Locks and in-flight tracking
+# ---------------------------------------------------------------------------
+_FAST_LOCKS = {}
+_QUALITY_LOCKS = {}
+_BASE_LOCKS = {}
+_BASE_SUBS = {}
+_FAST_BLOCKS = {}
+SYNC_VTT_TASKS = {}
+STREAM_VIDEO_URL_CACHE = {}
+
+
+def _get_lock(locks: dict, clean_id: str) -> asyncio.Lock:
+    if clean_id not in locks:
+        locks[clean_id] = asyncio.Lock()
+    return locks[clean_id]
+
+
+def _get_addon_base_url() -> str:
+    try:
+        from config import Config
+        if getattr(Config, "ADDON_URL", None):
+            return Config.ADDON_URL.rstrip("/")
+        port = getattr(Config, "PORT", 8000)
+        return f"http://localhost:{port}"
+    except Exception:
+        return "http://localhost:8000"
+
+
+def _log_sub_banner(title: str, clean_id: str, media_type: str, track: str, file_path: str, extra_info: str = ""):
+    base_url = _get_addon_base_url()
+    srt_download_url = f"{base_url}/subtitles/srt/{clean_id}.srt?type={media_type}&track={track}"
+    vtt_download_url = f"{base_url}/subtitles/vtt/{clean_id}.vtt?type={media_type}&track={track}"
+    sep = "=" * 80
+    lines = [
+        "",
+        sep,
+        f"🎯 {title}: {clean_id}",
+        f"   🔗 Link tải file .SRT (Tải về máy xem offline / VLC / PotPlayer):",
+        f"      👉 {srt_download_url}",
+        f"   🔗 Link tải file .VTT (Xem online / Stremio Web):",
+        f"      👉 {vtt_download_url}",
+        f"   📁 File lưu tại máy:",
+        f"      👉 {file_path}",
+    ]
+    if extra_info:
+        lines.append(f"   ℹ️ {extra_info}")
+    lines.append(sep)
+    logger.info("\n".join(lines))
+
 
 # Hand the whole file to the engine at once (chunks still run in parallel).
 # Set to False to fall back to the older sequential slice loop.
@@ -945,3 +998,24 @@ async def get_track_vtt(
             return build_vtt(blocks, SUBTITLE_TIME_OFFSET) if blocks else base_srt
         return None
     return await get_or_generate_fast_vtt(media_type, item_id, video_url)
+
+
+async def get_track_srt(
+    media_type: str, item_id: str, track: str = "base", video_url: Optional[str] = None
+) -> Optional[str]:
+    """Dispatch helper used by the /subtitles/srt endpoint to return standard SRT format."""
+    clean_id = _clean(item_id)
+    t = (track or "base").lower()
+    if t in ("base", "raw", "original", "extracted", "eng", "en"):
+        base_srt, _ = await _get_base_subtitle(media_type, item_id, clean_id, video_url)
+        if base_srt:
+            return base_srt
+        return None
+
+    vtt_content = await get_track_vtt(media_type, item_id, track, video_url)
+    if not vtt_content:
+        return None
+    _, blocks = parse_subtitles(vtt_content)
+    if blocks:
+        return build_srt(blocks)
+    return vtt_content

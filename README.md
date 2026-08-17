@@ -73,7 +73,7 @@ Deploy your own instance of the Telegram Stremio Addon instantly using any of th
 - **Zero-Storage Footprint**: Streams files chunk-by-chunk in memory directly from Telegram DCs. No temporary server storage is consumed (except for temporary torrent caches if auto-upload is enabled).
 - **MoviesDrive 4K & Dual Audio Integration**: Stream 4K UHD, 1080p, 720p Movies & Series directly from MoviesDrive with high-speed CDN streaming and IMDb ID resolution. See [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md).
 - **HDHub4u 4K & Dual Audio Integration**: Stream 4K UHD, 1080p, 720p Movies & Series directly from HDHub4u with Cloudflare R2 / 10Gbps CDN streaming and IMDb ID resolution. See [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md).
-- **Online Cinema Addons**: Built-in fast scrapers and streaming routers for VSMov ([VSMOV_GUIDE.md](VSMOV_GUIDE.md)), NguonC ([NGUONC_GUIDE.md](NGUONC_GUIDE.md)), and TopXX ([TOPXX_GUIDE.md](TOPXX_GUIDE.md)).
+- **Online Cinema & Anime Addons**: Built-in high-speed scrapers and streaming routers for **NguonC** ([NGUONC_GUIDE.md](NGUONC_GUIDE.md)), **VSMov** ([VSMOV_GUIDE.md](VSMOV_GUIDE.md)), **HHPanda 3D Anime** ([HHPANDA_GUIDE.md](HHPANDA_GUIDE.md)), and **TopXX 18+** ([TOPXX_GUIDE.md](TOPXX_GUIDE.md)).
 - **Custom Logging**: Log streaming activity directly back to a separate private Telegram channel.
 
 ---
@@ -506,13 +506,129 @@ ADDON_URL=https://stremio-tg.yourdomain.com
 
 
 
-## How to Install in Stremio
+## 🎬 All Available Sources & Cinema Addons (Tổng Hợp Các Nguồn Phim & Addon)
 
-1. Deploy the addon publicly (or run it locally with tunnel software like Ngrok).
-2. Copy your addon manifest URL (e.g., `https://your-addon-domain.com/manifest.json?api_key=mykey`).
-3. Open **Stremio** (Desktop, Mobile, or Web).
-4. Go to **Add-ons**, paste the URL into the search bar, and click **Install**.
-5. Search for your video backups in Stremio. If matching files exist in your Telegram channel, you will see the stream option labeled `▶ TG Play` or `▶ TG Channel` at the top of the streams panel!
+Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phim cá nhân Telegram, Debrid/Torrents đến các kho phim trực tuyến Vietsub, Thuyết minh, Hoạt hình 3D, Hollywood 4K và Bollywood.
+
+### 📊 Bảng tổng hợp các nguồn (Sources Overview)
+
+| Nguồn Phim | Nội dung chính | Chất lượng & Luồng phát | Manifest URL (khi chạy `addon.py`) | Manifest URL (khi chạy `nguonc_router.py`) | Tài liệu chi tiết |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Telegram & Debrid Vault** | Phim cá nhân Telegram, Torrent caching | Gốc (Direct HTTP 206 / Debrid CDN) | `http://<host>:7860/manifest.json` | *Không hỗ trợ* | [DEBRID_GUIDE.md](DEBRID_GUIDE.md) / [QBITTORRENT_GUIDE.md](QBITTORRENT_GUIDE.md) |
+| **NguonC Cinema** | Phim lẻ, Phim bộ, TV Shows, Hoạt hình | 1080P/720P HLS `.m3u8` Proxy | `http://<host>:7860/nguonc/manifest.json` | `http://<host>:7071/nguonc/manifest.json` | [NGUONC_GUIDE.md](NGUONC_GUIDE.md) |
+| **VSMov Cinema** | Phim chiếu rạp, Phim Châu Á, Âu Mỹ | Full HD / 4K Vietsub & Thuyết minh | `http://<host>:7860/vsmov/manifest.json` | `http://<host>:7071/vsmov/manifest.json` | [VSMOV_GUIDE.md](VSMOV_GUIDE.md) |
+| **HHPanda 3D Anime** | Hoạt hình 3D Trung Quốc (HH3D) | 4K / 1080P Vietsub chuẩn | `http://<host>:7860/hhpanda/manifest.json` | `http://<host>:7071/hhpanda/manifest.json` | [HHPANDA_GUIDE.md](HHPANDA_GUIDE.md) |
+| **MoviesDrive Cinema** | Hollywood, Bollywood, Web Series | 4K UHD / 1080p HubCloud, GDFlix | `http://<host>:7860/moviesdrive/manifest.json` | *Không hỗ trợ* | [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md) |
+| **HDHub4u Cinema** | Hollywood, Bollywood, Dual Audio | 4K / 1080p Cloudflare R2 / FastDL | `http://<host>:7860/hdhub4u/manifest.json` | *Không hỗ trợ* | [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md) |
+| **TopXX Cinema** | Phim người lớn (18+ Adult) | Full HD / Direct Stream | `http://<host>:7860/topxx/manifest.json` | `http://<host>:7071/topxx/manifest.json` | [TOPXX_GUIDE.md](TOPXX_GUIDE.md) |
+
+---
+
+### 1. 📱 Telegram & Debrid Media Vault
+- **Mô tả**: Phát phim trực tiếp từ channel Telegram riêng tư của bạn với tốc độ cao, hỗ trợ Range Request (tua nhanh/lùi tức thì), ghép nối file chia nhỏ (Stitched Split) và giải nén ảo file ZIP. Tích hợp giải mã Real-Debrid / TorBox / AllDebrid / Premiumize / DebridLink và kéo torrent qua qBittorrent kèm tính năng tự động sao lưu (Auto-Cache) lên Telegram.
+- **Cách cài đặt**:
+  - Trang cấu hình Web: `http://127.0.0.1:7860/configure`
+  - Manifest URL: `http://127.0.0.1:7860/manifest.json` (hoặc `http://<IP_LAN>:7860/manifest.json`)
+- **Tài liệu hướng dẫn**: [DEBRID_GUIDE.md](DEBRID_GUIDE.md) và [QBITTORRENT_GUIDE.md](QBITTORRENT_GUIDE.md).
+
+---
+
+### 2. 🎬 NguonC Cinema (Kho Phim Vietsub & Thuyết Minh Tổng Hợp)
+- **Mô tả**: Tích hợp trực tiếp toàn bộ kho phim đồ sộ từ NguonC API với các danh mục Phim Mới Cập Nhật, Phim Lẻ, Phim Bộ, Đang Chiếu, TV Shows.
+- **Tính năng nổi bật**:
+  - **Bộ lọc đa dạng**: 22 thể loại, 16 quốc gia, lọc theo năm phát hành (2004–2026).
+  - **Tự động giải mã luồng HLS `.m3u8`**: Tự động vượt rào referer và chuyển tiếp luồng HLS mượt mà cho trình phát gốc của Stremio (ExoPlayer/VLC).
+  - **Hỗ trợ tìm kiếm trực tiếp**: Tìm kiếm bất kỳ phim nào từ thanh Search của Stremio.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/nguonc/manifest.json`
+  - Khi chạy `nguonc_router.py`: `http://127.0.0.1:7071/nguonc/manifest.json`
+- **Tài liệu hướng dẫn**: [NGUONC_GUIDE.md](NGUONC_GUIDE.md).
+
+---
+
+### 3. 🌟 VSMov Cinema (Phim Chiếu Rạp & Vietsub Siêu Nhanh)
+- **Mô tả**: Kho phim Châu Á và Âu Mỹ vietsub/thuyết minh tốc độ cao, chất lượng sắc nét Full HD / 4K.
+- **Tính năng nổi bật**:
+  - Danh mục phim hot, phim chiếu rạp mới nhất, phim bộ Hàn Quốc, Trung Quốc, US-UK.
+  - Tự động lấy danh sách tập, giải mã link stream trực tiếp và phát mượt mà không quảng cáo.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/vsmov/manifest.json`
+  - Khi chạy `nguonc_router.py`: `http://127.0.0.1:7071/vsmov/manifest.json`
+- **Tài liệu hướng dẫn**: [VSMOV_GUIDE.md](VSMOV_GUIDE.md).
+
+---
+
+### 4. 🐼 HHPanda (Hoạt Hình 3D Trung Quốc - HH3D 4K)
+- **Mô tả**: Addon chuyên biệt dành riêng cho các tín đồ Hoạt Hình 3D Trung Quốc (HH3D) VietSub chất lượng cao 4K / 1080P: *Tiên Nghịch, Đấu Phá Thương Khung, Thế Giới Hoàn Mỹ, Phàm Nhân Tu Tiên, Già Thiên, Mục Thần Ký, Thôn Phệ Tinh Không...*
+- **Tính năng nổi bật**:
+  - Bộ lọc thể loại chi tiết: Tu Tiên, Kiếm Hiệp, Cổ Trang, Huyền Huyễn, Khoa Huyễn, Dã Sử, Đô Thị...
+  - Danh mục Phim Hoàn Thành, Top Xem Nhiều và cập nhật tập mới nhanh nhất.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/hhpanda/manifest.json`
+  - Khi chạy `nguonc_router.py`: `http://127.0.0.1:7071/hhpanda/manifest.json`
+- **Tài liệu hướng dẫn**: [HHPANDA_GUIDE.md](HHPANDA_GUIDE.md).
+
+---
+
+### 5. 🚀 MoviesDrive Cinema (4K UHD & Dual Audio Hollywood / Bollywood)
+- **Mô tả**: Tích hợp kho phim bom tấn chất lượng cao từ MoviesDrive với độ phân giải lên đến 4K UHD, 1080p, 720p Dual Audio / Multi-Audio.
+- **Tính năng nổi bật**:
+  - Khớp mã IMDb tự động: Khi duyệt bất kỳ phim nào trên Stremio (Cinemeta), addon tự động tìm kiếm và trả về stream từ MoviesDrive.
+  - Tự động giải mã các dịch vụ lưu trữ cao cấp như HubCloud, GDFlix, DoodStream thành link stream trực tiếp.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/moviesdrive/manifest.json`
+- **Tài liệu hướng dẫn**: [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md).
+
+---
+
+### 6. ⚡ HDHub4u Cinema (4K UHD Fast CDN Dual Audio)
+- **Mô tả**: Nguồn phim Hollywood, Bollywood, Series và phim truyền hình chất lượng 4K/1080p với hạ tầng CDN Cloudflare R2 / FastDL / HubCloud băng thông 10Gbps cực nhanh.
+- **Tính năng nổi bật**:
+  - Danh mục Catalog phong phú với tìm kiếm trực tiếp trên Stremio.
+  - Khớp ID IMDb chuẩn xác, stream trực tiếp không cần tải trước.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/hdhub4u/manifest.json`
+- **Tài liệu hướng dẫn**: [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md).
+
+---
+
+### 7. 🔞 TopXX Cinema (Kho Phim Người Lớn 18+)
+- **Mô tả**: Addon giải trí 18+ chất lượng cao với hàng chục ngàn video được phân loại chi tiết theo thể loại, diễn viên, chuyên mục và phát trực tiếp native trên Stremio.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/topxx/manifest.json`
+  - Khi chạy `nguonc_router.py`: `http://127.0.0.1:7071/topxx/manifest.json`
+- **Tài liệu hướng dẫn**: [TOPXX_GUIDE.md](TOPXX_GUIDE.md).
+
+---
+
+## 📲 How to Install Addons in Stremio (Hướng Dẫn Cài Đặt Vào Stremio)
+
+Bạn có thể cài đặt từng addon riêng biệt hoặc cài đặt tất cả các nguồn theo nhu cầu:
+
+### Bước 1: Khởi động Máy chủ
+- **Cách 1 (Khởi động toàn bộ tất cả các nguồn)**:
+  ```powershell
+  python addon.py
+  ```
+  *(Mặc định chạy trên cổng `7860` hoặc cổng trong file `.env`)*
+- **Cách 2 (Chỉ chạy các Addon Cinema: NguonC, VSMov, TopXX, HHPanda - không cần Telegram)**:
+  ```powershell
+  python nguonc_router.py
+  ```
+  *(Mặc định chạy trên cổng `7071`)*
+
+### Bước 2: Lấy Manifest URL phù hợp
+- **Xem trên máy tính (Stremio Desktop App):** Dùng link `127.0.0.1` (ví dụ: `http://127.0.0.1:7860/nguonc/manifest.json`).
+- **Xem trên Android TV / Smart TV / Điện thoại cùng mạng Wi-Fi:** Dùng IP mạng LAN của máy tính (ví dụ: `http://192.168.1.15:7860/nguonc/manifest.json`).
+  *(Lưu ý: Mở cổng Firewall Windows bằng cách chạy file `add_firewall_rule.bat` với quyền Administrator)*.
+- **Xem từ xa hoặc trên Stremio Web (`web.stremio.com`):** Chạy công cụ Tunnel (như `run_online_tunnel.bat` hoặc Cloudflare Tunnel) để lấy URL HTTPS public:
+  `https://<subdomain>.loca.lt/nguonc/manifest.json`
+
+### Bước 3: Cài đặt vào ứng dụng Stremio
+1. Mở ứng dụng **Stremio** trên máy tính, điện thoại hoặc TV.
+2. Vào biểu tượng **Addons (Mảnh ghép)** ➔ Chọn thanh tìm kiếm **Search Add-ons** hoặc nút **Paste Addon URL / Add Addon**.
+3. Dán đường dẫn **Manifest URL** của nguồn bạn muốn dùng và nhấn **Install**.
+4. Chuyển sang mục **Discover (Khám phá)** để chọn nguồn và thưởng thức phim!
 
 ---
 

@@ -251,6 +251,25 @@ def build_vtt(blocks: list, offset_seconds: float = 0.0) -> str:
     return "\n".join(lines)
 
 
+def build_srt(blocks: list, offset_seconds: float = 0.0) -> str:
+    """Serializes cues as a standard SubRip (.srt) format with commas for milliseconds."""
+    lines = []
+    counter = 0
+    for b in blocks:
+        text = (b.get("text") or "").strip()
+        if not text:
+            continue
+        time_line = b.get("time", "")
+        if offset_seconds:
+            time_line = shift_time_str(time_line, offset_seconds)
+        counter += 1
+        lines.append(str(counter))
+        lines.append(normalize_time_line(time_line, as_vtt=False))
+        lines.append(text)
+        lines.append("")
+    return "\n".join(lines).strip() + "\n"
+
+
 def apply_translated_blocks(target_blocks: list, parsed: list) -> int:
     """
     Copies translated text onto the ORIGINAL cues without ever touching their timing.

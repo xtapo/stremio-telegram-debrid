@@ -308,6 +308,12 @@ def get_entry(key: str) -> Optional[Tuple[Any, float, float]]:
     return data, time.time() - ts, ttl
 
 
+def get_cached(key: str) -> Optional[Any]:
+    """Return cached data or None."""
+    entry = CACHE.get(key)
+    return entry[0] if entry else None
+
+
 def set_cached(key: str, data: Any, ttl: float = CACHE_TTL) -> None:
     global _CACHE_DIRTY
     CACHE[key] = (data, time.time(), float(ttl))

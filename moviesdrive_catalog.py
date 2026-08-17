@@ -281,13 +281,49 @@ def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
             if _is_noise_image(thumb):
                 thumb = ""
 
+        year_match = re.search(r"\b(19\d\d|20\d\d)\b", title)
+        year_str = year_match.group(1) if year_match else ""
+
+        if re.search(r"\b(4k|2160p|uhd)\b", title, re.I):
+            quality_str = "4K Ultra HD"
+        elif re.search(r"\b(1080p|fhd)\b", title, re.I):
+            quality_str = "1080p Full HD"
+        elif re.search(r"\b(720p|hd)\b", title, re.I):
+            quality_str = "720p HD"
+        elif re.search(r"\b(480p|sd)\b", title, re.I):
+            quality_str = "480p SD"
+        else:
+            quality_str = "1080p Full HD"
+
+        audio_match = re.search(r"\[([^\]]*(?:Hindi|English|Tamil|Telugu|Kannada|Malayalam|Dual|Multi)[^\]]*)\]", title, re.I)
+        audio_str = audio_match.group(1).strip() if audio_match else "Dual Audio"
+
+        desc_badge_parts = []
+        if year_str:
+            desc_badge_parts.append(f"📅 Năm: {year_str}")
+        if quality_str:
+            desc_badge_parts.append(f"📺 {quality_str}")
+
+        desc_lines = []
+        if desc_badge_parts:
+            desc_lines.append(" | ".join(desc_badge_parts))
+        desc_lines.append(f"🔊 Âm thanh: {audio_str}")
+        desc_lines.append("🇻🇳 Phụ đề: Tiếng Việt tự động (AI Fast & Quality)")
+        desc_lines.append("⚡ Máy chủ phát: Direct CDN 10Gbps")
+        desc_lines.append(f"🎬 Xem phim {cleaned_name} chất lượng cao trên MoviesDrive.")
+
+        poster_url = absolute(thumb)
         items.append(
             {
                 "id": "moviesdrive:" + slug,
                 "type": "series" if looks_like_series(title) else "movie",
                 "name": cleaned_name,
-                "poster": absolute(thumb),
+                "poster": poster_url,
                 "posterShape": "poster",
+                "background": poster_url,
+                "releaseInfo": year_str,
+                "description": "\n".join(desc_lines),
+                "genres": ["MoviesDrive", "Phim Mới"],
             }
         )
     return items
@@ -298,6 +334,26 @@ async def _scrape_catalog(url: str) -> Optional[List[Dict[str, Any]]]:
     if not page_html:
         return None
     return _parse_cards(page_html) or None
+
+
+def _enrich_item_from_meta(item: dict, meta: dict) -> None:
+    if not isinstance(meta, dict):
+        return
+    if meta.get("name"):
+        item["name"] = meta["name"]
+    if meta.get("imdbRating"):
+        item["imdbRating"] = str(meta["imdbRating"])
+    if meta.get("description"):
+        item["description"] = meta["description"]
+    if meta.get("releaseInfo") or meta.get("year"):
+        item["releaseInfo"] = str(meta.get("releaseInfo") or meta.get("year"))
+    if meta.get("genres"):
+        genres = meta["genres"]
+        item["genres"] = genres if isinstance(genres, list) else [genres]
+    if meta.get("background"):
+        item["background"] = meta["background"]
+    if meta.get("logo"):
+        item["logo"] = meta["logo"]
 
 
 async def get_catalog_items(
@@ -318,13 +374,20 @@ async def get_catalog_items(
                 continue
             title = doc.get("post_title", "Untitled")
             cleaned_name = clean_title(title) or title
+            year_match = re.search(r"\b(19\d\d|20\d\d)\b", title)
+            year_str = year_match.group(1) if year_match else ""
+            poster_url = absolute(doc.get("post_thumbnail", ""))
             items.append(
                 {
                     "id": "moviesdrive:" + slug,
                     "type": "series" if looks_like_series(title) else "movie",
                     "name": cleaned_name,
-                    "poster": absolute(doc.get("post_thumbnail", "")),
+                    "poster": poster_url,
                     "posterShape": "poster",
+                    "background": poster_url,
+                    "releaseInfo": year_str,
+                    "description": f"📅 Năm: {year_str or 'Mới'}\n🇻🇳 Phụ đề: Tiếng Việt tự động\n⚡ Phát trực tuyến 10Gbps",
+                    "genres": ["MoviesDrive", "Tìm kiếm"],
                 }
             )
         return items
@@ -360,7 +423,47 @@ async def get_catalog_items(
                     seen.add(item_id)
                     all_items.append(item)
 
-    return all_items[offset_in_first_page : offset_in_first_page + CATALOG_BATCH_SIZE]
+    selected = all_items[offset_in_first_page : offset_in_first_page + CATALOG_BATCH_SIZE]
+
+    # 1. Enrich from cache (both meta and cinemeta caches)
+    for item in selected:
+        slug = item["id"].replace("moviesdrive:", "").split(":")[0].strip("/")
+        mtype = item.get("type", "movie")
+        cached_meta = perf.get_cached("meta:" + mtype + ":" + slug) or perf.get_cached("meta:" + slug)
+        if cached_meta:
+            _enrich_item_from_meta(item, cached_meta)
+        else:
+            imdb_id = perf.get_cached("md_to_imdb:moviesdrive:" + slug) or perf.get_cached("imdb:" + mtype + ":" + slug)
+            if imdb_id:
+                cm = perf.get_cached("cinemeta:" + mtype + ":" + imdb_id.split(":")[0])
+                if cm:
+                    _enrich_item_from_meta(item, cm)
+
+    # 2. Concurrently resolve metadata for uncached items in the first batch (up to 8 items) with timeout
+    uncached = [it for it in selected[:8] if not it.get("imdbRating")]
+    if uncached:
+        meta_tasks = [asyncio.create_task(get_meta_object(it.get("type", "movie"), it["id"])) for it in uncached]
+        try:
+            done, _ = await asyncio.wait(meta_tasks, timeout=2.5)
+            for t in done:
+                res = t.result() if not t.cancelled() and not t.exception() else None
+                if res and isinstance(res, dict):
+                    res_id = res.get("id")
+                    for it in selected:
+                        if it.get("id") == res_id:
+                            _enrich_item_from_meta(it, res)
+                            break
+        except Exception:
+            pass
+
+    # 3. Background pre-warm remaining items on this page
+    for item in selected[8:24]:
+        slug = item["id"].replace("moviesdrive:", "").split(":")[0].strip("/")
+        mtype = item.get("type", "movie")
+        if not perf.get_cached("meta:" + mtype + ":" + slug):
+            asyncio.create_task(get_meta_object(mtype, item["id"]))
+
+    return selected
 
 
 # ------------------------------------------------------------------
