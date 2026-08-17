@@ -273,7 +273,7 @@ async def _warm_and_translate(
 # ------------------------------------------------------------------
 async def get_manifest():
     start_background_tasks()
-    return JSONResponse(MANIFEST)
+    return JSONResponse(get_moviesdrive_manifest())
 
 
 async def catalog_endpoint(
