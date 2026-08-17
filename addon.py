@@ -2782,7 +2782,13 @@ async def qbittorrent_stream_proxy(
     )
 
 
-from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter, ImageStat
+try:
+    from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter, ImageStat
+    HAS_PIL = True
+except ImportError:
+    HAS_PIL = False
+    Image = ImageDraw = ImageFont = ImageOps = ImageFilter = ImageStat = None
+    logger.warning("PIL / Pillow is not installed. Poster generation and image formatting will be disabled.")
 
 _thumb_file_id_cache = {}
 _thumb_download_semaphore = asyncio.Semaphore(3)
@@ -2793,6 +2799,8 @@ _failed_thumb_downloads = {}  # cache_key -> (timestamp, count)
 
 def _is_black_image(image_path: str) -> bool:
     """Detect if an image is all black or too dark (< 16 avg brightness)."""
+    if not HAS_PIL or not Image:
+        return False
     try:
         with Image.open(image_path) as im:
             im = im.convert("RGB")
@@ -2805,6 +2813,8 @@ def _is_black_image(image_path: str) -> bool:
 
 def generate_styled_placeholder_poster(title: str, size_str: str, output_path: str):
     """Generate a sleek, modern cinema-style placeholder poster with Pillow."""
+    if not HAS_PIL or not Image:
+        return
     width, height = 600, 900
     img = Image.new("RGB", (width, height), color=(15, 17, 26))
     draw = ImageDraw.Draw(img)
