@@ -26,6 +26,7 @@ addon.py and sync_vtt_service.py keep working unchanged.
 
 import asyncio
 import logging
+import re
 import urllib.parse
 from typing import Any, Dict, List, Optional
 
