@@ -96,6 +96,9 @@ class Config:
     API_HASH = os.getenv("API_HASH")
     BOT_TOKEN = os.getenv("BOT_TOKEN")
     USER_SESSION_STRING = os.getenv("USER_SESSION_STRING", "")
+    EXTRA_SESSION_STRINGS = os.getenv("EXTRA_SESSION_STRINGS", "")
+    EXTRA_BOT_TOKENS = os.getenv("EXTRA_BOT_TOKENS", "")
+    MEDIA_SESSIONS_PER_DC = _env_int("MEDIA_SESSIONS_PER_DC", 3)
 
     TELEGRAM_CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
     LOG_CHANNEL_ID = os.getenv("LOG_CHANNEL_ID")

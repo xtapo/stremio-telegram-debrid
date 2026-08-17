@@ -448,8 +448,8 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
             "name": file_name,
             "description": description,
             "poster": poster_url,
-            "background": f"{Config.ADDON_URL}/stremio_telegram_banner.png" if getattr(Config, "ADDON_URL", None) else None,
-            "logo": f"{Config.ADDON_URL}/stremio_telegram_logo.png" if getattr(Config, "ADDON_URL", None) else None,
+            "posterShape": "poster",
+            "background": poster_url,
         }
         
         if type == "series":
@@ -458,7 +458,8 @@ async def meta_handler(type: str, meta_id: str, api_key: str = ""):
                     "id": meta_id,
                     "title": file_name,
                     "season": 1,
-                    "episode": 1
+                    "episode": 1,
+                    "thumbnail": poster_url,
                 }
             ]
             
@@ -2781,54 +2782,267 @@ async def qbittorrent_stream_proxy(
     )
 
 
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ImageFilter, ImageStat
+
 _thumb_file_id_cache = {}
-_thumb_download_semaphore = asyncio.Semaphore(2)
-_thumb_resolve_semaphore = asyncio.Semaphore(1)
+_thumb_download_semaphore = asyncio.Semaphore(3)
+_thumb_resolve_semaphore = asyncio.Semaphore(2)
 _active_thumb_downloads = set()
 _failed_thumb_downloads = {}  # cache_key -> (timestamp, count)
 
-async def _download_thumb_task(chat_id: str, msg_id: int, thumb_file_id: str, thumb_path: str):
-    import time
-    import shutil
+
+def _is_black_image(image_path: str) -> bool:
+    """Detect if an image is all black or too dark (< 16 avg brightness)."""
+    try:
+        with Image.open(image_path) as im:
+            im = im.convert("RGB")
+            stat = ImageStat.Stat(im)
+            avg_brightness = sum(stat.mean) / len(stat.mean)
+            return avg_brightness < 16.0
+    except Exception:
+        return False
+
+
+def generate_styled_placeholder_poster(title: str, size_str: str, output_path: str):
+    """Generate a sleek, modern cinema-style placeholder poster with Pillow."""
+    width, height = 600, 900
+    img = Image.new("RGB", (width, height), color=(15, 17, 26))
+    draw = ImageDraw.Draw(img)
+
+    # Top-to-bottom dark cinema gradient
+    for y in range(height):
+        ratio = y / height
+        r = int(20 * (1 - ratio) + 10 * ratio)
+        g = int(25 * (1 - ratio) + 12 * ratio)
+        b = int(45 * (1 - ratio) + 22 * ratio)
+        draw.line([(0, y), (width, y)], fill=(r, g, b))
+
+    # Center glow
+    for rad in range(160, 0, -6):
+        alpha_factor = (160 - rad) / 160.0
+        glow_color = (int(25 + 35 * alpha_factor), int(35 + 50 * alpha_factor), int(75 + 95 * alpha_factor))
+        draw.ellipse([width // 2 - rad, height // 2 - 80 - rad, width // 2 + rad, height // 2 - 80 + rad], outline=glow_color)
+
+    # Play button box
+    cx, cy = width // 2, height // 2 - 80
+    box_size = 48
+    draw.rounded_rectangle(
+        [cx - box_size, cy - box_size, cx + box_size, cy + box_size],
+        radius=16, fill=(35, 45, 78), outline=(75, 95, 165), width=2
+    )
+
+    # Play triangle
+    tri = [(cx - 10, cy - 18), (cx - 10, cy + 18), (cx + 18, cy)]
+    draw.polygon(tri, fill=(230, 240, 255))
+
+    # Fonts
+    try:
+        font_large = ImageFont.truetype("arial.ttf", 26)
+        font_sub = ImageFont.truetype("arial.ttf", 16)
+        font_badge = ImageFont.truetype("arialbd.ttf", 15)
+    except Exception:
+        font_large = ImageFont.load_default()
+        font_sub = ImageFont.load_default()
+        font_badge = ImageFont.load_default()
+
+    # Title
+    clean_title = title if len(title) <= 34 else title[:31] + "..."
+    draw.text((width // 2, height - 200), clean_title, font=font_large, fill=(255, 255, 255), anchor="mm")
+
+    # Size Badge
+    if size_str:
+        draw.rounded_rectangle(
+            [width // 2 - 75, height - 150, width // 2 + 75, height - 118],
+            radius=8, fill=(25, 32, 52), outline=(65, 85, 135)
+        )
+        draw.text((width // 2, height - 134), f"📦 {size_str}", font=font_badge, fill=(140, 190, 255), anchor="mm")
+
+    draw.text((width // 2, height - 60), "TELEGRAM MEDIA VAULT", font=font_sub, fill=(90, 105, 135), anchor="mm")
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    img.save(output_path, "JPEG", quality=90)
+
+
+def _format_image_to_poster(input_path: str, output_path: str) -> bool:
+    """Format any image (16:9 landscape, portrait, square) into a stunning 600x900 Cinema Poster."""
+    try:
+        with Image.open(input_path) as img:
+            img = img.convert("RGB")
+            w, h = img.size
+            if w <= 0 or h <= 0:
+                return False
+            aspect = w / h
+            poster_w, poster_h = 600, 900
+
+            # If already near standard 2:3 portrait (0.58 - 0.75), direct fit
+            if 0.58 <= aspect <= 0.75:
+                result = ImageOps.fit(img, (poster_w, poster_h), method=Image.Resampling.LANCZOS)
+            else:
+                # 1. Create blurred backdrop
+                bg = ImageOps.fit(img, (poster_w, poster_h), method=Image.Resampling.BILINEAR)
+                bg = bg.filter(ImageFilter.GaussianBlur(28))
+                dark_overlay = Image.new("RGB", (poster_w, poster_h), color=(10, 12, 20))
+                bg = Image.blend(bg, dark_overlay, alpha=0.45)
+
+                # 2. Scale foreground image maintaining original aspect ratio
+                fg_w = poster_w
+                fg_h = int(poster_w / aspect)
+                if fg_h > poster_h:
+                    fg_h = poster_h
+                    fg_w = int(poster_h * aspect)
+
+                fg = img.resize((fg_w, fg_h), Image.Resampling.LANCZOS)
+
+                # 3. Paste foreground centered with border
+                pos_x = (poster_w - fg_w) // 2
+                pos_y = (poster_h - fg_h) // 2
+                bg.paste(fg, (pos_x, pos_y))
+
+                draw = ImageDraw.Draw(bg)
+                draw.rectangle([pos_x, pos_y, pos_x + fg_w - 1, pos_y + fg_h - 1], outline=(55, 65, 90), width=1)
+                result = bg
+
+            os.makedirs(os.path.dirname(output_path), exist_ok=True)
+            result.save(output_path, "JPEG", quality=92)
+            return True
+    except Exception as e:
+        logger.warning(f"Failed to format image to poster for {input_path}: {e}")
+        return False
+
+
+async def _extract_frame_with_ffmpeg(stream_url: str, output_path: str) -> bool:
+    """Extract a crisp, bright frame snapshot directly from the video stream using FFmpeg."""
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        temp_frame = output_path + ".raw_frame.jpg"
+        # Seek to real movie scenes (60s, 90s, 30s, 15s) to skip dark intros
+        for seek in ["60", "90", "30", "15", "5"]:
+            cmd = [
+                "ffmpeg", "-y",
+                "-ss", seek,
+                "-i", stream_url,
+                "-vframes", "1",
+                "-q:v", "2",
+                temp_frame
+            ]
+            proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.DEVNULL,
+                stderr=asyncio.subprocess.DEVNULL
+            )
+            try:
+                await asyncio.wait_for(proc.communicate(), timeout=8.0)
+                if proc.returncode == 0 and os.path.exists(temp_frame) and os.path.getsize(temp_frame) > 500:
+                    if not _is_black_image(temp_frame):
+                        if _format_image_to_poster(temp_frame, output_path):
+                            if os.path.exists(temp_frame):
+                                os.remove(temp_frame)
+                            logger.info(f"Successfully extracted bright video frame at {seek}s -> {output_path}")
+                            return True
+            except asyncio.TimeoutError:
+                try:
+                    proc.kill()
+                except Exception:
+                    pass
+            finally:
+                if os.path.exists(temp_frame):
+                    try:
+                        os.remove(temp_frame)
+                    except Exception:
+                        pass
+    except Exception as e:
+        logger.warning(f"FFmpeg frame extraction failed for {stream_url}: {e}")
+    return False
+
+
+async def _process_thumbnail_task(chat_id: str, msg_id: int, thumb_path: str, thumb_file_id: Optional[str] = None):
+    """Download Telegram thumbnail or extract real frame snapshot from video content."""
     cache_key = f"{chat_id}_{msg_id}"
     if cache_key in _active_thumb_downloads:
         return
-        
-    default_logo = "stremio_telegram_logo.png"
-    now = time.time()
-    if cache_key in _failed_thumb_downloads:
-        last_time, count = _failed_thumb_downloads[cache_key]
-        # Cooldown of 5 minutes between download attempts
-        if now - last_time < 300:
-            return
-        # If failed 3 or more times, copy default logo to prevent future attempts
-        if count >= 3:
-            if os.path.exists(default_logo) and not os.path.exists(thumb_path):
-                try:
-                    os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
-                    shutil.copy(default_logo, thumb_path)
-                except Exception as ce:
-                    logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
-            return
 
     _active_thumb_downloads.add(cache_key)
     try:
-        # Wait 1.0s before starting to queue up multiple parallel catalog loads gently
-        await asyncio.sleep(1.0)
         async with _thumb_download_semaphore:
-            if not os.path.exists(thumb_path):
-                logger.info(f"Background downloading Telegram thumbnail for message {msg_id} in {chat_id}...")
-                await tg_client_manager.client.download_media(
-                    thumb_file_id,
-                    file_name=thumb_path
-                )
-                # Pause between downloads to keep Telegram DC connection happy
-                await asyncio.sleep(1.5)
-        # Clear failure tracking on success
-        if os.path.exists(thumb_path):
-            _failed_thumb_downloads.pop(cache_key, None)
+            # 1. If Telegram has an embedded thumbnail, test if it is a real image (not black)
+            if thumb_file_id:
+                temp_raw = thumb_path + ".raw.jpg"
+                try:
+                    logger.info(f"Downloading Telegram embedded thumbnail for msg {msg_id} in {chat_id}...")
+                    await tg_client_manager.client.download_media(thumb_file_id, file_name=temp_raw)
+                    if os.path.exists(temp_raw) and os.path.getsize(temp_raw) > 50:
+                        if not _is_black_image(temp_raw):
+                            if _format_image_to_poster(temp_raw, thumb_path):
+                                if os.path.exists(temp_raw):
+                                    os.remove(temp_raw)
+                                _failed_thumb_downloads.pop(cache_key, None)
+                                return
+                        else:
+                            logger.info(f"Embedded Telegram thumb for msg {msg_id} is pitch black. Extracting real frame via FFmpeg...")
+                except Exception as de:
+                    logger.warning(f"Failed to download embedded thumbnail for {cache_key}: {de}")
+                finally:
+                    if os.path.exists(temp_raw):
+                        try:
+                            os.remove(temp_raw)
+                        except Exception:
+                            pass
+
+            # 2. Extract snapshot from video content via local HTTP Range stream
+            try:
+                chat_id_val = int(chat_id) if str(chat_id).startswith("-") or str(chat_id).isdigit() else chat_id
+                msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
+            except Exception:
+                msg = None
+
+            if msg:
+                media = msg.video or msg.document
+                if media:
+                    # Check if message has thumbs that weren't in memory cache
+                    thumb = getattr(media, "thumb", None)
+                    thumbs = getattr(media, "thumbs", None)
+                    resolved_fid = getattr(thumb, "file_id", None) if thumb else (thumbs[-1].file_id if thumbs else None)
+                    if resolved_fid and not thumb_file_id:
+                        temp_raw = thumb_path + ".raw.jpg"
+                        try:
+                            logger.info(f"Downloading resolved Telegram thumbnail for msg {msg_id} in {chat_id}...")
+                            await tg_client_manager.client.download_media(resolved_fid, file_name=temp_raw)
+                            if os.path.exists(temp_raw) and os.path.getsize(temp_raw) > 50:
+                                if not _is_black_image(temp_raw):
+                                    if _format_image_to_poster(temp_raw, thumb_path):
+                                        if os.path.exists(temp_raw):
+                                            os.remove(temp_raw)
+                                        _failed_thumb_downloads.pop(cache_key, None)
+                                        return
+                        except Exception:
+                            pass
+                        finally:
+                            if os.path.exists(temp_raw):
+                                try:
+                                    os.remove(temp_raw)
+                                except Exception:
+                                    pass
+
+                    filename = getattr(media, "file_name", None) or msg.caption or f"video_{msg_id}.mp4"
+                    file_size = getattr(media, "file_size", 0)
+                    stream_url = f"http://127.0.0.1:{Config.PORT}/stream/file/{chat_id}/{msg_id}/{urllib.parse.quote(filename)}"
+
+                    logger.info(f"Extracting bright video frame snapshot for msg {msg_id} ({filename})...")
+                    success = await _extract_frame_with_ffmpeg(stream_url, thumb_path)
+                    if success:
+                        _failed_thumb_downloads.pop(cache_key, None)
+                        return
+
+                    # 3. Fallback: generate high-res stylized poster
+                    generate_styled_placeholder_poster(filename, format_size(file_size), thumb_path)
+                    _failed_thumb_downloads.pop(cache_key, None)
+                    return
+
+            # Default generic poster if message resolution failed
+            generate_styled_placeholder_poster(f"Telegram File {msg_id}", "", thumb_path)
+
     except Exception as e:
-        logger.error(f"Failed to background download Telegram thumbnail for {cache_key}: {e}")
+        logger.error(f"Thumbnail processing failed for {cache_key}: {e}")
         now = time.time()
         _, count = _failed_thumb_downloads.get(cache_key, (0, 0))
         _failed_thumb_downloads[cache_key] = (now, count + 1)
@@ -2837,26 +3051,21 @@ async def _download_thumb_task(chat_id: str, msg_id: int, thumb_file_id: str, th
 
 
 def get_message_thumbnail_url(msg, logo_url: str) -> str:
+    """Generate the thumbnail URL for any video/document message in Telegram."""
     if not msg:
         return logo_url
-    media = msg.video or msg.document
-    logger.info(f"get_message_thumbnail_url: msg={msg.id}, media={type(media).__name__ if media else None}, thumbs={len(media.thumbs) if media and getattr(media, 'thumbs', None) else 0}")
+    media = msg.video or msg.document or msg.photo
     if media:
+        chat_id = msg.chat.id
+        msg_id = msg.id
         thumb = getattr(media, "thumb", None)
-        if thumb and getattr(thumb, "file_id", None):
-            chat_id = msg.chat.id
-            msg_id = msg.id
-            _thumb_file_id_cache[f"{chat_id}_{msg_id}"] = thumb.file_id
-            query = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
-            return f"{Config.ADDON_URL}/thumbnail/{chat_id}/{msg_id}.jpg{query}"
-            
         thumbs = getattr(media, "thumbs", None)
-        if thumbs and isinstance(thumbs, list) and thumbs:
-            chat_id = msg.chat.id
-            msg_id = msg.id
-            _thumb_file_id_cache[f"{chat_id}_{msg_id}"] = thumbs[0].file_id
-            query = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
-            return f"{Config.ADDON_URL}/thumbnail/{chat_id}/{msg_id}.jpg{query}"
+        fid = getattr(thumb, "file_id", None) if thumb else (thumbs[-1].file_id if thumbs else None)
+        if fid:
+            _thumb_file_id_cache[f"{chat_id}_{msg_id}"] = fid
+
+        query = f"?api_key={Config.API_KEY}" if Config.API_KEY else ""
+        return f"{Config.ADDON_URL}/thumbnail/{chat_id}/{msg_id}.jpg{query}"
     return logo_url
 
 
@@ -2871,111 +3080,48 @@ async def get_message_thumbnail(
         actual_key = api_key or request.query_params.get("api_key", "")
         if actual_key != Config.API_KEY:
             raise HTTPException(status_code=403, detail="Unauthorized")
-            
-    import os
+
     temp_dir = os.path.join("temp_cache", "thumbs")
     os.makedirs(temp_dir, exist_ok=True)
-    
+
     thumb_path = os.path.join(temp_dir, f"{chat_id}_{msg_id}.jpg")
     default_logo = "stremio_telegram_logo.png"
-    
+
     # 1. Serve immediately if cached on disk
-    if os.path.exists(thumb_path):
-        return FileResponse(thumb_path)
-        
+    if os.path.exists(thumb_path) and os.path.getsize(thumb_path) > 500:
+        return FileResponse(
+            thumb_path,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=86400"}
+        )
+
     cache_key = f"{chat_id}_{msg_id}"
     thumb_file_id = _thumb_file_id_cache.get(cache_key)
-    
-    # 2. If cached in memory, trigger background download and return fallback immediately
-    if thumb_file_id:
-        if cache_key not in _active_thumb_downloads:
-            asyncio.create_task(_download_thumb_task(chat_id, msg_id, thumb_file_id, thumb_path))
-            
-        if os.path.exists(default_logo):
-            return FileResponse(default_logo)
-        raise HTTPException(status_code=404, detail="Fallback logo not found")
-        
-    # 3. If not cached, resolve the message in the background to prevent blocking
-    async def resolve_and_download():
-        import time
-        import shutil
-        if cache_key in _active_thumb_downloads:
-            return
-            
-        now = time.time()
-        if cache_key in _failed_thumb_downloads:
-            last_time, count = _failed_thumb_downloads[cache_key]
-            # Cooldown of 5 minutes between resolution attempts
-            if now - last_time < 300:
-                return
-            # If failed 3 or more times, copy default logo to prevent future attempts
-            if count >= 3:
-                if os.path.exists(default_logo) and not os.path.exists(thumb_path):
-                    try:
-                        os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
-                        shutil.copy(default_logo, thumb_path)
-                    except Exception as ce:
-                        logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
-                return
 
-        _active_thumb_downloads.add(cache_key)
-        try:
-            async with _thumb_resolve_semaphore:
-                # Sleep a little to pace out requests to Telegram API
-                await asyncio.sleep(0.5)
-                
-                try:
-                    chat_id_val = int(chat_id)
-                except ValueError:
-                    chat_id_val = chat_id
-                    
-                msg = await tg_client_manager.get_message(msg_id, chat_id=chat_id_val)
-                
-                has_thumb = False
-                if msg:
-                    media = msg.video or msg.document
-                    if media:
-                        thumb = getattr(media, "thumb", None)
-                        fid = None
-                        if thumb and getattr(thumb, "file_id", None):
-                            fid = thumb.file_id
-                        else:
-                            thumbs = getattr(media, "thumbs", None)
-                            if thumbs and isinstance(thumbs, list) and thumbs:
-                                fid = thumbs[0].file_id
-                                
-                        if fid:
-                            has_thumb = True
-                            _thumb_file_id_cache[cache_key] = fid
-                            # Release the lock for this key so download task can lock it
-                            _active_thumb_downloads.discard(cache_key)
-                            await _download_thumb_task(chat_id, msg_id, fid, thumb_path)
-                            
-                if not has_thumb:
-                    logger.info(f"No thumbnail found for message {msg_id} in {chat_id}. Using fallback.")
-                    if os.path.exists(default_logo) and not os.path.exists(thumb_path):
-                        try:
-                            os.makedirs(os.path.dirname(thumb_path), exist_ok=True)
-                            shutil.copy(default_logo, thumb_path)
-                        except Exception as ce:
-                            logger.error(f"Failed to copy default logo to {thumb_path}: {ce}")
-                        # Clear failure tracking since we have a permanent fallback now
-                        _failed_thumb_downloads.pop(cache_key, None)
-                        
-        except Exception as e:
-            logger.warning(f"Background thumbnail resolution failed for {cache_key}: {e}")
-            now = time.time()
-            _, count = _failed_thumb_downloads.get(cache_key, (0, 0))
-            _failed_thumb_downloads[cache_key] = (now, count + 1)
-        finally:
-            _active_thumb_downloads.discard(cache_key)
-            
-    if cache_key not in _active_thumb_downloads:
-        asyncio.create_task(resolve_and_download())
-        
+    # 2. Synchronously await thumbnail processing for up to 8.0s so the very first request gets the real image!
+    try:
+        await asyncio.wait_for(
+            _process_thumbnail_task(chat_id, msg_id, thumb_path, thumb_file_id),
+            timeout=8.0
+        )
+    except Exception:
+        pass
+
+    if os.path.exists(thumb_path) and os.path.getsize(thumb_path) > 500:
+        return FileResponse(
+            thumb_path,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=86400"}
+        )
+
+    # 3. Fallback placeholder with no-cache header so Stremio re-requests immediately
     if os.path.exists(default_logo):
-        return FileResponse(default_logo)
-        
+        return FileResponse(
+            default_logo,
+            media_type="image/png",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate, max-age=0"}
+        )
+
     raise HTTPException(status_code=404, detail="Thumbnail not found")
 
 

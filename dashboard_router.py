@@ -625,7 +625,8 @@ async def api_system_status(request: Request):
             "user": tg_user,
             "channel_id": Config.TELEGRAM_CHANNEL_ID or "Chưa cấu hình",
             "has_session": bool(Config.USER_SESSION_STRING),
-            "has_bot_token": bool(Config.BOT_TOKEN)
+            "has_bot_token": bool(Config.BOT_TOKEN),
+            "pool": tg_client_manager.get_pool_status() if hasattr(tg_client_manager, "get_pool_status") else {}
         },
         "services": {
             "real_debrid": bool(Config.REAL_DEBRID_API_KEY),
