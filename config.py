@@ -31,7 +31,7 @@ class Config:
     DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", os.getenv("ADMIN_PASSWORD", os.getenv("API_KEY", "")))
     CACHE_TTL = int(os.getenv("CACHE_TTL", 1800))
     TIMEZONE = os.getenv("TIMEZONE", "UTC")
-    STREAM_CACHE_SIZE_MB = int(os.getenv("STREAM_CACHE_SIZE_MB", 256))
+    STREAM_CACHE_SIZE_MB = int(os.getenv("STREAM_CACHE_SIZE_MB", 512))
     PREFETCH_CHUNKS = int(os.getenv("PREFETCH_CHUNKS", 1))
     REAL_DEBRID_API_KEY = os.getenv("REAL_DEBRID_API_KEY", "")
     TORBOX_API_KEY = os.getenv("TORBOX_API_KEY", "")

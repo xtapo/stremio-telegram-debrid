@@ -140,11 +140,11 @@ async def _fetch_block_from_tg(
 ) -> bytes:
     media_id = file_id.media_id
 
-    # 1. Get or create standard session
+    # 1. Get or create persistent media session (reused across all chunk requests)
     async with self.media_sessions_lock:
         session = self.media_sessions.get(dc_id)
         if session is None:
-            logger.info(f"Creating new media session for DC{dc_id}...")
+            logger.info(f"Connecting media session for DC{dc_id}...")
             session = Session(
                 self, dc_id,
                 await Auth(self, dc_id, await self.storage.test_mode()).create()
@@ -200,6 +200,33 @@ async def _fetch_block_from_tg(
             except Exception:
                 pass
         raise e
+
+    if isinstance(r, raw.types.upload.File):
+        return r.bytes
+
+    elif isinstance(r, raw.types.upload.FileCdnRedirect):
+        logger.info(f"FileCdnRedirect encountered for media {media_id}. Setting up CDN session...")
+        async with _file_cdn_lock:
+            cdn_info = _file_cdn_info.get(media_id)
+            if not cdn_info:
+                cdn_session = Session(
+                    self, r.dc_id, await Auth(self, r.dc_id, await self.storage.test_mode()).create(),
+                    await self.storage.test_mode(), is_media=True, is_cdn=True
+                )
+                await cdn_session.start()
+                cdn_info = {
+                    "is_cdn": True,
+                    "cdn_session": cdn_session,
+                    "redirect_info": r
+                }
+                _file_cdn_info[media_id] = cdn_info
+            else:
+                cdn_session = cdn_info["cdn_session"]
+                r = cdn_info["redirect_info"]
+
+        return await _download_cdn_block(session, cdn_session, r, offset_bytes, chunk_size)
+
+    return b""
 
     if isinstance(r, raw.types.upload.File):
         return r.bytes
@@ -434,6 +461,16 @@ class TelegramClientManager:
         if self.is_running and self.client:
             logger.info("Stopping Pyrogram client...")
             try:
+                # Terminate pooled media sessions
+                async with _media_pool_lock:
+                    for dc_id, pool in list(_media_session_pools.items()):
+                        for s in pool:
+                            try:
+                                await s.stop()
+                            except Exception:
+                                pass
+                    _media_session_pools.clear()
+
                 await asyncio.wait_for(self.client.stop(), timeout=3.0)
             except asyncio.TimeoutError:
                 logger.warning("Pyrogram client stop timed out, skipping...")

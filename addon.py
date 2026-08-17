@@ -20,21 +20,11 @@ class SafeStreamingResponse(StreamingResponse):
         async def safe_send(message):
             try:
                 await send(message)
-            except RuntimeError as e:
-                err_str = str(e)
-                if "shorter than Content-Length" in err_str or "longer than Content-Length" in err_str:
-                    return
-                raise e
-            except Exception:
+            except BaseException:
                 return
         try:
             await super().__call__(scope, receive, safe_send)
-        except RuntimeError as e:
-            err_str = str(e)
-            if "shorter than Content-Length" in err_str or "longer than Content-Length" in err_str:
-                return
-            raise e
-        except Exception:
+        except BaseException:
             return
 
 from config import Config
@@ -1960,6 +1950,8 @@ async def tg_stream_proxy(
                 
                 if bytes_sent >= content_length:
                     break
+        except (asyncio.CancelledError, GeneratorExit):
+            pass
         except Exception as e:
             logger.error(f"Streaming error on message {message_id}: {e}")
             
