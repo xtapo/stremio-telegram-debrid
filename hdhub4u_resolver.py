@@ -17,7 +17,7 @@ import re
 import urllib.parse
 from typing import Any, Dict, List, Optional, Tuple
 
-from bs4 import SoupStrainer
+from bs4 import BeautifulSoup, SoupStrainer
 
 import hdhub4u_perf as perf
 from hdhub4u_perf import (

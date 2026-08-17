@@ -1,9 +1,9 @@
 import logging
 import asyncio
 
-# Fix Pyrogram event loop crash on Python 3.12/3.14
+# Fix Pyrogram event loop crash on Python 3.10+ / 3.12 / 3.14
 try:
-    asyncio.get_event_loop()
+    asyncio.get_running_loop()
 except RuntimeError:
     asyncio.set_event_loop(asyncio.new_event_loop())
 
