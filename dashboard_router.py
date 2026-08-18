@@ -725,6 +725,7 @@ async def api_update_config(request: Request):
         "enable_source_moviesdrive": "ENABLE_SOURCE_MOVIESDRIVE",
         "enable_source_hdhub4u": "ENABLE_SOURCE_HDHUB4U",
         "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
+        "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
         # Board (Home Screen) Toggles
         "enable_board_telegram": "ENABLE_BOARD_TELEGRAM",
         "enable_board_telegram_debrid": "ENABLE_BOARD_TELEGRAM",
@@ -734,6 +735,7 @@ async def api_update_config(request: Request):
         "enable_board_moviesdrive": "ENABLE_BOARD_MOVIESDRIVE",
         "enable_board_hdhub4u": "ENABLE_BOARD_HDHUB4U",
         "enable_board_topxx": "ENABLE_BOARD_TOPXX",
+        "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -765,6 +767,7 @@ async def api_update_config(request: Request):
             "moviesdrive": getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_SOURCE_HDHUB4U", True),
             "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
+            "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -774,6 +777,7 @@ async def api_update_config(request: Request):
             "moviesdrive": getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_BOARD_HDHUB4U", True),
             "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
+            "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
         }
     }
 
@@ -803,6 +807,24 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
+        },
+        {
+            "id": "hdtoday",
+            "name": "HDToday Cinema",
+            "tag": "Kho Phim & Series Quốc Tế",
+            "category": "Full HD / Multi-Audio & Sub",
+            "icon": "fa-globe",
+            "badge": "Global HD",
+            "badge_color": "blue",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_HDTODAY", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_HDTODAY", True)),
+            "description": "Xem phim lẻ & series truyền hình quốc tế từ HDToday (hdtoday.sc), phát trực tiếp HLS Full HD đa âm thanh & phụ đề.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/hdtoday/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/hdtoday/manifest.json",
+                "public": f"{domain_url}/hdtoday/manifest.json"
+            },
+            "routes": ["/hdtoday/manifest.json", "/hdtoday/catalog", "/hdtoday/stream"]
         },
         {
             "id": "nguonc",
@@ -1159,7 +1181,36 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
             logger.warning(f"Dashboard search Telegram error: {e}")
         return items
 
+    async def search_hdtoday():
+        items = []
+        try:
+            from hdtoday_router import hdtoday_fetch_html, parse_flw_items
+            base_url = getattr(Config, "HDTODAY_BASE_URL", "https://hdtoday.sc").rstrip("/")
+            kw = urllib.parse.quote(query.strip())
+            html = await hdtoday_fetch_html(f"{base_url}/search/{kw}?page=1", ttl=300)
+            if html:
+                metas = parse_flw_items(html)
+                for m in metas[:15]:
+                    slug_id = m.get("id", "").replace("hdtoday:movie:", "").replace("hdtoday:series:", "")
+                    items.append({
+                        "id": m.get("id"),
+                        "title": m.get("name"),
+                        "original_title": m.get("name"),
+                        "source": "HDToday Cinema",
+                        "source_id": "hdtoday",
+                        "poster": m.get("poster"),
+                        "year": m.get("description", "HDToday HD"),
+                        "quality": "Full HD / 4K",
+                        "type": m.get("type", "movie"),
+                        "detail_url": f"/api/media/details?source=hdtoday&id={slug_id}"
+                    })
+        except Exception as e:
+            logger.warning(f"Dashboard search HDToday error: {e}")
+        return items
+
     tasks = []
+    if getattr(Config, "ENABLE_SOURCE_HDTODAY", True) and (not source or source == "all" or source == "hdtoday"):
+        tasks.append(search_hdtoday())
     if getattr(Config, "ENABLE_SOURCE_NGUONC", True) and (not source or source == "all" or source == "nguonc"):
         tasks.append(search_nguonc())
     if getattr(Config, "ENABLE_SOURCE_VSMOV", True) and (not source or source == "all" or source == "vsmov"):
@@ -1400,7 +1451,38 @@ async def api_media_details(request: Request, source: str, id: str):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-    # 7. TELEGRAM
+    # 7. HDTODAY
+    elif source == "hdtoday":
+        try:
+            from hdtoday_router import hdtoday_meta_handler
+            m_type = "series" if "tv" in id else "movie"
+            res = await hdtoday_meta_handler(m_type, f"hdtoday:{m_type}:{id}")
+            meta = res.get("meta", {})
+            return {
+                "title": meta.get("name", id),
+                "original_title": meta.get("name", id),
+                "poster": meta.get("poster", ""),
+                "backdrop": meta.get("background", ""),
+                "description": meta.get("description", ""),
+                "genres": meta.get("genres", []),
+                "year": meta.get("releaseInfo", ""),
+                "quality": "Full HD / HLS",
+                "source": "HDToday Cinema",
+                "source_id": "hdtoday",
+                "episodes": [
+                    {
+                        "name": v.get("title", ""),
+                        "slug": v.get("id", ""),
+                        "server": "HDToday HLS",
+                        "embed": f"{base_url}/hdtoday/stream/{meta.get('type', 'movie')}/{v.get('id')}.json"
+                    }
+                    for v in meta.get("videos", [])
+                ]
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 8. TELEGRAM
     elif source == "telegram":
         try:
             parts = id.split(":")
