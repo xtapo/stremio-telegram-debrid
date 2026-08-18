@@ -939,14 +939,8 @@ async def ernax_stream_endpoint(type: str, id: str, request: Request = None):
                 ),
                 "url": proxied_url,
                 "behaviorHints": {
-                    "notWebReady": False,
-                    "proxyHeaders": {
-                        "request": {
-                            "Referer": cdn_referer,
-                            "Origin": "https://www.vidking.net",
-                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                        }
-                    },
+                    "notWebReady": True,
+                    "bingeGroup": "ernax-hls",
                 },
                 "subtitles": formatted_subs,
             })
@@ -967,14 +961,8 @@ async def ernax_stream_endpoint(type: str, id: str, request: Request = None):
                 ),
                 "url": proxied_master,
                 "behaviorHints": {
-                    "notWebReady": False,
-                    "proxyHeaders": {
-                        "request": {
-                            "Referer": cdn_referer,
-                            "Origin": "https://www.vidking.net",
-                            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-                        }
-                    },
+                    "notWebReady": True,
+                    "bingeGroup": "ernax-hls",
                 },
                 "subtitles": formatted_subs,
             })
@@ -1012,7 +1000,8 @@ async def ernax_stream_proxy(
     referer: Optional[str] = "https://www.vidking.net/",
 ):
     """Proxies HLS playlists (.m3u8) and video segments (.ts, .m4s, .mp4) with proper Referer & CORS."""
-    client = get_ernax_client()
+    from fastapi.responses import StreamingResponse
+
     ref_hdr = referer or "https://www.vidking.net/"
     headers = {
         "User-Agent": (
@@ -1028,24 +1017,20 @@ async def ernax_stream_proxy(
     if range_header:
         headers["Range"] = range_header
 
+    is_m3u8 = url.endswith(".m3u8")
+
     try:
-        res = await client.get(url, headers=headers)
-        if res.status_code != 200 and res.status_code != 206:
-            return Response(
-                content=res.content,
-                status_code=res.status_code,
-                headers={"Access-Control-Allow-Origin": "*"},
-            )
+        if is_m3u8:
+            # For M3U8 playlists: fetch fully, rewrite URLs, return
+            client = get_ernax_client()
+            res = await client.get(url, headers=headers)
+            if res.status_code != 200:
+                return Response(
+                    content=res.content,
+                    status_code=res.status_code,
+                    headers={"Access-Control-Allow-Origin": "*"},
+                )
 
-        content_type = res.headers.get("content-type", "")
-
-        # If m3u8 playlist, rewrite URLs to route through proxy
-        if (
-            "mpegurl" in content_type.lower()
-            or "application/x-mpegurl" in content_type.lower()
-            or url.endswith(".m3u8")
-            or "#EXTM3U" in res.text[:30]
-        ):
             from config import Config
             app_base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) else str(request.base_url).rstrip("/")
             proxy_endpoint = (
@@ -1092,25 +1077,60 @@ async def ernax_stream_proxy(
                 "Content-Type": "application/vnd.apple.mpegurl",
                 "Access-Control-Allow-Origin": "*",
                 "Access-Control-Allow-Headers": "*",
+                "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
                 "Cache-Control": "no-cache",
             }
             return Response(content=body, headers=resp_headers)
 
-        # For media chunks (.ts, .m4s, .mp4 etc.)
+        # For media segments (.ts, .m4s, .mp4): use streaming response
+        # Create a dedicated client for streaming to avoid blocking the shared client
+        stream_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(30.0, connect=6.0),
+            follow_redirects=True,
+            limits=httpx.Limits(max_keepalive_connections=30, max_connections=60),
+        )
+
+        upstream_resp = await stream_client.send(
+            stream_client.build_request("GET", url, headers=headers),
+            stream=True,
+        )
+
+        if upstream_resp.status_code not in (200, 206):
+            body = await upstream_resp.aread()
+            await upstream_resp.aclose()
+            await stream_client.aclose()
+            return Response(
+                content=body,
+                status_code=upstream_resp.status_code,
+                headers={"Access-Control-Allow-Origin": "*"},
+            )
+
+        content_type = upstream_resp.headers.get("content-type", "")
+
         resp_headers = {
             "Content-Type": content_type or "video/MP2T",
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
             "Accept-Ranges": "bytes",
         }
         for hdr in ["content-range", "content-length", "accept-ranges"]:
-            if hdr in res.headers:
-                resp_headers[hdr] = res.headers[hdr]
+            if hdr in upstream_resp.headers:
+                resp_headers[hdr] = upstream_resp.headers[hdr]
 
-        return Response(
-            content=res.content,
-            status_code=res.status_code,
+        async def stream_generator():
+            try:
+                async for chunk in upstream_resp.aiter_bytes(chunk_size=256 * 1024):
+                    yield chunk
+            finally:
+                await upstream_resp.aclose()
+                await stream_client.aclose()
+
+        return StreamingResponse(
+            stream_generator(),
+            status_code=upstream_resp.status_code,
             headers=resp_headers,
+            media_type=resp_headers["Content-Type"],
         )
     except Exception as e:
         logger.error(f"[Ernax] Proxy error for {url}: {e}")
