@@ -764,20 +764,39 @@ async def fetch_and_decrypt_server(
                 else:
                     fn_name = f"{clean_fn_title} ({year}).mp4" if year else f"{clean_fn_title}.mp4"
 
-                # Route through stream proxy to inject Referer header and bypass 403 Forbidden
+                # 1. Proxied Stream (100% compatible with all Stremio apps, TVs, and players)
                 if base_url:
                     proxy_path = f"{base_url}/vidking/stream_proxy" if not base_url.endswith("/vidking") else f"{base_url}/stream_proxy"
-                    final_url = f"{proxy_path}?url={urllib.parse.quote(s_url, safe='')}&referer={urllib.parse.quote('https://www.vidking.net/', safe='')}"
+                    proxied_url = f"{proxy_path}?url={urllib.parse.quote(s_url, safe='')}&referer={urllib.parse.quote('https://www.vidking.net/', safe='')}"
                 else:
-                    final_url = s_url
+                    proxied_url = s_url
 
                 stremio_stream = {
-                    "name": f"Vidking\n{q_badge}",
-                    "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n📡 Server: {server_name} | {stream_type_label}\n✨ Quality: {q_badge}",
-                    "url": final_url,
+                    "name": f"Vidking 🛡️\n{q_badge}",
+                    "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n📡 Server: {server_name} | {stream_type_label}\n✨ Quality: {q_badge} (Máy chủ ổn định)",
+                    "url": proxied_url,
                     "behaviorHints": {
                         "notWebReady": False,
                         "bingeGroup": f"vidking-{tmdb_id}",
+                        "filename": fn_name,
+                    }
+                }
+
+                # 2. Direct CDN Stream (0% server bandwidth, for VLC/MPV and players supporting custom headers)
+                direct_stream = {
+                    "name": f"Vidking ⚡ Direct\n{q_badge}",
+                    "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n⚡ Nguồn Trực Tiếp CDN: {server_name} | {stream_type_label}\n✨ 0% Băng thông máy chủ | Quality: {q_badge}",
+                    "url": s_url,
+                    "behaviorHints": {
+                        "notWebReady": False,
+                        "proxyHeaders": {
+                            "request": {
+                                "Referer": "https://www.vidking.net/",
+                                "Origin": "https://www.vidking.net",
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+                            }
+                        },
+                        "bingeGroup": f"vidking-direct-{tmdb_id}",
                         "filename": fn_name,
                     }
                 }
@@ -794,8 +813,10 @@ async def fetch_and_decrypt_server(
                             })
                     if st_list:
                         stremio_stream["subtitles"] = st_list
+                        direct_stream["subtitles"] = st_list
 
                 extracted.append(stremio_stream)
+                extracted.append(direct_stream)
 
             return extracted
     except Exception as e:
@@ -878,6 +899,18 @@ async def vidking_stream_handler(type: str, id: str, request: Request = None):
     if not seed:
         return {"streams": []}
 
+    # Direct Web Embed Player link (open in browser directly with 0 server bandwidth)
+    if media_type in ["tv", "series"]:
+        embed_url = f"https://www.vidking.net/embed/tv/{tmdb_id}/{season}/{episode}"
+    else:
+        embed_url = f"https://www.vidking.net/embed/movie/{tmdb_id}"
+
+    web_stream = {
+        "name": "Vidking\n🌐 Web Player",
+        "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n🌐 Xem trực tiếp trên Web (Vidking Embed Player)\n🚀 0% Băng thông máy chủ | Nhấp để mở trên trình duyệt",
+        "externalUrl": embed_url,
+    }
+
     # Fetch stream sources in parallel across top servers
     tasks = [
         fetch_and_decrypt_server(
@@ -896,23 +929,28 @@ async def vidking_stream_handler(type: str, id: str, request: Request = None):
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    all_streams: List[Dict[str, Any]] = []
+    all_streams: List[Dict[str, Any]] = [web_stream]
     for res_list in results:
         if isinstance(res_list, list):
             all_streams.extend(res_list)
 
-    # Sort streams: 4K (2160p) > 1080p > 720p > 480p
+    # Sort streams: Web Player top, then 4K (2160p) > 1080p > 720p > 480p
     def quality_score(item: Dict[str, Any]) -> int:
+        if "externalUrl" in item:
+            return 999
         title_str = item.get("title", "") + item.get("name", "")
+        base_score = 50
         if "2160" in title_str or "4K" in title_str:
-            return 400
-        if "1080" in title_str:
-            return 300
-        if "720" in title_str:
-            return 200
-        if "480" in title_str:
-            return 100
-        return 50
+            base_score = 400
+        elif "1080" in title_str:
+            base_score = 300
+        elif "720" in title_str:
+            base_score = 200
+        elif "480" in title_str:
+            base_score = 100
+        if "Proxy" in title_str or "🛡️" in item.get("name", ""):
+            base_score += 10
+        return base_score
 
     all_streams.sort(key=quality_score, reverse=True)
     return {"streams": all_streams}
