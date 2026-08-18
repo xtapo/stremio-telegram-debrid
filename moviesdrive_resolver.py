@@ -14,11 +14,16 @@ Here it is split in two halves:
   actually pressed play on, or in the background to warm the cache.
 
 Every step is cached, de-duplicated and negatively cached by moviesdrive_perf.
+
+All hosts are configuration, not code: MD_BASE_URL / MD_MIRRORS (see
+moviesdrive_perf), MD_HUBCLOUD_BASE and MD_GAMERXYT_BASE. When a source changes
+domain nothing here has to be edited.
 """
 
 import asyncio
 import html as html_lib
 import logging
+import os
 import re
 import urllib.parse
 from typing import Any, Dict, List, Optional
@@ -31,28 +36,49 @@ from moviesdrive_perf import (
     STREAM_CACHE_TTL,
     base_of,
     cached_call,
+    content_ok,
     fetch_text,
     get_active_base,
     make_soup,
     mirror_candidates,
-    note_active_base,
     race_fetch_text,
 )
 
 logger = logging.getLogger("moviesdrive_addon")
 
-MOVIESDRIVE_BASE_URL = "https://new2.moviesdrive.christmas"
-MOVIESDRIVE_BACKUP_URLS = [
+# The defaults are only a starting point - MD_BASE_URL / MD_MIRRORS win.
+DEFAULT_BASE_URL = "https://new2.moviesdrive.christmas"
+DEFAULT_BACKUP_URLS = [
     "https://new2.moviesdrive.christmas",
     "https://new1.moviesdrive.christmas",
     "https://moviesdrives.mov",
 ]
-ALL_BASES = list(dict.fromkeys(MOVIESDRIVE_BACKUP_URLS + [MOVIESDRIVE_BASE_URL]))
 
-HUBCLOUD_BASE = "https://hubcloud.cx"
-HUBCLOUD_SEARCH_ENDPOINT = HUBCLOUD_BASE + "/drive/search-recover.php"
-GAMERXYT_BASE = "https://gamerxyt.com/"
+MOVIESDRIVE_BASE_URL = perf.env_base() or DEFAULT_BASE_URL
+MOVIESDRIVE_BACKUP_URLS = list(
+    dict.fromkeys(
+        [url.rstrip("/") for url in (perf.env_mirrors() + DEFAULT_BACKUP_URLS)]
+        + [MOVIESDRIVE_BASE_URL.rstrip("/")]
+    )
+)
+# Registering them makes perf aware of every host it may see in a redirect.
+ALL_BASES = perf.register_bases(*MOVIESDRIVE_BACKUP_URLS)
 
+HUBCLOUD_BASE = (os.getenv("MD_HUBCLOUD_BASE") or "https://hubcloud.cx").rstrip("/")
+HUBCLOUD_SEARCH_PATH = os.getenv("MD_HUBCLOUD_SEARCH_PATH") or "/drive/search-recover.php"
+HUBCLOUD_SEARCH_ENDPOINT = HUBCLOUD_BASE + HUBCLOUD_SEARCH_PATH
+GAMERXYT_BASE = (os.getenv("MD_GAMERXYT_BASE") or "https://gamerxyt.com").rstrip("/") + "/"
+GAMERXYT_HOSTS = tuple(
+    perf._env_list("MD_GAMERXYT_HOSTS")
+    or [urllib.parse.urlsplit(GAMERXYT_BASE).netloc or "gamerxyt.com"]
+)
+FSL_HOSTS = tuple(perf._env_list("MD_FSL_HOSTS") or ["cloudflarestorage.com", "r2.dev"])
+WORKER_HOSTS = tuple(perf._env_list("MD_WORKER_HOSTS") or ["workers.dev"])
+EXTRA_DIRECT_HOSTS = tuple(perf._env_list("MD_DIRECT_HOSTS"))
+MEDIA_EXTENSIONS = (".mkv", ".mp4", ".m4v", ".avi")
+
+# Kept for backwards compatibility - callers that need a live Referer should use
+# request_headers() instead, because the pinned mirror can change at runtime.
 HEADERS = {
     "User-Agent": perf.USER_AGENT,
     "Referer": MOVIESDRIVE_BASE_URL + "/",
@@ -68,7 +94,10 @@ WARM_CANDIDATES = perf._env_int("MD_WARM_CANDIDATES", 2)
 
 SKIP_SLUG_WORDS = ("category", "tag", "contact", "dmca", "privacy")
 PACK_WORDS = ("zip", "pack", "complete", "season zip", "rar")
-BUTTON_HOSTS = ("hubcloud", "archive/", "mdrive.", "kolop", "katdrive", "fastdl")
+BUTTON_HOSTS = tuple(
+    perf._env_list("MD_BUTTON_HOSTS")
+    or ["hubcloud", "archive/", "mdrive.", "kolop", "katdrive", "fastdl"]
+)
 SERIES_PATTERN = re.compile(r"season|s\d+|series|episodes?|ep\d+", re.I)
 
 
@@ -77,6 +106,15 @@ SERIES_PATTERN = re.compile(r"season|s\d+|series|episodes?|ep\d+", re.I)
 # ------------------------------------------------------------------
 def current_base() -> str:
     return get_active_base(MOVIESDRIVE_BASE_URL).rstrip("/")
+
+
+def request_headers(referer: Optional[str] = None) -> Dict[str, str]:
+    """Headers whose Referer follows the mirror that is actually in use."""
+    return {
+        "User-Agent": perf.USER_AGENT,
+        "Accept-Language": "en-US,en;q=0.9",
+        "Referer": referer or (current_base() + "/"),
+    }
 
 
 def absolute(url: str) -> str:
@@ -88,8 +126,9 @@ def absolute(url: str) -> str:
 
 
 def strip_base(url: str) -> str:
+    """Drop any known MoviesDrive host, so cache keys stay mirror independent."""
     out = url or ""
-    for base in ALL_BASES:
+    for base in perf.known_bases() or ALL_BASES:
         out = out.replace(base, "")
     return out.strip("/")
 
@@ -149,27 +188,60 @@ def post_content(html_text: str):
 # ------------------------------------------------------------------
 # Level 1: MoviesDrive pages, with mirror racing
 # ------------------------------------------------------------------
-async def fetch_html(url: str, referer: Optional[str] = None, race: bool = True) -> str:
-    headers = dict(HEADERS)
-    if referer:
-        headers["Referer"] = referer
+async def fetch_html(
+    url: str,
+    referer: Optional[str] = None,
+    race: bool = True,
+    validate: bool = True,
+    _retry_discovery: bool = True,
+) -> str:
+    """Fetch a MoviesDrive page, racing the mirrors and rejecting junk bodies.
 
-    if race and base_of(url, ALL_BASES):
+    A bot-challenge page is not a valid body (see perf.content_ok), so it can
+    neither be parsed nor pin a broken mirror. When every mirror fails, the
+    current domain is re-discovered once and the request is retried there.
+    """
+    headers = request_headers(referer)
+    validator = content_ok if validate else None
+
+    if race and base_of(url, perf.known_bases()):
         candidates = mirror_candidates(url, MOVIESDRIVE_BACKUP_URLS, MOVIESDRIVE_BASE_URL)
-        text, final_url = await race_fetch_text(candidates, headers=headers)
+        text, _final_url = await race_fetch_text(
+            candidates, headers=headers, validator=validator
+        )
         if text:
-            winner = base_of(final_url, ALL_BASES)
-            if winner:
-                note_active_base(winner)
-        return text
+            return text
+        if _retry_discovery:
+            discovered = await perf.discover_active_base(
+                MOVIESDRIVE_BASE_URL, force=True
+            )
+            retry_url = perf.rebase(url, discovered) if discovered else url
+            if discovered and retry_url != url:
+                logger.info(
+                    "MoviesDrive retrying %s on the newly discovered mirror %s",
+                    url,
+                    discovered,
+                )
+                return await fetch_html(
+                    retry_url,
+                    referer=referer,
+                    race=False,
+                    validate=validate,
+                    _retry_discovery=False,
+                )
+        return ""
 
     text, _ = await fetch_text(url, headers=headers)
+    if validate and text and not content_ok(text):
+        logger.warning("MoviesDrive discarded an unusable body from %s", url)
+        return ""
     return text
 
 
 async def _scrape_buttons(post_url: str) -> List[Dict[str, Any]]:
     html_content = await fetch_html(post_url)
     if not html_content:
+        logger.warning("MoviesDrive post page returned nothing: %s", post_url)
         return []
     content = post_content(html_content)
     results: List[Dict[str, Any]] = []
@@ -197,6 +269,12 @@ async def _scrape_buttons(post_url: str) -> List[Dict[str, Any]]:
                 btn_season = int(bs_match.group(1) or bs_match.group(2))
             seen.add(href)
             results.append({"text": btn_text, "url": href, "season": btn_season})
+    if not results:
+        logger.warning(
+            "MoviesDrive found no download buttons on %s (hosts looked for: %s)",
+            post_url,
+            ", ".join(BUTTON_HOSTS),
+        )
     return results
 
 
@@ -222,6 +300,12 @@ async def _scrape_archive(archive_url: str, post_url: str, episode_num: int) -> 
     hc_links = [a["href"] for a in soup.find_all("a", href=True) if "hubcloud" in a["href"]]
     if len(hc_links) >= episode_num:
         return hc_links[episode_num - 1]
+    logger.info(
+        "MoviesDrive archive page %s has %s hubcloud links, episode %s requested",
+        archive_url,
+        len(hc_links),
+        episode_num,
+    )
     return None
 
 
@@ -239,23 +323,45 @@ async def resolve_archive_page_episodes(
 # ------------------------------------------------------------------
 # Level 3a: hubcloud search API -> individual files
 # ------------------------------------------------------------------
+def _hubcloud_token(page_html: str) -> Optional[str]:
+    """HubCloud renames this constant now and then, so try a few shapes."""
+    patterns = (
+        r'const\s+FROM_AC_TOKEN\s*=\s*["\']([^"\']+)["\']',
+        r'FROM_AC_TOKEN\s*[:=]\s*["\']([^"\']+)["\']',
+        r'from_ac["\']?\s*[:=]\s*["\']([^"\']+)["\']',
+        r'name=["\']from_ac["\']\s+value=["\']([^"\']+)["\']',
+    )
+    for pattern in patterns:
+        match = re.search(pattern, page_html)
+        if match:
+            return match.group(1)
+    return None
+
+
 async def _scrape_hubcloud_files(
     hubcloud_url: str, filter_query: Optional[str]
 ) -> List[Dict[str, Any]]:
     page_html, final_url = await fetch_text(
         hubcloud_url,
-        headers={"User-Agent": perf.USER_AGENT},
-        referer=current_base() + "/",
+        headers=request_headers(),
     )
     if not page_html:
+        logger.warning("HubCloud page returned nothing: %s", hubcloud_url)
         return []
 
-    token_match = re.search(r'const FROM_AC_TOKEN\s*=\s*"([^"]+)"', page_html)
-    if not token_match:
+    token_val = _hubcloud_token(page_html)
+    if not token_val:
+        logger.warning(
+            "HubCloud search token not found on %s (%s bytes) - the page layout "
+            "probably changed",
+            hubcloud_url,
+            len(page_html),
+        )
         return []
-    token_val = token_match.group(1)
 
-    q_match = re.search(r'const Q_INITIAL\s*=\s*"([^"]+)"', page_html)
+    q_match = re.search(r'const\s+Q_INITIAL\s*=\s*"([^"]+)"', page_html) or re.search(
+        r'Q_INITIAL\s*[:=]\s*["\']([^"\']+)["\']', page_html
+    )
     q_val = q_match.group(1) if q_match else ""
     try:
         q_val = q_val.encode("utf-8").decode("unicode-escape")
@@ -278,7 +384,10 @@ async def _scrape_hubcloud_files(
         referer=final_url or hubcloud_url,
     )
     if isinstance(data, dict):
-        return data.get("hits", []) or []
+        hits = data.get("hits") or []
+        if not hits:
+            logger.info("HubCloud search returned no hits for %r", search_query)
+        return hits
     return []
 
 
@@ -296,6 +405,55 @@ async def resolve_hubcloud_files_from_url(
 # ------------------------------------------------------------------
 # Level 3b + 4: hubcloud file page -> gamerxyt -> direct CDN links
 # ------------------------------------------------------------------
+def _clean_direct_url(href: str) -> str:
+    parts = urllib.parse.urlsplit(href)
+    return urllib.parse.urlunsplit(
+        (
+            parts.scheme,
+            parts.netloc,
+            urllib.parse.quote(parts.path),
+            parts.query,
+            parts.fragment,
+        )
+    )
+
+
+def _is_pack_link(href: str, text: str) -> bool:
+    if any(bad in href.lower() for bad in (".zip", ".rar")):
+        return True
+    return any(bad in (text or "").lower() for bad in ("zip", "pack"))
+
+
+def _collect_stream_links(html_text: str) -> List[Dict[str, str]]:
+    streams: List[Dict[str, str]] = []
+    seen = set()
+    media_fallback: List[Dict[str, str]] = []
+
+    for a in make_soup(html_text).find_all("a", href=True):
+        href = a["href"]
+        text = a.get_text(strip=True)
+        if not href.startswith("http") or href in seen:
+            continue
+        low = href.lower()
+        if _is_pack_link(href, text):
+            continue
+        if any(host in low for host in FSL_HOSTS):
+            seen.add(href)
+            streams.append({"type": "FSL Server (Cloudflare R2 10Gbps)", "url": href})
+        elif any(host in low for host in WORKER_HOSTS):
+            seen.add(href)
+            streams.append({"type": "Worker CDN 10Gbps", "url": _clean_direct_url(href)})
+        elif EXTRA_DIRECT_HOSTS and any(host in low for host in EXTRA_DIRECT_HOSTS):
+            seen.add(href)
+            streams.append({"type": "Direct CDN", "url": _clean_direct_url(href)})
+        elif any(low.split("?")[0].endswith(ext) for ext in MEDIA_EXTENSIONS):
+            media_fallback.append(
+                {"type": "Direct file", "url": _clean_direct_url(href)}
+            )
+
+    return streams or media_fallback
+
+
 async def _scrape_direct_streams(hubcloud_file_url: str) -> List[Dict[str, str]]:
     first_html, _ = await fetch_text(
         hubcloud_file_url,
@@ -303,14 +461,26 @@ async def _scrape_direct_streams(hubcloud_file_url: str) -> List[Dict[str, str]]
         referer=HUBCLOUD_BASE + "/",
     )
     if not first_html:
+        logger.warning("HubCloud file page returned nothing: %s", hubcloud_file_url)
         return []
+
     soup1 = make_soup(first_html)
     gamer_link = None
     for a in soup1.find_all("a", href=True):
-        if "gamerxyt.com" in a["href"]:
+        if any(host in a["href"] for host in GAMERXYT_HOSTS):
             gamer_link = a["href"]
             break
+
     if not gamer_link:
+        # Some file pages already expose the CDN links directly.
+        direct = _collect_stream_links(first_html)
+        if direct:
+            return direct
+        logger.warning(
+            "No %s link on %s and no direct CDN link either",
+            "/".join(GAMERXYT_HOSTS),
+            hubcloud_file_url,
+        )
         return []
 
     second_html, _ = await fetch_text(
@@ -319,30 +489,16 @@ async def _scrape_direct_streams(hubcloud_file_url: str) -> List[Dict[str, str]]
         referer=hubcloud_file_url,
     )
     if not second_html:
+        logger.warning("GamerXYT page returned nothing: %s", gamer_link)
         return []
 
-    streams: List[Dict[str, str]] = []
-    for a in make_soup(second_html).find_all("a", href=True):
-        href = a["href"]
-        text = a.get_text(strip=True)
-        if "cloudflarestorage.com" in href:
-            if any(bad in href.lower() for bad in (".zip", ".rar")):
-                continue
-            if any(bad in text.lower() for bad in ("zip", "pack")):
-                continue
-            streams.append({"type": "FSL Server (Cloudflare R2 10Gbps)", "url": href})
-        elif "workers.dev" in href:
-            parts = urllib.parse.urlsplit(href)
-            clean_url = urllib.parse.urlunsplit(
-                (
-                    parts.scheme,
-                    parts.netloc,
-                    urllib.parse.quote(parts.path),
-                    parts.query,
-                    parts.fragment,
-                )
-            )
-            streams.append({"type": "Worker CDN 10Gbps", "url": clean_url})
+    streams = _collect_stream_links(second_html)
+    if not streams:
+        logger.warning(
+            "GamerXYT page %s had no usable link (looked for %s)",
+            gamer_link,
+            ", ".join(FSL_HOSTS + WORKER_HOSTS + EXTRA_DIRECT_HOSTS),
+        )
     return streams
 
 
@@ -359,7 +515,7 @@ def pick_best_stream(streams: List[Dict[str, str]]) -> Optional[Dict[str, str]]:
     if not streams:
         return None
     for item in streams:
-        if "cloudflarestorage.com" in item.get("url", ""):
+        if any(host in item.get("url", "").lower() for host in FSL_HOSTS):
             return item
     return streams[0]
 
@@ -421,6 +577,7 @@ async def collect_candidates(
     # Fallback: hubcloud search-recover buttons
     hc_buttons = [b for b in buttons if "hubcloud" in b["url"]][:MAX_HC_BUTTONS]
     if not hc_buttons:
+        logger.info("No archive or hubcloud button usable on %s", post_url)
         return []
 
     filter_q = None

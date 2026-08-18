@@ -8,11 +8,18 @@ Everything here is served through moviesdrive_perf.cached_call, which gives:
   refreshed in the background, so nobody ever waits for a scrape
 * negative caching - a miss is remembered for a minute instead of rescraping
 * disk persistence - a restart keeps the imdb and cinemeta mappings
+
+The scraping itself is defensive: card selectors, category slugs, the genre map
+and the search endpoint are all overridable from the environment, the real
+items-per-page value is learned from the site instead of assumed, and a page
+that parses to zero items says so in the log instead of silently returning an
+empty catalog.
 """
 
 import asyncio
 import json
 import logging
+import os
 import re
 import urllib.parse
 from typing import Any, Callable, Dict, List, Optional
@@ -20,10 +27,8 @@ from typing import Any, Callable, Dict, List, Optional
 import moviesdrive_perf as perf
 from moviesdrive_perf import (
     NEGATIVE_TTL,
-    base_of,
     cached_call,
     make_soup,
-    note_active_base,
     race_fetch_text,
 )
 import moviesdrive_resolver as resolver
@@ -35,6 +40,7 @@ from moviesdrive_resolver import (
     fetch_html,
     looks_like_series,
     post_content,
+    request_headers,
     strip_base,
 )
 
@@ -53,10 +59,22 @@ META_STALE_TTL = perf._env_int("MD_META_STALE_TTL", 7200)
 CINEMETA_TTL = perf._env_int("MD_CINEMETA_TTL", 3600)
 IMDB_TTL = perf._env_int("MD_IMDB_TTL", 86400)
 SUBS_TTL = perf._env_int("MD_SUBS_TTL", 900)
-MD_ITEMS_PER_PAGE = 24
+MD_ITEMS_PER_PAGE = perf._env_int("MD_ITEMS_PER_PAGE", 24)
 CATALOG_BATCH_SIZE = perf._env_int("MD_CATALOG_PAGE_SIZE", 20)
+META_ENRICH_TIMEOUT = perf._env_float("MD_META_ENRICH_TIMEOUT", 6.0)
+META_ENRICH_COUNT = perf._env_int("MD_META_ENRICH_COUNT", 8)
+# 0 disables the guess entirely; the old code invented 12 episodes.
+FALLBACK_EPISODES = perf._env_int("MD_FALLBACK_EPISODES", 1)
 
-CATEGORIES_MAP = {
+# Paths and slugs: the source renames these more often than anything else.
+CATEGORY_PREFIX = os.getenv("MD_CATEGORY_PREFIX") or "/category/"
+CATEGORY_MOVIES = (os.getenv("MD_CATEGORY_MOVIES") or "movies").strip("/")
+CATEGORY_SERIES = (os.getenv("MD_CATEGORY_SERIES") or "web").strip("/")
+CATEGORY_4K = (os.getenv("MD_CATEGORY_4K") or "2160p-4k").strip("/")
+SEARCH_PATH = os.getenv("MD_SEARCH_PATH") or "/search.php?q={query}&page={page}"
+SEARCH_HTML_PATH = os.getenv("MD_SEARCH_HTML_PATH") or "/page/{page}/?s={query}"
+
+DEFAULT_CATEGORIES_MAP = {
     "Action": "action",
     "Adventure": "adventure",
     "Animation": "animation",
@@ -78,13 +96,53 @@ CATEGORIES_MAP = {
     "Mystery": "mystery",
     "Netflix": "netflix",
     "Romance": "romance",
+    # The source really does misspell these two slugs.
     "Sci-Fi": "sifi",
     "South": "south",
     "Thriller": "triller",
     "War": "war",
     "2160p 4K": "2160p-4k",
 }
+
+
+def _load_categories_map() -> Dict[str, str]:
+    """MD_GENRE_MAP is a JSON object of {\"Genre\": \"slug\"} overrides."""
+    mapping = dict(DEFAULT_CATEGORIES_MAP)
+    raw = (os.getenv("MD_GENRE_MAP") or "").strip()
+    if not raw:
+        return mapping
+    try:
+        data = json.loads(raw)
+    except Exception as exc:
+        logger.warning("MD_GENRE_MAP is not valid JSON, ignoring it: %s", exc)
+        return mapping
+    if isinstance(data, dict):
+        mapping.update({str(k): str(v).strip("/") for k, v in data.items() if v})
+    return mapping
+
+
+CATEGORIES_MAP = _load_categories_map()
+CATEGORIES_MAP["2160p 4K"] = CATEGORY_4K
 GENRE_OPTIONS = list(CATEGORIES_MAP.keys())
+
+# Card selectors, tried in order. The first one that yields items wins.
+CARD_SELECTORS = perf._env_list("MD_CARD_SELECTORS") or [
+    "div.poster-card",
+    "article",
+    "li.post-item",
+    "div.post-card",
+    "div[class*='poster']",
+    "div[class*='movie-card']",
+    "div[class*='post-thumb']",
+]
+# Last resort: the anchors WordPress themes use for post titles.
+LINK_SELECTORS = perf._env_list("MD_LINK_SELECTORS") or [
+    "h2.entry-title a[href]",
+    "h3.entry-title a[href]",
+    "h2.title a[href]",
+    ".recent-posts a[href]",
+    "a[rel='bookmark']",
+]
 
 SKIP_SLUG_WORDS = ("category", "tag", "contact", "dmca", "privacy")
 NOISE_WORDS = (
@@ -92,37 +150,97 @@ NOISE_WORDS = (
     "2160p", "4k", "sdr", "x264", "esubs", "full-movie", "esub",
 )
 
+# Learned from the site on the first catalog page (see _note_page_size).
+_OBSERVED_ITEMS_PER_PAGE: Optional[int] = None
+
+
+def _fill_path(template: str, query: str, page: int) -> str:
+    return template.replace("{query}", urllib.parse.quote(query)).replace(
+        "{page}", str(page)
+    )
+
+
+def _items_per_page() -> int:
+    return _OBSERVED_ITEMS_PER_PAGE or MD_ITEMS_PER_PAGE
+
+
+def _note_page_size(count: int) -> None:
+    """Learn the real page size from a full first page."""
+    global _OBSERVED_ITEMS_PER_PAGE
+    if count < max(CATALOG_BATCH_SIZE, 6) or count == _OBSERVED_ITEMS_PER_PAGE:
+        return
+    _OBSERVED_ITEMS_PER_PAGE = count
+    if count != MD_ITEMS_PER_PAGE:
+        logger.info(
+            "MoviesDrive serves %s items per page (MD_ITEMS_PER_PAGE=%s), "
+            "using the observed value for pagination",
+            count,
+            MD_ITEMS_PER_PAGE,
+        )
+
 
 # ------------------------------------------------------------------
 # Search
 # ------------------------------------------------------------------
-async def _search_request(query: str, page: int) -> Optional[Dict[str, Any]]:
-    path = "/search.php?q=" + urllib.parse.quote(query) + "&page=" + str(page)
+def _search_urls(path: str) -> List[str]:
     urls = [current_base() + path]
-    for base in ALL_BASES:
+    for base in perf.candidate_bases(MOVIESDRIVE_BASE_URL, extra=ALL_BASES, limit=4):
         candidate = base.rstrip("/") + path
         if candidate not in urls:
             urls.append(candidate)
+    return urls
 
-    headers = {
-        "User-Agent": perf.USER_AGENT,
-        "Referer": current_base() + "/search.html",
-        "Accept": "application/json",
-    }
-    text, final_url = await race_fetch_text(urls, headers=headers)
+
+async def _search_json(query: str, page: int) -> Optional[Dict[str, Any]]:
+    path = _fill_path(SEARCH_PATH, query, page)
+    headers = request_headers(current_base() + "/search.html")
+    headers["Accept"] = "application/json"
+    text, _final_url = await race_fetch_text(_search_urls(path), headers=headers)
     if not text:
         return None
-    winner = base_of(final_url, ALL_BASES)
-    if winner:
-        note_active_base(winner)
     try:
         data = json.loads(text)
-    except Exception as exc:
-        logger.warning("MoviesDrive search returned invalid JSON for %s: %s", query, exc)
+    except Exception:
+        logger.info(
+            "MoviesDrive search endpoint did not answer JSON for %r "
+            "(%s bytes, starts with %r), trying the HTML search page",
+            query,
+            len(text),
+            text[:60],
+        )
         return None
     if isinstance(data, dict) and data.get("hits"):
         return data
+    if isinstance(data, list) and data:
+        return {"hits": data, "found": len(data)}
     return None
+
+
+async def _search_html(query: str, page: int) -> Optional[Dict[str, Any]]:
+    """Fallback for when /search.php stops returning Typesense-style JSON.
+
+    Without this, every tt* id coming from Cinemeta ends up with zero streams,
+    because stream_endpoint depends entirely on the search step.
+    """
+    path = _fill_path(SEARCH_HTML_PATH, query, page)
+    html_text = await fetch_html(current_base() + path)
+    if not html_text:
+        return None
+    items = _parse_cards(html_text)
+    if not items:
+        logger.warning("MoviesDrive HTML search parsed 0 results for %r", query)
+        return None
+    for item in items:
+        item["genres"] = ["MoviesDrive", "Tìm kiếm"]
+    logger.info("MoviesDrive HTML search returned %s results for %r", len(items), query)
+    return {"hits": [], "found": len(items), "items": items}
+
+
+async def _search_request(query: str, page: int) -> Optional[Dict[str, Any]]:
+    data = await _search_json(query, page)
+    if data:
+        return data
+    return await _search_html(query, page)
 
 
 async def search_moviesdrive_api(query: str, page: int = 1) -> Dict[str, Any]:
@@ -139,19 +257,26 @@ async def search_moviesdrive_api(query: str, page: int = 1) -> Dict[str, Any]:
 # ------------------------------------------------------------------
 # Catalog
 # ------------------------------------------------------------------
-def _catalog_url(cat_type: str, cat_id: str, genre: Optional[str], page: int) -> str:
-    base = current_base()
-    if cat_id == "moviesdrive_movies_4k":
-        url = base + "/category/2160p-4k/"
-    elif genre and genre in CATEGORIES_MAP:
-        url = base + "/category/" + CATEGORIES_MAP[genre] + "/"
-    elif cat_type == "series" or cat_id == "moviesdrive_series_latest":
-        url = base + "/category/web/"
-    else:
-        url = base + "/category/movies/"
+def _category_url(slug: str, page: int) -> str:
+    prefix = CATEGORY_PREFIX if CATEGORY_PREFIX.startswith("/") else "/" + CATEGORY_PREFIX
+    if not prefix.endswith("/"):
+        prefix += "/"
+    url = current_base() + prefix + slug.strip("/") + "/"
     if page > 1:
         url = url + "page/" + str(page) + "/"
     return url
+
+
+def _catalog_url(cat_type: str, cat_id: str, genre: Optional[str], page: int) -> str:
+    if cat_id == "moviesdrive_movies_4k":
+        slug = CATEGORY_4K
+    elif genre and genre in CATEGORIES_MAP:
+        slug = CATEGORIES_MAP[genre]
+    elif cat_type == "series" or cat_id == "moviesdrive_series_latest":
+        slug = CATEGORY_SERIES
+    else:
+        slug = CATEGORY_MOVIES
+    return _category_url(slug, page)
 
 
 def _extract_img_src(img_tag) -> str:
@@ -243,97 +368,169 @@ def clean_title(title: str) -> str:
     return re.sub(r"\s+", " ", t).strip()
 
 
+def _usable_slug(slug: str) -> bool:
+    if not slug or len(slug) < 4:
+        return False
+    low = slug.lower()
+    if any(word in low for word in SKIP_SLUG_WORDS):
+        return False
+    if low.startswith(("http", "#", "mailto:", "javascript:")):
+        return False
+    return "/" not in slug.strip("/") or low.count("/") <= 2
+
+
+def _build_item(slug: str, title: str, thumb: str) -> Dict[str, Any]:
+    cleaned_name = clean_title(title) or title
+
+    year_match = re.search(r"\b(19\d\d|20\d\d)\b", title)
+    year_str = year_match.group(1) if year_match else ""
+
+    if re.search(r"\b(4k|2160p|uhd)\b", title, re.I):
+        quality_str = "4K Ultra HD"
+    elif re.search(r"\b(1080p|fhd)\b", title, re.I):
+        quality_str = "1080p Full HD"
+    elif re.search(r"\b(720p|hd)\b", title, re.I):
+        quality_str = "720p HD"
+    elif re.search(r"\b(480p|sd)\b", title, re.I):
+        quality_str = "480p SD"
+    else:
+        quality_str = "1080p Full HD"
+
+    audio_match = re.search(
+        r"\[([^\]]*(?:Hindi|English|Tamil|Telugu|Kannada|Malayalam|Dual|Multi)[^\]]*)\]",
+        title,
+        re.I,
+    )
+    audio_str = audio_match.group(1).strip() if audio_match else "Dual Audio"
+
+    desc_badge_parts = []
+    if year_str:
+        desc_badge_parts.append(f"📅 Năm: {year_str}")
+    if quality_str:
+        desc_badge_parts.append(f"📺 {quality_str}")
+
+    desc_lines = []
+    if desc_badge_parts:
+        desc_lines.append(" | ".join(desc_badge_parts))
+    desc_lines.append(f"🔊 Âm thanh: {audio_str}")
+    desc_lines.append("🇻🇳 Phụ đề: Tiếng Việt tự động (AI Fast & Quality)")
+    desc_lines.append("⚡ Máy chủ phát: Direct CDN 10Gbps")
+    desc_lines.append(f"🎬 Xem phim {cleaned_name} chất lượng cao trên MoviesDrive.")
+
+    poster_url = absolute(thumb)
+    return {
+        "id": "moviesdrive:" + slug,
+        "type": "series" if looks_like_series(title) else "movie",
+        "name": cleaned_name,
+        "poster": poster_url,
+        "posterShape": "poster",
+        "background": poster_url,
+        "releaseInfo": year_str,
+        "description": "\n".join(desc_lines),
+        "genres": ["MoviesDrive", "Phim Mới"],
+    }
+
+
+def _title_from_node(node, a_tag, img_tag, slug: str) -> str:
+    title_el = node.find(
+        ["p", "h2", "h3", "h4", "span"], class_=lambda c: c and "title" in c
+    ) or node.find(["p", "h2", "h3", "h4"])
+    title = title_el.get_text(strip=True) if title_el else ""
+    if not title:
+        title = a_tag.get("title") or ""
+    if not title and img_tag:
+        title = img_tag.get("alt") or ""
+    if not title:
+        title = slug.replace("-", " ").title()
+    return title
+
+
 def _parse_cards(html_text: str) -> List[Dict[str, Any]]:
+    """Parse a listing page into catalog items.
+
+    The old version only accepted div.poster-card or <article>, so any theme
+    change silently produced an empty catalog. Now several selectors are tried,
+    then the post-title anchors, and the outcome is always logged.
+    """
     soup = make_soup(html_text)
-    nodes = soup.find_all("div", class_="poster-card") or soup.find_all("article")
     items: List[Dict[str, Any]] = []
     seen = set()
+    used = ""
 
-    for node in nodes:
-        a_tag = node.find_parent("a", href=True) or node.find("a", href=True)
-        if not a_tag:
+    for selector in CARD_SELECTORS:
+        try:
+            nodes = soup.select(selector)
+        except Exception:
             continue
-        slug = strip_base(a_tag["href"])
-        if not slug or slug in seen:
+        if not nodes:
             continue
-        if any(word in slug.lower() for word in SKIP_SLUG_WORDS):
-            continue
-        seen.add(slug)
+        for node in nodes:
+            a_tag = node.find_parent("a", href=True) or node.find("a", href=True)
+            if not a_tag:
+                continue
+            slug = strip_base(a_tag["href"])
+            if slug in seen or not _usable_slug(slug):
+                continue
+            seen.add(slug)
+            img_tag = node.find("img")
+            thumb = ""
+            if img_tag:
+                thumb = _extract_img_src(img_tag)
+                if _is_noise_image(thumb):
+                    thumb = ""
+            items.append(
+                _build_item(slug, _title_from_node(node, a_tag, img_tag, slug), thumb)
+            )
+        if items:
+            used = "%s (%s nodes)" % (selector, len(nodes))
+            break
+        seen.clear()
 
-        img_tag = node.find("img")
-        title_el = node.find(
-            ["p", "h2", "h3", "h4", "span"], class_=lambda c: c and "title" in c
-        ) or node.find(["p", "h2", "h3", "h4"])
+    if not items:
+        for selector in LINK_SELECTORS:
+            try:
+                anchors = soup.select(selector)
+            except Exception:
+                continue
+            for a_tag in anchors:
+                slug = strip_base(a_tag.get("href") or "")
+                if slug in seen or not _usable_slug(slug):
+                    continue
+                seen.add(slug)
+                title = a_tag.get_text(strip=True) or a_tag.get("title") or slug.replace("-", " ").title()
+                container = a_tag.find_parent(["article", "li", "div"])
+                img_tag = container.find("img") if container else None
+                thumb = _extract_img_src(img_tag) if img_tag else ""
+                if _is_noise_image(thumb):
+                    thumb = ""
+                items.append(_build_item(slug, title, thumb))
+            if items:
+                used = "link fallback %s (%s anchors)" % (selector, len(anchors))
+                break
 
-        title = title_el.get_text(strip=True) if title_el else ""
-        if not title:
-            title = a_tag.get("title") or ""
-        if not title and img_tag:
-            title = img_tag.get("alt") or ""
-        if not title:
-            title = slug.replace("-", " ").title()
-
-        cleaned_name = clean_title(title) or title
-
-        thumb = ""
-        if img_tag:
-            thumb = _extract_img_src(img_tag)
-            if _is_noise_image(thumb):
-                thumb = ""
-
-        year_match = re.search(r"\b(19\d\d|20\d\d)\b", title)
-        year_str = year_match.group(1) if year_match else ""
-
-        if re.search(r"\b(4k|2160p|uhd)\b", title, re.I):
-            quality_str = "4K Ultra HD"
-        elif re.search(r"\b(1080p|fhd)\b", title, re.I):
-            quality_str = "1080p Full HD"
-        elif re.search(r"\b(720p|hd)\b", title, re.I):
-            quality_str = "720p HD"
-        elif re.search(r"\b(480p|sd)\b", title, re.I):
-            quality_str = "480p SD"
-        else:
-            quality_str = "1080p Full HD"
-
-        audio_match = re.search(r"\[([^\]]*(?:Hindi|English|Tamil|Telugu|Kannada|Malayalam|Dual|Multi)[^\]]*)\]", title, re.I)
-        audio_str = audio_match.group(1).strip() if audio_match else "Dual Audio"
-
-        desc_badge_parts = []
-        if year_str:
-            desc_badge_parts.append(f"📅 Năm: {year_str}")
-        if quality_str:
-            desc_badge_parts.append(f"📺 {quality_str}")
-
-        desc_lines = []
-        if desc_badge_parts:
-            desc_lines.append(" | ".join(desc_badge_parts))
-        desc_lines.append(f"🔊 Âm thanh: {audio_str}")
-        desc_lines.append("🇻🇳 Phụ đề: Tiếng Việt tự động (AI Fast & Quality)")
-        desc_lines.append("⚡ Máy chủ phát: Direct CDN 10Gbps")
-        desc_lines.append(f"🎬 Xem phim {cleaned_name} chất lượng cao trên MoviesDrive.")
-
-        poster_url = absolute(thumb)
-        items.append(
-            {
-                "id": "moviesdrive:" + slug,
-                "type": "series" if looks_like_series(title) else "movie",
-                "name": cleaned_name,
-                "poster": poster_url,
-                "posterShape": "poster",
-                "background": poster_url,
-                "releaseInfo": year_str,
-                "description": "\n".join(desc_lines),
-                "genres": ["MoviesDrive", "Phim Mới"],
-            }
+    if not items:
+        logger.warning(
+            "MoviesDrive parsed 0 cards from %s bytes of HTML - the layout "
+            "probably changed, set MD_CARD_SELECTORS or MD_LINK_SELECTORS",
+            len(html_text or ""),
         )
+    else:
+        logger.debug("MoviesDrive parsed %s cards via %s", len(items), used)
     return items
 
 
-async def _scrape_catalog(url: str) -> Optional[List[Dict[str, Any]]]:
+async def _scrape_catalog(url: str, page: int = 1) -> Optional[List[Dict[str, Any]]]:
     page_html = await fetch_html(url)
     if not page_html:
+        logger.warning("MoviesDrive catalog page returned no usable HTML: %s", url)
         return None
-    return _parse_cards(page_html) or None
+    items = _parse_cards(page_html)
+    if not items:
+        logger.warning("MoviesDrive catalog page parsed 0 items: %s", url)
+        return None
+    if page == 1:
+        _note_page_size(len(items))
+    return items
 
 
 def _enrich_item_from_meta(item: dict, meta: dict) -> None:
@@ -357,6 +554,20 @@ def _enrich_item_from_meta(item: dict, meta: dict) -> None:
         item["logo"] = meta["logo"]
 
 
+async def _catalog_page_items(
+    cat_type: str, cat_id: str, genre: Optional[str], page: int
+) -> List[Dict[str, Any]]:
+    url = _catalog_url(cat_type, cat_id, genre, page)
+    result = await cached_call(
+        "cat:" + strip_base(url),
+        lambda u=url, p=page: _scrape_catalog(u, page=p),
+        ttl=CATALOG_TTL,
+        stale_ttl=CATALOG_STALE_TTL,
+        negative_ttl=NEGATIVE_TTL,
+    )
+    return result or []
+
+
 async def get_catalog_items(
     cat_type: str,
     cat_id: str,
@@ -365,11 +576,15 @@ async def get_catalog_items(
     skip: int = 0,
 ) -> List[Dict[str, Any]]:
     if search:
-        search_page = (skip // 20) + 1
+        search_page = (skip // CATALOG_BATCH_SIZE) + 1
         data = await search_moviesdrive_api(search, page=search_page)
+        # The HTML fallback already returns ready-made catalog items.
+        html_items = data.get("items") or []
+        if html_items:
+            return html_items[:CATALOG_BATCH_SIZE]
         items: List[Dict[str, Any]] = []
         for hit in data.get("hits", []):
-            doc = hit.get("document", {})
+            doc = hit.get("document", {}) if isinstance(hit, dict) else {}
             slug = (doc.get("permalink") or "").strip("/")
             if not slug:
                 continue
@@ -393,38 +608,50 @@ async def get_catalog_items(
             )
         return items
 
+    per_page = _items_per_page()
     target_start = max(0, skip)
     target_end = target_start + CATALOG_BATCH_SIZE
-    start_page = (target_start // MD_ITEMS_PER_PAGE) + 1
-    end_page = ((target_end - 1) // MD_ITEMS_PER_PAGE) + 1
-    offset_in_first_page = target_start % MD_ITEMS_PER_PAGE
+    start_page = (target_start // per_page) + 1
+    end_page = ((target_end - 1) // per_page) + 1
+    pages = list(range(start_page, end_page + 1))
 
-    page_urls = [
-        _catalog_url(cat_type, cat_id, genre, p)
-        for p in range(start_page, end_page + 1)
-    ]
-    tasks = [
-        cached_call(
-            "cat:" + strip_base(u),
-            lambda u=u: _scrape_catalog(u),
-            ttl=CATALOG_TTL,
-            stale_ttl=CATALOG_STALE_TTL,
-            negative_ttl=NEGATIVE_TTL,
-        )
-        for u in page_urls
-    ]
-    results = await asyncio.gather(*tasks)
+    results = await asyncio.gather(
+        *[_catalog_page_items(cat_type, cat_id, genre, p) for p in pages]
+    )
+
     all_items: List[Dict[str, Any]] = []
     seen = set()
-    for res in results:
-        if res:
-            for item in res:
-                item_id = item.get("id")
-                if item_id and item_id not in seen:
-                    seen.add(item_id)
-                    all_items.append(item)
 
+    def _collect(batch: List[Dict[str, Any]]) -> None:
+        for item in batch or []:
+            item_id = item.get("id")
+            if item_id and item_id not in seen:
+                seen.add(item_id)
+                all_items.append(item)
+
+    for res in results:
+        _collect(res)
+
+    # The page size may have just been learned from page 1, so recompute the
+    # offset instead of trusting the hardcoded 24 items per page.
+    per_page = _items_per_page()
+    offset_in_first_page = max(0, target_start - (start_page - 1) * per_page)
     selected = all_items[offset_in_first_page : offset_in_first_page + CATALOG_BATCH_SIZE]
+
+    if all_items and len(selected) < CATALOG_BATCH_SIZE:
+        # Short page: pull one more so skip=20/40 does not return a gap.
+        _collect(await _catalog_page_items(cat_type, cat_id, genre, pages[-1] + 1))
+        selected = all_items[offset_in_first_page : offset_in_first_page + CATALOG_BATCH_SIZE]
+
+    if all_items and not selected:
+        logger.info(
+            "MoviesDrive pagination: offset %s is past the %s items parsed for "
+            "pages %s (page size %s)",
+            offset_in_first_page,
+            len(all_items),
+            pages,
+            per_page,
+        )
 
     # 1. Enrich from cache (both meta and cinemeta caches)
     for item in selected:
@@ -440,12 +667,16 @@ async def get_catalog_items(
                 if cm:
                     _enrich_item_from_meta(item, cm)
 
-    # 2. Concurrently resolve metadata for uncached items in the first batch (up to 8 items) with timeout
-    uncached = [it for it in selected[:8] if not it.get("imdbRating")]
+    # 2. Concurrently resolve metadata for uncached items in the first batch.
+    #    The old 2.5s budget was shorter than MD_CONNECT_TIMEOUT + one read, so
+    #    posters and ratings practically never made it into the first response.
+    uncached = [it for it in selected[:META_ENRICH_COUNT] if not it.get("imdbRating")]
     if uncached:
         meta_tasks = [asyncio.create_task(get_meta_object(it.get("type", "movie"), it["id"])) for it in uncached]
         try:
-            done, _ = await asyncio.wait(meta_tasks, timeout=2.5)
+            done, still_running = await asyncio.wait(
+                meta_tasks, timeout=META_ENRICH_TIMEOUT
+            )
             for t in done:
                 res = t.result() if not t.cancelled() and not t.exception() else None
                 if res and isinstance(res, dict):
@@ -454,11 +685,19 @@ async def get_catalog_items(
                         if it.get("id") == res_id:
                             _enrich_item_from_meta(it, res)
                             break
+            if still_running:
+                # They keep filling the cache for the next request.
+                logger.debug(
+                    "MoviesDrive meta enrichment: %s of %s finished within %.1fs",
+                    len(done),
+                    len(meta_tasks),
+                    META_ENRICH_TIMEOUT,
+                )
         except Exception:
             pass
 
     # 3. Background pre-warm remaining items on this page
-    for item in selected[8:20]:
+    for item in selected[META_ENRICH_COUNT:CATALOG_BATCH_SIZE]:
         slug = item["id"].replace("moviesdrive:", "").split(":")[0].strip("/")
         mtype = item.get("type", "movie")
         if not perf.get_cached("meta:" + mtype + ":" + slug):
@@ -471,6 +710,11 @@ async def get_catalog_items(
 # Meta
 # ------------------------------------------------------------------
 async def _episode_count(content, post_url: str, page_html: str) -> int:
+    """Best effort episode count.
+
+    Returns MD_FALLBACK_EPISODES (default 1) when the page gives no hint. The
+    old hardcoded 12 invented episodes that could never be resolved.
+    """
     archive_links = [
         a["href"]
         for a in content.find_all("a", href=True)
@@ -487,13 +731,21 @@ async def _episode_count(content, post_url: str, page_html: str) -> int:
             ]
             if hc_links:
                 return len(hc_links)
-        return 12
+        logger.info(
+            "MoviesDrive could not count episodes from %s, falling back to %s",
+            archive_links[0],
+            FALLBACK_EPISODES,
+        )
+        return FALLBACK_EPISODES
 
     matches = re.findall(r"ep\s*(\d+)|episode\s*(\d+)", page_html, re.I)
     numbers = [int(m[0] or m[1]) for m in matches if (m[0] or m[1])]
     if numbers:
         return min(max(numbers), 60)
-    return 12
+    logger.info(
+        "MoviesDrive found no episode hint on %s, using %s", post_url, FALLBACK_EPISODES
+    )
+    return FALLBACK_EPISODES
 
 
 async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dict[str, Any]]:
@@ -634,7 +886,7 @@ async def _scrape_meta(media_type: str, item_id: str, slug: str) -> Optional[Dic
             int(season_match.group(1) or season_match.group(2)) if season_match else 1
         )
         ep_count = await _episode_count(content, post_url, page_html)
-        for ep in range(1, ep_count + 1):
+        for ep in range(1, max(0, ep_count) + 1):
             videos.append(
                 {
                     "id": "moviesdrive:" + slug + ":" + str(season_num) + ":" + str(ep),
@@ -811,7 +1063,7 @@ async def find_imdb_for_moviesdrive_id(media_type: str, md_id: str) -> Optional[
     clean = slug
     for word in NOISE_WORDS:
         clean = re.sub(r"\b" + word + r"\b", "", clean, flags=re.I)
-    
+
     year_match = re.search(r"\b(19\d\d|20\d\d)\b", clean)
     year = year_match.group(1) if year_match else None
 
