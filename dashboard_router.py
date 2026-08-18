@@ -726,6 +726,7 @@ async def api_update_config(request: Request):
         "enable_source_hdhub4u": "ENABLE_SOURCE_HDHUB4U",
         "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
         "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
+        "enable_source_vidking": "ENABLE_SOURCE_VIDKING",
         # Board (Home Screen) Toggles
         "enable_board_telegram": "ENABLE_BOARD_TELEGRAM",
         "enable_board_telegram_debrid": "ENABLE_BOARD_TELEGRAM",
@@ -736,6 +737,7 @@ async def api_update_config(request: Request):
         "enable_board_hdhub4u": "ENABLE_BOARD_HDHUB4U",
         "enable_board_topxx": "ENABLE_BOARD_TOPXX",
         "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
+        "enable_board_vidking": "ENABLE_BOARD_VIDKING",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -768,6 +770,7 @@ async def api_update_config(request: Request):
             "hdhub4u": getattr(Config, "ENABLE_SOURCE_HDHUB4U", True),
             "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
             "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
+            "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -778,6 +781,7 @@ async def api_update_config(request: Request):
             "hdhub4u": getattr(Config, "ENABLE_BOARD_HDHUB4U", True),
             "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
             "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
+            "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
         }
     }
 
@@ -807,6 +811,24 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
+        },
+        {
+            "id": "vidking",
+            "name": "Vidking Player",
+            "tag": "Phim & Series Quốc Tế",
+            "category": "4K / 1080p HLS & MP4",
+            "icon": "fa-crown",
+            "badge": "Multi-Server",
+            "badge_color": "purple",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_VIDKING", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_VIDKING", True)),
+            "description": "Xem phim lẻ & series truyền hình từ Vidking Player (vidking.net) với server Yoru (HLS 4K/1080p), Cypher (Direct MP4) và nhiều server dự phòng.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/vidking/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/vidking/manifest.json",
+                "public": f"{domain_url}/vidking/manifest.json"
+            },
+            "routes": ["/vidking/manifest.json", "/vidking/catalog", "/vidking/stream"]
         },
         {
             "id": "hdtoday",

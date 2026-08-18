@@ -68,6 +68,7 @@ class Config:
     ENABLE_SOURCE_HDHUB4U = os.getenv("ENABLE_SOURCE_HDHUB4U", "True").lower() == "true"
     ENABLE_SOURCE_TOPXX = os.getenv("ENABLE_SOURCE_TOPXX", "True").lower() == "true"
     ENABLE_SOURCE_HDTODAY = os.getenv("ENABLE_SOURCE_HDTODAY", "True").lower() == "true"
+    ENABLE_SOURCE_VIDKING = os.getenv("ENABLE_SOURCE_VIDKING", "True").lower() == "true"
     HDTODAY_BASE_URL = os.getenv("HDTODAY_BASE_URL", "https://hdtoday.sc").rstrip("/")
 
     # Stremio Board (Home Screen) vs Discover Only Toggles
@@ -79,6 +80,7 @@ class Config:
     ENABLE_BOARD_HDHUB4U = os.getenv("ENABLE_BOARD_HDHUB4U", "True").lower() == "true"
     ENABLE_BOARD_TOPXX = os.getenv("ENABLE_BOARD_TOPXX", "False").lower() == "true"
     ENABLE_BOARD_HDTODAY = os.getenv("ENABLE_BOARD_HDTODAY", "True").lower() == "true"
+    ENABLE_BOARD_VIDKING = os.getenv("ENABLE_BOARD_VIDKING", "True").lower() == "true"
 
     # Subtitle timing.
     # Positive shifts subtitles later, negative shows them earlier.
