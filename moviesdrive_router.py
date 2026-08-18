@@ -14,6 +14,11 @@ resolve the single chosen stream on Play and answer with a 302 redirect.
 The top candidates are resolved in the background while the user is still
 looking at the list, so the redirect is normally served straight from cache.
 
+Failures are no longer silent: instead of returning an empty stream list, the
+reason is logged and (unless MD_SHOW_ERRORS=false) a single non-playable notice
+entry is returned, so a dead mirror or a changed page layout is visible in the
+player instead of looking like "this title has no sources".
+
 Subtitles are offered as two separate Vietnamese tracks (see sync_vtt_service):
 track "fast" is Lingva over the whole file and is the default, track "quality"
 is the Gemini -> Custom AI pass that keeps improving in the background. They
@@ -79,7 +84,16 @@ logger = logging.getLogger("moviesdrive_addon")
 
 moviesdrive_router = APIRouter(prefix="", tags=["moviesdrive"])
 
-GAMERXYT_REFERER = "https://gamerxyt.com/"
+GAMERXYT_REFERER = resolver.GAMERXYT_BASE
+
+# Hosts that reject a Referer header (signed R2 / S3 / Google URLs).
+NO_REFERER_HOSTS = tuple(
+    perf._env_list("MD_NO_REFERER_HOSTS")
+    or list(resolver.FSL_HOSTS) + ["r2.cloudflarestorage.com", "googleusercontent.com"]
+)
+PROXY_TIMEOUT = perf._env_float("MD_PROXY_TIMEOUT", 60.0)
+# When true, an empty answer carries a short explanation instead of nothing.
+SHOW_ERRORS = perf._env_bool("MD_SHOW_ERRORS", True)
 
 # Query value -> Stremio track. Keep these in sync with sync_vtt_service.get_track_vtt.
 TRACK_FAST = "fast"
@@ -226,6 +240,29 @@ def _safe_name(text: str) -> str:
     return "".join(ch if ch.isalnum() or ch in "-_. " else "_" for ch in (text or "video")).strip()
 
 
+def _no_streams(reason: str, item_id: str = "") -> JSONResponse:
+    """Answer /stream with an explanation instead of a silent empty list."""
+    logger.info("MoviesDrive has no stream for %s: %s", item_id or "?", reason)
+    if not SHOW_ERRORS:
+        return JSONResponse({"streams": []})
+    return JSONResponse(
+        {
+            "streams": [
+                {
+                    "name": "⚠️ MoviesDrive",
+                    "title": (
+                        "Không lấy được link: "
+                        + reason
+                        + "\nKiểm tra /moviesdrive/cache_stats và log của addon."
+                    ),
+                    "externalUrl": current_base() + "/",
+                    "behaviorHints": {"notWebReady": True},
+                }
+            ]
+        }
+    )
+
+
 def _subtitle_url(base_url: str, clean_id: str, media_type: str, item_id: str, track: str) -> str:
     return (
         base_url
@@ -291,6 +328,17 @@ async def catalog_endpoint(
     final_search = search or qp.get("search")
     final_skip = skip if skip is not None else int(qp.get("skip", 0) if str(qp.get("skip", "")).isdigit() else 0)
     metas = await get_catalog_items(type, id, genre=final_genre, search=final_search, skip=final_skip or 0)
+    if not metas:
+        logger.warning(
+            "MoviesDrive catalog %s/%s returned 0 items (genre=%r search=%r skip=%s, "
+            "active base %s)",
+            type,
+            id,
+            final_genre,
+            final_search,
+            final_skip,
+            current_base(),
+        )
     return JSONResponse({"metas": metas})
 
 
@@ -324,11 +372,24 @@ async def catalog_extra_endpoint(request: Request, type: str, id: str, extra: st
             skip = int(qp.get("skip"))
 
     metas = await get_catalog_items(type, id, genre=genre, search=search, skip=skip)
+    if not metas:
+        logger.warning(
+            "MoviesDrive catalog %s/%s (extra) returned 0 items "
+            "(genre=%r search=%r skip=%s, active base %s)",
+            type,
+            id,
+            genre,
+            search,
+            skip,
+            current_base(),
+        )
     return JSONResponse({"metas": metas})
 
 
 async def meta_endpoint(type: str, id: str):
     meta_obj = await get_meta_object(type, id)
+    if not meta_obj:
+        logger.info("MoviesDrive meta empty for %s/%s", type, id)
     return JSONResponse({"meta": meta_obj})
 
 
@@ -345,7 +406,7 @@ async def stream_endpoint(request: Request, type: str, id: str):
         parts = id.split(":")
         slug = parts[1] if len(parts) > 1 else ""
         if not slug:
-            return JSONResponse({"streams": []})
+            return _no_streams("id thiếu slug", id)
         season_num = int(parts[2]) if len(parts) > 2 else None
         episode_num = int(parts[3]) if len(parts) > 3 else (1 if type == "series" else None)
         post_url = current_base() + "/" + slug.strip("/") + "/"
@@ -359,17 +420,35 @@ async def stream_endpoint(request: Request, type: str, id: str):
 
         meta = await get_cinemeta_title(type, imdb_id)
         if not meta or not meta.get("name"):
-            return JSONResponse({"streams": []})
+            return _no_streams("Cinemeta không trả về tên cho " + imdb_id, id)
         display = meta["name"]
         year = str(meta.get("year") or "")
 
         data = await search_moviesdrive_api(display, page=1)
         hits = data.get("hits", [])
-        if not hits and year:
+        html_items = data.get("items") or []
+        if not hits and not html_items and year:
             data = await search_moviesdrive_api(display + " " + str(year), page=1)
             hits = data.get("hits", [])
+            html_items = data.get("items") or []
+
+        # The HTML search fallback returns catalog items, not Typesense hits.
+        if not hits and html_items:
+            hits = [
+                {
+                    "document": {
+                        "permalink": (it.get("id") or "").replace("moviesdrive:", ""),
+                        "post_title": it.get("name") or "",
+                    }
+                }
+                for it in html_items
+                if it.get("id")
+            ]
+
         if not hits:
-            return JSONResponse({"streams": []})
+            return _no_streams(
+                "tìm kiếm MoviesDrive không có kết quả cho '" + display + "'", id
+            )
 
         # Match strictly with display and year, DO NOT pick an unrelated hit!
         def _norm_str(s: str) -> str:
@@ -398,9 +477,9 @@ async def stream_endpoint(request: Request, type: str, id: str):
             doc = hit.get("document", {})
             p_title = _norm_str(doc.get("post_title", ""))
             p_slug = _norm_str(doc.get("permalink", "").replace("-", " "))
-            
+
             # Check title match
-            is_title_match = (target_norm in p_title or target_norm in p_slug or 
+            is_title_match = (target_norm in p_title or target_norm in p_slug or
                               all(w in p_title or w in p_slug for w in target_words))
             if not is_title_match:
                 continue
@@ -424,10 +503,10 @@ async def stream_endpoint(request: Request, type: str, id: str):
             for hit in valid_hits:
                 doc = hit.get("document", {})
                 raw_text = (doc.get("post_title", "") + " " + doc.get("permalink", "")).lower()
-                if (f"season {s_num}" in raw_text or 
-                    f"season-{s_num}" in raw_text or 
+                if (f"season {s_num}" in raw_text or
+                    f"season-{s_num}" in raw_text or
                     f"s{s_num:02d}" in raw_text or
-                    f"s{s_num}" in raw_text or 
+                    f"s{s_num}" in raw_text or
                     re.search(rf"season\s*1\s*[-–]\s*(\d+)", raw_text)):
                     matched_hit = hit
                     break
@@ -436,22 +515,26 @@ async def stream_endpoint(request: Request, type: str, id: str):
             matched_hit = valid_hits[0]
 
         if not matched_hit:
-            logger.info("No matching MoviesDrive post found for Cinemeta title '%s' (IMDb: %s)", display, imdb_id)
-            return JSONResponse({"streams": []})
+            return _no_streams(
+                "không có bài viết nào khọp tức đề '" + display + "' (IMDb " + imdb_id + ")",
+                id,
+            )
 
         permalink = matched_hit.get("document", {}).get("permalink", "")
         if not permalink:
-            return JSONResponse({"streams": []})
+            return _no_streams("kết quả tìm kiếm không có permalink", id)
         post_url = urllib.parse.urljoin(current_base() + "/", permalink)
 
     else:
-        return JSONResponse({"streams": []})
+        return _no_streams("id không thuộc MoviesDrive", id)
 
     candidates = await collect_candidates(
         post_url, media_type=type, season_num=season_num, episode_num=episode_num
     )
     if not candidates:
-        return JSONResponse({"streams": []})
+        return _no_streams(
+            "trang phim không còn nút tải nào đọc được (" + post_url + ")", id
+        )
 
     target_ep = candidates[0].get("episode") or 1
     safe_display = _safe_name(display) or "moviesdrive"
@@ -519,7 +602,19 @@ async def moviesdrive_resolve(
         archive_url=arc, hubcloud_url=hc, post_url=post, episode=ep or 1
     )
     if not best or not best.get("url"):
-        raise HTTPException(status_code=502, detail="Could not resolve a playable link")
+        logger.warning(
+            "MoviesDrive could not resolve a playable link (arc=%s hc=%s ep=%s)",
+            arc,
+            hc,
+            ep,
+        )
+        raise HTTPException(
+            status_code=502,
+            detail=(
+                "Could not resolve a playable link - HubCloud/GamerXYT layout or "
+                "domain may have changed, see the addon log"
+            ),
+        )
 
     target = best["url"]
     if mode == "proxy":
@@ -533,7 +628,12 @@ async def moviesdrive_resolve(
 
 
 async def moviesdrive_stream_proxy(request: Request, url: str, referer: Optional[str] = None):
-    """Proxy a direct video stream, forwarding Range requests for instant seeking."""
+    """Proxy a direct video stream, forwarding Range requests for instant seeking.
+
+    The httpx client is owned by this handler: it is closed by the streaming
+    generator on success and explicitly on every failure path, so a failing
+    upstream no longer leaks a client (and its connection pool) per request.
+    """
     if not url:
         raise HTTPException(status_code=400, detail="Missing stream URL")
     clean_url = urllib.parse.unquote(url)
@@ -541,20 +641,25 @@ async def moviesdrive_stream_proxy(request: Request, url: str, referer: Optional
     req_headers = {"User-Agent": perf.USER_AGENT, "Accept": "*/*"}
 
     # Signed R2 / S3 / Google URLs reject a Referer header.
-    if referer and not any(
-        k in clean_url
-        for k in ("cloudflarestorage.com", "r2.cloudflarestorage.com", "googleusercontent.com")
-    ):
+    if referer and not any(k in clean_url for k in NO_REFERER_HOSTS):
         req_headers["Referer"] = referer
 
     range_header = request.headers.get("range")
     if range_header:
         req_headers["range"] = range_header
 
+    client = httpx.AsyncClient(timeout=PROXY_TIMEOUT, follow_redirects=True)
+    upstream_resp = None
     try:
-        client = httpx.AsyncClient(timeout=60.0, follow_redirects=True)
         upstream_req = client.build_request("GET", clean_url, headers=req_headers)
         upstream_resp = await client.send(upstream_req, stream=True)
+
+        if upstream_resp.status_code >= 400:
+            logger.warning(
+                "Stream proxy upstream answered %s for %s",
+                upstream_resp.status_code,
+                clean_url,
+            )
 
         resp_headers = {}
         for key in ("content-range", "content-type", "accept-ranges", "content-length"):
@@ -565,15 +670,17 @@ async def moviesdrive_stream_proxy(request: Request, url: str, referer: Optional
         resp_headers["accept-ranges"] = "bytes"
         resp_headers["Access-Control-Allow-Origin"] = "*"
 
+        response = upstream_resp
+
         async def stream_generator():
             try:
-                async for chunk in upstream_resp.aiter_bytes(chunk_size=128 * 1024):
+                async for chunk in response.aiter_bytes(chunk_size=128 * 1024):
                     yield chunk
             except Exception:
                 pass
             finally:
                 try:
-                    await upstream_resp.aclose()
+                    await response.aclose()
                 except Exception:
                     pass
                 try:
@@ -587,6 +694,16 @@ async def moviesdrive_stream_proxy(request: Request, url: str, referer: Optional
             headers=resp_headers,
         )
     except Exception as e:
+        # Nothing is streaming yet, so this handler still owns both objects.
+        if upstream_resp is not None:
+            try:
+                await upstream_resp.aclose()
+            except Exception:
+                pass
+        try:
+            await client.aclose()
+        except Exception:
+            pass
         logger.error("Stream proxy exception for %s: %s", url, e)
         raise HTTPException(status_code=502, detail="Proxy error: " + str(e))
 

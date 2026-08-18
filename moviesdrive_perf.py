@@ -1,13 +1,23 @@
 """
-Performance helpers for the MoviesDrive addon.
+Performance and resilience helpers for the MoviesDrive addon.
 
 Everything in here used to be re-created on every single scrape step inside
-moviesdrive_router.py. Centralising it removes most of the latency:
+moviesdrive_router.py. Centralising it removes most of the latency, and it is
+also the single place where "MoviesDrive returned nothing" can be diagnosed:
 
 * one shared httpx.AsyncClient (keep-alive + HTTP/2) instead of a brand new
   client - and therefore a brand new TLS handshake - per request
 * split connect/read timeouts so a dead mirror fails in ~3s instead of ~12s
-* mirror racing across the MoviesDrive domains, with the winner pinned
+* the MoviesDrive domains are configuration, not code: MD_BASE_URL, MD_MIRRORS
+  and MD_MIRROR_TEMPLATES are merged with whatever the callers register, probed
+  concurrently, and the winner is pinned while failing mirrors go on cooldown
+* anti-bot awareness: a Cloudflare / DDoS-Guard interstitial answers with HTTP
+  200 and a body, so it used to win the mirror race and pin a broken mirror for
+  the whole process. Such a body is now rejected, and can optionally be fetched
+  for real through curl_cffi impersonation or FlareSolverr.
+* every non-200 answer and every block is logged with its status code, so an
+  empty catalog can be traced to a dead domain / a 403 challenge / a changed
+  selector instead of failing silently
 * a TTL cache with LRU eviction, negative caching, single-flight de-duplication,
   stale-while-revalidate and JSON persistence to disk, so a restart does not
   cold-start every lookup again
@@ -53,6 +63,18 @@ def _env_int(name: str, default: int) -> int:
     return int(_env_float(name, float(default)))
 
 
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.getenv(name)
+    if raw is None or str(raw).strip() == "":
+        return bool(default)
+    return str(raw).strip().lower() in ("1", "true", "yes", "on")
+
+
+def _env_list(name: str) -> List[str]:
+    raw = os.getenv(name) or ""
+    return [part.strip() for part in raw.replace(";", ",").split(",") if part.strip()]
+
+
 CONNECT_TIMEOUT = _env_float("MD_CONNECT_TIMEOUT", 3.0)
 READ_TIMEOUT = _env_float("MD_READ_TIMEOUT", 12.0)
 POOL_TIMEOUT = _env_float("MD_POOL_TIMEOUT", 5.0)
@@ -71,6 +93,37 @@ CACHE_FILE = os.getenv("MD_CACHE_FILE") or os.path.join(
     tempfile.gettempdir(), "moviesdrive_cache.json"
 )
 
+# Domain / anti-bot knobs
+MIRROR_RANGE_RAW = os.getenv("MD_MIRROR_RANGE") or "1-6"
+BASE_PROBE_PATH = os.getenv("MD_BASE_PROBE_PATH") or "/"
+BASE_PROBE_TIMEOUT = _env_float("MD_BASE_PROBE_TIMEOUT", 6.0)
+BASE_DISCOVERY_TTL = _env_float("MD_BASE_DISCOVERY_TTL", 900.0)
+BASE_COOLDOWN = _env_float("MD_BASE_COOLDOWN", 300.0)
+BASE_MAX_FAILURES = _env_int("MD_BASE_MAX_FAILURES", 3)
+MAX_RACE_MIRRORS = _env_int("MD_MAX_RACE_MIRRORS", 4)
+MAX_DISCOVERY_PROBES = _env_int("MD_MAX_DISCOVERY_PROBES", 12)
+MIN_HTML_LENGTH = _env_int("MD_MIN_HTML_LENGTH", 400)
+ANTIBOT_FALLBACK = _env_bool("MD_ANTIBOT_FALLBACK", True)
+IMPERSONATE = os.getenv("MD_IMPERSONATE") or "chrome120"
+FLARESOLVERR_URL = (os.getenv("MD_FLARESOLVERR_URL") or "").strip()
+FLARESOLVERR_TIMEOUT = _env_float("MD_FLARESOLVERR_TIMEOUT", 40.0)
+
+DEFAULT_BLOCK_MARKERS = (
+    "just a moment",
+    "checking your browser",
+    "attention required! | cloudflare",
+    "cf-browser-verification",
+    "cf_chl_opt",
+    "__cf_chl_",
+    "ddos-guard",
+    "enable javascript and cookies to continue",
+    "please turn javascript on",
+)
+BLOCK_MARKERS = tuple(
+    marker.lower()
+    for marker in (list(DEFAULT_BLOCK_MARKERS) + _env_list("MD_BLOCK_MARKERS"))
+)
+
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -79,6 +132,14 @@ DEFAULT_HEADERS = {
     "User-Agent": USER_AGENT,
     "Accept-Language": "en-US,en;q=0.9",
 }
+
+try:  # optional: TLS fingerprint impersonation for challenged pages
+    from curl_cffi import requests as curl_requests  # type: ignore
+
+    _HAS_CURL_CFFI = True
+except Exception:  # pragma: no cover - curl_cffi is optional
+    curl_requests = None  # type: ignore
+    _HAS_CURL_CFFI = False
 
 
 # ------------------------------------------------------------------
@@ -104,6 +165,250 @@ def make_soup(markup: str, only: Optional[SoupStrainer] = None) -> BeautifulSoup
         except Exception:
             pass
     return BeautifulSoup(markup, HTML_PARSER)
+
+
+# ------------------------------------------------------------------
+# Anti-bot detection
+# ------------------------------------------------------------------
+def looks_blocked(text: str) -> bool:
+    """True when a body is a bot challenge instead of real content.
+
+    Cloudflare and DDoS-Guard answer with HTTP 200 plus a small HTML page, so
+    the status code alone cannot be trusted.
+    """
+    if not text:
+        return False
+    sample = text[:4000].lower()
+    return any(marker in sample for marker in BLOCK_MARKERS)
+
+
+def content_ok(text: str, *, min_length: Optional[int] = None) -> bool:
+    """True when a body looks like a real page worth parsing."""
+    if not text:
+        return False
+    if looks_blocked(text):
+        return False
+    return len(text) >= (MIN_HTML_LENGTH if min_length is None else int(min_length))
+
+
+# ------------------------------------------------------------------
+# Domain registry: env driven, probed, pinned, with cooldown
+# ------------------------------------------------------------------
+_KNOWN_BASES: List[str] = []
+_BASE_FAILURES: Dict[str, int] = {}
+_BASE_COOLDOWN_UNTIL: Dict[str, float] = {}
+_ACTIVE_BASE: Optional[str] = None
+_LAST_DISCOVERY = 0.0
+_DISCOVERY_LOCK: Optional[asyncio.Lock] = None
+
+
+def _norm_base(base: str) -> str:
+    return (base or "").strip().rstrip("/")
+
+
+def env_base() -> Optional[str]:
+    """The MoviesDrive base URL from MD_BASE_URL, when configured."""
+    raw = _norm_base(os.getenv("MD_BASE_URL") or "")
+    return raw or None
+
+
+def env_mirrors() -> List[str]:
+    """Extra mirrors from MD_MIRRORS (comma separated)."""
+    return [_norm_base(item) for item in _env_list("MD_MIRRORS") if _norm_base(item)]
+
+
+def _mirror_range() -> Tuple[int, int]:
+    raw = MIRROR_RANGE_RAW.strip()
+    try:
+        if "-" in raw:
+            low_raw, high_raw = raw.split("-", 1)
+            low, high = int(low_raw), int(high_raw)
+        else:
+            low = high = int(raw)
+    except (TypeError, ValueError):
+        low, high = 1, 6
+    if high < low:
+        low, high = high, low
+    return max(0, low), min(high, low + 19)
+
+
+def generated_bases() -> List[str]:
+    """Mirror guesses from MD_MIRROR_TEMPLATES, e.g. https://new{n}.example.tld"""
+    templates = _env_list("MD_MIRROR_TEMPLATES")
+    if not templates:
+        return []
+    low, high = _mirror_range()
+    out: List[str] = []
+    for template in templates:
+        if "{n}" not in template:
+            candidate = _norm_base(template)
+            if candidate and candidate not in out:
+                out.append(candidate)
+            continue
+        for number in range(low, high + 1):
+            candidate = _norm_base(template.replace("{n}", str(number)))
+            if candidate and candidate not in out:
+                out.append(candidate)
+    return out
+
+
+def register_bases(*bases: Any) -> List[str]:
+    """Register known MoviesDrive bases and return the full known list."""
+    for base in bases:
+        if isinstance(base, (list, tuple, set)):
+            register_bases(*base)
+            continue
+        candidate = _norm_base(str(base or ""))
+        if candidate and candidate not in _KNOWN_BASES:
+            _KNOWN_BASES.append(candidate)
+    return list(_KNOWN_BASES)
+
+
+def known_bases() -> List[str]:
+    return list(_KNOWN_BASES)
+
+
+def base_is_cooling(base: str) -> bool:
+    until = _BASE_COOLDOWN_UNTIL.get(_norm_base(base))
+    return bool(until and until > time.time())
+
+
+def note_base_failure(base: Optional[str], reason: str = "") -> None:
+    candidate = _norm_base(base or "")
+    if not candidate:
+        return
+    failures = _BASE_FAILURES.get(candidate, 0) + 1
+    _BASE_FAILURES[candidate] = failures
+    if failures >= BASE_MAX_FAILURES and not base_is_cooling(candidate):
+        _BASE_COOLDOWN_UNTIL[candidate] = time.time() + BASE_COOLDOWN
+        logger.warning(
+            "MoviesDrive mirror %s put on cooldown for %.0fs after %s failures (%s)",
+            candidate,
+            BASE_COOLDOWN,
+            failures,
+            reason or "no usable response",
+        )
+        global _ACTIVE_BASE
+        if _ACTIVE_BASE == candidate:
+            _ACTIVE_BASE = None
+
+
+def note_base_success(base: Optional[str]) -> None:
+    candidate = _norm_base(base or "")
+    if not candidate:
+        return
+    _BASE_FAILURES.pop(candidate, None)
+    _BASE_COOLDOWN_UNTIL.pop(candidate, None)
+
+
+def get_active_base(default: str) -> str:
+    """The base every caller should build URLs on right now.
+
+    Priority: the pinned mirror, then MD_BASE_URL, then the caller default.
+    """
+    if _ACTIVE_BASE and not base_is_cooling(_ACTIVE_BASE):
+        return _ACTIVE_BASE
+    configured = env_base()
+    if configured and not base_is_cooling(configured):
+        return configured
+    return _norm_base(default) or default
+
+
+def note_active_base(base: str) -> None:
+    global _ACTIVE_BASE
+    candidate = _norm_base(base)
+    if candidate and candidate != _ACTIVE_BASE:
+        _ACTIVE_BASE = candidate
+        register_bases(candidate)
+        logger.info("MoviesDrive mirror pinned to %s", candidate)
+    note_base_success(candidate)
+
+
+def active_base() -> Optional[str]:
+    return _ACTIVE_BASE
+
+
+def candidate_bases(
+    default: Optional[str] = None,
+    *,
+    extra: Iterable[str] = (),
+    include_generated: Optional[bool] = None,
+    limit: Optional[int] = None,
+) -> List[str]:
+    """Ordered mirror candidates: pinned, env, registered, then guesses."""
+    ordered: List[str] = []
+
+    def _add(base: Optional[str]) -> None:
+        candidate = _norm_base(base or "")
+        if candidate and candidate not in ordered:
+            ordered.append(candidate)
+
+    _add(_ACTIVE_BASE)
+    _add(env_base())
+    for base in env_mirrors():
+        _add(base)
+    for base in extra:
+        _add(base)
+    for base in _KNOWN_BASES:
+        _add(base)
+    _add(default)
+
+    healthy = [base for base in ordered if not base_is_cooling(base)]
+    if include_generated is None:
+        include_generated = not healthy
+    if include_generated:
+        for base in generated_bases():
+            candidate = _norm_base(base)
+            if candidate and candidate not in healthy and not base_is_cooling(candidate):
+                healthy.append(candidate)
+
+    result = healthy or ordered
+    if limit is not None and limit > 0:
+        result = result[:limit]
+    return result
+
+
+def base_of(url: str, bases: Iterable[str]) -> Optional[str]:
+    for base in bases:
+        if base and url.startswith(base):
+            return base
+    return None
+
+
+def path_of(url: str, bases: Iterable[str] = ()) -> Optional[str]:
+    """Strip any known base from a URL, returning the path (or None)."""
+    for base in list(bases) + _KNOWN_BASES:
+        candidate = _norm_base(base or "")
+        if candidate and url.startswith(candidate):
+            path = url[len(candidate):]
+            return path if path.startswith("/") else "/" + path
+    return None
+
+
+def rebase(url: str, base: str, bases: Iterable[str] = ()) -> str:
+    """Move a URL onto another mirror, keeping its path."""
+    path = path_of(url, bases)
+    if path is None:
+        return url
+    return _norm_base(base) + path
+
+
+def mirror_candidates(url: str, bases: Iterable[str], primary: str) -> List[str]:
+    """Rewrite a URL onto every usable mirror, preferring the pinned one."""
+    base_list = [_norm_base(base) for base in bases if _norm_base(base)]
+    register_bases(*(base_list + [primary]))
+    path = path_of(url, base_list + [primary])
+    if path is None:
+        return [url]
+
+    ordered: List[str] = []
+    for base in candidate_bases(primary, extra=base_list, limit=MAX_RACE_MIRRORS):
+        candidate = base + path
+        if candidate not in ordered:
+            ordered.append(candidate)
+    if not ordered:
+        ordered.append(url)
+    return ordered
 
 
 # ------------------------------------------------------------------
@@ -183,6 +488,7 @@ def _timeout_for(read_timeout: Optional[float]) -> Optional[httpx.Timeout]:
 
 
 RETRY_STATUS = (429, 500, 502, 503, 504)
+BLOCK_STATUS = (401, 403, 406, 429, 503)
 
 
 async def fetch_response(
@@ -193,12 +499,17 @@ async def fetch_response(
     retries: int = REQUEST_RETRIES,
     read_timeout: Optional[float] = None,
 ) -> Optional[httpx.Response]:
-    """GET a URL on the shared client. Returns None when it never succeeded."""
+    """GET a URL on the shared client. Returns None when it never succeeded.
+
+    Unlike the previous version, every non-200 answer is logged with its status
+    code and counted against the mirror it came from.
+    """
     client = await get_client()
     req_headers = dict(headers) if headers else {}
     if referer:
         req_headers["Referer"] = referer
     timeout = _timeout_for(read_timeout)
+    origin = base_of(url, _KNOWN_BASES)
 
     attempt = 0
     while True:
@@ -208,11 +519,28 @@ async def fetch_response(
             else:
                 resp = await client.get(url, headers=req_headers)
             if resp.status_code == 200:
+                note_base_success(origin)
                 return resp
             if resp.status_code in RETRY_STATUS and attempt < retries:
                 attempt += 1
+                logger.info(
+                    "MoviesDrive HTTP %s for %s, retry %s/%s",
+                    resp.status_code,
+                    url,
+                    attempt,
+                    retries,
+                )
                 await asyncio.sleep(0.4 * attempt)
                 continue
+            logger.warning(
+                "MoviesDrive HTTP %s for %s%s",
+                resp.status_code,
+                url,
+                " (looks like a bot challenge)"
+                if resp.status_code in BLOCK_STATUS
+                else "",
+            )
+            note_base_failure(origin, "HTTP %s" % resp.status_code)
             return None
         except asyncio.CancelledError:
             raise
@@ -222,10 +550,120 @@ async def fetch_response(
                 await asyncio.sleep(0.4 * attempt)
                 continue
             logger.warning("MoviesDrive request failed for %s: %s", url, exc)
+            note_base_failure(origin, type(exc).__name__)
             return None
         except Exception as exc:
             logger.warning("MoviesDrive request error for %s: %s", url, exc)
+            note_base_failure(origin, type(exc).__name__)
             return None
+
+
+def _curl_get(url: str, headers: Dict[str, str], timeout: float):  # pragma: no cover
+    return curl_requests.get(  # type: ignore[union-attr]
+        url,
+        headers=headers,
+        impersonate=IMPERSONATE,
+        timeout=timeout,
+        allow_redirects=True,
+    )
+
+
+async def _fetch_via_curl_cffi(
+    url: str,
+    *,
+    headers: Optional[Dict[str, str]] = None,
+    read_timeout: Optional[float] = None,
+) -> Tuple[str, str]:
+    """Retry a challenged page with a real browser TLS fingerprint."""
+    if not _HAS_CURL_CFFI:
+        return "", ""
+    req_headers = dict(DEFAULT_HEADERS)
+    if headers:
+        req_headers.update(headers)
+    timeout = float(read_timeout or READ_TIMEOUT)
+    try:
+        resp = await asyncio.to_thread(_curl_get, url, req_headers, timeout)
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        logger.warning("MoviesDrive curl_cffi fallback failed for %s: %s", url, exc)
+        return "", ""
+    status = getattr(resp, "status_code", 0)
+    if status != 200:
+        logger.warning("MoviesDrive curl_cffi HTTP %s for %s", status, url)
+        return "", ""
+    try:
+        text = resp.text or ""
+    except Exception:
+        return "", ""
+    if looks_blocked(text):
+        logger.warning("MoviesDrive curl_cffi still blocked for %s", url)
+        return "", ""
+    logger.info("MoviesDrive curl_cffi fallback solved %s", url)
+    return text, str(getattr(resp, "url", url) or url)
+
+
+async def _fetch_via_flaresolverr(url: str) -> Tuple[str, str]:
+    """Ask a FlareSolverr instance to solve the challenge, when configured."""
+    if not FLARESOLVERR_URL:
+        return "", ""
+    payload = {
+        "cmd": "request.get",
+        "url": url,
+        "maxTimeout": int(FLARESOLVERR_TIMEOUT * 1000),
+    }
+    try:
+        client = await get_client()
+        resp = await client.post(
+            FLARESOLVERR_URL,
+            json=payload,
+            timeout=httpx.Timeout(
+                connect=CONNECT_TIMEOUT,
+                read=FLARESOLVERR_TIMEOUT + 5,
+                write=FLARESOLVERR_TIMEOUT + 5,
+                pool=POOL_TIMEOUT,
+            ),
+        )
+    except asyncio.CancelledError:
+        raise
+    except Exception as exc:
+        logger.warning("MoviesDrive FlareSolverr call failed for %s: %s", url, exc)
+        return "", ""
+    if resp.status_code != 200:
+        logger.warning("MoviesDrive FlareSolverr HTTP %s for %s", resp.status_code, url)
+        return "", ""
+    try:
+        solution = (resp.json() or {}).get("solution") or {}
+    except Exception as exc:
+        logger.warning("MoviesDrive FlareSolverr decode failed for %s: %s", url, exc)
+        return "", ""
+    text = solution.get("response") or ""
+    if not text or looks_blocked(text):
+        logger.warning("MoviesDrive FlareSolverr could not solve %s", url)
+        return "", ""
+    logger.info("MoviesDrive FlareSolverr solved %s", url)
+    return text, str(solution.get("url") or url)
+
+
+def antibot_available() -> bool:
+    return ANTIBOT_FALLBACK and (_HAS_CURL_CFFI or bool(FLARESOLVERR_URL))
+
+
+async def fetch_antibot(
+    url: str,
+    *,
+    headers: Optional[Dict[str, str]] = None,
+    read_timeout: Optional[float] = None,
+) -> Tuple[str, str]:
+    """Try every configured anti-bot bypass for a single URL."""
+    if not antibot_available():
+        return "", ""
+    text, final_url = await _fetch_via_curl_cffi(
+        url, headers=headers, read_timeout=read_timeout
+    )
+    if text:
+        return text, final_url
+    return await _fetch_via_flaresolverr(url)
 
 
 async def fetch_text(
@@ -235,8 +673,13 @@ async def fetch_text(
     headers: Optional[Dict[str, str]] = None,
     retries: int = REQUEST_RETRIES,
     read_timeout: Optional[float] = None,
+    allow_antibot: bool = True,
 ) -> Tuple[str, str]:
-    """Return (body, final_url). Both are empty strings on failure."""
+    """Return (body, final_url). Both are empty strings on failure.
+
+    A bot-challenge body is treated as a failure so it can never be parsed as
+    content nor win a mirror race.
+    """
     resp = await fetch_response(
         url,
         referer=referer,
@@ -244,12 +687,31 @@ async def fetch_text(
         retries=retries,
         read_timeout=read_timeout,
     )
-    if resp is None:
-        return "", ""
-    try:
-        return resp.text, str(resp.url)
-    except Exception:
-        return "", str(getattr(resp, "url", "") or "")
+    text = ""
+    final_url = ""
+    if resp is not None:
+        try:
+            text = resp.text or ""
+            final_url = str(resp.url)
+        except Exception:
+            text = ""
+            final_url = str(getattr(resp, "url", "") or "")
+
+    blocked = looks_blocked(text)
+    if text and not blocked:
+        return text, final_url
+    if blocked:
+        logger.warning("MoviesDrive got an anti-bot challenge page for %s", url)
+        note_base_failure(base_of(url, _KNOWN_BASES), "anti-bot challenge")
+
+    if allow_antibot and (blocked or not text) and antibot_available():
+        solved, solved_url = await fetch_antibot(
+            url, headers=headers, read_timeout=read_timeout
+        )
+        if solved:
+            return solved, solved_url or final_url or url
+
+    return "", ""
 
 
 async def fetch_json(
@@ -275,8 +737,209 @@ async def fetch_json(
     try:
         return resp.json()
     except Exception as exc:
-        logger.warning("MoviesDrive JSON decode failed for %s: %s", url, exc)
+        try:
+            body = resp.text or ""
+        except Exception:
+            body = ""
+        if looks_blocked(body):
+            logger.warning(
+                "MoviesDrive expected JSON but got an anti-bot challenge for %s", url
+            )
+        else:
+            logger.warning(
+                "MoviesDrive JSON decode failed for %s: %s (body starts with %r)",
+                url,
+                exc,
+                body[:120],
+            )
         return None
+
+
+# ------------------------------------------------------------------
+# Mirror probing / discovery
+# ------------------------------------------------------------------
+def _discovery_lock() -> asyncio.Lock:
+    global _DISCOVERY_LOCK
+    if _DISCOVERY_LOCK is None:
+        _DISCOVERY_LOCK = asyncio.Lock()
+    return _DISCOVERY_LOCK
+
+
+async def probe_base(base: str) -> bool:
+    """True when a mirror answers with real content (not a challenge page)."""
+    candidate = _norm_base(base)
+    if not candidate:
+        return False
+    url = candidate + (BASE_PROBE_PATH if BASE_PROBE_PATH.startswith("/") else "/" + BASE_PROBE_PATH)
+    text, _ = await fetch_text(
+        url,
+        headers=dict(DEFAULT_HEADERS),
+        retries=0,
+        read_timeout=BASE_PROBE_TIMEOUT,
+        allow_antibot=False,
+    )
+    return content_ok(text)
+
+
+async def discover_active_base(
+    default: Optional[str] = None,
+    *,
+    force: bool = False,
+) -> Optional[str]:
+    """Probe the mirror candidates concurrently and pin the first live one."""
+    global _LAST_DISCOVERY
+    now = time.time()
+    if (
+        not force
+        and _ACTIVE_BASE
+        and not base_is_cooling(_ACTIVE_BASE)
+        and now - _LAST_DISCOVERY < BASE_DISCOVERY_TTL
+    ):
+        return _ACTIVE_BASE
+
+    async with _discovery_lock():
+        now = time.time()
+        if (
+            not force
+            and _ACTIVE_BASE
+            and not base_is_cooling(_ACTIVE_BASE)
+            and now - _LAST_DISCOVERY < BASE_DISCOVERY_TTL
+        ):
+            return _ACTIVE_BASE
+        candidates = candidate_bases(
+            default, include_generated=True, limit=MAX_DISCOVERY_PROBES
+        )
+        if not candidates:
+            return _ACTIVE_BASE
+        _LAST_DISCOVERY = now
+
+        tasks: Dict["asyncio.Task[bool]", str] = {}
+        for base in candidates:
+            tasks[asyncio.ensure_future(probe_base(base))] = base
+
+        winner: Optional[str] = None
+        pending = set(tasks.keys())
+        try:
+            while pending and winner is None:
+                done, pending = await asyncio.wait(
+                    pending, return_when=asyncio.FIRST_COMPLETED
+                )
+                for task in done:
+                    base = tasks.get(task, "")
+                    try:
+                        alive = bool(task.result())
+                    except Exception:
+                        alive = False
+                    if alive:
+                        winner = base
+                        break
+                    note_base_failure(base, "probe failed")
+        finally:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+
+        if winner:
+            note_active_base(winner)
+            return winner
+        logger.warning(
+            "MoviesDrive: none of the %s mirror candidates answered, set MD_BASE_URL "
+            "or MD_MIRRORS to the current domain",
+            len(candidates),
+        )
+        return _ACTIVE_BASE
+
+
+async def race_fetch_text(
+    urls: List[str],
+    *,
+    referer: Optional[str] = None,
+    headers: Optional[Dict[str, str]] = None,
+    read_timeout: Optional[float] = None,
+    validator: Optional[Callable[[str], bool]] = None,
+    allow_antibot: bool = True,
+) -> Tuple[str, str]:
+    """Fire every mirror at once and keep the first usable answer.
+
+    A body that fails ``validator`` (default: any non-empty, non-challenge body)
+    is discarded, so a Cloudflare interstitial can no longer be pinned as the
+    active mirror.
+    """
+    if not urls:
+        return "", ""
+
+    check = validator or (lambda text: bool(text))
+
+    async def _finish(text: str, final_url: str, fallback_url: str) -> Tuple[str, str]:
+        resolved = final_url or fallback_url
+        winner = base_of(resolved, _KNOWN_BASES)
+        if winner:
+            note_active_base(winner)
+        return text, resolved
+
+    if len(urls) == 1:
+        text, final_url = await fetch_text(
+            urls[0],
+            referer=referer,
+            headers=headers,
+            read_timeout=read_timeout,
+            allow_antibot=allow_antibot,
+        )
+        if text and check(text):
+            return await _finish(text, final_url, urls[0])
+        return "", ""
+
+    tasks: Dict["asyncio.Task[Tuple[str, str]]", str] = {}
+    for url in urls:
+        task = asyncio.ensure_future(
+            fetch_text(
+                url,
+                referer=referer,
+                headers=headers,
+                read_timeout=read_timeout,
+                allow_antibot=False,
+            )
+        )
+        tasks[task] = url
+
+    pending = set(tasks.keys())
+    try:
+        while pending:
+            done, pending = await asyncio.wait(
+                pending, return_when=asyncio.FIRST_COMPLETED
+            )
+            for task in done:
+                source = tasks.get(task, "")
+                try:
+                    text, final_url = task.result()
+                except Exception:
+                    continue
+                if not text:
+                    continue
+                if not check(text):
+                    logger.info(
+                        "MoviesDrive discarded an unusable body from %s (%s bytes)",
+                        source,
+                        len(text),
+                    )
+                    note_base_failure(base_of(source, _KNOWN_BASES), "unusable body")
+                    continue
+                return await _finish(text, final_url, source)
+    finally:
+        for task in tasks:
+            if not task.done():
+                task.cancel()
+
+    if allow_antibot and antibot_available():
+        for url in urls[:2]:
+            text, final_url = await fetch_antibot(
+                url, headers=headers, read_timeout=read_timeout
+            )
+            if text and check(text):
+                return await _finish(text, final_url, url)
+
+    logger.warning("MoviesDrive: every mirror failed for %s", urls[0])
+    return "", ""
 
 
 # ------------------------------------------------------------------
@@ -288,6 +951,12 @@ _CACHE_LAST_SAVE = 0.0
 
 
 def get_cached(key: str) -> Optional[Any]:
+    """Return cached data, or None when it is missing or expired.
+
+    This used to be defined twice; the second definition ignored the TTL and
+    happily returned expired - including negatively cached empty - values for
+    the rest of the process lifetime.
+    """
     entry = CACHE.get(key)
     if entry is None:
         return None
@@ -306,12 +975,6 @@ def get_entry(key: str) -> Optional[Tuple[Any, float, float]]:
         return None
     data, ts, ttl = entry
     return data, time.time() - ts, ttl
-
-
-def get_cached(key: str) -> Optional[Any]:
-    """Return cached data or None."""
-    entry = CACHE.get(key)
-    return entry[0] if entry else None
 
 
 def set_cached(key: str, data: Any, ttl: float = CACHE_TTL) -> None:
@@ -425,6 +1088,20 @@ def cache_stats() -> Dict[str, Any]:
         "file": CACHE_FILE,
         "parser": HTML_PARSER,
         "http2": _HTTP2_ENABLED,
+        "active_base": _ACTIVE_BASE,
+        "env_base": env_base(),
+        "known_bases": known_bases(),
+        "cooling_bases": {
+            base: round(until - now, 1)
+            for base, until in _BASE_COOLDOWN_UNTIL.items()
+            if until > now
+        },
+        "base_failures": dict(_BASE_FAILURES),
+        "antibot": {
+            "enabled": ANTIBOT_FALLBACK,
+            "curl_cffi": _HAS_CURL_CFFI,
+            "flaresolverr": bool(FLARESOLVERR_URL),
+        },
     }
 
 
@@ -501,95 +1178,6 @@ async def cached_call(
 
 
 # ------------------------------------------------------------------
-# Mirror racing
-# ------------------------------------------------------------------
-_ACTIVE_BASE: Optional[str] = None
-
-
-def get_active_base(default: str) -> str:
-    return _ACTIVE_BASE or default
-
-
-def note_active_base(base: str) -> None:
-    global _ACTIVE_BASE
-    if base and base != _ACTIVE_BASE:
-        _ACTIVE_BASE = base
-        logger.info("MoviesDrive mirror pinned to %s", base)
-
-
-def mirror_candidates(url: str, bases: Iterable[str], primary: str) -> List[str]:
-    """Rewrite a URL onto every known mirror, preferring the pinned one."""
-    path = url
-    for base in list(bases) + [primary]:
-        if base and path.startswith(base):
-            path = path[len(base):]
-            break
-    else:
-        return [url]
-    if not path.startswith("/"):
-        path = "/" + path
-
-    ordered: List[str] = []
-    active = _ACTIVE_BASE
-    for base in ([active] if active else []) + list(bases) + [primary]:
-        if not base:
-            continue
-        candidate = base.rstrip("/") + path
-        if candidate not in ordered:
-            ordered.append(candidate)
-    return ordered or [url]
-
-
-def base_of(url: str, bases: Iterable[str]) -> Optional[str]:
-    for base in bases:
-        if base and url.startswith(base):
-            return base
-    return None
-
-
-async def race_fetch_text(
-    urls: List[str],
-    *,
-    referer: Optional[str] = None,
-    headers: Optional[Dict[str, str]] = None,
-    read_timeout: Optional[float] = None,
-) -> Tuple[str, str]:
-    """Fire every mirror at once and keep the first usable answer."""
-    if not urls:
-        return "", ""
-    if len(urls) == 1:
-        return await fetch_text(
-            urls[0], referer=referer, headers=headers, read_timeout=read_timeout
-        )
-
-    tasks: Dict["asyncio.Task[Tuple[str, str]]", str] = {}
-    for url in urls:
-        task = asyncio.ensure_future(
-            fetch_text(url, referer=referer, headers=headers, read_timeout=read_timeout)
-        )
-        tasks[task] = url
-
-    pending = set(tasks.keys())
-    try:
-        while pending:
-            done, pending = await asyncio.wait(
-                pending, return_when=asyncio.FIRST_COMPLETED
-            )
-            for task in done:
-                try:
-                    text, final_url = task.result()
-                except Exception:
-                    continue
-                if text:
-                    return text, final_url or tasks.get(task, "")
-    finally:
-        for task in tasks:
-            if not task.done():
-                task.cancel()
-    return "", ""
-
-
-# ------------------------------------------------------------------
 # Prewarming
 # ------------------------------------------------------------------
 async def run_prewarm(
@@ -624,6 +1212,9 @@ def schedule_prewarm(
         return None
     return loop.create_task(run_prewarm(jobs, delay=delay, label=label))
 
+
+# Whatever is configured in the environment is a known mirror from the start.
+register_bases(env_base(), *env_mirrors())
 
 # Restore whatever survived the last run as soon as the module is imported.
 load_cache()
