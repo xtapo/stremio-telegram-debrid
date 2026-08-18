@@ -1184,3 +1184,47 @@ async def vidking_subtitles_handler(request: Request, type: str, id: str, extra:
 
     return JSONResponse(content={"subtitles": subtitles_list})
 
+
+# ------------------------------------------------------------------
+# Aggregated Search Function (For Dashboard Integration)
+# ------------------------------------------------------------------
+async def vidking_search(query: str, max_results: int = 15) -> List[Dict[str, Any]]:
+    """Searches Vidking / TMDB catalog for dashboard search aggregation."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SOURCE_VIDKING", True) or not query.strip():
+        return []
+
+    results = []
+    tasks = [
+        vidking_fetch_tmdb_json("/search/movie", params={"query": query.strip(), "page": 1}),
+        vidking_fetch_tmdb_json("/search/tv", params={"query": query.strip(), "page": 1}),
+    ]
+    res_list = await asyncio.gather(*tasks, return_exceptions=True)
+
+    for idx, res in enumerate(res_list):
+        if isinstance(res, dict) and res.get("results"):
+            item_type = "movie" if idx == 0 else "series"
+            for item in res["results"][:max_results]:
+                tmdb_id = item.get("id")
+                title = item.get("title") or item.get("name") or "Unknown Title"
+                rel_date = item.get("release_date") or item.get("first_air_date") or ""
+                year = rel_date[:4] if len(rel_date) >= 4 else ""
+                poster_path = item.get("poster_path")
+                poster_url = f"https://image.tmdb.org/t/p/w500{poster_path}" if poster_path else ""
+                vote_avg = item.get("vote_average", 0.0)
+
+                results.append({
+                    "id": f"vidking:{item_type}:{tmdb_id}",
+                    "title": title,
+                    "name": title,
+                    "year": year,
+                    "type": item_type,
+                    "poster": poster_url,
+                    "vote_average": vote_avg,
+                    "source": "vidking",
+                    "source_name": "Vidking Player (4K/HD)",
+                })
+
+    return results[:max_results]
+
+

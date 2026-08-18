@@ -734,6 +734,7 @@ async def api_update_config(request: Request):
         "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
         "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
         "enable_source_vidking": "ENABLE_SOURCE_VIDKING",
+        "enable_source_ernax": "ENABLE_SOURCE_ERNAX",
         "enable_source_subtitles": "ENABLE_SUBTITLES",
         "enable_source_subtitle": "ENABLE_SUBTITLES",
         "enable_subtitles": "ENABLE_SUBTITLES",
@@ -748,6 +749,7 @@ async def api_update_config(request: Request):
         "enable_board_topxx": "ENABLE_BOARD_TOPXX",
         "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
         "enable_board_vidking": "ENABLE_BOARD_VIDKING",
+        "enable_board_ernax": "ENABLE_BOARD_ERNAX",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -782,6 +784,7 @@ async def api_update_config(request: Request):
             "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
             "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
+            "ernax": getattr(Config, "ENABLE_SOURCE_ERNAX", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -793,6 +796,7 @@ async def api_update_config(request: Request):
             "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
             "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
+            "ernax": getattr(Config, "ENABLE_BOARD_ERNAX", True),
         }
     }
 
@@ -822,6 +826,24 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
+        },
+        {
+            "id": "ernax",
+            "name": "Ernax Player",
+            "tag": "Phim & Series 4K / HD",
+            "category": "4K / 1080p HLS & Sub",
+            "icon": "fa-play-circle",
+            "badge": "Ultra Speed",
+            "badge_color": "red",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_ERNAX", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_ERNAX", True)),
+            "description": "Kho phim lẻ & series truyền hình chất lượng 4K UHD, 1080p FHD, 720p HLS trực tiếp từ Ernax Player (ernax.pro) kèm phụ đề đa ngôn ngữ.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/ernax/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/ernax/manifest.json",
+                "public": f"{domain_url}/ernax/manifest.json"
+            },
+            "routes": ["/ernax/manifest.json", "/ernax/catalog", "/ernax/stream"]
         },
         {
             "id": "vidking",
@@ -1260,7 +1282,57 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
             logger.warning(f"Dashboard search HDToday error: {e}")
         return items
 
+    async def search_ernax():
+        items = []
+        try:
+            from ernax_router import ernax_search
+            results = await ernax_search(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("ernax:movie:", "").replace("ernax:series:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name") or m.get("title"),
+                    "original_title": m.get("title"),
+                    "source": "Ernax Player",
+                    "source_id": "ernax",
+                    "poster": m.get("poster"),
+                    "year": m.get("year", "4K/HD"),
+                    "quality": "4K UHD / 1080p",
+                    "type": m.get("type", "movie"),
+                    "detail_url": f"/api/media/details?source=ernax&id={raw_id}&type={m.get('type', 'movie')}"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search Ernax error: {e}")
+        return items
+
+    async def search_vidking():
+        items = []
+        try:
+            from vidking_router import vidking_search
+            results = await vidking_search(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("vidking:movie:", "").replace("vidking:series:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name") or m.get("title"),
+                    "original_title": m.get("title"),
+                    "source": "Vidking Player",
+                    "source_id": "vidking",
+                    "poster": m.get("poster"),
+                    "year": m.get("year", "4K/HD"),
+                    "quality": "4K UHD / 1080p",
+                    "type": m.get("type", "movie"),
+                    "detail_url": f"/api/media/details?source=vidking&id={raw_id}&type={m.get('type', 'movie')}"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search Vidking error: {e}")
+        return items
+
     tasks = []
+    if getattr(Config, "ENABLE_SOURCE_ERNAX", True) and (not source or source == "all" or source == "ernax"):
+        tasks.append(search_ernax())
+    if getattr(Config, "ENABLE_SOURCE_VIDKING", True) and (not source or source == "all" or source == "vidking"):
+        tasks.append(search_vidking())
     if getattr(Config, "ENABLE_SOURCE_HDTODAY", True) and (not source or source == "all" or source == "hdtoday"):
         tasks.append(search_hdtoday())
     if getattr(Config, "ENABLE_SOURCE_NGUONC", True) and (not source or source == "all" or source == "nguonc"):
@@ -1503,7 +1575,87 @@ async def api_media_details(request: Request, source: str, id: str):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-    # 7. HDTODAY
+    # 6. ERNAX
+    elif source == "ernax":
+        try:
+            from ernax_router import ernax_meta_endpoint
+            m_type = request.query_params.get("type", "movie")
+            res = await ernax_meta_endpoint(m_type, f"ernax:{m_type}:{id}")
+            meta = res.get("meta", {})
+            videos = meta.get("videos", [])
+            episodes = [
+                {
+                    "name": v.get("title", ""),
+                    "slug": v.get("id", ""),
+                    "server": "Ernax 4K/HLS",
+                    "embed": f"{base_url}/ernax/stream/{meta.get('type', 'movie')}/{v.get('id')}.json"
+                }
+                for v in videos
+            ] if videos else [
+                {
+                    "name": f"Phát {meta.get('name', id)}",
+                    "slug": f"ernax_{id}",
+                    "server": "Ernax 4K/HLS",
+                    "embed": f"{base_url}/ernax/stream/movie/ernax:movie:{id}.json"
+                }
+            ]
+            return {
+                "title": meta.get("name", id),
+                "original_title": meta.get("name", id),
+                "poster": meta.get("poster", ""),
+                "backdrop": meta.get("background", ""),
+                "description": meta.get("description", ""),
+                "genres": meta.get("genres", []),
+                "year": meta.get("releaseInfo", ""),
+                "quality": "4K UHD / 1080p HLS",
+                "source": "Ernax Player",
+                "source_id": "ernax",
+                "episodes": episodes
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 7. VIDKING
+    elif source == "vidking":
+        try:
+            from vidking_router import vidking_meta_endpoint
+            m_type = request.query_params.get("type", "movie")
+            res = await vidking_meta_endpoint(m_type, f"vidking:{m_type}:{id}")
+            meta = res.get("meta", {})
+            videos = meta.get("videos", [])
+            episodes = [
+                {
+                    "name": v.get("title", ""),
+                    "slug": v.get("id", ""),
+                    "server": "Vidking Multi-Server",
+                    "embed": f"{base_url}/vidking/stream/{meta.get('type', 'movie')}/{v.get('id')}.json"
+                }
+                for v in videos
+            ] if videos else [
+                {
+                    "name": f"Phát {meta.get('name', id)}",
+                    "slug": f"vidking_{id}",
+                    "server": "Vidking Multi-Server",
+                    "embed": f"{base_url}/vidking/stream/movie/vidking:movie:{id}.json"
+                }
+            ]
+            return {
+                "title": meta.get("name", id),
+                "original_title": meta.get("name", id),
+                "poster": meta.get("poster", ""),
+                "backdrop": meta.get("background", ""),
+                "description": meta.get("description", ""),
+                "genres": meta.get("genres", []),
+                "year": meta.get("releaseInfo", ""),
+                "quality": "4K UHD / 1080p HLS",
+                "source": "Vidking Player",
+                "source_id": "vidking",
+                "episodes": episodes
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 8. HDTODAY
     elif source == "hdtoday":
         try:
             from hdtoday_router import hdtoday_meta_handler
