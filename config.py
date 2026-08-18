@@ -109,7 +109,10 @@ class Config:
     LOG_CHANNEL_ID = os.getenv("LOG_CHANNEL_ID")
 
     @classmethod
-    def validate(cls):
+    def validate(cls) -> bool:
+        if not getattr(cls, "ENABLE_SOURCE_TELEGRAM", True):
+            return False
+
         missing = []
         if not cls.API_ID:
             missing.append("API_ID")
@@ -121,15 +124,12 @@ class Config:
             missing.append("TELEGRAM_CHANNEL_ID")
 
         if missing:
-            raise ValueError(
-                f"Missing critical configuration variables: {', '.join(missing)}. "
-                "Please configure them in your environment or a .env file."
-            )
+            return False
 
         try:
             cls.API_ID = int(cls.API_ID)
         except (ValueError, TypeError):
-            raise ValueError("API_ID must be a valid integer.")
+            return False
 
         if cls.TELEGRAM_CHANNEL_ID and isinstance(cls.TELEGRAM_CHANNEL_ID, str):
             val = cls.TELEGRAM_CHANNEL_ID.strip()
@@ -146,3 +146,4 @@ class Config:
                     cls.LOG_CHANNEL_ID = int(val)
                 except ValueError:
                     pass
+        return True

@@ -2,6 +2,7 @@ import asyncio
 import base64
 import json
 import logging
+import re
 import time
 import urllib.parse
 from typing import Any, Dict, List, Optional, Tuple
@@ -342,6 +343,11 @@ def get_vidking_manifest() -> Dict[str, Any]:
                 "types": ["movie", "series"],
                 "idPrefixes": ["vidking:", "tmdb:", "tt"],
             },
+            {
+                "name": "subtitles",
+                "types": ["movie", "series"],
+                "idPrefixes": ["vidking:", "tmdb:", "tt"],
+            },
         ],
         "types": ["movie", "series"],
         "catalogs": [
@@ -421,7 +427,7 @@ async def vidking_manifest_endpoint():
 # ------------------------------------------------------------------
 # Catalog Handler
 # ------------------------------------------------------------------
-def _format_tmdb_meta_item(item: Dict[str, Any], item_type: str) -> Dict[str, Any]:
+def _format_tmdb_meta_item(item: Dict[str, Any], item_type: str, imdb_id: Optional[str] = None) -> Dict[str, Any]:
     tmdb_id = item.get("id")
     title = item.get("title") or item.get("name") or "Unknown Title"
     rel_date = item.get("release_date") or item.get("first_air_date") or ""
@@ -441,7 +447,7 @@ def _format_tmdb_meta_item(item: Dict[str, Any], item_type: str) -> Dict[str, An
     if overview:
         desc_lines.append(f"\n{overview}")
 
-    stremio_id = f"vidking:{item_type}:{tmdb_id}"
+    stremio_id = imdb_id if (imdb_id and imdb_id.startswith("tt")) else f"vidking:{item_type}:{tmdb_id}"
     return {
         "id": stremio_id,
         "type": item_type,
@@ -452,6 +458,38 @@ def _format_tmdb_meta_item(item: Dict[str, Any], item_type: str) -> Dict[str, An
         "releaseInfo": year,
         "imdbRating": str(round(vote_avg, 1)) if vote_avg else None,
     }
+
+
+async def _enrich_items_with_imdb(results: List[Dict[str, Any]], media_endpoint_type: str) -> List[Dict[str, Any]]:
+    """Enriches TMDB catalog items with their IMDb ID for full Stremio subtitle addon compatibility."""
+    tasks = []
+    for item in results:
+        tmdb_id = item.get("id")
+        if not tmdb_id:
+            tasks.append(asyncio.sleep(0))
+            continue
+        cache_key = f"imdb_id:{media_endpoint_type}:{tmdb_id}"
+        if cache_key in _vidking_cache and time.time() < _vidking_cache[cache_key][1]:
+            tasks.append(asyncio.sleep(0))
+        else:
+            tasks.append(vidking_fetch_tmdb_json(f"/{media_endpoint_type}/{tmdb_id}", params={"append_to_response": "external_ids"}, ttl=86400))
+
+    meta_results = await asyncio.gather(*tasks, return_exceptions=True)
+
+    formatted = []
+    for item, meta_res in zip(results, meta_results):
+        tmdb_id = item.get("id")
+        imdb_id = None
+        cache_key = f"imdb_id:{media_endpoint_type}:{tmdb_id}"
+        if cache_key in _vidking_cache and time.time() < _vidking_cache[cache_key][1]:
+            imdb_id = _vidking_cache[cache_key][0]
+        elif isinstance(meta_res, dict):
+            imdb_id = meta_res.get("external_ids", {}).get("imdb_id")
+            if imdb_id:
+                _vidking_cache[cache_key] = (imdb_id, time.time() + 86400)
+        formatted.append(_format_tmdb_meta_item(item, "movie" if media_endpoint_type == "movie" else "series", imdb_id))
+
+    return formatted
 
 
 @vidking_router.get("/vidking/catalog/{type}/{id}.json")
@@ -496,7 +534,7 @@ async def vidking_catalog_handler(
         params = {"query": search_val, "page": page}
         data = await vidking_fetch_tmdb_json(endpoint, params=params, ttl=300)
         results = data.get("results", []) if data else []
-        metas = [_format_tmdb_meta_item(x, type) for x in results if x.get("id")]
+        metas = await _enrich_items_with_imdb(results, media_endpoint_type)
         return {"metas": metas}
 
     # Genre discovery flow
@@ -507,7 +545,7 @@ async def vidking_catalog_handler(
             params = {"with_genres": str(genre_id), "page": page, "sort_by": "popularity.desc"}
             data = await vidking_fetch_tmdb_json(endpoint, params=params, ttl=600)
             results = data.get("results", []) if data else []
-            metas = [_format_tmdb_meta_item(x, type) for x in results if x.get("id")]
+            metas = await _enrich_items_with_imdb(results, media_endpoint_type)
             return {"metas": metas}
 
     # Standard catalog endpoints
@@ -523,7 +561,7 @@ async def vidking_catalog_handler(
     params = {"page": page}
     data = await vidking_fetch_tmdb_json(endpoint, params=params, ttl=600)
     results = data.get("results", []) if data else []
-    metas = [_format_tmdb_meta_item(x, type) for x in results if x.get("id")]
+    metas = await _enrich_items_with_imdb(results, media_endpoint_type)
     return {"metas": metas}
 
 
@@ -540,6 +578,7 @@ async def vidking_meta_handler(type: str, id: str):
     # Parse ID
     tmdb_id: Optional[str] = None
     media_type = "movie" if type == "movie" else "tv"
+    orig_imdb_id: Optional[str] = None
 
     if id.startswith("vidking:"):
         parts = id.split(":")
@@ -553,7 +592,7 @@ async def vidking_meta_handler(type: str, id: str):
         if len(parts) >= 2:
             tmdb_id = parts[1]
     elif id.startswith("tt"):
-        # Find TMDB ID from IMDb ID
+        orig_imdb_id = id
         find_data = await vidking_fetch_tmdb_json(f"/find/{id}", params={"external_source": "imdb_id"})
         if find_data:
             if type == "movie" and find_data.get("movie_results"):
@@ -586,7 +625,9 @@ async def vidking_meta_handler(type: str, id: str):
     genres = [g.get("name") for g in detail_data.get("genres", []) if g.get("name")]
     cast = [c.get("name") for c in detail_data.get("credits", {}).get("cast", [])[:8] if c.get("name")]
 
-    stremio_id = f"vidking:{type}:{tmdb_id}"
+    imdb_id = orig_imdb_id or detail_data.get("external_ids", {}).get("imdb_id")
+    stremio_id = imdb_id if (imdb_id and imdb_id.startswith("tt")) else f"vidking:{type}:{tmdb_id}"
+
     meta: Dict[str, Any] = {
         "id": stremio_id,
         "type": type,
@@ -620,8 +661,9 @@ async def vidking_meta_handler(type: str, id: str):
                     thumb = f"https://image.tmdb.org/t/p/w500{ep_still}" if ep_still else poster_url
                     ep_air = ep.get("air_date") or ""
                     ep_overview = ep.get("overview") or ""
+                    ep_id = f"{imdb_id}:{s_num}:{ep_num}" if (imdb_id and imdb_id.startswith("tt")) else f"vidking:series:{tmdb_id}:{s_num}:{ep_num}"
                     videos.append({
-                        "id": f"vidking:series:{tmdb_id}:{s_num}:{ep_num}",
+                        "id": ep_id,
                         "title": ep_title,
                         "season": s_num,
                         "episode": ep_num,
@@ -631,13 +673,16 @@ async def vidking_meta_handler(type: str, id: str):
                     })
             else:
                 for ep_num in range(1, ep_count + 1):
+                    ep_id = f"{imdb_id}:{s_num}:{ep_num}" if (imdb_id and imdb_id.startswith("tt")) else f"vidking:series:{tmdb_id}:{s_num}:{ep_num}"
                     videos.append({
-                        "id": f"vidking:series:{tmdb_id}:{s_num}:{ep_num}",
+                        "id": ep_id,
                         "title": f"Tập {ep_num}",
                         "season": s_num,
                         "episode": ep_num,
                     })
         meta["videos"] = videos
+
+    return {"meta": meta}
 
     return {"meta": meta}
 
@@ -709,12 +754,20 @@ async def fetch_and_decrypt_server(
                 is_hls = ".m3u8" in s_url.lower() or src.get("type") == "hls"
                 stream_type_label = "⚡ HLS" if is_hls else "🚀 MP4"
 
+                clean_fn_title = re.sub(r'[\\/*?:"<>|]', "", title).strip()
+                if media_type in ["tv", "series"]:
+                    fn_name = f"{clean_fn_title} S{season:02d}E{episode:02d}.mp4"
+                else:
+                    fn_name = f"{clean_fn_title} ({year}).mp4" if year else f"{clean_fn_title}.mp4"
+
                 stremio_stream = {
                     "name": f"Vidking\n{q_badge}",
                     "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n📡 Server: {server_name} | {stream_type_label}\n✨ Quality: {q_badge}",
                     "url": s_url,
                     "behaviorHints": {
                         "notWebReady": False,
+                        "bingeGroup": f"vidking-{tmdb_id}",
+                        "filename": fn_name,
                     }
                 }
 
@@ -849,3 +902,122 @@ async def vidking_stream_handler(type: str, id: str):
 
     all_streams.sort(key=quality_score, reverse=True)
     return {"streams": all_streams}
+
+
+# ------------------------------------------------------------------
+# Subtitles Handler (OpenSubtitles Bridge & Auto Vietsub)
+# ------------------------------------------------------------------
+OPENSUBTITLES_BASE = "https://opensubtitles-v3.strem.io/subtitles/"
+
+
+async def resolve_imdb_id_for_vidking(media_type: str, id_str: str) -> Tuple[Optional[str], int, int]:
+    """Resolves any vidking/tmdb/tt id to standard IMDb id format (e.g. tt0137523 or tt0903747:1:1)."""
+    tmdb_id: Optional[str] = None
+    season = 1
+    episode = 1
+    m_type = "movie" if media_type == "movie" else "tv"
+
+    if id_str.startswith("tt"):
+        parts = id_str.split(":")
+        if len(parts) >= 3:
+            return id_str, int(parts[1]), int(parts[2])
+        return id_str, 1, 1
+
+    if id_str.startswith("vidking:"):
+        parts = id_str.split(":")
+        if len(parts) >= 5:
+            m_type = "tv" if parts[1] == "series" else "movie"
+            tmdb_id = parts[2]
+            season = int(parts[3])
+            episode = int(parts[4])
+        elif len(parts) >= 3:
+            m_type = "tv" if parts[1] == "series" else "movie"
+            tmdb_id = parts[2]
+        elif len(parts) == 2:
+            tmdb_id = parts[1]
+    elif id_str.startswith("tmdb:"):
+        parts = id_str.split(":")
+        if len(parts) >= 4:
+            tmdb_id = parts[1]
+            season = int(parts[2])
+            episode = int(parts[3])
+            m_type = "tv"
+        elif len(parts) >= 2:
+            tmdb_id = parts[1]
+    else:
+        tmdb_id = id_str
+
+    if not tmdb_id:
+        return None, season, episode
+
+    meta = await vidking_fetch_tmdb_json(f"/{m_type}/{tmdb_id}", params={"append_to_response": "external_ids"})
+    if meta:
+        raw_imdb = meta.get("external_ids", {}).get("imdb_id", "")
+        if raw_imdb:
+            if m_type == "tv" or media_type == "series":
+                return f"{raw_imdb}:{season}:{episode}", season, episode
+            return raw_imdb, season, episode
+
+    return None, season, episode
+
+
+async def fetch_opensubtitles(imdb_target: str, media_type: str, extra: str = "") -> List[Dict[str, Any]]:
+    client = get_vidking_client()
+    stremio_type = "series" if media_type in ["series", "tv"] or ":" in imdb_target else "movie"
+    url = f"{OPENSUBTITLES_BASE}{stremio_type}/{urllib.parse.quote(imdb_target)}.json"
+    if extra:
+        extra_clean = extra.rstrip(".json") if extra.endswith(".json") else extra
+        url = f"{OPENSUBTITLES_BASE}{stremio_type}/{urllib.parse.quote(imdb_target)}/{extra_clean}.json"
+
+    try:
+        res = await client.get(url, timeout=httpx.Timeout(6.0, connect=3.0))
+        if res.status_code == 200:
+            data = res.json()
+            return data.get("subtitles", [])
+    except Exception as e:
+        logger.debug(f"OpenSubtitles fetch error for {imdb_target}: {e}")
+    return []
+
+
+@vidking_router.get("/vidking/subtitles/{type}/{id}.json")
+@vidking_router.get("/vidking/subtitles/{type}/{id}/{extra:path}")
+@vidking_router.get("/subtitles/{type}/{id}.json")
+@vidking_router.get("/subtitles/{type}/{id}/{extra:path}")
+async def vidking_subtitles_handler(request: Request, type: str, id: str, extra: Optional[str] = None):
+    from config import Config
+    if not getattr(Config, "ENABLE_SOURCE_VIDKING", True):
+        return {"subtitles": []}
+
+    clean_id = id.replace(":", "_").replace("/", "_")
+    base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) else str(request.base_url).rstrip("/")
+    subtitles_list: List[Dict[str, Any]] = []
+
+    # 1. Resolve IMDb ID for OpenSubtitles
+    imdb_id, season, episode = await resolve_imdb_id_for_vidking(type, id)
+
+    # 2. Add AI Vietnamese subtitle tracks if AUTO_VIET_SUB enabled
+    if getattr(Config, "AUTO_VIET_SUB", True):
+        target_id_for_vtt = imdb_id if imdb_id else id
+        clean_vtt_id = target_id_for_vtt.replace(":", "_").replace("/", "_")
+        fast_url = f"{base_url}/subtitles/vtt/{clean_vtt_id}.vtt?type={type}&track=fast"
+        quality_url = f"{base_url}/subtitles/vtt/{clean_vtt_id}.vtt?type={type}&track=quality"
+        subtitles_list.append({
+            "id": f"vi_fast_{clean_id}",
+            "url": fast_url,
+            "lang": "vie",
+            "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+        })
+        subtitles_list.append({
+            "id": f"vi_quality_{clean_id}",
+            "url": quality_url,
+            "lang": "vie",
+            "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+        })
+
+    # 3. Query OpenSubtitles if IMDb ID resolved
+    if imdb_id:
+        os_subs = await fetch_opensubtitles(imdb_id, type, extra or "")
+        subtitles_list.extend(os_subs)
+
+    return JSONResponse(content={"subtitles": subtitles_list})
+

@@ -77,8 +77,14 @@ async def lifespan(app: FastAPI):
         print("   For educational and personal testing only.")
         print("=" * 60 + "\n")
         
-        Config.validate()
-        await tg_client_manager.start()
+        tg_ready = Config.validate()
+        if tg_ready:
+            try:
+                await tg_client_manager.start()
+            except Exception as e:
+                logger.warning(f"Telegram client manager failed to start: {e}")
+        else:
+            logger.info("ℹ️ Telegram credentials not fully configured or disabled - Telegram Media Vault offline (Web Cinema Hub online)")
         
         from dashboard_router import get_lan_ip
         lan_ip = get_lan_ip()
@@ -92,7 +98,10 @@ async def lifespan(app: FastAPI):
         print("=" * 60 + "\n")
         yield
     finally:
-        await tg_client_manager.stop()
+        try:
+            await tg_client_manager.stop()
+        except Exception:
+            pass
 
 from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
