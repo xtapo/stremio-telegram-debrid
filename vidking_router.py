@@ -711,6 +711,7 @@ async def fetch_and_decrypt_server(
     season: int = 1,
     episode: int = 1,
     seed: str = "",
+    base_url: str = "",
 ) -> List[Dict[str, Any]]:
     """Requests and decrypts streams from a single Vidking server."""
     client = get_vidking_client()
@@ -760,10 +761,17 @@ async def fetch_and_decrypt_server(
                 else:
                     fn_name = f"{clean_fn_title} ({year}).mp4" if year else f"{clean_fn_title}.mp4"
 
+                # Route through stream proxy to inject Referer header and bypass 403 Forbidden
+                if base_url:
+                    proxy_path = f"{base_url}/vidking/stream_proxy" if not base_url.endswith("/vidking") else f"{base_url}/stream_proxy"
+                    final_url = f"{proxy_path}?url={urllib.parse.quote(s_url, safe='')}&referer={urllib.parse.quote('https://www.vidking.net/', safe='')}"
+                else:
+                    final_url = s_url
+
                 stremio_stream = {
                     "name": f"Vidking\n{q_badge}",
                     "title": f"🎬 {title} {f'S{season:02d}E{episode:02d}' if (media_type in ['tv', 'series']) else ''}\n📡 Server: {server_name} | {stream_type_label}\n✨ Quality: {q_badge}",
-                    "url": s_url,
+                    "url": final_url,
                     "behaviorHints": {
                         "notWebReady": False,
                         "bingeGroup": f"vidking-{tmdb_id}",
@@ -794,10 +802,12 @@ async def fetch_and_decrypt_server(
 
 @vidking_router.get("/vidking/stream/{type}/{id}.json")
 @vidking_router.get("/stream/{type}/{id}.json")
-async def vidking_stream_handler(type: str, id: str):
+async def vidking_stream_handler(type: str, id: str, request: Request = None):
     from config import Config
     if not getattr(Config, "ENABLE_SOURCE_VIDKING", True):
         return {"streams": []}
+
+    base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) else (str(request.base_url).rstrip("/") if request else "http://127.0.0.1:7860")
 
     # Parse media details
     tmdb_id: Optional[int] = None
@@ -877,6 +887,7 @@ async def vidking_stream_handler(type: str, id: str):
             season=season,
             episode=episode,
             seed=seed,
+            base_url=base_url,
         )
         for srv in VIDKING_SERVERS
     ]
@@ -902,6 +913,117 @@ async def vidking_stream_handler(type: str, id: str):
 
     all_streams.sort(key=quality_score, reverse=True)
     return {"streams": all_streams}
+
+
+# ------------------------------------------------------------------
+# Stream Proxy Handler (Referer & CORS bypass)
+# ------------------------------------------------------------------
+@vidking_router.get("/vidking/stream_proxy")
+@vidking_router.get("/stream_proxy")
+async def vidking_stream_proxy(
+    request: Request,
+    url: str,
+    referer: Optional[str] = "https://www.vidking.net/",
+):
+    """Proxies HLS playlists (.m3u8) and video segments (.ts, .m4s, .mp4) with proper Referer & CORS."""
+    client = get_vidking_client()
+    ref_hdr = referer or "https://www.vidking.net/"
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/124.0.0.0 Safari/537.36"
+        ),
+        "Referer": ref_hdr,
+        "Origin": "https://www.vidking.net",
+    }
+
+    range_header = request.headers.get("range")
+    if range_header:
+        headers["Range"] = range_header
+
+    try:
+        res = await client.get(url, headers=headers)
+        content_type = res.headers.get("content-type", "")
+
+        # If m3u8 playlist, rewrite URLs to route through proxy
+        if (
+            "mpegurl" in content_type.lower()
+            or "application/x-mpegurl" in content_type.lower()
+            or url.endswith(".m3u8")
+            or "#EXTM3U" in res.text[:30]
+        ):
+            from config import Config
+            app_base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) else str(request.base_url).rstrip("/")
+            proxy_endpoint = (
+                f"{app_base_url}/vidking/stream_proxy"
+                if not app_base_url.endswith("/vidking")
+                else f"{app_base_url}/stream_proxy"
+            )
+            lines = res.text.splitlines()
+            rewritten_lines = []
+
+            for line in lines:
+                stripped = line.strip()
+                if not stripped:
+                    rewritten_lines.append(line)
+                    continue
+
+                if stripped.startswith("#"):
+                    if 'URI="' in stripped:
+                        def rewrite_uri(match):
+                            orig_uri = match.group(1)
+                            abs_uri = urllib.parse.urljoin(url, orig_uri)
+                            proxy_uri = (
+                                f"{proxy_endpoint}"
+                                f"?url={urllib.parse.quote(abs_uri, safe='')}"
+                                f"&referer={urllib.parse.quote(ref_hdr, safe='')}"
+                            )
+                            return f'URI="{proxy_uri}"'
+
+                        rewritten_line = re.sub(r'URI="([^"]+)"', rewrite_uri, stripped)
+                        rewritten_lines.append(rewritten_line)
+                    else:
+                        rewritten_lines.append(line)
+                else:
+                    abs_chunk_url = urllib.parse.urljoin(url, stripped)
+                    proxy_chunk_url = (
+                        f"{proxy_endpoint}"
+                        f"?url={urllib.parse.quote(abs_chunk_url, safe='')}"
+                        f"&referer={urllib.parse.quote(ref_hdr, safe='')}"
+                    )
+                    rewritten_lines.append(proxy_chunk_url)
+
+            body = "\n".join(rewritten_lines).encode("utf-8")
+            resp_headers = {
+                "Content-Type": "application/vnd.apple.mpegurl",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Headers": "*",
+                "Cache-Control": "no-cache",
+            }
+            return Response(content=body, headers=resp_headers)
+
+        # For media chunks (.ts, .m4s, .mp4 etc.)
+        resp_headers = {
+            "Content-Type": content_type or "video/MP2T",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Accept-Ranges": "bytes",
+        }
+        if "content-length" in res.headers:
+            resp_headers["Content-Length"] = res.headers["content-length"]
+        if "content-range" in res.headers:
+            resp_headers["Content-Range"] = res.headers["content-range"]
+
+        return Response(
+            content=res.content,
+            status_code=res.status_code,
+            headers=resp_headers,
+        )
+
+    except Exception as e:
+        logger.error(f"Error in Vidking stream proxy for {url}: {e}")
+        raise HTTPException(status_code=502, detail=f"Proxy error: {e}")
 
 
 # ------------------------------------------------------------------
