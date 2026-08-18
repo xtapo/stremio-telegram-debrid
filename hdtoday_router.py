@@ -651,7 +651,7 @@ async def hdtoday_stream_handler(request: Request, type: str, id: str):
     from config import Config
 
     base_url = getattr(Config, "HDTODAY_BASE_URL", HDTODAY_BASE_URL).rstrip("/")
-    app_base_url = str(request.base_url).rstrip("/")
+    app_base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) and not Config.ADDON_URL.startswith("http://localhost") else str(request.base_url).rstrip("/")
 
     parts = id.split(":")
     # formats:
@@ -820,7 +820,7 @@ async def hdtoday_stream_proxy(
             or url.endswith(".m3u8")
             or "#EXTM3U" in res.text[:30]
         ):
-            app_base_url = str(request.base_url).rstrip("/")
+            app_base_url = Config.ADDON_URL.rstrip("/") if getattr(Config, "ADDON_URL", None) and not Config.ADDON_URL.startswith("http://localhost") else str(request.base_url).rstrip("/")
             proxy_endpoint = (
                 f"{app_base_url}/hdtoday/stream_proxy"
                 if not app_base_url.endswith("/hdtoday")

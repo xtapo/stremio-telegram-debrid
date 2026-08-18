@@ -168,6 +168,9 @@ async def hdhub4u_shutdown() -> None:
 # Helpers
 # ------------------------------------------------------------------
 def _base_url(request: Request) -> str:
+    from config import Config
+    if getattr(Config, "ADDON_URL", None) and not Config.ADDON_URL.startswith("http://localhost"):
+        return Config.ADDON_URL.rstrip("/")
     return str(request.base_url).rstrip("/")
 
 
