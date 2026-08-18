@@ -11,6 +11,8 @@ import httpx
 from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, JSONResponse
 
+from config import Config
+
 logger = logging.getLogger(__name__)
 
 vidking_router = APIRouter(prefix="", tags=["vidking"])
@@ -343,12 +345,13 @@ def get_vidking_manifest() -> Dict[str, Any]:
                 "types": ["movie", "series"],
                 "idPrefixes": ["vidking:", "tmdb:", "tt"],
             },
+        ] + ([
             {
                 "name": "subtitles",
                 "types": ["movie", "series"],
                 "idPrefixes": ["vidking:", "tmdb:", "tt"],
-            },
-        ],
+            }
+        ] if getattr(Config, "ENABLE_SUBTITLES", True) else []),
         "types": ["movie", "series"],
         "catalogs": [
             {
@@ -779,8 +782,8 @@ async def fetch_and_decrypt_server(
                     }
                 }
 
-                # Attach subtitles if present
-                if subtitles and isinstance(subtitles, list):
+                # Attach subtitles if present and enabled
+                if getattr(Config, "ENABLE_SUBTITLES", True) and subtitles and isinstance(subtitles, list):
                     st_list = []
                     for st in subtitles:
                         if isinstance(st, dict) and st.get("url"):
@@ -1107,7 +1110,7 @@ async def fetch_opensubtitles(imdb_target: str, media_type: str, extra: str = ""
 @vidking_router.get("/subtitles/{type}/{id}/{extra:path}")
 async def vidking_subtitles_handler(request: Request, type: str, id: str, extra: Optional[str] = None):
     from config import Config
-    if not getattr(Config, "ENABLE_SOURCE_VIDKING", True):
+    if not getattr(Config, "ENABLE_SOURCE_VIDKING", True) or not getattr(Config, "ENABLE_SUBTITLES", True):
         return {"subtitles": []}
 
     clean_id = id.replace(":", "_").replace("/", "_")

@@ -141,8 +141,7 @@ def get_moviesdrive_manifest() -> Dict[str, Any]:
             "catalog",
             {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
             {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
-            {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]},
-        ],
+        ] + ([{"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["moviesdrive:", "tt"]}] if getattr(Config, "ENABLE_SUBTITLES", True) else []),
         "types": ["movie", "series"],
         "catalogs": [
             {
@@ -795,6 +794,9 @@ async def serve_synced_srt(request: Request, item_id: str, type: str = "movie"):
 
 async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str = ""):
     """Serve subtitles: fast Lingva track, AI quality track, and base extracted track."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return {"subtitles": []}
     base_url = _base_url(request)
     clean_id = id.replace(":", "_").replace("/", "_")
 
@@ -803,39 +805,36 @@ async def moviesdrive_subtitles(request: Request, type: str, id: str, extra: str
     base_sub_url = _subtitle_url(base_url, clean_id, type, id, "base")
     base_srt_url = f"{base_url}/subtitles/srt/{clean_id}.srt?type={type}&orig_id={urllib.parse.quote(id)}&track=base"
 
-    subtitles_list: List[Dict[str, Any]] = [
-        {
-            "id": "vi_fast_" + clean_id,
-            "url": fast_url,
-            "lang": "vie",
-            "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
-        },
-        {
-            "id": "vi_quality_" + clean_id,
-            "url": quality_url,
-            "lang": "vie",
-            "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
-        },
-        {
-            "id": "vi_base_" + clean_id,
-            "url": base_sub_url,
-            "lang": "eng",
-            "name": "📥 Phụ đề Gốc đã tách (Base / English)",
-        },
-    ]
+    subtitles_list: List[Dict[str, Any]] = []
 
-    sep = "=" * 80
-    logger.info(
-        f"\n{sep}\n"
-        f"🎯 [SUBTITLE DOWNLOAD LINKS] PHIM: {id}\n"
-        f"   📥 LINK TẢI FILE .SRT GỐC (Trực tiếp):\n"
-        f"      👉 {base_srt_url}\n"
-        f"   🔗 Link tải Tiếng Việt Fast (.VTT):\n"
-        f"      👉 {fast_url}\n"
-        f"   🔗 Link tải Tiếng Việt AI Quality (.VTT):\n"
-        f"      👉 {quality_url}\n"
-        f"{sep}"
-    )
+    # 1. Only add AI Vietnamese translated tracks if AUTO_VIET_SUB is enabled
+    if getattr(Config, "AUTO_VIET_SUB", True):
+        subtitles_list.extend([
+            {
+                "id": "vi_fast_" + clean_id,
+                "url": fast_url,
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+            },
+            {
+                "id": "vi_quality_" + clean_id,
+                "url": quality_url,
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+            },
+        ])
+        sep = "=" * 80
+        logger.info(
+            f"\n{sep}\n"
+            f"🎯 [SUBTITLE DOWNLOAD LINKS] PHIM: {id}\n"
+            f"   📥 LINK TẢI FILE .SRT GỐC (Trực tiếp):\n"
+            f"      👉 {base_srt_url}\n"
+            f"   🔗 Link tải Tiếng Việt Fast (.VTT):\n"
+            f"      👉 {fast_url}\n"
+            f"   🔗 Link tải Tiếng Việt AI Quality (.VTT):\n"
+            f"      👉 {quality_url}\n"
+            f"{sep}"
+        )
 
     imdb_id = id
     if id.startswith("moviesdrive:"):

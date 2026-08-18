@@ -186,13 +186,17 @@ def get_manifest(api_key: str = ""):
     show_on_board = getattr(Config, "ENABLE_BOARD_TELEGRAM", True)
     main_req = not show_on_board
 
+    resources = ["meta", "stream"]
+    if getattr(Config, "ENABLE_SUBTITLES", True):
+        resources.append("subtitles")
+
     return {
         "id": "community.telegram.stremio.addon",
         "version": "1.0.0",
         "name": "Telegram Addon by SunilRoy-dev",
         "description": "Personal Telegram streaming proxy. For educational & personal testing only. Do not use for unauthorized hosting of copyrighted media.",
         "logo": "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg",
-        "resources": ["meta", "stream", "subtitles"],
+        "resources": resources,
         "types": ["movie", "series", "anime", "other"],
         "catalogs": [
             {
@@ -235,6 +239,37 @@ async def manifest_endpoint(api_key: str = ""):
     if Config.API_KEY and api_key != Config.API_KEY:
         return JSONResponse({"detail": "Unauthorized: Invalid API Key"}, status_code=403)
     return get_manifest(api_key)
+
+@app.api_route("/subtitles/manifest.json", methods=["GET", "HEAD"])
+@app.api_route("/{api_key}/subtitles/manifest.json", methods=["GET", "HEAD"])
+async def subtitles_manifest_endpoint(api_key: str = ""):
+    if Config.API_KEY and api_key != Config.API_KEY:
+        return JSONResponse({"detail": "Unauthorized: Invalid API Key"}, status_code=403)
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return JSONResponse({
+            "id": "community.vietsub.stremio.subtitles",
+            "version": "1.0.0",
+            "name": "AI VietSub & OpenSubtitles Engine (Disabled)",
+            "description": "Tính năng phụ đề hiện đang bị tắt trong Dashboard.",
+            "resources": [],
+            "types": []
+        })
+    return {
+        "id": "community.vietsub.stremio.subtitles",
+        "version": "1.0.0",
+        "name": "AI VietSub & OpenSubtitles Engine",
+        "description": "Kho phụ đề đa ngôn ngữ OpenSubtitles và Tự động dịch phụ đề tiếng Việt (VietSub) chuẩn AI siêu tốc cho mọi phim & series.",
+        "logo": "https://cdn-icons-png.flaticon.com/512/3845/3845868.png",
+        "resources": [
+            {
+                "name": "subtitles",
+                "types": ["movie", "series", "anime", "other"],
+                "idPrefixes": ["tt", "kitsu:", "moviesdrive:", "vidking:", "hdtoday:"]
+            }
+        ],
+        "types": ["movie", "series", "anime", "other"],
+        "catalogs": []
+    }
 
 @app.get("/catalog/{type}/{catalog_id}.json", dependencies=[Depends(verify_api_key)])
 @app.get("/catalog/{type}/{catalog_id}/{extra}.json", dependencies=[Depends(verify_api_key)])
@@ -524,6 +559,8 @@ async def find_subtitles_for_video(
     imdb_id: str = None,
     media_type: str = "movie"
 ) -> list:
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return []
     subtitles = []
     search_results = cached_messages or []
     query_param = f"?api_key={api_key}" if api_key else ""
@@ -636,6 +673,8 @@ async def find_subtitles_for_video(
 @app.get("/{api_key}/subtitles/{type}/{id}.json")
 @app.get("/{api_key}/subtitles/{type}/{id}/{extra}.json")
 async def root_subtitles_handler(request: Request, type: str, id: str, extra: str = "", api_key: str = ""):
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return JSONResponse(content={"subtitles": []})
     from moviesdrive_router import moviesdrive_subtitles
     return await moviesdrive_subtitles(request, type, id, extra)
 

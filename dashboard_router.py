@@ -633,6 +633,7 @@ async def api_system_status(request: Request):
             "torbox": bool(Config.TORBOX_API_KEY),
             "qbittorrent": bool(Config.QBITTORRENT_URL),
             "gemini_ai": bool(Config.GEMINI_API_KEY and Config.ENABLE_GEMINI),
+            "enable_subtitles": getattr(Config, "ENABLE_SUBTITLES", True),
             "enable_gemini": Config.ENABLE_GEMINI,
             "enable_custom_ai": Config.ENABLE_CUSTOM_AI,
             "auto_upload": Config.AUTO_UPLOAD_TO_TELEGRAM,
@@ -663,6 +664,12 @@ async def api_update_config(request: Request):
         
     env_updates = {}
     
+    if "enable_subtitles" in data:
+        val = bool(data["enable_subtitles"]) if not isinstance(data["enable_subtitles"], str) else (data["enable_subtitles"].lower() == "true")
+        Config.ENABLE_SUBTITLES = val
+        env_updates["ENABLE_SUBTITLES"] = str(val)
+        logger.info(f"Dashboard updated config ENABLE_SUBTITLES -> {val}")
+
     if "auto_vietsub" in data:
         val = bool(data["auto_vietsub"]) if not isinstance(data["auto_vietsub"], str) else (data["auto_vietsub"].lower() == "true")
         Config.AUTO_VIET_SUB = val
@@ -727,6 +734,9 @@ async def api_update_config(request: Request):
         "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
         "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
         "enable_source_vidking": "ENABLE_SOURCE_VIDKING",
+        "enable_source_subtitles": "ENABLE_SUBTITLES",
+        "enable_source_subtitle": "ENABLE_SUBTITLES",
+        "enable_subtitles": "ENABLE_SUBTITLES",
         # Board (Home Screen) Toggles
         "enable_board_telegram": "ENABLE_BOARD_TELEGRAM",
         "enable_board_telegram_debrid": "ENABLE_BOARD_TELEGRAM",
@@ -753,6 +763,7 @@ async def api_update_config(request: Request):
         "success": True,
         "message": "Đã cập nhật và lưu cấu hình thành công!",
         "services": {
+            "enable_subtitles": getattr(Config, "ENABLE_SUBTITLES", True),
             "auto_vietsub": Config.AUTO_VIET_SUB,
             "auto_thuyet_minh": Config.AUTO_THUYET_MINH,
             "enable_gemini": Config.ENABLE_GEMINI,
@@ -955,6 +966,25 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/topxx/manifest.json"
             },
             "routes": ["/topxx/manifest.json", "/topxx/catalog", "/topxx/stream"]
+        },
+        {
+            "id": "subtitles",
+            "name": "AI VietSub & Subtitles Engine",
+            "tag": "Phụ Đề & VietSub AI",
+            "category": "OpenSubtitles & AI Translation",
+            "icon": "fa-closed-captioning",
+            "badge": "Subtitles",
+            "badge_color": "emerald",
+            "enabled": bool(getattr(Config, "ENABLE_SUBTITLES", True)),
+            "board_enabled": False,
+            "is_subtitle_engine": True,
+            "description": "Kho phụ đề đa ngôn ngữ OpenSubtitles và tự động dịch phụ đề chuẩn tiếng Việt (VietSub) siêu tốc qua Gemini / Claude AI cho mọi nguồn phim Stremio.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/subtitles/manifest.json{api_key_suffix}",
+                "lan": f"http://{lan_ip}:{port}/subtitles/manifest.json{api_key_suffix}",
+                "public": f"{domain_url}/subtitles/manifest.json{api_key_suffix}"
+            },
+            "routes": ["/subtitles/manifest.json", "/subtitles", "/subtitles/vtt", "/subtitles/srt"]
         }
     ]
     return {"addons": addons}
@@ -2896,11 +2926,24 @@ async def dashboard_ui(request: Request):
                         <div class="stat-card" style="flex-direction: column; align-items: stretch; gap: 16px;">
                             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
                                 <h4 style="font-size: 15px; color: #fff; font-family: var(--font-heading); font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-closed-captioning" style="color: var(--primary);"></i> Cấu Hình Dịch Phụ Đề & AI
+                                    <i class="fa-solid fa-closed-captioning" style="color: var(--primary);"></i> Cấu Hình Phụ Đề & AI VietSub
                                 </h4>
                                 <span class="nav-badge" style="background: rgba(99, 102, 241, 0.2); color: var(--primary); border: 1px solid var(--border-accent);">Real-time</span>
                             </div>
                             
+                            <div class="config-row" style="background: rgba(99, 102, 241, 0.08); border: 1px solid rgba(99, 102, 241, 0.25); border-radius: var(--radius-sm); padding: 12px; margin-bottom: 4px;">
+                                <div class="config-label">
+                                    <h5 style="color: #fff; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-power-off" style="color: var(--primary);"></i> Tính Năng Phụ Đề (Subtitles Feature)
+                                    </h5>
+                                    <p style="color: #cbd5e1;">Bật hoặc tắt toàn bộ tài nguyên phụ đề Stremio (OpenSubtitles, trích xuất sub video & AI VietSub tracks).</p>
+                                </div>
+                                <label class="switch">
+                                    <input type="checkbox" id="chkEnableSubtitles" onchange="toggleConfigFeature('enable_subtitles', this.checked, 'Tính Năng Phụ Đề')">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+
                             <div class="config-row">
                                 <div class="config-label">
                                     <h5>🌐 Tự Động Dịch Phụ Đề (Auto VietSub)</h5>
@@ -3203,6 +3246,9 @@ async def dashboard_ui(request: Request):
                 document.getElementById('cfgGeminiStatus').textContent = data.services.gemini_ai ? '✅ Kích hoạt' : '❌ Tắt';
 
                 // Update interactive switches
+                const chkSub = document.getElementById('chkEnableSubtitles');
+                if (chkSub) chkSub.checked = data.services.enable_subtitles !== false;
+
                 const chkVietsub = document.getElementById('chkAutoVietsub');
                 if (chkVietsub) chkVietsub.checked = !!data.services.auto_vietsub;
 
@@ -3303,6 +3349,10 @@ async def dashboard_ui(request: Request):
                 const data = await res.json();
                 if (data.success) {
                     showToast(`${enabled ? 'Đã BẬT' : 'Đã TẮT'} ${label}!`, enabled ? 'fa-toggle-on' : 'fa-toggle-off');
+                    fetchSystemStatus();
+                    if (key === 'enable_subtitles') {
+                        fetchAddons();
+                    }
                 } else {
                     showToast('Lỗi khi cập nhật cấu hình', 'fa-triangle-exclamation');
                 }
@@ -3340,7 +3390,7 @@ async def dashboard_ui(request: Request):
         }
 
         async function toggleMovieSource(sourceId, isEnabled, sourceName) {
-            const configKey = `enable_source_${sourceId.replace('_debrid', '')}`;
+            const configKey = (sourceId === 'subtitles' || sourceId === 'subtitle') ? 'enable_subtitles' : `enable_source_${sourceId.replace('_debrid', '')}`;
             try {
                 const res = await fetch('/api/config/update', {
                     method: 'POST',
@@ -3349,7 +3399,7 @@ async def dashboard_ui(request: Request):
                 });
                 const data = await res.json();
                 if (data.success) {
-                    showToast(`${isEnabled ? 'Đã BẬT' : 'Đã TẮT'} nguồn ${sourceName}!`, isEnabled ? 'fa-toggle-on' : 'fa-toggle-off');
+                    showToast(`${isEnabled ? 'Đã BẬT' : 'Đã TẮT'} ${sourceName}!`, isEnabled ? 'fa-toggle-on' : 'fa-toggle-off');
                     fetchAddons();
                     fetchSystemStatus();
                 } else {
@@ -3396,6 +3446,7 @@ async def dashboard_ui(request: Request):
             cachedAddonsData.forEach(addon => {
                 const isEnabled = addon.enabled !== false;
                 const isBoardEnabled = addon.board_enabled !== false;
+                const isSubtitle = addon.id === 'subtitles' || addon.is_subtitle_engine;
                 const manifestUrl = addon.manifests[env] || addon.manifests['public'] || addon.manifests['lan'];
                 const stremioInstallUrl = manifestUrl.replace('http://', 'stremio://').replace('https://', 'stremio://');
                 const stremioWebUrl = `https://web.stremio.com/#/addons?addon=${encodeURIComponent(manifestUrl)}`;
@@ -3405,6 +3456,25 @@ async def dashboard_ui(request: Request):
                     : `<span class="badge-tag" style="background:rgba(239,68,68,0.15);color:var(--danger);border-color:rgba(239,68,68,0.3);font-size:11px;"><i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>Đã Tắt</span>`;
 
                 const cardDisabledClass = isEnabled ? '' : 'card-disabled';
+
+                const boardSectionHtml = isSubtitle ? '' : `
+                        <!-- Stremio Board vs Discover Setting -->
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <i class="fa-solid ${isBoardEnabled ? 'fa-tv' : 'fa-compass'}" style="color:${isBoardEnabled ? 'var(--primary)' : 'var(--text-dim)'}; font-size:14px;"></i>
+                                <div>
+                                    <div style="font-size:12px; font-weight:700; color:#fff;">Màn hình chính Stremio (Board)</div>
+                                    <div style="font-size:11px; color:${isBoardEnabled ? 'var(--cyan)' : 'var(--text-dim)'};">
+                                        ${isBoardEnabled ? '✨ Hiện ngoài Trang chủ & Khám phá' : '🔍 Chỉ hiện trong Khám phá (Discover)'}
+                                    </div>
+                                </div>
+                            </div>
+                            <label class="switch" style="transform:scale(0.85);" title="${isBoardEnabled ? 'Nhấp để ẨN khỏi Trang chủ (Chỉ xem trong mục Khám phá)' : 'Nhấp để HIỆN thanh phim ra Màn hình chính Stremio'}">
+                                <input type="checkbox" ${isBoardEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} onchange="toggleBoardDisplay('${addon.id}', this.checked, '${addon.name}')">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                `;
 
                 const cardHtml = `
                     <div class="addon-card ${cardDisabledClass}">
@@ -3428,24 +3498,9 @@ async def dashboard_ui(request: Request):
                         </div>
                         <p class="addon-desc">${addon.description}</p>
 
-                        <!-- Stremio Board vs Discover Setting -->
-                        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border-color); border-radius:var(--radius-md); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:10px;">
-                            <div style="display:flex; align-items:center; gap:8px;">
-                                <i class="fa-solid ${isBoardEnabled ? 'fa-tv' : 'fa-compass'}" style="color:${isBoardEnabled ? 'var(--primary)' : 'var(--text-dim)'}; font-size:14px;"></i>
-                                <div>
-                                    <div style="font-size:12px; font-weight:700; color:#fff;">Màn hình chính Stremio (Board)</div>
-                                    <div style="font-size:11px; color:${isBoardEnabled ? 'var(--cyan)' : 'var(--text-dim)'};">
-                                        ${isBoardEnabled ? '✨ Hiện ngoài Trang chủ & Khám phá' : '🔍 Chỉ hiện trong Khám phá (Discover)'}
-                                    </div>
-                                </div>
-                            </div>
-                            <label class="switch" style="transform:scale(0.85);" title="${isBoardEnabled ? 'Nhấp để ẨN khỏi Trang chủ (Chỉ xem trong mục Khám phá)' : 'Nhấp để HIỆN thanh phim ra Màn hình chính Stremio'}">
-                                <input type="checkbox" ${isBoardEnabled ? 'checked' : ''} ${!isEnabled ? 'disabled' : ''} onchange="toggleBoardDisplay('${addon.id}', this.checked, '${addon.name}')">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                        ${boardSectionHtml}
 
-                        ${!isEnabled ? '<div style="font-size:11.5px; color:#f87171; background:rgba(239,68,68,0.1); border:1px dashed rgba(239,68,68,0.3); border-radius:6px; padding:6px 10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Nguồn này đang tắt (Không hiển thị trong tìm kiếm)</div>' : ''}
+                        ${!isEnabled ? '<div style="font-size:11.5px; color:#f87171; background:rgba(239,68,68,0.1); border:1px dashed rgba(239,68,68,0.3); border-radius:6px; padding:6px 10px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Nguồn/Dịch vụ này đang tắt</div>' : ''}
 
                         <div class="manifest-selector">
                             <div style="display:flex; justify-content:space-between; align-items:center;">

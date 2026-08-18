@@ -45,6 +45,7 @@ class Config:
     QBITTORRENT_USER = os.getenv("QBITTORRENT_USER", "admin")
     QBITTORRENT_PASS = os.getenv("QBITTORRENT_PASS", "adminadmin")
     QBITTORRENT_PLAY_DIR = os.getenv("QBITTORRENT_PLAY_DIR", "")
+    ENABLE_SUBTITLES = os.getenv("ENABLE_SUBTITLES", "True").lower() == "true"
     AUTO_VIET_SUB = os.getenv("AUTO_VIET_SUB", "True").lower() == "true"
     
     # Gemini AI translation settings

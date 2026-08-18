@@ -5,17 +5,21 @@ from addon import app
 
 client = TestClient(app)
 
+from dashboard_router import generate_session_token
+
 def test_dashboard():
     print("Testing /dashboard UI...")
+    token = generate_session_token("admin")
+    client.cookies.set("dashboard_session", token)
     res = client.get("/dashboard")
     assert res.status_code == 200, f"Expected 200, got {res.status_code}"
-    assert "Trung Tâm Quản Lý Addon" in res.text
+    assert "Addon Studio" in res.text
 
     print("Testing /api/system/status...")
     res = client.get("/api/system/status")
     assert res.status_code == 200
     data = res.json()
-    print("Status response:", data)
+    print("Status response online:", data["status"])
     assert data["status"] == "online"
 
     print("Testing /api/system/addons...")
@@ -25,7 +29,7 @@ def test_dashboard():
     print(f"Loaded {len(addons)} addons:")
     for a in addons:
         print(f" - {a['name'].encode('ascii', 'ignore').decode()} -> {a['manifests']['lan']}")
-    assert len(addons) == 7
+    assert len(addons) >= 8
 
     print("Testing /api/system/logs...")
     res = client.get("/api/system/logs")

@@ -987,8 +987,14 @@ async def get_track_vtt(
     media_type: str, item_id: str, track: str = "fast", video_url: Optional[str] = None
 ) -> Optional[str]:
     """Dispatch helper used by the /subtitles/vtt endpoint."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return None
+
     t = (track or "fast").lower()
     if t in ("quality", "ai", "gemini", "2"):
+        if not getattr(Config, "AUTO_VIET_SUB", True):
+            return None
         return await get_or_generate_quality_vtt(media_type, item_id, video_url)
     elif t in ("base", "raw", "original", "extracted", "eng", "en"):
         clean_id = _clean(item_id)
@@ -997,6 +1003,9 @@ async def get_track_vtt(
             _, blocks = parse_subtitles(base_srt)
             return build_vtt(blocks, SUBTITLE_TIME_OFFSET) if blocks else base_srt
         return None
+    
+    if not getattr(Config, "AUTO_VIET_SUB", True):
+        return None
     return await get_or_generate_fast_vtt(media_type, item_id, video_url)
 
 
@@ -1004,6 +1013,9 @@ async def get_track_srt(
     media_type: str, item_id: str, track: str = "base", video_url: Optional[str] = None
 ) -> Optional[str]:
     """Dispatch helper used by the /subtitles/srt endpoint to return standard SRT format."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return None
     clean_id = _clean(item_id)
     t = (track or "base").lower()
     if t in ("base", "raw", "original", "extracted", "eng", "en"):

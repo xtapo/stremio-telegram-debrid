@@ -91,8 +91,7 @@ def get_hdhub4u_manifest() -> Dict[str, Any]:
             "catalog",
             {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
             {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
-            {"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]},
-        ],
+        ] + ([{"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["hdhub4u:", "tt"]}] if getattr(Config, "ENABLE_SUBTITLES", True) else []),
         "types": ["movie", "series"],
         "catalogs": [
             {
@@ -453,22 +452,25 @@ async def hdhub4u_stream_proxy(request: Request, url: str, referer: Optional[str
 
 
 async def hdhub4u_subtitles(request: Request, type: str, id: str, extra: str = ""):
-    base = _base_url(request)
-    clean_id = id.split(":")[0].replace("hdhub4u:", "")
-    subtitles = [
-        {
-            "id": f"hdhub4u-fast-{clean_id}",
-            "url": _subtitle_url(base, clean_id, type, id, TRACK_FAST),
-            "lang": "vie",
-            "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
-        },
-        {
-            "id": f"hdhub4u-quality-{clean_id}",
-            "url": _subtitle_url(base, clean_id, type, id, TRACK_QUALITY),
-            "lang": "vie",
-            "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
-        },
-    ]
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True):
+        return JSONResponse({"subtitles": []})
+    subtitles = []
+    if getattr(Config, "AUTO_VIET_SUB", True):
+        subtitles = [
+            {
+                "id": f"hdhub4u-fast-{clean_id}",
+                "url": _subtitle_url(base, clean_id, type, id, TRACK_FAST),
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+            },
+            {
+                "id": f"hdhub4u-quality-{clean_id}",
+                "url": _subtitle_url(base, clean_id, type, id, TRACK_QUALITY),
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+            },
+        ]
     return JSONResponse({"subtitles": subtitles})
 
 

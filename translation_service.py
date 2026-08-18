@@ -61,6 +61,8 @@ async def translate_to_vietnamese(text: str) -> str:
         return text
     if is_vietnamese(text):
         return text
+    if Config and not getattr(Config, "AUTO_VIET_SUB", True):
+        return text
 
     cache_key = hashlib.md5(text.strip().encode("utf-8")).hexdigest()
     if cache_key in _CACHE:
