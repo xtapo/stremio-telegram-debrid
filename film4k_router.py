@@ -556,16 +556,8 @@ async def stream_endpoint(type: str, id: str, api_key: str = ""):
     clean_id = id.replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
     stream_data = await resolve_film4k_stream(clean_id)
 
-    if not stream_data or not stream_data.get("url"):
-        return JSONResponse({
-            "streams": [
-                {
-                    "name": "Film4k Live TV",
-                    "title": f"⚠️ Không lấy được luồng phát (401/Expired Cookie hoặc kênh offline)\nVui lòng cập nhật FILM4K_COOKIE",
-                    "url": "https://film4k.net/tv"
-                }
-            ]
-        })
+    if not stream_data or not stream_data.get("url") or not str(stream_data["url"]).startswith("http"):
+        return JSONResponse({"streams": []})
 
     stream_url = stream_data["url"]
     
@@ -725,101 +717,135 @@ async def web_tv_player():
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Film4k Live TV - Xem 200+ Kênh Truyền Hình Miễn Phí</title>
+  <title>Film4k Live TV - Xem 200+ Kênh Truyền Hình & Thể Thao</title>
   <link rel="icon" href="https://film4k.net/favicon-32.png">
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     :root {{
-      --bg: #090a0f;
-      --card-bg: #12141c;
-      --card-hover: #1c202d;
+      --bg: #07080c;
+      --card-bg: #0e111a;
+      --card-hover: #171c2a;
       --primary: #3b82f6;
-      --primary-glow: rgba(59, 130, 246, 0.4);
+      --primary-glow: rgba(59, 130, 246, 0.5);
       --accent: #10b981;
+      --danger: #ef4444;
       --text: #f3f4f6;
       --text-dim: #9ca3af;
       --border: rgba(255, 255, 255, 0.08);
       --radius: 12px;
     }}
     * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }}
-    body {{ background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }}
+    html, body {{ height: 100%; width: 100%; overflow: hidden; background: var(--bg); color: var(--text); }}
     
+    /* Header */
     header {{
-      background: rgba(18, 20, 28, 0.85);
+      height: 60px;
+      background: rgba(14, 17, 26, 0.95);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 24px;
+      padding: 0 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      position: sticky;
-      top: 0;
       z-index: 100;
     }}
-    .brand {{ display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25rem; color: #fff; text-decoration: none; }}
-    .brand img {{ width: 32px; height: 32px; border-radius: 6px; }}
-    .badge-live {{ background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; animation: pulse 2s infinite; }}
+    .brand {{ display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.2rem; color: #fff; text-decoration: none; }}
+    .brand img {{ width: 28px; height: 28px; border-radius: 6px; }}
+    .badge-live {{ background: #ef4444; color: #fff; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 20px; letter-spacing: 0.5px; animation: pulse 2s infinite; }}
     @keyframes pulse {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.5; }} }}
 
-    .main-layout {{ display: flex; flex: 1; height: calc(100vh - 65px); overflow: hidden; }}
+    /* Layout */
+    .main-layout {{ display: grid; grid-template-columns: 1fr 400px; height: calc(100vh - 60px); width: 100%; overflow: hidden; }}
     
-    /* Player Panel */
-    .player-section {{ flex: 1; display: flex; flex-direction: column; background: #000; position: relative; }}
-    .video-wrapper {{ flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }}
-    video {{ width: 100%; height: 100%; object-fit: contain; }}
-    .video-overlay {{
+    /* Player Section */
+    .player-section {{ display: flex; flex-direction: column; height: 100%; background: #000; position: relative; overflow: hidden; }}
+    .video-wrapper {{ flex: 1; min-height: 0; position: relative; display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }}
+    video {{ width: 100%; height: 100%; object-fit: contain; background: #000; }}
+    
+    /* Channel Info Overlay & Unmute Banner */
+    .top-left-overlay {{
       position: absolute; top: 16px; left: 16px; display: flex; align-items: center; gap: 10px;
-      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 30px; border: 1px solid var(--border);
+      background: rgba(10, 12, 18, 0.75); backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 30px; border: 1px solid var(--border);
+      z-index: 20; transition: opacity 0.3s;
     }}
-    .channel-info-bar {{ padding: 14px 20px; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }}
-    .channel-title {{ font-size: 1.15rem; font-weight: 700; }}
-    .channel-meta {{ font-size: 0.85rem; color: var(--text-dim); margin-top: 2px; }}
+    .unmute-btn {{
+      position: absolute; top: 16px; right: 16px; display: flex; align-items: center; gap: 8px;
+      background: rgba(239, 68, 68, 0.9); color: #fff; font-weight: 700; font-size: 0.85rem; padding: 8px 16px; border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.2); cursor: pointer; z-index: 20; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+      animation: bounce 1.5s infinite alternate;
+    }}
+    @keyframes bounce {{ from {{ transform: scale(1); }} to {{ transform: scale(1.05); }} }}
 
-    /* Sidebar Channel List */
-    .sidebar {{ width: 420px; background: var(--card-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; }}
-    .sidebar-controls {{ padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }}
+    /* Loading & Error States */
+    .player-state-overlay {{
+      position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: rgba(7, 8, 12, 0.88); backdrop-filter: blur(6px); z-index: 15; text-align: center; padding: 20px;
+    }}
+    .spinner {{ width: 44px; height: 44px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px; }}
+    @keyframes spin {{ to {{ transform: rotate(360deg); }} }}
+
+    /* Bottom Info Bar */
+    .channel-info-bar {{
+      height: 64px; flex-shrink: 0; background: var(--card-bg); border-top: 1px solid var(--border);
+      padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 20;
+    }}
+    .channel-title {{ font-size: 1.05rem; font-weight: 700; color: #fff; }}
+    .channel-meta {{ font-size: 0.8rem; color: var(--text-dim); margin-top: 2px; }}
+
+    /* Sidebar */
+    .sidebar {{ background: var(--card-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; height: 100%; overflow: hidden; }}
+    .sidebar-controls {{ padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; flex-shrink: 0; }}
     .search-box {{
-      width: 100%; background: #0a0c12; border: 1px solid var(--border); border-radius: 8px;
-      padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+      width: 100%; background: #07080d; border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 14px; color: #fff; font-size: 0.88rem; outline: none; transition: border-color 0.2s;
     }}
     .search-box:focus {{ border-color: var(--primary); }}
     
     .genre-scroll {{ display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }}
     .genre-scroll::-webkit-scrollbar {{ display: none; }}
     .genre-pill {{
-      padding: 5px 12px; border-radius: 20px; background: rgba(255, 255, 255, 0.05); font-size: 0.75rem;
+      padding: 5px 12px; border-radius: 20px; background: rgba(255, 255, 255, 0.04); font-size: 0.72rem;
       font-weight: 600; color: var(--text-dim); cursor: pointer; white-space: nowrap; border: 1px solid transparent; transition: all 0.2s;
     }}
     .genre-pill:hover, .genre-pill.active {{ background: var(--primary); color: #fff; border-color: var(--primary-glow); }}
 
-    .channel-list {{ flex: 1; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: 1fr; gap: 6px; }}
+    .channel-list {{ flex: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 4px; }}
     .channel-item {{
-      display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: rgba(255, 255, 255, 0.02);
-      border-radius: var(--radius); border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; gap: 12px; padding: 9px 12px; background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius); border: 1px solid transparent; cursor: pointer; transition: all 0.15s;
     }}
     .channel-item:hover {{ background: var(--card-hover); transform: translateY(-1px); }}
     .channel-item.active {{ background: rgba(59, 130, 246, 0.15); border-color: var(--primary); }}
-    .channel-logo {{ width: 44px; height: 44px; border-radius: 8px; object-fit: contain; background: #000; padding: 4px; }}
-    .channel-fallback {{ width: 44px; height: 44px; border-radius: 8px; background: #222; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #aaa; }}
+    .channel-logo {{ width: 40px; height: 40px; border-radius: 8px; object-fit: contain; background: #000; padding: 3px; flex-shrink: 0; }}
+    .channel-fallback {{ width: 40px; height: 40px; border-radius: 8px; background: #1e2230; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; color: #94a3b8; flex-shrink: 0; }}
     .channel-details {{ flex: 1; min-width: 0; }}
-    .channel-name {{ font-size: 0.92rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-    .channel-cat {{ font-size: 0.75rem; color: var(--text-dim); }}
+    .channel-name {{ font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+    .channel-cat {{ font-size: 0.72rem; color: var(--text-dim); margin-top: 2px; }}
+
+    /* Equalizer animation for playing channel */
+    .playing-eq {{ display: flex; align-items: flex-end; gap: 2px; height: 14px; width: 14px; margin-left: 6px; }}
+    .playing-eq span {{ width: 3px; background: var(--primary); border-radius: 2px; animation: eq 1s ease-in-out infinite alternate; }}
+    .playing-eq span:nth-child(1) {{ height: 60%; animation-delay: 0.2s; }}
+    .playing-eq span:nth-child(2) {{ height: 100%; animation-delay: 0.4s; }}
+    .playing-eq span:nth-child(3) {{ height: 40%; animation-delay: 0.1s; }}
+    @keyframes eq {{ 0% {{ height: 20%; }} 100% {{ height: 100%; }} }}
 
     .btn {{
-      padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-decoration: none;
+      padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.78rem; text-decoration: none;
       display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; transition: 0.2s;
     }}
     .btn-primary {{ background: var(--primary); color: #fff; }}
     .btn-primary:hover {{ filter: brightness(1.1); }}
-    .btn-outline {{ background: transparent; border: 1px solid var(--border); color: var(--text); }}
-    .btn-outline:hover {{ background: rgba(255,255,255,0.08); }}
+    .btn-outline {{ background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--text); }}
+    .btn-outline:hover {{ background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.2); }}
 
     @media (max-width: 900px) {{
-      .main-layout {{ flex-direction: column; height: auto; }}
-      .player-section {{ height: 50vh; }}
-      .sidebar {{ width: 100%; height: 50vh; }}
+      .main-layout {{ grid-template-columns: 1fr; height: calc(100vh - 60px); }}
+      .player-section {{ height: 42vh; }}
+      .sidebar {{ height: calc(58vh - 60px); }}
     }}
   </style>
 </head>
@@ -828,11 +854,15 @@ async def web_tv_player():
     <a href="/dashboard" class="brand">
       <img src="https://film4k.net/favicon-32.png" alt="Film4k">
       <span>Film4k Live TV</span>
-      <span class="badge-live">LIVE</span>
+      <span class="badge-live">200+ CHANNELS</span>
     </a>
     <div style="display: flex; gap: 8px;">
-      <a href="/film4k/playlist.m3u" class="btn btn-outline" title="Tải file M3U cho TiviMate / VLC">📥 Tải M3U Playlist</a>
-      <a href="/dashboard" class="btn btn-primary">🎛️ Dashboard</a>
+      <a href="/film4k/playlist.m3u" class="btn btn-outline" title="Tải file M3U cho TiviMate / VLC">
+        <i class="fa-solid fa-file-arrow-down"></i> Tải M3U Playlist
+      </a>
+      <a href="/dashboard" class="btn btn-primary">
+        <i class="fa-solid fa-gauge-high"></i> Dashboard
+      </a>
     </div>
   </header>
 
@@ -840,17 +870,50 @@ async def web_tv_player():
     <div class="player-section">
       <div class="video-wrapper">
         <video id="video-player" controls autoplay playsinline></video>
-        <div id="video-overlay" class="video-overlay" style="display: none;">
-          <img id="overlay-logo" src="" style="width: 24px; height: 24px; object-fit: contain;">
+        
+        <!-- Top Left Info Badge -->
+        <div id="video-overlay" class="top-left-overlay" style="display: none;">
+          <img id="overlay-logo" src="" style="width: 22px; height: 22px; object-fit: contain;">
           <span id="overlay-title" style="font-size: 0.85rem; font-weight: 700;"></span>
+          <span style="font-size: 0.7rem; color: #10b981; font-weight: 700; margin-left: 4px;">● LIVE</span>
+        </div>
+
+        <!-- Unmute prompt banner -->
+        <button id="unmute-banner" class="unmute-btn" style="display: none;" onclick="unmuteAudio()">
+          <i class="fa-solid fa-volume-xmark"></i> Bấm để bật âm thanh
+        </button>
+
+        <!-- Loading state overlay -->
+        <div id="player-loading" class="player-state-overlay">
+          <div class="spinner"></div>
+          <div id="loading-title" style="font-weight: 700; font-size: 1rem; color: #fff;">Đang kết nối luồng phát...</div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 4px;">HLS Live Stream Full HD</div>
+        </div>
+
+        <!-- Error state overlay -->
+        <div id="player-error" class="player-state-overlay" style="display: none;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size: 2.2rem; color: #f87171; margin-bottom: 12px;"></i>
+          <div id="error-message" style="font-weight: 700; font-size: 1rem; color: #f87171;">Không thể tải luồng phát</div>
+          <div style="font-size: 0.8rem; color: var(--text-dim); margin-top: 6px; max-width: 320px;">Kênh này tạm thời gián đoạn hoặc yêu cầu làm mới Cookie Film4k.</div>
+          <button class="btn btn-outline" style="margin-top: 14px;" onclick="retryPlayback()">
+            <i class="fa-solid fa-rotate-right"></i> Thử lại
+          </button>
         </div>
       </div>
+
       <div class="channel-info-bar">
         <div>
           <div id="current-title" class="channel-title">Chọn một kênh để bắt đầu xem</div>
           <div id="current-category" class="channel-meta">200+ Kênh Truyền Hình Trực Tiếp & Sự Kiện Thể Thao</div>
         </div>
-        <button id="btn-copy-stream" class="btn btn-outline" onclick="copyCurrentStreamUrl()">🔗 Copy HLS URL</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-outline" onclick="retryPlayback()" title="Kết nối lại luồng phát">
+            <i class="fa-solid fa-rotate"></i> Tải lại
+          </button>
+          <button id="btn-copy-stream" class="btn btn-outline" onclick="copyCurrentStreamUrl()">
+            <i class="fa-solid fa-link"></i> Copy URL
+          </button>
+        </div>
       </div>
     </div>
 
@@ -872,7 +935,7 @@ async def web_tv_player():
     let currentStreamUrl = "";
 
     const GENRES = [
-      "Tất cả", "Sự Kiện Trực Tiếp", "K+ Truyền Hình", "VTV", "HTV / HTVC",
+      "Tất cả", "Sự Kiện Trực Tiếp", "VTV", "HTV / HTVC", "K+ Truyền Hình",
       "Thể Thao", "Phim & Điện Ảnh", "Thiếu Nhi & Hoạt Hình", "Khoa Học & Khám Phá",
       "Tin Tức & Thời Sự", "Âm Nhạc & Giải Trí", "VTC", "Đài Địa Phương", "Kênh Quốc Tế & Tổng Hợp"
     ];
@@ -899,10 +962,8 @@ async def web_tv_player():
       const container = document.getElementById("channel-list-container");
       container.innerHTML = "";
 
-      // List of items to show
       let items = [];
 
-      // If Events or All
       if (currentGenre === "Tất cả" || currentGenre === "Sự Kiện Trực Tiếp") {{
         EVENTS.forEach(ev => {{
           items.push({{
@@ -924,14 +985,14 @@ async def web_tv_player():
         }});
       }}
 
-      // Filter by search query
       if (query) {{
         items = items.filter(it => (it.name || "").toLowerCase().includes(query) || (it.id || "").toLowerCase().includes(query));
       }}
 
       items.forEach(it => {{
+        const isSelected = activeItem && activeItem.id === it.id;
         const div = document.createElement("div");
-        div.className = `channel-item ${{activeItem && activeItem.id === it.id ? "active" : ""}}`;
+        div.className = `channel-item ${{isSelected ? "active" : ""}}`;
         div.onclick = () => playItem(it);
 
         const logoHtml = it.logo
@@ -939,11 +1000,15 @@ async def web_tv_player():
           : `<div class="channel-fallback">${{it.name.slice(0,3)}}</div>`;
 
         const badgeHtml = it.isEvent ? `<span style="color: #ef4444; font-weight: 700; font-size: 0.7rem;">[${{it.status.toUpperCase()}}]</span> ` : "";
+        const eqHtml = isSelected ? `<div class="playing-eq"><span></span><span></span><span></span></div>` : "";
 
         div.innerHTML = `
           ${{logoHtml}}
           <div class="channel-details">
-            <div class="channel-name">${{badgeHtml}}${{it.name}}</div>
+            <div class="channel-name" style="display: flex; align-items: center; justify-content: space-between;">
+              <span>${{badgeHtml}}${{it.name}}</span>
+              ${{eqHtml}}
+            </div>
             <div class="channel-cat">${{it.category}}</div>
           </div>
         `;
@@ -951,7 +1016,41 @@ async def web_tv_player():
       }});
     }}
 
+    function showLoading(title) {{
+      document.getElementById("player-loading").style.display = "flex";
+      document.getElementById("player-error").style.display = "none";
+      document.getElementById("loading-title").innerText = "Đang kết nối " + (title || "kênh") + "...";
+    }}
+
+    function hideLoading() {{
+      document.getElementById("player-loading").style.display = "none";
+    }}
+
+    function showError(msg) {{
+      hideLoading();
+      document.getElementById("player-error").style.display = "flex";
+      document.getElementById("error-message").innerText = msg || "Không thể tải luồng phát";
+    }}
+
+    function checkMuted() {{
+      const video = document.getElementById("video-player");
+      const banner = document.getElementById("unmute-banner");
+      if (video.muted) {{
+        banner.style.display = "flex";
+      }} else {{
+        banner.style.display = "none";
+      }}
+    }}
+
+    function unmuteAudio() {{
+      const video = document.getElementById("video-player");
+      video.muted = false;
+      video.volume = 1.0;
+      document.getElementById("unmute-banner").style.display = "none";
+    }}
+
     async function playItem(item) {{
+      if (!item) return;
       activeItem = item;
       renderChannels();
 
@@ -972,13 +1071,15 @@ async def web_tv_player():
       }}
       overlay.style.display = "flex";
 
+      showLoading(item.name);
+
       try {{
         const r = await fetch(`/film4k/stream/tv/${{encodeURIComponent(item.id)}}.json`);
         const data = await r.json();
         const stream = data.streams && data.streams[0];
 
-        if (!stream || !stream.url) {{
-          alert("Không lấy được luồng phát của kênh này!");
+        if (!stream || !stream.url || !stream.url.startsWith("http")) {{
+          showError("Kênh tạm thời gián đoạn hoặc chưa có luồng phát.");
           return;
         }}
 
@@ -986,38 +1087,68 @@ async def web_tv_player():
         console.log("Playing stream URL:", currentStreamUrl);
 
         if (Hls.isSupported()) {{
-          if (hls) hls.destroy();
+          if (hls) {{
+            hls.destroy();
+            hls = null;
+          }}
           hls = new Hls({{
             enableWorker: true,
             lowLatencyMode: true,
+            backBufferLength: 60,
+            manifestLoadingTimeOut: 10000,
+            manifestLoadingMaxRetry: 3,
+            levelLoadingTimeOut: 10000
           }});
           hls.loadSource(currentStreamUrl);
           hls.attachMedia(video);
+
           hls.on(Hls.Events.MANIFEST_PARSED, function() {{
-            video.play().catch(e => console.log("Autoplay blocked:", e));
+            hideLoading();
+            // Start muted first to bypass browser autoplay restrictions
+            video.muted = true;
+            video.play().then(() => {{
+              checkMuted();
+            }}).catch(err => {{
+              console.log("Play failed, waiting for user click:", err);
+            }});
           }});
+
           hls.on(Hls.Events.ERROR, function(event, data) {{
+            console.warn("HLS event error:", data);
             if (data.fatal) {{
               switch(data.type) {{
                 case Hls.ErrorTypes.NETWORK_ERROR:
+                  console.log("HLS network error, recovering...");
                   hls.startLoad();
                   break;
                 case Hls.ErrorTypes.MEDIA_ERROR:
+                  console.log("HLS media error, recovering...");
                   hls.recoverMediaError();
                   break;
                 default:
                   hls.destroy();
+                  showError("Lỗi luồng phát HLS. Vui lòng thử kênh khác.");
                   break;
               }}
             }}
           }});
         }} else if (video.canPlayType("application/vnd.apple.mpegurl")) {{
           video.src = currentStreamUrl;
-          video.play().catch(e => console.log("Autoplay blocked:", e));
+          video.muted = true;
+          video.play().then(() => {{
+            hideLoading();
+            checkMuted();
+          }}).catch(e => console.log("Autoplay blocked:", e));
         }}
       }} catch (err) {{
         console.error("Error playing channel:", err);
-        alert("Lỗi khi kết nối luồng phát: " + err.message);
+        showError("Lỗi kết nối: " + err.message);
+      }}
+    }}
+
+    function retryPlayback() {{
+      if (activeItem) {{
+        playItem(activeItem);
       }}
     }}
 
@@ -1028,20 +1159,30 @@ async def web_tv_player():
       }}
       navigator.clipboard.writeText(currentStreamUrl);
       const btn = document.getElementById("btn-copy-stream");
-      const old = btn.innerText;
-      btn.innerText = "✅ Đã copy!";
-      setTimeout(() => btn.innerText = old, 2000);
+      const old = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Đã copy!';
+      setTimeout(() => btn.innerHTML = old, 2000);
     }}
+
+    // Video event listeners
+    const videoElem = document.getElementById("video-player");
+    videoElem.addEventListener("playing", () => {{
+      hideLoading();
+      checkMuted();
+    }});
+    videoElem.addEventListener("volumechange", checkMuted);
 
     // Initialize
     initGenres();
     renderChannels();
-    // Auto play first channel
-    if (CHANNELS.length > 0) {{
-      playItem(CHANNELS[0]);
+    // Default to VTV1 HD
+    const vtv1 = CHANNELS.find(c => c.id === 'vtv1-hd') || CHANNELS[0];
+    if (vtv1) {{
+      playItem(vtv1);
     }}
   </script>
 </body>
 </html>
 """
     return HTMLResponse(content=html)
+
