@@ -722,6 +722,13 @@ async def api_update_config(request: Request):
         env_updates["DASHBOARD_PASSWORD"] = val
         logger.info("Dashboard updated config DASHBOARD_PASSWORD")
 
+    if "film4k_cookie" in data:
+        val = str(data["film4k_cookie"]).strip()
+        if val:
+            Config.FILM4K_COOKIE = val
+            env_updates["FILM4K_COOKIE"] = val
+            logger.info("Dashboard updated config FILM4K_COOKIE")
+
     # Source Enablement Toggles & Board Display Toggles
     source_keys = {
         "enable_source_telegram": "ENABLE_SOURCE_TELEGRAM",
@@ -735,6 +742,8 @@ async def api_update_config(request: Request):
         "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
         "enable_source_vidking": "ENABLE_SOURCE_VIDKING",
         "enable_source_ernax": "ENABLE_SOURCE_ERNAX",
+        "enable_source_film4k_tv": "ENABLE_SOURCE_FILM4K_TV",
+        "enable_source_film4k": "ENABLE_SOURCE_FILM4K_TV",
         "enable_source_subtitles": "ENABLE_SUBTITLES",
         "enable_source_subtitle": "ENABLE_SUBTITLES",
         "enable_subtitles": "ENABLE_SUBTITLES",
@@ -750,6 +759,8 @@ async def api_update_config(request: Request):
         "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
         "enable_board_vidking": "ENABLE_BOARD_VIDKING",
         "enable_board_ernax": "ENABLE_BOARD_ERNAX",
+        "enable_board_film4k_tv": "ENABLE_BOARD_FILM4K_TV",
+        "enable_board_film4k": "ENABLE_BOARD_FILM4K_TV",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -785,6 +796,7 @@ async def api_update_config(request: Request):
             "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_SOURCE_ERNAX", True),
+            "film4k_tv": getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -797,6 +809,7 @@ async def api_update_config(request: Request):
             "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_BOARD_ERNAX", True),
+            "film4k_tv": getattr(Config, "ENABLE_BOARD_FILM4K_TV", True),
         }
     }
 
@@ -826,6 +839,26 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
+        },
+        {
+            "id": "film4k_tv",
+            "name": "Film4k Live TV & Thể Thao",
+            "tag": "200+ Kênh TV & Trực Tiếp",
+            "category": "Live TV & IPTV M3U",
+            "icon": "fa-tv",
+            "badge": "200+ Kênh",
+            "badge_color": "emerald",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_FILM4K_TV", True)),
+            "description": "Xem 200+ kênh truyền hình Việt Nam (VTV, HTV, K+, VTC, 63 đài địa phương), Kênh Quốc Tế & Sự kiện thể thao trực tiếp từ Film4k. Hỗ trợ Stremio Addon & M3U Playlist cho TiviMate / VLC.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/film4k/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/film4k/manifest.json",
+                "public": f"{domain_url}/film4k/manifest.json"
+            },
+            "playlist_url": f"{domain_url}/film4k/playlist.m3u",
+            "player_url": f"{domain_url}/film4k/tv",
+            "routes": ["/film4k/manifest.json", "/film4k/catalog", "/film4k/stream", "/film4k/playlist.m3u", "/film4k/tv"]
         },
         {
             "id": "ernax",
@@ -1033,6 +1066,14 @@ async def api_clear_cache():
         m_count = len(MOVIESDRIVE_CACHE)
         MOVIESDRIVE_CACHE.clear()
         cleared.append(f"MoviesDrive Catalog Cache ({m_count} entries)")
+    except Exception:
+        pass
+
+    try:
+        from film4k_router import _film4k_cache
+        f_count = len(_film4k_cache)
+        _film4k_cache.clear()
+        cleared.append(f"Film4k Live TV Cache ({f_count} entries)")
     except Exception:
         pass
 
@@ -3673,6 +3714,16 @@ async def dashboard_ui(request: Request):
                                 <i class="fa-solid fa-globe"></i> Mở Web
                             </a>
                         </div>
+                        ${addon.playlist_url ? `
+                        <div class="addon-actions" style="margin-top: 6px; display:flex; gap:8px;">
+                            <button class="btn btn-secondary btn-sm" style="justify-content:center; flex:1; font-size:11px;" onclick="copyToClipboard('${addon.playlist_url}', '${addon.name} M3U Playlist')">
+                                <i class="fa-solid fa-file-lines"></i> Copy M3U Link
+                            </button>
+                            <a href="${addon.player_url}" target="_blank" class="btn btn-secondary btn-sm" style="justify-content:center; flex:1; font-size:11px;">
+                                <i class="fa-solid fa-tv"></i> Web TV Player
+                            </a>
+                        </div>
+                        ` : ''}
                     </div>
                 `;
 
@@ -3821,11 +3872,14 @@ async def dashboard_ui(request: Request):
             let cls = 'mod-default';
             let icon = 'fa-cube';
             if (n.includes('nguonc')) { cls = 'mod-nguonc'; icon = 'fa-film'; }
+            else if (n.includes('film4k')) { cls = 'mod-film4k'; icon = 'fa-tv'; }
             else if (n.includes('vsmov')) { cls = 'mod-vsmov'; icon = 'fa-video'; }
             else if (n.includes('hhpanda')) { cls = 'mod-hhpanda'; icon = 'fa-dragon'; }
             else if (n.includes('moviesdrive')) { cls = 'mod-moviesdrive'; icon = 'fa-clapperboard'; }
             else if (n.includes('hdhub4u')) { cls = 'mod-hdhub4u'; icon = 'fa-bolt'; }
             else if (n.includes('topxx')) { cls = 'mod-topxx'; icon = 'fa-heart'; }
+            else if (n.includes('ernax')) { cls = 'mod-ernax'; icon = 'fa-play-circle'; }
+            else if (n.includes('vidking')) { cls = 'mod-vidking'; icon = 'fa-crown'; }
             else if (n.includes('tg') || n.includes('telegram')) { cls = 'mod-telegram'; icon = 'fa-brands fa-telegram'; }
             else if (n.includes('debrid') || n.includes('torbox') || n.includes('torrent') || n.includes('qbit')) { cls = 'mod-debrid'; icon = 'fa-cloud-arrow-down'; }
             else if (n.includes('sub') || n.includes('vtt') || n.includes('trans') || n.includes('tts') || n.includes('gemini')) { cls = 'mod-subtitles'; icon = 'fa-closed-captioning'; }

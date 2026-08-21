@@ -1,0 +1,236 @@
+{
+  "events": [
+    {
+      "id": "su-kien-03",
+      "title": "Shenzhen Open 2026: Ngày 21/8 - Buổi chiều",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/pickleball-ho-chi-minh-city-open-2026---background_1787191983352.jpg",
+      "status": "live",
+      "begin": 1787295000,
+      "end": 1787342400
+    },
+    {
+      "id": "event-05",
+      "title": "LPL 2026 Split 3 - Ngày 21/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/19/lplk_1787073199007.jpg",
+      "status": "live",
+      "begin": 1787295600,
+      "end": 1787382000
+    },
+    {
+      "id": "event-02-4k",
+      "title": "FC Online Vietnam Pro League 2026 - Ngày 21/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/fvplk_1787285469567.jpg",
+      "status": "live",
+      "begin": 1787295600,
+      "end": 1787382000
+    },
+    {
+      "id": "su-kien-04",
+      "title": "EWC 2026: Counter-Strike 2 (CS2) - Playoffs - Ngày 21/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/cs2k_1787290693831.jpg",
+      "status": "live",
+      "begin": 1787309100,
+      "end": 1787396400
+    },
+    {
+      "id": "su-kien-06",
+      "title": "EWC 2026: CrossFire (Đột Kích) - Bán Kết - Ngày 21/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/cfk_1787290954676.jpg",
+      "status": "live",
+      "begin": 1787309100,
+      "end": 1787396400
+    },
+    {
+      "id": "su-kien-28",
+      "title": "Nexo Championship - Vòng 2",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/golf-dp-world-tour-nexo-championship-2026---background_1787192409133.jpg",
+      "status": "live",
+      "begin": 1787311800,
+      "end": 1787365800
+    },
+    {
+      "id": "su-kien-01-4k",
+      "title": "Saigon Heat - Ho Chi Minh City Wings",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/19/live-vba-2026-background_1787109192712.jpg",
+      "status": "live",
+      "begin": 1787313600,
+      "end": 1787347800
+    },
+    {
+      "id": "epl-hn-04-4k-bk",
+      "title": "Arsenal - Coventry City: Fan cứng",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/background_1787197599589.jpg",
+      "status": "upcoming",
+      "begin": 1787337600,
+      "end": 1787374800
+    },
+    {
+      "id": "epl-hn-01-4k-bk",
+      "title": "Arsenal - Coventry City",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/bg_1787188872658.jpg",
+      "status": "upcoming",
+      "begin": 1787338200,
+      "end": 1787374800
+    },
+    {
+      "id": "su-kien-22",
+      "title": "Shenzhen Open 2026: Ngày 22/8 - Buổi sáng",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/pickleball-ho-chi-minh-city-open-2026---background_1787298330791.jpg",
+      "status": "upcoming",
+      "begin": 1787359800,
+      "end": 1787407200
+    },
+    {
+      "id": "event-02",
+      "title": "FC Mobile Vietnam Super League 2026 - Ngày 22/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/fvsl_1787286073373.jpg",
+      "status": "upcoming",
+      "begin": 1787367600,
+      "end": 1787454000
+    },
+    {
+      "id": "the-thao-1",
+      "title": "Sahako - Sài Gòn Titans",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/17/background_1786954579466.jpg",
+      "status": "upcoming",
+      "begin": 1787370600,
+      "end": 1787392800
+    },
+    {
+      "id": "su-kien-23",
+      "title": "Shenzhen Open 2026: Ngày 22/8 - Buổi chiều",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/pickleball-ho-chi-minh-city-open-2026---background_1787298372552.jpg",
+      "status": "upcoming",
+      "begin": 1787381400,
+      "end": 1787428800
+    },
+    {
+      "id": "event-17",
+      "title": "LPL 2026 Split 3 - Ngày 22/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/19/lplk_1787073299320.jpg",
+      "status": "upcoming",
+      "begin": 1787382000,
+      "end": 1787468400
+    },
+    {
+      "id": "event-03",
+      "title": "FC Online Vietnam Pro League 2026 - Ngày 22/08",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/fvplk_1787285563013.jpg",
+      "status": "upcoming",
+      "begin": 1787382000,
+      "end": 1787468400
+    },
+    {
+      "id": "su-kien-07",
+      "title": "Thái Sơn Nam TP.HCM - An Phú",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/background_1787045823291.jpg",
+      "status": "upcoming",
+      "begin": 1787388600,
+      "end": 1787410800
+    },
+    {
+      "id": "epl-hcm-04-4k-bk",
+      "title": "Hull City - Manchester United: Fan cứng",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/background_1787197732110.jpg",
+      "status": "upcoming",
+      "begin": 1787397000,
+      "end": 1787434200
+    },
+    {
+      "id": "su-kien-08",
+      "title": "Xạ Warriors - Tân Hiệp Hưng TP.HCM",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/background_1787045879761.jpg",
+      "status": "upcoming",
+      "begin": 1787397600,
+      "end": 1787419800
+    },
+    {
+      "id": "su-kien-31",
+      "title": "Nexo Championship - Vòng 3",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/golf-dp-world-tour-nexo-championship-2026---background_1787192453012.jpg",
+      "status": "upcoming",
+      "begin": 1787398200,
+      "end": 1787452200
+    },
+    {
+      "id": "su-kien-09",
+      "title": "Nha Trang Dolphins - Danang Dragons",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/19/live-vba-2026-background_1787113851653.jpg",
+      "status": "upcoming",
+      "begin": 1787400900,
+      "end": 1787434200
+    },
+    {
+      "id": "su-kien-37",
+      "title": "Thái Lan - Việt Nam",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/background_1787274454008.jpg",
+      "status": "upcoming",
+      "begin": 1787400900,
+      "end": 1787432400
+    },
+    {
+      "id": "htv7-hd",
+      "title": "Vui Cùng Bước Nhảy",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/vuicungbuocnhayhtv20211080slider_1787285660442.jpg",
+      "status": "ended",
+      "begin": 1787246100,
+      "end": 1787247900
+    },
+    {
+      "id": "vinh-long-2",
+      "title": "Người Kể Chuyện Tình",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/nguoikechuyentinhthvlslider_1787216230063.jpg",
+      "status": "upcoming",
+      "begin": 1787317200,
+      "end": 1787320740
+    },
+    {
+      "id": "thvl1",
+      "title": "Tình Thâm Đối Đầu",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/20/tinhthamdoidauslider_1787216259157.jpg",
+      "status": "upcoming",
+      "begin": 1787317200,
+      "end": 1787320740
+    },
+    {
+      "id": "htv9-hd",
+      "title": "Chuyện Bốn Mùa",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/21/chuyenbonmuaslider1686630003297_1787286265956.jpg",
+      "status": "upcoming",
+      "begin": 1787322600,
+      "end": 1787326140
+    },
+    {
+      "id": "vtv10",
+      "title": "Trạm Cứu Hộ Trái Tim",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/tramcuuhotraitimslide_1787039908369.jpg",
+      "status": "upcoming",
+      "begin": 1787323500,
+      "end": 1787325900
+    },
+    {
+      "id": "vtv3-hd",
+      "title": "Câu Chuyện Hoa Hồng",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/cauchuyenhoahongslider1_1787026783558.jpg",
+      "status": "upcoming",
+      "begin": 1787332200,
+      "end": 1787334300
+    },
+    {
+      "id": "fim360",
+      "title": "Tình Yêu Tội Lỗi",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/tinhyeutoiloislider_1787044442170.jpg",
+      "status": "upcoming",
+      "begin": 1787360400,
+      "end": 1787362800
+    },
+    {
+      "id": "vtv2-hd",
+      "title": "Hãy Nói Lời Yêu",
+      "image": "https://images.fptplay53.net/media/home_event/OTT_ECS/2026/08/18/haynoiloiyeuslider_1787021486702.jpg",
+      "status": "upcoming",
+      "begin": 1787373000,
+      "end": 1787374800
+    }
+  ]
+}

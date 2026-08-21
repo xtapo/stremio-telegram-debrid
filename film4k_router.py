@@ -1,0 +1,1047 @@
+import asyncio
+import json
+import logging
+import re
+import time
+import unicodedata
+import urllib.parse
+from typing import Any, Dict, List, Optional, Tuple
+
+import httpx
+from fastapi import APIRouter, HTTPException, Request, Response
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+
+from config import Config
+
+logger = logging.getLogger(__name__)
+
+film4k_router = APIRouter(prefix="", tags=["film4k"])
+
+# ------------------------------------------------------------------
+# Cache & Memory Management
+# ------------------------------------------------------------------
+_film4k_cache: Dict[str, Tuple[Any, float]] = {}
+CHANNELS_CACHE_TTL = 1800  # 30 minutes
+EVENTS_CACHE_TTL = 180      # 3 minutes
+STREAM_CACHE_TTL = 120      # 2 minutes for signed stream URLs
+
+_film4k_client: Optional[httpx.AsyncClient] = None
+_client_loop: Optional[asyncio.AbstractEventLoop] = None
+
+
+def get_film4k_cookie() -> str:
+    """Retrieve the current Film4k session cookie from Config or env."""
+    cookie = getattr(Config, "FILM4K_COOKIE", "")
+    if not cookie:
+        cookie = (
+            "session=eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImphbWlkMjA0QGdtYWlsLmNvbSIsIm5hbWUiOiJUaGkgVHJhbiIs"
+            "ImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSV9HWURzQ3JHaFV4WUN1NVRk"
+            "NWxka3laRHUxcm5TSUJQVGU0dkJKZUFaalhWYW95aUc9czk2LWMiLCJzdWIiOiI2YTg4NDYyOGQ5MmQwNmI3OTRjNjQ2NzUi"
+            "LCJpYXQiOjE3ODczMTU3NTIsImV4cCI6MTc4OTkwNzc1Mn0.nNwoSi3H9HwNkYCYVTj4PhS0IVKoAdus4racY3pOMBo"
+        )
+    return cookie.strip()
+
+
+def get_film4k_base_url() -> str:
+    return getattr(Config, "FILM4K_BASE_URL", "https://film4k.net").rstrip("/")
+
+
+def get_film4k_client() -> httpx.AsyncClient:
+    global _film4k_client, _client_loop
+    try:
+        current_loop = asyncio.get_running_loop()
+    except RuntimeError:
+        current_loop = None
+
+    if (
+        _film4k_client is None
+        or _film4k_client.is_closed
+        or _client_loop != current_loop
+        or (current_loop and current_loop.is_closed())
+    ):
+        _client_loop = current_loop
+        _film4k_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(12.0, connect=5.0),
+            follow_redirects=True,
+            limits=httpx.Limits(max_keepalive_connections=20, max_connections=50),
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/124.0.0.0 Safari/537.36"
+                ),
+                "Referer": f"{get_film4k_base_url()}/tv",
+                "Origin": get_film4k_base_url(),
+            },
+        )
+    return _film4k_client
+
+
+# ------------------------------------------------------------------
+# Channel Categorization & Genre Filters
+# ------------------------------------------------------------------
+GENRE_OPTIONS = [
+    "Tất cả",
+    "K+ Truyền Hình",
+    "VTV",
+    "HTV / HTVC",
+    "Thể Thao",
+    "Phim & Điện Ảnh",
+    "Thiếu Nhi & Hoạt Hình",
+    "Khoa Học & Khám Phá",
+    "Tin Tức & Thời Sự",
+    "Âm Nhạc & Giải Trí",
+    "VTC",
+    "Đài Địa Phương",
+    "Kênh Quốc Tế & Tổng Hợp",
+]
+
+
+def normalize_text(text: str) -> str:
+    """Normalize text for insensitive searching and diacritic removal."""
+    if not text:
+        return ""
+    text = text.lower().strip()
+    nfkd = unicodedata.normalize("NFD", text)
+    stripped = "".join([c for c in nfkd if unicodedata.category(c) != "Mn"])
+    return re.sub(r"[^a-z0-9]", "", stripped)
+
+
+def categorize_channel(ch: Dict[str, Any]) -> str:
+    name = (ch.get("name") or "").lower()
+    ch_id = (ch.get("id") or "").lower()
+
+    if any(k in name or k in ch_id for k in ["k+", "k-plus", "k plus"]):
+        return "K+ Truyền Hình"
+    if any(k in name or k in ch_id for k in ["vtv"]):
+        return "VTV"
+    if any(k in name or k in ch_id for k in ["htv", "htvc", "thuần việt", "phim hd"]):
+        return "HTV / HTVC"
+    if any(k in name or k in ch_id for k in ["vtc"]):
+        return "VTC"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "sport", "thể thao", "football", "golf", "tennis", "nba", "uefa",
+            "fifa", "fpt sport", "on sport", "red bull", "wwe"
+        ]
+    ):
+        return "Thể Thao"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "hbo", "cinemax", "cinema", "phim", "movie", "hollywood", "action",
+            "box", "warner", "axn", "galaxy", "kix", "dramas", "paramount"
+        ]
+    ):
+        return "Phim & Điện Ảnh"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "cartoon", "disney", "anime", "kid", "thiếu nhi", "hoạt hình",
+            "bibi", "dreamworks", "nick", "baby"
+        ]
+    ):
+        return "Thiếu Nhi & Hoạt Hình"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "discovery", "nat geo", "national geographic", "animal", "khám phá",
+            "history", "travel", "planet", "tlc", "food", "da vinci", "outdoor"
+        ]
+    ):
+        return "Khoa Học & Khám Phá"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "cnn", "bbc", "news", "tin tức", "thời sự", "bloomberg", "nhk", "dw",
+            "france 24", "cna", "tv5", "al jazeera", "arirang", "truyền hình quốc hội"
+        ]
+    ):
+        return "Tin Tức & Thời Sự"
+    if any(
+        k in name or k in ch_id
+        for k in ["music", "âm nhạc", "mnet", "mtv", "itv", "ca nhạc", "yan", "zing"]
+    ):
+        return "Âm Nhạc & Giải Trí"
+    if any(
+        k in name or k in ch_id
+        for k in [
+            "hà nội", "hanoitv", "thvl", "vĩnh long", "đà nẵng", "hải phòng",
+            "cần thơ", "bình dương", "đồng nai", "quảng ninh", "huế", "ninh bình",
+            "bình định", "thái nguyên", "khánh hòa", "tây ninh", "long an",
+            "tiền giang", "bến tre", "an giang", "kiên giang", "cà mau",
+            "bạc liêu", "sóc trăng", "trà vinh", "hậu giang", "vũng tàu",
+            "lâm đồng", "đắk lắk", "gia lai", "kon tum", "đắk nông",
+            "bình phước", "bình thuận", "ninh thuận", "phú yên", "quảng ngãi",
+            "quảng nam", "quảng trị", "quảng bình", "hà tĩnh", "nghệ an",
+            "thanh hóa", "nam định", "thái bình", "hải dương", "hưng yên",
+            "bắc ninh", "bắc giang", "vĩnh phúc", "phú thọ", "hà giang",
+            "tuyên quang", "cao bằng", "bắc kạn", "lạng sơn", "lào cai",
+            "yên bái", "điện biên", "lai châu", "sơn la", "hòa bình"
+        ]
+    ):
+        return "Đài Địa Phương"
+    return "Kênh Quốc Tế & Tổng Hợp"
+
+
+# ------------------------------------------------------------------
+# Film4k API Fetchers
+# ------------------------------------------------------------------
+async def fetch_film4k_channels() -> List[Dict[str, Any]]:
+    """Fetch and cache list of 200+ TV channels from Film4k."""
+    now = time.time()
+    if "channels" in _film4k_cache:
+        data, exp = _film4k_cache["channels"]
+        if now < exp:
+            return data
+
+    base_url = get_film4k_base_url()
+    cookie = get_film4k_cookie()
+    client = get_film4k_client()
+
+    headers = {"Cookie": cookie}
+    try:
+        r = await client.get(f"{base_url}/api/tv/channels", headers=headers)
+        if r.status_code == 200:
+            data = r.json().get("channels", [])
+            # Enrich with category and clean names
+            for ch in data:
+                ch["category"] = categorize_channel(ch)
+            _film4k_cache["channels"] = (data, now + CHANNELS_CACHE_TTL)
+            return data
+        else:
+            logger.warning(f"Film4k channels API returned status {r.status_code}: {r.text[:200]}")
+    except Exception as e:
+        logger.error(f"Error fetching Film4k channels: {e}")
+
+    # Fallback to stale cache if available
+    if "channels" in _film4k_cache:
+        return _film4k_cache["channels"][0]
+    return []
+
+
+async def fetch_film4k_events() -> List[Dict[str, Any]]:
+    """Fetch and cache list of live sports / streaming events from Film4k."""
+    now = time.time()
+    if "events" in _film4k_cache:
+        data, exp = _film4k_cache["events"]
+        if now < exp:
+            return data
+
+    base_url = get_film4k_base_url()
+    cookie = get_film4k_cookie()
+    client = get_film4k_client()
+
+    headers = {"Cookie": cookie}
+    try:
+        r = await client.get(f"{base_url}/api/tv/events", headers=headers)
+        if r.status_code == 200:
+            data = r.json().get("events", [])
+            _film4k_cache["events"] = (data, now + EVENTS_CACHE_TTL)
+            return data
+        else:
+            logger.warning(f"Film4k events API returned status {r.status_code}: {r.text[:200]}")
+    except Exception as e:
+        logger.error(f"Error fetching Film4k events: {e}")
+
+    if "events" in _film4k_cache:
+        return _film4k_cache["events"][0]
+    return []
+
+
+async def resolve_film4k_stream(item_id: str) -> Optional[Dict[str, Any]]:
+    """Resolve live HLS stream URL for a TV channel or event ID."""
+    clean_id = item_id.replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
+    cache_key = f"stream:{clean_id}"
+    now = time.time()
+
+    if cache_key in _film4k_cache:
+        data, exp = _film4k_cache[cache_key]
+        if now < exp:
+            return data
+
+    base_url = get_film4k_base_url()
+    cookie = get_film4k_cookie()
+    client = get_film4k_client()
+
+    headers = {"Cookie": cookie}
+    try:
+        r = await client.get(f"{base_url}/api/tv/{urllib.parse.quote(clean_id)}/stream", headers=headers)
+        if r.status_code == 200:
+            data = r.json()
+            if data and data.get("url"):
+                _film4k_cache[cache_key] = (data, now + STREAM_CACHE_TTL)
+                return data
+            logger.warning(f"Film4k stream response missing URL for {clean_id}: {data}")
+        elif r.status_code == 401:
+            logger.error(f"Film4k authorization failed (401). Please update FILM4K_COOKIE.")
+        else:
+            logger.warning(f"Film4k stream API returned {r.status_code} for {clean_id}: {r.text[:200]}")
+    except Exception as e:
+        logger.error(f"Error resolving Film4k stream for {clean_id}: {e}")
+
+    return None
+
+
+# ------------------------------------------------------------------
+# Stremio Manifest
+# ------------------------------------------------------------------
+def get_film4k_manifest(api_key: str = "") -> Dict[str, Any]:
+    show_on_board = getattr(Config, "ENABLE_BOARD_FILM4K_TV", True)
+    main_req = not show_on_board
+
+    return {
+        "id": "com.stremio.film4k.tv",
+        "version": "1.0.0",
+        "name": "Film4k - Kênh Truyền Hình & Trực Tiếp TV",
+        "description": "Xem 200+ kênh truyền hình Việt Nam, K+, Thể Thao, Quốc Tế & Sự Kiện Thể Thao Trực Tiếp Full HD từ Film4k.net",
+        "logo": "https://film4k.net/favicon-32.png",
+        "resources": [
+            "catalog",
+            {
+                "name": "meta",
+                "types": ["tv"],
+                "idPrefixes": ["film4k:"]
+            },
+            {
+                "name": "stream",
+                "types": ["tv"],
+                "idPrefixes": ["film4k:"]
+            }
+        ],
+        "types": ["tv"],
+        "catalogs": [
+            {
+                "type": "tv",
+                "id": "film4k_tv_channels",
+                "name": "Film4k - Kênh Truyền Hình (Live TV)",
+                "extra": [
+                    {"name": "genre", "options": GENRE_OPTIONS, "isRequired": main_req},
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            },
+            {
+                "type": "tv",
+                "id": "film4k_tv_events",
+                "name": "Film4k - Sự Kiện & Thể Thao Trực Tiếp",
+                "extra": [
+                    {"name": "search", "isRequired": False},
+                    {"name": "skip", "isRequired": False}
+                ]
+            }
+        ],
+        "behaviorHints": {
+            "configurable": False,
+            "configurationRequired": False
+        }
+    }
+
+
+# ------------------------------------------------------------------
+# Manifest Endpoints
+# ------------------------------------------------------------------
+@film4k_router.get("/manifest.json")
+@film4k_router.get("/film4k/manifest.json")
+@film4k_router.get("/{api_key}/film4k/manifest.json")
+async def manifest_endpoint(api_key: str = ""):
+    if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
+        raise HTTPException(status_code=404, detail="Film4k Live TV is disabled")
+    return JSONResponse(get_film4k_manifest(api_key))
+
+
+# ------------------------------------------------------------------
+# Catalog Endpoints
+# ------------------------------------------------------------------
+@film4k_router.get("/catalog/{type}/{id}.json")
+@film4k_router.get("/catalog/{type}/{id}/{extra}.json")
+@film4k_router.get("/film4k/catalog/{type}/{id}.json")
+@film4k_router.get("/film4k/catalog/{type}/{id}/{extra}.json")
+@film4k_router.get("/{api_key}/film4k/catalog/{type}/{id}.json")
+@film4k_router.get("/{api_key}/film4k/catalog/{type}/{id}/{extra}.json")
+async def catalog_endpoint(
+    type: str,
+    id: str,
+    extra: Optional[str] = None,
+    api_key: str = ""
+):
+    if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
+        return JSONResponse({"metas": []})
+
+    # Parse extra params
+    genre_filter = None
+    search_query = None
+    skip_val = 0
+
+    if extra:
+        pairs = extra.split("&")
+        for p in pairs:
+            if "=" in p:
+                k, v = p.split("=", 1)
+                v = urllib.parse.unquote(v).strip()
+                if k == "genre":
+                    genre_filter = v
+                elif k == "search":
+                    search_query = v
+                elif k == "skip":
+                    try:
+                        skip_val = int(v)
+                    except ValueError:
+                        skip_val = 0
+
+    metas = []
+
+    # 1. Live Events Catalog
+    if id == "film4k_tv_events":
+        events = await fetch_film4k_events()
+        for ev in events:
+            ev_id = ev.get("id", "")
+            title = ev.get("title") or "Sự kiện trực tiếp"
+            image = ev.get("image") or "https://film4k.net/favicon-32.png"
+            status = ev.get("status") or "live"
+            
+            # Search filter
+            if search_query:
+                norm_q = normalize_text(search_query)
+                norm_title = normalize_text(title)
+                if norm_q not in norm_title:
+                    continue
+
+            status_badge = "🔴 LIVE NOW" if status == "live" else ("⏳ Sắp diễn ra" if status == "upcoming" else "⏹️ Đã kết thúc")
+            desc = f"{status_badge}\nSự kiện thể thao & trực tiếp từ Film4k."
+            if ev.get("begin"):
+                try:
+                    import datetime
+                    t_str = datetime.datetime.fromtimestamp(ev["begin"]).strftime("%H:%M %d/%m/%Y")
+                    desc += f"\nBắt đầu: {t_str}"
+                except Exception:
+                    pass
+
+            metas.append({
+                "id": f"film4k:event:{ev_id}",
+                "type": "tv",
+                "name": f"[{status.upper()}] {title}",
+                "poster": image,
+                "background": image,
+                "logo": image,
+                "description": desc,
+                "genres": ["Thể Thao", "Trực Tiếp", "Sự Kiện"],
+                "posterShape": "landscape",
+            })
+
+    # 2. TV Channels Catalog
+    else:
+        channels = await fetch_film4k_channels()
+        for ch in channels:
+            ch_id = ch.get("id", "")
+            name = ch.get("name") or ch_id
+            logo = ch.get("logo") or "https://film4k.net/favicon-32.png"
+            category = ch.get("category") or "Kênh Khác"
+            number = ch.get("number")
+
+            # Genre filter
+            if genre_filter and genre_filter != "Tất cả":
+                if genre_filter != category:
+                    continue
+
+            # Search filter
+            if search_query:
+                norm_q = normalize_text(search_query)
+                norm_name = normalize_text(name)
+                norm_id = normalize_text(ch_id)
+                if norm_q not in norm_name and norm_q not in norm_id:
+                    continue
+
+            number_prefix = f"#{number} " if number else ""
+            desc = f"Kênh {name} ({category})\nNguồn phát: Film4k.net HLS Full HD / HD"
+
+            metas.append({
+                "id": f"film4k:channel:{ch_id}",
+                "type": "tv",
+                "name": f"{number_prefix}{name}",
+                "poster": logo,
+                "background": logo,
+                "logo": logo,
+                "description": desc,
+                "genres": [category, "Truyền Hình"],
+                "posterShape": "square",
+            })
+
+    # Apply pagination skip
+    if skip_val > 0 and skip_val < len(metas):
+        metas = metas[skip_val:]
+
+    return JSONResponse({"metas": metas})
+
+
+# ------------------------------------------------------------------
+# Meta Endpoints
+# ------------------------------------------------------------------
+@film4k_router.get("/meta/{type}/{id}.json")
+@film4k_router.get("/film4k/meta/{type}/{id}.json")
+@film4k_router.get("/{api_key}/film4k/meta/{type}/{id}.json")
+async def meta_endpoint(type: str, id: str, api_key: str = ""):
+    if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
+        raise HTTPException(status_code=404, detail="Film4k Live TV is disabled")
+
+    is_event = "event:" in id
+    clean_id = id.replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
+
+    if is_event:
+        events = await fetch_film4k_events()
+        found = next((e for e in events if e.get("id") == clean_id), None)
+        if not found:
+            # Generate generic meta
+            return JSONResponse({
+                "meta": {
+                    "id": id,
+                    "type": "tv",
+                    "name": f"Sự kiện {clean_id}",
+                    "poster": "https://film4k.net/favicon-32.png",
+                    "description": "Sự kiện trực tiếp Film4k",
+                    "genres": ["Thể Thao", "Trực Tiếp"]
+                }
+            })
+        
+        title = found.get("title") or clean_id
+        image = found.get("image") or "https://film4k.net/favicon-32.png"
+        status = found.get("status") or "live"
+        return JSONResponse({
+            "meta": {
+                "id": id,
+                "type": "tv",
+                "name": title,
+                "poster": image,
+                "background": image,
+                "logo": image,
+                "description": f"🔴 Sự kiện trực tiếp: {title}\nTrạng thái: {status.upper()}",
+                "genres": ["Thể Thao", "Trực Tiếp"],
+                "posterShape": "landscape"
+            }
+        })
+    else:
+        channels = await fetch_film4k_channels()
+        found = next((c for c in channels if c.get("id") == clean_id), None)
+        name = found.get("name") if found else clean_id
+        logo = found.get("logo") if found else "https://film4k.net/favicon-32.png"
+        category = found.get("category") if found else "Kênh Truyền Hình"
+        number = found.get("number") if found else ""
+
+        return JSONResponse({
+            "meta": {
+                "id": id,
+                "type": "tv",
+                "name": name,
+                "poster": logo,
+                "background": logo,
+                "logo": logo,
+                "description": f"Kênh truyền hình {name} (#{number})\nThể loại: {category}\nNguồn phát trực tiếp tốc độ cao Film4k",
+                "genres": [category, "Truyền Hình"],
+                "posterShape": "square"
+            }
+        })
+
+
+# ------------------------------------------------------------------
+# Stream Endpoints (Stremio & Direct)
+# ------------------------------------------------------------------
+@film4k_router.get("/stream/{type}/{id}.json")
+@film4k_router.get("/film4k/stream/{type}/{id}.json")
+@film4k_router.get("/{api_key}/film4k/stream/{type}/{id}.json")
+async def stream_endpoint(type: str, id: str, api_key: str = ""):
+    if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
+        return JSONResponse({"streams": []})
+
+    clean_id = id.replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
+    stream_data = await resolve_film4k_stream(clean_id)
+
+    if not stream_data or not stream_data.get("url"):
+        return JSONResponse({
+            "streams": [
+                {
+                    "name": "Film4k Live TV",
+                    "title": f"⚠️ Không lấy được luồng phát (401/Expired Cookie hoặc kênh offline)\nVui lòng cập nhật FILM4K_COOKIE",
+                    "url": "https://film4k.net/tv"
+                }
+            ]
+        })
+
+    stream_url = stream_data["url"]
+    
+    # Check if channel name is known
+    channels = await fetch_film4k_channels()
+    ch = next((c for c in channels if c.get("id") == clean_id), None)
+    ch_name = ch.get("name") if ch else clean_id
+
+    stream_obj: Dict[str, Any] = {
+        "name": "Film4k Live [HD]",
+        "title": f"📺 {ch_name}\n[HLS Live Stream • Tốc độ cao]",
+        "url": stream_url,
+        "behaviorHints": {
+            "notWebReady": False,
+            "proxyHeaders": {
+                "request": {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                    "Referer": "https://film4k.net/tv"
+                }
+            }
+        }
+    }
+
+    # Pass DRM ClearKeys if provided by source
+    if stream_data.get("clearKeys"):
+        stream_obj["behaviorHints"]["clearKeys"] = stream_data["clearKeys"]
+    if stream_data.get("clearKey"):
+        stream_obj["behaviorHints"]["clearKey"] = stream_data["clearKey"]
+
+    return JSONResponse({"streams": [stream_obj]})
+
+
+# ------------------------------------------------------------------
+# Dynamic Live Stream Redirector (/film4k/live/{id}.m3u8)
+# ------------------------------------------------------------------
+@film4k_router.get("/live/{id}.m3u8")
+@film4k_router.get("/film4k/live/{id}.m3u8")
+@film4k_router.get("/{api_key}/film4k/live/{id}.m3u8")
+async def live_stream_redirect(id: str, api_key: str = ""):
+    """Redirect to the freshest signed HLS stream on the fly."""
+    clean_id = id.replace(".m3u8", "").replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
+    stream_data = await resolve_film4k_stream(clean_id)
+
+    if not stream_data or not stream_data.get("url"):
+        raise HTTPException(status_code=404, detail="Stream not found or expired token")
+
+    return RedirectResponse(url=stream_data["url"], status_code=302)
+
+
+# ------------------------------------------------------------------
+# IPTV M3U Playlist Endpoint (/film4k/playlist.m3u)
+# ------------------------------------------------------------------
+@film4k_router.get("/playlist.m3u")
+@film4k_router.get("/channels.m3u")
+@film4k_router.get("/film4k/playlist.m3u")
+@film4k_router.get("/film4k/channels.m3u")
+@film4k_router.get("/{api_key}/film4k/playlist.m3u")
+@film4k_router.get("/{api_key}/film4k/channels.m3u")
+async def m3u_playlist_endpoint(request: Request, api_key: str = ""):
+    """Generate standard M3U IPTV playlist for TiviMate, VLC, OTT Navigator, Kodi, etc."""
+    if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
+        raise HTTPException(status_code=404, detail="Film4k Live TV is disabled")
+
+    # Base host for stream redirect links
+    base_addon = getattr(Config, "ADDON_URL", "").rstrip("/")
+    if not base_addon or base_addon.startswith("http://localhost"):
+        # Use Host header from incoming request
+        scheme = request.url.scheme
+        host = request.headers.get("host") or f"127.0.0.1:{Config.PORT}"
+        base_addon = f"{scheme}://{host}"
+
+    key_part = f"/{api_key}" if api_key else ""
+    
+    channels = await fetch_film4k_channels()
+    events = await fetch_film4k_events()
+
+    lines = [
+        "#EXTM3U x-tvg-url=\"\"",
+        "#PLAYLIST:Film4k Live TV & Sports (200+ Channels)",
+    ]
+
+    # Add Live Events
+    for ev in events:
+        ev_id = ev.get("id", "")
+        title = ev.get("title") or "Sự kiện trực tiếp"
+        logo = ev.get("image") or ""
+        status = (ev.get("status") or "live").upper()
+        stream_link = f"{base_addon}{key_part}/film4k/live/{ev_id}.m3u8"
+
+        lines.append(
+            f'#EXTINF:-1 tvg-id="{ev_id}" tvg-name="{title}" tvg-logo="{logo}" group-title="⚽ Sự Kiện Trực Tiếp",[{status}] {title}'
+        )
+        lines.append(stream_link)
+
+    # Add Channels
+    for ch in channels:
+        ch_id = ch.get("id", "")
+        name = ch.get("name") or ch_id
+        logo = ch.get("logo") or ""
+        number = ch.get("number") or ""
+        category = ch.get("category") or "Kênh Khác"
+        stream_link = f"{base_addon}{key_part}/film4k/live/{ch_id}.m3u8"
+
+        lines.append(
+            f'#EXTINF:-1 tvg-id="{ch_id}" tvg-name="{name}" tvg-logo="{logo}" tvg-chno="{number}" group-title="{category}",{name}'
+        )
+        lines.append(stream_link)
+
+    m3u_content = "\n".join(lines)
+    return Response(
+        content=m3u_content,
+        media_type="application/vnd.apple.mpegurl",
+        headers={
+            "Content-Disposition": 'inline; filename="film4k_tv.m3u"',
+            "Access-Control-Allow-Origin": "*",
+        }
+    )
+
+
+# ------------------------------------------------------------------
+# Cookie Update & Status API
+# ------------------------------------------------------------------
+@film4k_router.get("/status")
+@film4k_router.get("/film4k/status")
+async def film4k_status():
+    channels = await fetch_film4k_channels()
+    events = await fetch_film4k_events()
+    cookie = get_film4k_cookie()
+    
+    return JSONResponse({
+        "status": "online" if len(channels) > 0 else "offline",
+        "channels_count": len(channels),
+        "events_count": len(events),
+        "cookie_configured": bool(cookie),
+        "cookie_preview": cookie[:30] + "..." if cookie else "None",
+        "cache_entries": len(_film4k_cache)
+    })
+
+
+# ------------------------------------------------------------------
+# Web TV Player UI (/film4k/tv or /film4k/player)
+# ------------------------------------------------------------------
+@film4k_router.get("/tv", response_class=HTMLResponse)
+@film4k_router.get("/player", response_class=HTMLResponse)
+@film4k_router.get("/film4k/tv", response_class=HTMLResponse)
+@film4k_router.get("/film4k/player", response_class=HTMLResponse)
+async def web_tv_player():
+    """Ultra-modern Web Live TV Player with HLS.js, Channel Switcher, and Search."""
+    channels = await fetch_film4k_channels()
+    events = await fetch_film4k_events()
+    
+    channels_json = json.dumps(channels, ensure_ascii=False)
+    events_json = json.dumps(events, ensure_ascii=False)
+
+    html = f"""<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Film4k Live TV - Xem 200+ Kênh Truyền Hình Miễn Phí</title>
+  <link rel="icon" href="https://film4k.net/favicon-32.png">
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {{
+      --bg: #090a0f;
+      --card-bg: #12141c;
+      --card-hover: #1c202d;
+      --primary: #3b82f6;
+      --primary-glow: rgba(59, 130, 246, 0.4);
+      --accent: #10b981;
+      --text: #f3f4f6;
+      --text-dim: #9ca3af;
+      --border: rgba(255, 255, 255, 0.08);
+      --radius: 12px;
+    }}
+    * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }}
+    body {{ background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }}
+    
+    header {{
+      background: rgba(18, 20, 28, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }}
+    .brand {{ display: flex; align-items: center; gap: 12px; font-weight: 800; font-size: 1.25rem; color: #fff; text-decoration: none; }}
+    .brand img {{ width: 32px; height: 32px; border-radius: 6px; }}
+    .badge-live {{ background: #ef4444; color: #fff; font-size: 0.7rem; font-weight: 700; padding: 2px 8px; border-radius: 20px; animation: pulse 2s infinite; }}
+    @keyframes pulse {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.5; }} }}
+
+    .main-layout {{ display: flex; flex: 1; height: calc(100vh - 65px); overflow: hidden; }}
+    
+    /* Player Panel */
+    .player-section {{ flex: 1; display: flex; flex-direction: column; background: #000; position: relative; }}
+    .video-wrapper {{ flex: 1; position: relative; display: flex; align-items: center; justify-content: center; background: #000; }}
+    video {{ width: 100%; height: 100%; object-fit: contain; }}
+    .video-overlay {{
+      position: absolute; top: 16px; left: 16px; display: flex; align-items: center; gap: 10px;
+      background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 30px; border: 1px solid var(--border);
+    }}
+    .channel-info-bar {{ padding: 14px 20px; background: var(--card-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }}
+    .channel-title {{ font-size: 1.15rem; font-weight: 700; }}
+    .channel-meta {{ font-size: 0.85rem; color: var(--text-dim); margin-top: 2px; }}
+
+    /* Sidebar Channel List */
+    .sidebar {{ width: 420px; background: var(--card-bg); border-left: 1px solid var(--border); display: flex; flex-direction: column; }}
+    .sidebar-controls {{ padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; flex-direction: column; gap: 10px; }}
+    .search-box {{
+      width: 100%; background: #0a0c12; border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; color: #fff; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+    }}
+    .search-box:focus {{ border-color: var(--primary); }}
+    
+    .genre-scroll {{ display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }}
+    .genre-scroll::-webkit-scrollbar {{ display: none; }}
+    .genre-pill {{
+      padding: 5px 12px; border-radius: 20px; background: rgba(255, 255, 255, 0.05); font-size: 0.75rem;
+      font-weight: 600; color: var(--text-dim); cursor: pointer; white-space: nowrap; border: 1px solid transparent; transition: all 0.2s;
+    }}
+    .genre-pill:hover, .genre-pill.active {{ background: var(--primary); color: #fff; border-color: var(--primary-glow); }}
+
+    .channel-list {{ flex: 1; overflow-y: auto; padding: 10px; display: grid; grid-template-columns: 1fr; gap: 6px; }}
+    .channel-item {{
+      display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius); border: 1px solid transparent; cursor: pointer; transition: all 0.2s;
+    }}
+    .channel-item:hover {{ background: var(--card-hover); transform: translateY(-1px); }}
+    .channel-item.active {{ background: rgba(59, 130, 246, 0.15); border-color: var(--primary); }}
+    .channel-logo {{ width: 44px; height: 44px; border-radius: 8px; object-fit: contain; background: #000; padding: 4px; }}
+    .channel-fallback {{ width: 44px; height: 44px; border-radius: 8px; background: #222; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.8rem; color: #aaa; }}
+    .channel-details {{ flex: 1; min-width: 0; }}
+    .channel-name {{ font-size: 0.92rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+    .channel-cat {{ font-size: 0.75rem; color: var(--text-dim); }}
+
+    .btn {{
+      padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.8rem; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; transition: 0.2s;
+    }}
+    .btn-primary {{ background: var(--primary); color: #fff; }}
+    .btn-primary:hover {{ filter: brightness(1.1); }}
+    .btn-outline {{ background: transparent; border: 1px solid var(--border); color: var(--text); }}
+    .btn-outline:hover {{ background: rgba(255,255,255,0.08); }}
+
+    @media (max-width: 900px) {{
+      .main-layout {{ flex-direction: column; height: auto; }}
+      .player-section {{ height: 50vh; }}
+      .sidebar {{ width: 100%; height: 50vh; }}
+    }}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/dashboard" class="brand">
+      <img src="https://film4k.net/favicon-32.png" alt="Film4k">
+      <span>Film4k Live TV</span>
+      <span class="badge-live">LIVE</span>
+    </a>
+    <div style="display: flex; gap: 8px;">
+      <a href="/film4k/playlist.m3u" class="btn btn-outline" title="Tải file M3U cho TiviMate / VLC">📥 Tải M3U Playlist</a>
+      <a href="/dashboard" class="btn btn-primary">🎛️ Dashboard</a>
+    </div>
+  </header>
+
+  <div class="main-layout">
+    <div class="player-section">
+      <div class="video-wrapper">
+        <video id="video-player" controls autoplay playsinline></video>
+        <div id="video-overlay" class="video-overlay" style="display: none;">
+          <img id="overlay-logo" src="" style="width: 24px; height: 24px; object-fit: contain;">
+          <span id="overlay-title" style="font-size: 0.85rem; font-weight: 700;"></span>
+        </div>
+      </div>
+      <div class="channel-info-bar">
+        <div>
+          <div id="current-title" class="channel-title">Chọn một kênh để bắt đầu xem</div>
+          <div id="current-category" class="channel-meta">200+ Kênh Truyền Hình Trực Tiếp & Sự Kiện Thể Thao</div>
+        </div>
+        <button id="btn-copy-stream" class="btn btn-outline" onclick="copyCurrentStreamUrl()">🔗 Copy HLS URL</button>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="sidebar-controls">
+        <input type="text" id="search-input" class="search-box" placeholder="🔍 Tìm kiếm kênh (VTV, K+, HBO, Bóng đá...)..." oninput="renderChannels()">
+        <div class="genre-scroll" id="genre-container"></div>
+      </div>
+      <div class="channel-list" id="channel-list-container"></div>
+    </div>
+  </div>
+
+  <script>
+    const CHANNELS = {channels_json};
+    const EVENTS = {events_json};
+    let currentGenre = "Tất cả";
+    let activeItem = null;
+    let hls = null;
+    let currentStreamUrl = "";
+
+    const GENRES = [
+      "Tất cả", "Sự Kiện Trực Tiếp", "K+ Truyền Hình", "VTV", "HTV / HTVC",
+      "Thể Thao", "Phim & Điện Ảnh", "Thiếu Nhi & Hoạt Hình", "Khoa Học & Khám Phá",
+      "Tin Tức & Thời Sự", "Âm Nhạc & Giải Trí", "VTC", "Đài Địa Phương", "Kênh Quốc Tế & Tổng Hợp"
+    ];
+
+    function initGenres() {{
+      const container = document.getElementById("genre-container");
+      container.innerHTML = "";
+      GENRES.forEach(g => {{
+        const pill = document.createElement("div");
+        pill.className = `genre-pill ${{g === currentGenre ? "active" : ""}}`;
+        pill.innerText = g;
+        pill.onclick = () => {{
+          currentGenre = g;
+          document.querySelectorAll(".genre-pill").forEach(p => p.classList.remove("active"));
+          pill.classList.add("active");
+          renderChannels();
+        }};
+        container.appendChild(pill);
+      }});
+    }}
+
+    function renderChannels() {{
+      const query = document.getElementById("search-input").value.toLowerCase().trim();
+      const container = document.getElementById("channel-list-container");
+      container.innerHTML = "";
+
+      // List of items to show
+      let items = [];
+
+      // If Events or All
+      if (currentGenre === "Tất cả" || currentGenre === "Sự Kiện Trực Tiếp") {{
+        EVENTS.forEach(ev => {{
+          items.push({{
+            id: ev.id,
+            name: ev.title || "Sự kiện trực tiếp",
+            logo: ev.image,
+            category: "Sự Kiện Trực Tiếp",
+            isEvent: true,
+            status: ev.status || "live"
+          }});
+        }});
+      }}
+
+      if (currentGenre !== "Sự Kiện Trực Tiếp") {{
+        CHANNELS.forEach(ch => {{
+          if (currentGenre === "Tất cả" || ch.category === currentGenre) {{
+            items.push(ch);
+          }}
+        }});
+      }}
+
+      // Filter by search query
+      if (query) {{
+        items = items.filter(it => (it.name || "").toLowerCase().includes(query) || (it.id || "").toLowerCase().includes(query));
+      }}
+
+      items.forEach(it => {{
+        const div = document.createElement("div");
+        div.className = `channel-item ${{activeItem && activeItem.id === it.id ? "active" : ""}}`;
+        div.onclick = () => playItem(it);
+
+        const logoHtml = it.logo
+          ? `<img class="channel-logo" src="${{it.logo}}" alt="${{it.name}}" loading="lazy" onerror="this.outerHTML='<div class=\\'channel-fallback\\'>${{it.name.slice(0,3)}}</div>'">`
+          : `<div class="channel-fallback">${{it.name.slice(0,3)}}</div>`;
+
+        const badgeHtml = it.isEvent ? `<span style="color: #ef4444; font-weight: 700; font-size: 0.7rem;">[${{it.status.toUpperCase()}}]</span> ` : "";
+
+        div.innerHTML = `
+          ${{logoHtml}}
+          <div class="channel-details">
+            <div class="channel-name">${{badgeHtml}}${{it.name}}</div>
+            <div class="channel-cat">${{it.category}}</div>
+          </div>
+        `;
+        container.appendChild(div);
+      }});
+    }}
+
+    async function playItem(item) {{
+      activeItem = item;
+      renderChannels();
+
+      document.getElementById("current-title").innerText = item.name;
+      document.getElementById("current-category").innerText = item.category;
+
+      const video = document.getElementById("video-player");
+      const overlay = document.getElementById("video-overlay");
+      const overlayTitle = document.getElementById("overlay-title");
+      const overlayLogo = document.getElementById("overlay-logo");
+
+      overlayTitle.innerText = item.name;
+      if (item.logo) {{
+        overlayLogo.src = item.logo;
+        overlayLogo.style.display = "block";
+      }} else {{
+        overlayLogo.style.display = "none";
+      }}
+      overlay.style.display = "flex";
+
+      try {{
+        const r = await fetch(`/film4k/stream/tv/${{encodeURIComponent(item.id)}}.json`);
+        const data = await r.json();
+        const stream = data.streams && data.streams[0];
+
+        if (!stream || !stream.url) {{
+          alert("Không lấy được luồng phát của kênh này!");
+          return;
+        }}
+
+        currentStreamUrl = stream.url;
+        console.log("Playing stream URL:", currentStreamUrl);
+
+        if (Hls.isSupported()) {{
+          if (hls) hls.destroy();
+          hls = new Hls({{
+            enableWorker: true,
+            lowLatencyMode: true,
+          }});
+          hls.loadSource(currentStreamUrl);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.MANIFEST_PARSED, function() {{
+            video.play().catch(e => console.log("Autoplay blocked:", e));
+          }});
+          hls.on(Hls.Events.ERROR, function(event, data) {{
+            if (data.fatal) {{
+              switch(data.type) {{
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  hls.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  hls.recoverMediaError();
+                  break;
+                default:
+                  hls.destroy();
+                  break;
+              }}
+            }}
+          }});
+        }} else if (video.canPlayType("application/vnd.apple.mpegurl")) {{
+          video.src = currentStreamUrl;
+          video.play().catch(e => console.log("Autoplay blocked:", e));
+        }}
+      }} catch (err) {{
+        console.error("Error playing channel:", err);
+        alert("Lỗi khi kết nối luồng phát: " + err.message);
+      }}
+    }}
+
+    function copyCurrentStreamUrl() {{
+      if (!currentStreamUrl) {{
+        alert("Chưa chọn kênh phát!");
+        return;
+      }}
+      navigator.clipboard.writeText(currentStreamUrl);
+      const btn = document.getElementById("btn-copy-stream");
+      const old = btn.innerText;
+      btn.innerText = "✅ Đã copy!";
+      setTimeout(() => btn.innerText = old, 2000);
+    }}
+
+    // Initialize
+    initGenres();
+    renderChannels();
+    // Auto play first channel
+    if (CHANNELS.length > 0) {{
+      playItem(CHANNELS[0]);
+    }}
+  </script>
+</body>
+</html>
+"""
+    return HTMLResponse(content=html)

@@ -1,0 +1,1431 @@
+{
+  "channels": [
+    {
+      "id": "vtv1-hd",
+      "name": "VTV1 HD",
+      "number": "1",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv1-hd_165657381026.png"
+    },
+    {
+      "id": "vtv2-hd",
+      "name": "VTV2 HD",
+      "number": "2",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv2-hd_16565576783.png"
+    },
+    {
+      "id": "vtv3-hd",
+      "name": "VTV3 HD",
+      "number": "3",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv3-hd_165657381668.png"
+    },
+    {
+      "id": "vtv4-hd",
+      "name": "VTV4 HD",
+      "number": "4",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv4-hd_165657382285.png"
+    },
+    {
+      "id": "vtv5-hd",
+      "name": "VTV5 HD",
+      "number": "5",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv5-hd_165657382858.png"
+    },
+    {
+      "id": "vtv6-hd",
+      "name": "VTV6 HD",
+      "number": "15",
+      "logo": "https://images.fptplay53.net/media/channels/OTT_BAK/2026/06/07/vtv-6410x230_1780822225341.jpg"
+    },
+    {
+      "id": "vtv7-hd",
+      "name": "VTV7 HD",
+      "number": "7",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv7-hd_165655773646.png"
+    },
+    {
+      "id": "vtv8-hd",
+      "name": "VTV8 HD",
+      "number": "8",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv8-hd_165657496167.png"
+    },
+    {
+      "id": "vtv9-hd",
+      "name": "VTV9 HD",
+      "number": "9",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vtv9-hd_165657032671.png"
+    },
+    {
+      "id": "vtv10",
+      "name": "VTV10",
+      "number": "6",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/03/26/icon_channel_vtv10_17744918995.jpg"
+    },
+    {
+      "id": "vtv5-tay-nam-bo",
+      "name": "VTV5 Tây Nam Bộ",
+      "number": "10",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2023/04/03/icon_channel_vtv5-tay-nam-bo_168048836001.jpg"
+    },
+    {
+      "id": "htv7-hd",
+      "name": "HTV7 HD",
+      "number": "11",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htv7-hd_16565582880.png"
+    },
+    {
+      "id": "htv9-hd",
+      "name": "HTV9 HD",
+      "number": "12",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htv9-hd_165655829886.png"
+    },
+    {
+      "id": "thvl1",
+      "name": "Vĩnh Long 1 HD",
+      "number": "14",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_thvl1_165657384745.png"
+    },
+    {
+      "id": "vtv5-tay-nguyen",
+      "name": " VTV5 Tây Nguyên",
+      "number": "21",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2023/05/07/icon_channel_vtv5-tay-nguyen_168344480529.jpg"
+    },
+    {
+      "id": "hanoitv-1",
+      "name": "HaNoiTV 1",
+      "number": "29",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_hanoitv-1_165649238167.png"
+    },
+    {
+      "id": "hanoitv-2",
+      "name": "HaNoiTV 2",
+      "number": "30",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/02/27/icon_channel_hanoitv-2_177221027195.jpg"
+    },
+    {
+      "id": "asian-food-channel",
+      "name": "Asian Food Network HD",
+      "number": "33",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_asian-food-channel_165649221342.png"
+    },
+    {
+      "id": "outdoor-channel",
+      "name": "Outdoor Channel HD",
+      "number": "34",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_outdoor-channel_165649323545.png"
+    },
+    {
+      "id": "da-vinci-learning",
+      "name": "Da Vinci HD",
+      "number": "27",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_da-vinci-learning_165655659384.png"
+    },
+    {
+      "id": "fim360",
+      "name": "SCTV6",
+      "number": "36",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_fim360_165649256362.png"
+    },
+    {
+      "id": "htvc-the-thao",
+      "name": "HTV Thể Thao",
+      "number": "37",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-the-thao_165649315483.png"
+    },
+    {
+      "id": "france-24",
+      "name": "France 24",
+      "number": "40",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_france-24_165649308045.png"
+    },
+    {
+      "id": "arirang",
+      "name": "Arirang",
+      "number": "41",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_arirang_165655613785.png"
+    },
+    {
+      "id": "nhk-world-hd",
+      "name": "NHK World HD",
+      "number": "43",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_nhk-world-hd_165655732823.png"
+    },
+    {
+      "id": "channel-newsasia",
+      "name": "CNA",
+      "number": "44",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_channel-newsasia_165649295091.png"
+    },
+    {
+      "id": "tv5-monde",
+      "name": "TV5MONDE",
+      "number": "45",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_tv5-monde_165655762918.png"
+    },
+    {
+      "id": "dw",
+      "name": "DW HD",
+      "number": "46",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_dw_165649234541.png"
+    },
+    {
+      "id": "cnbc",
+      "name": "CNBC",
+      "number": "49",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/28/icon_channel_cnbc_176956915266.jpg"
+    },
+    {
+      "id": "kix",
+      "name": "KIX HD",
+      "number": "60",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/01/06/icon_channel_kix_173614548274.jpg"
+    },
+    {
+      "id": "vietnam-today",
+      "name": "Vietnam Today",
+      "number": "66",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/09/05/icon_channel_vietnam-today_175705565938.jpg"
+    },
+    {
+      "id": "vinh-long-2",
+      "name": "Vĩnh Long 2 HD",
+      "number": "67",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vinh-long-2_165657385615.png"
+    },
+    {
+      "id": "vinh-long-3",
+      "name": "Vĩnh Long 3 HD",
+      "number": "68",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vinh-long-3_165657386388.png"
+    },
+    {
+      "id": "vinh-long-4-hd",
+      "name": "Vĩnh Long 4 HD",
+      "number": "69",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_vinh-long-4-hd_165657387754.png"
+    },
+    {
+      "id": "quoc-phong-vn",
+      "name": "Quốc Phòng VN HD",
+      "number": "93",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_quoc-phong-vn_165647856201.png"
+    },
+    {
+      "id": "antv",
+      "name": "ANTV HD",
+      "number": "94",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_antv_165655612485.png"
+    },
+    {
+      "id": "htv5-bchannel",
+      "name": " HTV5 Bchannel",
+      "number": "96",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/04/09/icon_channel_htv5-bchannel_177575159133.jpg"
+    },
+    {
+      "id": "mien-tay-thdt2",
+      "name": "Miền Tây THĐT2",
+      "number": "98",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_mien-tay-thdt2_165666993738.png"
+    },
+    {
+      "id": "htv1",
+      "name": "HTV1",
+      "number": "102",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htv1_165655706945.png"
+    },
+    {
+      "id": "htv2",
+      "name": "HTV2 HD",
+      "number": "103",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htv2_165657612334.png"
+    },
+    {
+      "id": "htv3",
+      "name": "HTV3",
+      "number": "104",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htv3_165655827991.png"
+    },
+    {
+      "id": "htvc-plus",
+      "name": "HTVC Plus",
+      "number": "105",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-plus_165657613324.png"
+    },
+    {
+      "id": "htvc-du-lich",
+      "name": "HTVC Du Lịch",
+      "number": "106",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-du-lich_165649303894.png"
+    },
+    {
+      "id": "htvc-phu-nu",
+      "name": "HTVC Phụ Nữ",
+      "number": "107",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-phu-nu_165649324998.png"
+    },
+    {
+      "id": "htvc-gia-dinh",
+      "name": "HTVC Gia Đình",
+      "number": "108",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-gia-dinh_165649309084.png"
+    },
+    {
+      "id": "htv4",
+      "name": "HTV4",
+      "number": "109",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/04/11/icon_channel_htv4_177584830716.jpg"
+    },
+    {
+      "id": "htvc-thuan-viet-hd",
+      "name": "HTVC Thuần Việt HD",
+      "number": "111",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2023/04/10/icon_channel_htvc-thuan-viet-hd_168110078414.jpg"
+    },
+    {
+      "id": "htvc-phim",
+      "name": "HTVC Phim HD",
+      "number": "112",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-phim_165649310755.png"
+    },
+    {
+      "id": "htvc-ca-nhac",
+      "name": "HTVC Ca nhạc",
+      "number": "113",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_htvc-ca-nhac_165649309816.png"
+    },
+    {
+      "id": "an-giang",
+      "name": "An Giang 2 HD",
+      "number": "114",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/29/icon_channel_an-giang_175372455025.jpg"
+    },
+    {
+      "id": "an-giang-3",
+      "name": "An Giang 3 HD",
+      "number": "115",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/11/15/icon_channel_an-giang-3_176314756942.jpg"
+    },
+    {
+      "id": "bac-ninh-1",
+      "name": "Bắc Ninh HD",
+      "number": "117",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/14/bac-ninh_1752460891250.jpg"
+    },
+    {
+      "id": "gia-lai-1",
+      "name": "Gia Lai",
+      "number": "122",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/15/icon_channel_gia-lai-1_175256597893.jpg"
+    },
+    {
+      "id": "lam-dong-2",
+      "name": "Lâm Đồng 2",
+      "number": "125",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/10/icon_channel_lam-dong-2_176798017441.jpg"
+    },
+    {
+      "id": "ca-mau",
+      "name": "Cà Mau HD",
+      "number": "129",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_ca-mau_165655821089.png"
+    },
+    {
+      "id": "can-tho",
+      "name": "Cần Thơ 1",
+      "number": "130",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/10/icon_channel_can-tho_176797976721.jpg"
+    },
+    {
+      "id": "cao-bang",
+      "name": "Cao Bằng",
+      "number": "131",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_cao-bang_165647577645.png"
+    },
+    {
+      "id": "da-nang-1",
+      "name": "Đà Nẵng 1 HD",
+      "number": "132",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/29/icon_channel_da-nang-1_175372497803.jpg"
+    },
+    {
+      "id": "da-nang-2",
+      "name": "Đà Nẵng 2 HD",
+      "number": "133",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/29/icon_channel_da-nang-2_175372504187.jpg"
+    },
+    {
+      "id": "dak-lak",
+      "name": "Đăk Lăk",
+      "number": "134",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_dak-lak_165655700424.png"
+    },
+    {
+      "id": "dien-bien",
+      "name": "Điện Biên",
+      "number": "135",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_dien-bien_165655822623.png"
+    },
+    {
+      "id": "dong-nai-1",
+      "name": "Đồng Nai 1 HD",
+      "number": "136",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/14/icon_channel_dong-nai-1_176832414564.jpg"
+    },
+    {
+      "id": "dong-nai-2",
+      "name": "Đồng Nai 2 HD",
+      "number": "137",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/14/icon_channel_dong-nai-2_176832431185.jpg"
+    },
+    {
+      "id": "dong-thap",
+      "name": "Đồng Tháp 1",
+      "number": "138",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/29/icon_channel_dong-thap_175372506849.jpg"
+    },
+    {
+      "id": "ha-tinh",
+      "name": "Hà Tĩnh HD",
+      "number": "142",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/05/23/icon_channel_ha-tinh_174797217734.jpg"
+    },
+    {
+      "id": "hai-phong",
+      "name": "Hải Phòng HD",
+      "number": "144",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_hai-phong_165655891473.png"
+    },
+    {
+      "id": "hai-phong-3",
+      "name": "Hải Phòng 3",
+      "number": "145",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/01/icon_channel_hai-phong-3_17672016022.jpg"
+    },
+    {
+      "id": "can-tho-2",
+      "name": "Cần Thơ 2",
+      "number": "146",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/10/icon_channel_can-tho-2_176798000171.jpg"
+    },
+    {
+      "id": "thua-thien-hue",
+      "name": "Thừa Thiên Huế",
+      "number": "148",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/03/06/icon_channel_thua-thien-hue_174125217218.jpg"
+    },
+    {
+      "id": "hung-yen",
+      "name": "Hưng Yên",
+      "number": "149",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_hung-yen_165649316692.png"
+    },
+    {
+      "id": "khanh-hoa",
+      "name": "Khánh Hòa HD",
+      "number": "150",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_khanh-hoa_165655831351.png"
+    },
+    {
+      "id": "an-giang-1",
+      "name": "An Giang 1 HD",
+      "number": "151",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/15/icon_channel_an-giang-1_175256667973.jpg"
+    },
+    {
+      "id": "quang-ngai-2",
+      "name": "Quảng Ngãi TV2",
+      "number": "152",
+      "logo": "https://images.fptplay53.net/media/channels/OTT_BAK/2026/06/01/quang-ngai2410x230_1780278469144.jpg"
+    },
+    {
+      "id": "lai-chau",
+      "name": "Lai Châu HD",
+      "number": "153",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_lai-chau_165649245279.png"
+    },
+    {
+      "id": "lam-dong",
+      "name": "Lâm Đồng 1",
+      "number": "154",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/10/icon_channel_lam-dong_176798018449.jpg"
+    },
+    {
+      "id": "lang-son",
+      "name": "Lạng Sơn",
+      "number": "155",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_lang-son_165658527667.png"
+    },
+    {
+      "id": "lao-cai",
+      "name": "Lào Cai",
+      "number": "156",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_lao-cai_165655834795.png"
+    },
+    {
+      "id": "tay-ninh",
+      "name": "Tây Ninh ",
+      "number": "157",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/01/icon_channel_tay-ninh_176720143242.jpg"
+    },
+    {
+      "id": "nghe-an",
+      "name": "Nghệ An",
+      "number": "159",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_nghe-an_165649322667.png"
+    },
+    {
+      "id": "ninh-binh",
+      "name": "Ninh Bình",
+      "number": "160",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_ninh-binh_16564926022.png"
+    },
+    {
+      "id": "khanh-hoa-1",
+      "name": "Khánh Hòa 1",
+      "number": "161",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/11/icon_channel_khanh-hoa-1_175222872302.jpg"
+    },
+    {
+      "id": "phu-tho",
+      "name": "Phú Thọ HD",
+      "number": "162",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_phu-tho_165655747761.png"
+    },
+    {
+      "id": "quang-ngai-1",
+      "name": "Quảng Ngãi TV1",
+      "number": "166",
+      "logo": "https://images.fptplay53.net/media/channels/OTT_BAK/2026/06/01/quang-ngai1410x230_1780278586688.jpg"
+    },
+    {
+      "id": "quang-ninh-1",
+      "name": "Quảng Ninh 1",
+      "number": "167",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_quang-ninh-1_16565586222.png"
+    },
+    {
+      "id": "quang-ninh-3",
+      "name": "Quảng Ninh 3",
+      "number": "168",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_quang-ninh-3_165656039913.png"
+    },
+    {
+      "id": "quang-tri",
+      "name": "Quảng Trị",
+      "number": "169",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/07/29/icon_channel_quang-tri_175375981485.jpg"
+    },
+    {
+      "id": "can-tho-3",
+      "name": "Cần Thơ 3",
+      "number": "170",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/10/icon_channel_can-tho-3_176798001449.jpg"
+    },
+    {
+      "id": "son-la",
+      "name": "Sơn La",
+      "number": "171",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_son-la_165655885735.png"
+    },
+    {
+      "id": "thai-nguyen",
+      "name": "Thái Nguyên HD",
+      "number": "174",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2026/01/14/icon_channel_thai-nguyen_176832438296.jpg"
+    },
+    {
+      "id": "thanh-hoa",
+      "name": "Thanh Hóa",
+      "number": "175",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_thanh-hoa_165657035591.png"
+    },
+    {
+      "id": "vinh-long-5",
+      "name": " Vĩnh Long 5 HD",
+      "number": "177",
+      "logo": "https://images.fptplay53.net/media/channels/OTT/2025/09/05/icon_channel_vinh-long-5_175704614394.jpg"
+    },
+    {
+      "id": "tuyen-quang",
+      "name": "Tuyên Quang HD",
+      "number": "178",
+      "logo": "https://images.fptplay53.net/media/channels/icon_channel_tuyen-quang_165656041779.png"
+    },
+    {
+      "id": "c1782834890288_0",
+      "name": "AFN",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908972_2",
+      "name": "NHK World",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908973_3",
+      "name": "Outdoor Channel",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908973_4",
+      "name": "Kix",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908974_5",
+      "name": "DW",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426376_5",
+      "name": "TVB Việt Nam",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908975_6",
+      "name": "Arirang",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426377_6",
+      "name": "Warner TV",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908975_7",
+      "name": "France 24 English",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426382_7",
+      "name": "HBO",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908976_8",
+      "name": "TV5 Monde",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426383_8",
+      "name": "CinemaWorld",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426384_9",
+      "name": "AXN",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834908977_10",
+      "name": "CNA",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426385_10",
+      "name": "Cinemax",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426385_11",
+      "name": "Cartoon Network",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426386_12",
+      "name": "Cartoonito",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426387_13",
+      "name": "BBC Cbeebies",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426389_14",
+      "name": "Dmax",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426390_15",
+      "name": "Dreamworks",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426391_16",
+      "name": "Davinci",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426392_17",
+      "name": "Kix",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426393_18",
+      "name": "Animal-planet",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426393_19",
+      "name": "Outdoor HD",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426396_23",
+      "name": "Travel Living Channel",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426396_24",
+      "name": "Discovery Asia",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426397_25",
+      "name": "Fashion TV",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426399_28",
+      "name": "KBS World",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426399_29",
+      "name": "NHK World Japan",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426403_31",
+      "name": "France 24",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426403_32",
+      "name": "CNBC SD",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426406_34",
+      "name": "DW - Deutsche Welle",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426409_35",
+      "name": "CNN",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426411_36",
+      "name": "Arirang",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426412_37",
+      "name": "Bloomberg",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426412_38",
+      "name": "BBC Lifestyle",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426413_39",
+      "name": "BBC World News",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426413_40",
+      "name": "BBC Earth",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1783044426414_41",
+      "name": "ABC Australia",
+      "number": "",
+      "logo": "",
+      "group": "Quốc Tế"
+    },
+    {
+      "id": "c1782834931943_0",
+      "name": "An Viên",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931965_15",
+      "name": "Cao Bằng",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931967_16",
+      "name": "Đà Nẵng 1",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931968_17",
+      "name": "Đà Nẵng 2",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931968_18",
+      "name": "Đắk Lắk",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931971_19",
+      "name": "Điện Biên",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931972_20",
+      "name": "Đồng Nai 1",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931972_21",
+      "name": "Đồng Nai 2",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931980_29",
+      "name": "Hà Tĩnh",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931982_31",
+      "name": "Hải Phòng",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931984_34",
+      "name": "Huế",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931985_35",
+      "name": "Hưng Yên",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931986_36",
+      "name": "Khánh Hòa",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931995_39",
+      "name": "Lai Châu",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931996_40",
+      "name": "Lâm Đồng",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931997_41",
+      "name": "Lạng Sơn",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931997_42",
+      "name": "Lào Cai",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834931999_45",
+      "name": "Nghệ An",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932000_46",
+      "name": "Ninh Bình",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932001_48",
+      "name": "Phú Thọ",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932003_52",
+      "name": "Quảng Ngãi",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932004_53",
+      "name": "Quảng Ninh 1",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932005_54",
+      "name": "Quảng Ninh 3",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932006_55",
+      "name": "Quảng Trị",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932007_57",
+      "name": "Sơn La",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932009_60",
+      "name": "Thái Nguyên",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932010_61",
+      "name": "Thanh Hóa",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932011_63",
+      "name": "Tuyên Quang",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932012_65",
+      "name": "THVL2",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1782834932013_66",
+      "name": "THVL3",
+      "number": "",
+      "logo": "",
+      "group": "Địa Phương"
+    },
+    {
+      "id": "c1783044426362_0",
+      "name": "Box Movie 1",
+      "number": "",
+      "logo": "",
+      "group": "In The Box"
+    },
+    {
+      "id": "c1783044426365_1",
+      "name": "Hollywood Classics",
+      "number": "",
+      "logo": "",
+      "group": "In The Box"
+    },
+    {
+      "id": "c1783044426371_2",
+      "name": "Box Hits",
+      "number": "",
+      "logo": "",
+      "group": "In The Box"
+    },
+    {
+      "id": "c1783044426372_3",
+      "name": "Music Box",
+      "number": "",
+      "logo": "",
+      "group": "In The Box"
+    },
+    {
+      "id": "c1783044426375_4",
+      "name": "Woman",
+      "number": "",
+      "logo": "",
+      "group": "In The Box"
+    },
+    {
+      "id": "c1782834908977_9",
+      "name": "CNBC",
+      "number": "",
+      "logo": "",
+      "group": "Kinh Tế"
+    },
+    {
+      "id": "c155",
+      "name": "DongThapTV",
+      "number": "",
+      "logo": "",
+      "group": "VTVPrime"
+    },
+    {
+      "id": "c151",
+      "name": "CaoBangTV",
+      "number": "",
+      "logo": "",
+      "group": "ThingNet"
+    },
+    {
+      "id": "c167",
+      "name": "TV360+1",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c168",
+      "name": "TV360+2",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c169",
+      "name": "TV360+3",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c170",
+      "name": "TV360+4",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c171",
+      "name": "TV360+5",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c172",
+      "name": "TV360+6",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c173",
+      "name": "TV360+7",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c174",
+      "name": "TV360+8",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c175",
+      "name": "TV360+9",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c176",
+      "name": "TV360+10",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c177",
+      "name": "TV360+11",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c178",
+      "name": "TV360+12",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c179",
+      "name": "TV360+13",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c180",
+      "name": "TV360 Promo",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c181",
+      "name": "TV360 Livestream",
+      "number": "",
+      "logo": "",
+      "group": "TV360"
+    },
+    {
+      "id": "c182",
+      "name": "360 Phim Việt",
+      "number": "",
+      "logo": "",
+      "group": "Rạp Phim"
+    },
+    {
+      "id": "c183",
+      "name": "360 Phim Âu Mỹ",
+      "number": "",
+      "logo": "",
+      "group": "Rạp Phim"
+    },
+    {
+      "id": "c184",
+      "name": "360 Hoạt hình",
+      "number": "",
+      "logo": "",
+      "group": "Rạp Phim"
+    },
+    {
+      "id": "c185",
+      "name": "360 Phim Hoa Ngữ",
+      "number": "",
+      "logo": "",
+      "group": "Rạp Phim"
+    },
+    {
+      "id": "c1782822393076",
+      "name": "SCTV Phim Tổng Hợp",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822536306",
+      "name": "SCTV1 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822549899",
+      "name": "SCTV2 HD - TODAY TV",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822570371",
+      "name": "SCTV3 - SEE TV",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822586744",
+      "name": "SCTV4 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822808296",
+      "name": "SCTV6 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822832494",
+      "name": "SCTV7 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822843539",
+      "name": "SCTV8 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782822912905",
+      "name": "SCTV 9",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823057271",
+      "name": "SCTV11 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823074188",
+      "name": "SCTV12 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823305433",
+      "name": "SCTV13 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823316803",
+      "name": "SCTV14 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823361620",
+      "name": "SCTV15 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823385920",
+      "name": "SCTV16 HD",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823421938",
+      "name": "SCTV17",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823526735",
+      "name": "SCTV19",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823494972",
+      "name": "SCTV18",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823556186",
+      "name": "SCTV20",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823582710",
+      "name": "SCTV21",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782823613759",
+      "name": "SCTV22",
+      "number": "",
+      "logo": "",
+      "group": "sctv"
+    },
+    {
+      "id": "c1782835322578_0",
+      "name": "HTV Thể Thao",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322580_1",
+      "name": "HTVC Ca Nhạc",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322581_2",
+      "name": "HTVC Du Lịch và Cuộc Sống",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322583_3",
+      "name": "HTVC Gia Đình",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322584_4",
+      "name": "HTVC Phim",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322584_5",
+      "name": "HTVC Phụ Nữ",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322585_6",
+      "name": "HTVC Thuần Việt",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    },
+    {
+      "id": "c1782835322586_7",
+      "name": "HTVC+",
+      "number": "",
+      "logo": "",
+      "group": "htv"
+    }
+  ]
+}
