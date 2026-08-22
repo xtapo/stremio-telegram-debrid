@@ -2,6 +2,8 @@ import asyncio
 import json
 import logging
 import re
+import shutil
+import subprocess
 import time
 import unicodedata
 import urllib.parse
@@ -9,7 +11,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import httpx
 from fastapi import APIRouter, HTTPException, Request, Response
-from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse, StreamingResponse
 
 from config import Config
 
@@ -580,7 +582,7 @@ async def meta_endpoint(type: str, id: str, api_key: str = ""):
 @film4k_router.get("/stream/{type}/{id}.json")
 @film4k_router.get("/film4k/stream/{type}/{id}.json")
 @film4k_router.get("/{api_key}/film4k/stream/{type}/{id}.json")
-async def stream_endpoint(type: str, id: str, api_key: str = ""):
+async def stream_endpoint(request: Request, type: str, id: str, api_key: str = ""):
     if not getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True):
         return JSONResponse({"streams": []})
 
@@ -596,9 +598,39 @@ async def stream_endpoint(type: str, id: str, api_key: str = ""):
     ch = _channels_by_id.get(clean_id)
     ch_name = ch.get("name") if ch else clean_id
 
-    stream_obj: Dict[str, Any] = {
-        "name": "Film4k Live [HD]",
-        "title": f"📺 {ch_name}\n[HLS Live Stream • Tốc độ cao]",
+    clear_key = stream_data.get("clearKey")
+    clear_keys = stream_data.get("clearKeys")
+
+    # Format standard clearKeys dict { "<keyId>": "<key>" }
+    formatted_clearkeys = {}
+    if clear_key and isinstance(clear_key, dict) and clear_key.get("keyId") and clear_key.get("key"):
+        formatted_clearkeys[clear_key["keyId"]] = clear_key["key"]
+    elif clear_keys and isinstance(clear_keys, dict):
+        formatted_clearkeys = clear_keys
+
+    streams: List[Dict[str, Any]] = []
+
+    # 1. If channel has DRM ClearKey, add Server-Side Auto-Decrypted Stream first (Fix Green Screen on Stremio Desktop / MPV!)
+    if formatted_clearkeys:
+        scheme = request.url.scheme
+        host = request.headers.get("host") or f"127.0.0.1:{Config.PORT}"
+        base_addon = f"{scheme}://{host}"
+        key_part = f"/{api_key}" if api_key else ""
+        decrypt_url = f"{base_addon}{key_part}/film4k/decrypt/{clean_id}.ts"
+
+        streams.append({
+            "name": "Film4k Live [Auto-Decrypted]",
+            "title": f"🔓 {ch_name}\n[Đã tự động giải mã DRM • Fix màn hình xanh • Full HD]",
+            "url": decrypt_url,
+            "behaviorHints": {
+                "notWebReady": False
+            }
+        })
+
+    # 2. Direct CDN Stream
+    direct_stream: Dict[str, Any] = {
+        "name": "Film4k Live [Direct CDN]",
+        "title": f"📺 {ch_name}\n[Luồng trực tiếp CDN • Tốc độ cao]",
         "url": stream_url,
         "behaviorHints": {
             "notWebReady": False,
@@ -611,13 +643,94 @@ async def stream_endpoint(type: str, id: str, api_key: str = ""):
         }
     }
 
-    # Pass DRM ClearKeys if provided by source
-    if stream_data.get("clearKeys"):
-        stream_obj["behaviorHints"]["clearKeys"] = stream_data["clearKeys"]
-    if stream_data.get("clearKey"):
-        stream_obj["behaviorHints"]["clearKey"] = stream_data["clearKey"]
+    if formatted_clearkeys:
+        direct_stream["behaviorHints"]["clearKeys"] = formatted_clearkeys
+        if clear_key:
+            direct_stream["behaviorHints"]["clearKey"] = clear_key
 
-    return JSONResponse({"streams": [stream_obj]})
+    streams.append(direct_stream)
+    return JSONResponse({"streams": streams})
+
+
+# ------------------------------------------------------------------
+# Live On-The-Fly DRM Decryption Stream Endpoint (/film4k/decrypt/{id}.ts)
+# ------------------------------------------------------------------
+@film4k_router.get("/decrypt/{id}")
+@film4k_router.get("/decrypt/{id}.ts")
+@film4k_router.get("/film4k/decrypt/{id}")
+@film4k_router.get("/film4k/decrypt/{id}.ts")
+@film4k_router.get("/{api_key}/film4k/decrypt/{id}")
+@film4k_router.get("/{api_key}/film4k/decrypt/{id}.ts")
+async def decrypt_stream_endpoint(request: Request, id: str, api_key: str = ""):
+    """Stream live decrypted video using ffmpeg on-the-fly (Fixes Green Screen in Stremio)."""
+    clean_id = id.replace(".ts", "").replace("film4k:channel:", "").replace("film4k:event:", "").replace("film4k:", "")
+    stream_data = await resolve_film4k_stream(clean_id)
+    if not stream_data or not stream_data.get("url"):
+        raise HTTPException(status_code=404, detail="Stream not found")
+
+    url = stream_data["url"]
+    clear_key = stream_data.get("clearKey") or {}
+    key_hex = clear_key.get("key")
+    if not key_hex and stream_data.get("clearKeys") and isinstance(stream_data["clearKeys"], dict):
+        key_hex = list(stream_data["clearKeys"].values())[0]
+
+    # If no encryption key found, redirect directly to original stream
+    if not key_hex:
+        return RedirectResponse(url=url, status_code=302)
+
+    ffmpeg_bin = shutil.which("ffmpeg") or "ffmpeg"
+    cmd = [
+        ffmpeg_bin,
+        "-nostdin",
+        "-hide_banner",
+        "-loglevel", "error",
+        "-cenc_decryption_key", key_hex,
+        "-i", url,
+        "-c", "copy",
+        "-f", "mpegts",
+        "pipe:1"
+    ]
+
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            bufsize=65536
+        )
+    except Exception as e:
+        logger.error(f"Failed to start ffmpeg decryption process: {e}")
+        return RedirectResponse(url=url, status_code=302)
+
+    async def stream_generator():
+        loop = asyncio.get_running_loop()
+        try:
+            while True:
+                chunk = await loop.run_in_executor(None, proc.stdout.read, 65536)
+                if not chunk:
+                    break
+                yield chunk
+        except (asyncio.CancelledError, GeneratorExit, Exception):
+            pass
+        finally:
+            try:
+                proc.terminate()
+                proc.kill()
+            except Exception:
+                pass
+
+    return StreamingResponse(
+        stream_generator(),
+        media_type="video/mp2t",
+        headers={
+            "Content-Type": "video/mp2t",
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Pragma": "no-cache",
+            "Expires": "0",
+            "Accept-Ranges": "none",
+            "Connection": "close"
+        }
+    )
 
 
 # ------------------------------------------------------------------
