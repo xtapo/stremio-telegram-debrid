@@ -138,6 +138,12 @@ app.include_router(ernax_router, prefix="/ernax", tags=["Ernax Player"])
 app.include_router(film4k_router, prefix="/film4k", tags=["Film4k Live TV"])
 
 
+@app.get("/tv", include_in_schema=False)
+@app.get("/player", include_in_schema=False)
+async def tv_redirect():
+    return RedirectResponse(url="/film4k/tv", status_code=302)
+
+
 
 
 

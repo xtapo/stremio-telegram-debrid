@@ -21,9 +21,10 @@ film4k_router = APIRouter(prefix="", tags=["film4k"])
 # Cache & Memory Management
 # ------------------------------------------------------------------
 _film4k_cache: Dict[str, Tuple[Any, float]] = {}
-CHANNELS_CACHE_TTL = 1800  # 30 minutes
+_channels_by_id: Dict[str, Dict[str, Any]] = {}
+CHANNELS_CACHE_TTL = 3600   # 1 hour
 EVENTS_CACHE_TTL = 180      # 3 minutes
-STREAM_CACHE_TTL = 120      # 2 minutes for signed stream URLs
+STREAM_CACHE_TTL = 1800     # 30 minutes for signed stream URLs
 
 _film4k_client: Optional[httpx.AsyncClient] = None
 _client_loop: Optional[asyncio.AbstractEventLoop] = None
@@ -61,9 +62,9 @@ def get_film4k_client() -> httpx.AsyncClient:
     ):
         _client_loop = current_loop
         _film4k_client = httpx.AsyncClient(
-            timeout=httpx.Timeout(12.0, connect=5.0),
+            timeout=httpx.Timeout(5.0, connect=2.5),
             follow_redirects=True,
-            limits=httpx.Limits(max_keepalive_connections=20, max_connections=50),
+            limits=httpx.Limits(max_keepalive_connections=30, max_connections=60),
             headers={
                 "User-Agent": (
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -185,11 +186,34 @@ def categorize_channel(ch: Dict[str, Any]) -> str:
     return "Kênh Quốc Tế & Tổng Hợp"
 
 
+def _load_local_fallback_channels() -> List[Dict[str, Any]]:
+    """Load bundled local channels database for instant 0ms startup."""
+    import os
+    candidates = [
+        os.path.join(os.path.dirname(__file__), "scratch", "film4k_channels.json"),
+        os.path.join(os.path.dirname(__file__), "film4k_channels.json"),
+    ]
+    for p in candidates:
+        if os.path.exists(p):
+            try:
+                with open(p, "r", encoding="utf-8") as f:
+                    raw = json.load(f).get("channels", [])
+                    for ch in raw:
+                        ch["category"] = categorize_channel(ch)
+                        if ch.get("id"):
+                            _channels_by_id[ch["id"]] = ch
+                    return raw
+            except Exception as e:
+                logger.warning(f"Failed loading local fallback channels from {p}: {e}")
+    return []
+
+
 # ------------------------------------------------------------------
 # Film4k API Fetchers
 # ------------------------------------------------------------------
 async def fetch_film4k_channels() -> List[Dict[str, Any]]:
-    """Fetch and cache list of 200+ TV channels from Film4k."""
+    """Fetch and cache list of 200+ TV channels from Film4k with instant local fallback."""
+    global _channels_by_id
     now = time.time()
     if "channels" in _film4k_cache:
         data, exp = _film4k_cache["channels"]
@@ -205,19 +229,26 @@ async def fetch_film4k_channels() -> List[Dict[str, Any]]:
         r = await client.get(f"{base_url}/api/tv/channels", headers=headers)
         if r.status_code == 200:
             data = r.json().get("channels", [])
-            # Enrich with category and clean names
             for ch in data:
                 ch["category"] = categorize_channel(ch)
+                if ch.get("id"):
+                    _channels_by_id[ch["id"]] = ch
             _film4k_cache["channels"] = (data, now + CHANNELS_CACHE_TTL)
             return data
         else:
             logger.warning(f"Film4k channels API returned status {r.status_code}: {r.text[:200]}")
     except Exception as e:
-        logger.error(f"Error fetching Film4k channels: {e}")
+        logger.warning(f"Error fetching Film4k channels (using local/stale cache): {e}")
 
-    # Fallback to stale cache if available
+    # Fallback to in-memory stale cache or local file
     if "channels" in _film4k_cache:
         return _film4k_cache["channels"][0]
+
+    local_data = _load_local_fallback_channels()
+    if local_data:
+        _film4k_cache["channels"] = (local_data, now + CHANNELS_CACHE_TTL)
+        return local_data
+
     return []
 
 
@@ -243,7 +274,7 @@ async def fetch_film4k_events() -> List[Dict[str, Any]]:
         else:
             logger.warning(f"Film4k events API returned status {r.status_code}: {r.text[:200]}")
     except Exception as e:
-        logger.error(f"Error fetching Film4k events: {e}")
+        logger.warning(f"Error fetching Film4k events: {e}")
 
     if "events" in _film4k_cache:
         return _film4k_cache["events"][0]
@@ -562,8 +593,7 @@ async def stream_endpoint(type: str, id: str, api_key: str = ""):
     stream_url = stream_data["url"]
     
     # Check if channel name is known
-    channels = await fetch_film4k_channels()
-    ch = next((c for c in channels if c.get("id") == clean_id), None)
+    ch = _channels_by_id.get(clean_id)
     ch_name = ch.get("name") if ch else clean_id
 
     stream_obj: Dict[str, Any] = {
@@ -719,6 +749,7 @@ async def web_tv_player():
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Film4k Live TV - Xem 200+ Kênh Truyền Hình & Thể Thao</title>
   <link rel="icon" href="https://film4k.net/favicon-32.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -931,8 +962,14 @@ async def web_tv_player():
     const EVENTS = {events_json};
     let currentGenre = "Tất cả";
     let activeItem = null;
-    let hls = null;
+    let shakaPlayer = null;
+    let hlsPlayer = null;
     let currentStreamUrl = "";
+
+    // Initialize Shaka polyfills once
+    if (window.shaka) {{
+      shaka.polyfill.installAll();
+    }}
 
     const GENRES = [
       "Tất cả", "Sự Kiện Trực Tiếp", "VTV", "HTV / HTVC", "K+ Truyền Hình",
@@ -1049,6 +1086,28 @@ async def web_tv_player():
       document.getElementById("unmute-banner").style.display = "none";
     }}
 
+    async function destroyCurrentPlayer() {{
+      if (shakaPlayer) {{
+        try {{
+          await shakaPlayer.destroy();
+        }} catch (e) {{
+          console.warn("Error destroying Shaka player:", e);
+        }}
+        shakaPlayer = null;
+      }}
+      if (hlsPlayer) {{
+        try {{
+          hlsPlayer.destroy();
+        }} catch (e) {{
+          console.warn("Error destroying HLS player:", e);
+        }}
+        hlsPlayer = null;
+      }}
+      const video = document.getElementById("video-player");
+      video.removeAttribute("src");
+      video.load();
+    }}
+
     async function playItem(item) {{
       if (!item) return;
       activeItem = item;
@@ -1072,6 +1131,7 @@ async def web_tv_player():
       overlay.style.display = "flex";
 
       showLoading(item.name);
+      await destroyCurrentPlayer();
 
       try {{
         const r = await fetch(`/film4k/stream/tv/${{encodeURIComponent(item.id)}}.json`);
@@ -1086,60 +1146,84 @@ async def web_tv_player():
         currentStreamUrl = stream.url;
         console.log("Playing stream URL:", currentStreamUrl);
 
-        if (Hls.isSupported()) {{
-          if (hls) {{
-            hls.destroy();
-            hls = null;
-          }}
-          hls = new Hls({{
-            enableWorker: true,
-            lowLatencyMode: true,
-            backBufferLength: 60,
-            manifestLoadingTimeOut: 10000,
-            manifestLoadingMaxRetry: 3,
-            levelLoadingTimeOut: 10000
-          }});
-          hls.loadSource(currentStreamUrl);
-          hls.attachMedia(video);
+        const clearKey = stream.behaviorHints ? stream.behaviorHints.clearKey : null;
+        const clearKeys = stream.behaviorHints ? stream.behaviorHints.clearKeys : null;
 
-          hls.on(Hls.Events.MANIFEST_PARSED, function() {{
+        // 1. Shaka Player Engine (DASH .mpd, HLS .m3u8, and ClearKey DRM)
+        if (window.shaka && shaka.Player.isBrowserSupported()) {{
+          shakaPlayer = new shaka.Player(video);
+
+          shakaPlayer.addEventListener("error", (event) => {{
+            console.error("Shaka Player Error:", event.detail);
+            showError("Lỗi phát luồng: " + (event.detail && event.detail.message ? event.detail.message : "Không thể tải kênh"));
+          }});
+
+          const drmConfig = {{}};
+          if (clearKey && clearKey.keyId && clearKey.key) {{
+            drmConfig.clearKeys = {{
+              [clearKey.keyId]: clearKey.key
+            }};
+          }} else if (clearKeys && typeof clearKeys === "object") {{
+            drmConfig.clearKeys = clearKeys;
+          }}
+
+          shakaPlayer.configure({{
+            drm: drmConfig,
+            streaming: {{
+              lowLatencyMode: true,
+              bufferingGoal: 6,
+              rebufferingGoal: 2,
+              bufferBehind: 15
+            }}
+          }});
+
+          try {{
+            await shakaPlayer.load(currentStreamUrl);
             hideLoading();
-            // Start muted first to bypass browser autoplay restrictions
             video.muted = true;
             video.play().then(() => {{
               checkMuted();
             }}).catch(err => {{
-              console.log("Play failed, waiting for user click:", err);
+              console.log("Autoplay waiting for user gesture:", err);
             }});
-          }});
+            return;
+          }} catch (shakaErr) {{
+            console.warn("Shaka load failed, trying Hls.js fallback:", shakaErr);
+          }}
+        }}
 
-          hls.on(Hls.Events.ERROR, function(event, data) {{
-            console.warn("HLS event error:", data);
+        // 2. HLS.js fallback for HLS .m3u8 streams
+        if (window.Hls && Hls.isSupported() && !currentStreamUrl.includes(".mpd")) {{
+          hlsPlayer = new Hls({{
+            enableWorker: true,
+            lowLatencyMode: true,
+            backBufferLength: 20,
+            maxBufferLength: 6,
+            maxMaxBufferLength: 12
+          }});
+          hlsPlayer.loadSource(currentStreamUrl);
+          hlsPlayer.attachMedia(video);
+          hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() {{
+            hideLoading();
+            video.muted = true;
+            video.play().then(() => checkMuted()).catch(e => console.log(e));
+          }});
+          hlsPlayer.on(Hls.Events.ERROR, function(event, data) {{
             if (data.fatal) {{
-              switch(data.type) {{
-                case Hls.ErrorTypes.NETWORK_ERROR:
-                  console.log("HLS network error, recovering...");
-                  hls.startLoad();
-                  break;
-                case Hls.ErrorTypes.MEDIA_ERROR:
-                  console.log("HLS media error, recovering...");
-                  hls.recoverMediaError();
-                  break;
-                default:
-                  hls.destroy();
-                  showError("Lỗi luồng phát HLS. Vui lòng thử kênh khác.");
-                  break;
-              }}
+              showError("Lỗi luồng phát HLS.");
             }}
           }});
-        }} else if (video.canPlayType("application/vnd.apple.mpegurl")) {{
-          video.src = currentStreamUrl;
-          video.muted = true;
-          video.play().then(() => {{
-            hideLoading();
-            checkMuted();
-          }}).catch(e => console.log("Autoplay blocked:", e));
+          return;
         }}
+
+        // 3. Fallback native
+        video.src = currentStreamUrl;
+        video.muted = true;
+        video.play().then(() => {{
+          hideLoading();
+          checkMuted();
+        }}).catch(e => console.log("Native play error:", e));
+
       }} catch (err) {{
         console.error("Error playing channel:", err);
         showError("Lỗi kết nối: " + err.message);
