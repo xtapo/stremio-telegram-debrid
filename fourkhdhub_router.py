@@ -291,8 +291,11 @@ async def catalog_extra_endpoint(type: str, id: str, extra: str = ""):
 
 async def meta_endpoint(type: str, id: str):
     start_background_tasks()
-    slug = id.replace("4khdhub:", "").split(":")[0]
-    meta_obj = await get_meta_for_slug(slug, item_type=type)
+    clean_id = id.replace("4khdhub:", "").split(":")[0]
+    if clean_id.startswith("tt"):
+        meta_obj = await catalog.get_cinemeta_meta(type, clean_id)
+        return JSONResponse({"meta": meta_obj or {}})
+    meta_obj = await get_meta_for_slug(clean_id, item_type=type)
     if not meta_obj:
         return JSONResponse({"meta": {}})
     return JSONResponse({"meta": meta_obj})
@@ -307,7 +310,7 @@ async def stream_endpoint(request: Request, type: str, id: str):
     season_num: Optional[int] = None
     episode_num: Optional[int] = None
 
-    if id.startswith("4khdhub:"):
+    if id.startswith("4khdhub:") and not id.startswith("4khdhub:tt"):
         parts = id.split(":")
         slug = parts[1] if len(parts) > 1 else ""
         if not slug:
@@ -317,8 +320,9 @@ async def stream_endpoint(request: Request, type: str, id: str):
         post_url = current_base() + "/" + slug.strip("/") + "/"
         display = slug.replace("-", " ").strip()
 
-    elif id.startswith("tt"):
-        parts = id.split(":")
+    elif id.startswith("tt") or id.startswith("4khdhub:tt"):
+        clean_id = id.replace("4khdhub:", "")
+        parts = clean_id.split(":")
         imdb_id = parts[0]
         season_num = int(parts[1]) if len(parts) > 1 else None
         episode_num = int(parts[2]) if len(parts) > 2 else (1 if type == "series" else None)
@@ -349,6 +353,32 @@ async def stream_endpoint(request: Request, type: str, id: str):
     else:
         filename = f"{safe_display}.mkv"
 
+    from config import Config
+    subtitles_list: List[Dict[str, Any]] = []
+    if getattr(Config, "ENABLE_SUBTITLES", True):
+        clean_sub_id = id.replace(":", "_").replace("/", "_")
+        if getattr(Config, "AUTO_VIET_SUB", True):
+            subtitles_list.extend([
+                {
+                    "id": f"vi_fast_{clean_sub_id}",
+                    "url": f"{base}/subtitles/vtt/{clean_sub_id}.vtt?type={type}&orig_id={urllib.parse.quote(id)}&track=fast",
+                    "lang": "vie",
+                    "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+                },
+                {
+                    "id": f"vi_quality_{clean_sub_id}",
+                    "url": f"{base}/subtitles/vtt/{clean_sub_id}.vtt?type={type}&orig_id={urllib.parse.quote(id)}&track=quality",
+                    "lang": "vie",
+                    "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+                },
+            ])
+        subtitles_list.append({
+            "id": f"base_{clean_sub_id}",
+            "url": f"{base}/subtitles/vtt/{clean_sub_id}.vtt?type={type}&orig_id={urllib.parse.quote(id)}&track=base",
+            "lang": "eng",
+            "name": "🇬🇧 English / Original Track",
+        })
+
     streams: List[Dict[str, Any]] = []
     for candidate in candidates:
         quality = candidate["quality"]
@@ -364,18 +394,25 @@ async def stream_endpoint(request: Request, type: str, id: str):
 
         hints = {"notWebReady": False, "filename": filename, "bingeGroup": f"4khdhub-{quality}"}
 
-        streams.append({
+        stream_direct = {
             "name": f"⚡ [4KHDHub Direct] [{quality}]",
             "title": f"{title}\n🚀 Cloudflare R2 / 10Gbps CDN Fast Stream",
             "url": _playback_url(base, candidate["raw_url"], post=post_url, ep=target_ep, mode="direct"),
             "behaviorHints": dict(hints),
-        })
-        streams.append({
+        }
+        if subtitles_list:
+            stream_direct["subtitles"] = subtitles_list
+        streams.append(stream_direct)
+
+        stream_proxy = {
             "name": f"🛡️ [4KHDHub Proxy] [{quality}]",
             "title": f"{title}\n🔒 Local Stream Proxy",
             "url": _playback_url(base, candidate["raw_url"], post=post_url, ep=target_ep, mode="proxy"),
             "behaviorHints": dict(hints),
-        })
+        }
+        if subtitles_list:
+            stream_proxy["subtitles"] = subtitles_list
+        streams.append(stream_proxy)
 
     warm_candidates(candidates)
     asyncio.create_task(_warm_and_translate(type, id, candidates))
@@ -465,30 +502,124 @@ async def fourkhdhub_stream_proxy(
         raise HTTPException(status_code=502, detail=f"Proxy failed: {exc}")
 
 
-async def subtitles_endpoint(type: str, id: str):
+# ------------------------------------------------------------------
+# Subtitles Endpoints
+# ------------------------------------------------------------------
+async def serve_synced_vtt(request: Request, item_id: str, type: str = "movie"):
+    """Serve progressive translated VTT track."""
+    track = (request.query_params.get("track") or TRACK_FAST).lower()
+    raw_id = request.query_params.get("orig_id") or item_id
+    target_id = raw_id[:-4] if raw_id.endswith((".vtt", ".srt")) else raw_id
+
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        "Content-Type": "text/vtt; charset=utf-8",
+        "Cache-Control": "public, max-age=3600",
+    }
+    if request.method == "HEAD":
+        return Response(status_code=200, media_type="text/vtt; charset=utf-8", headers=headers)
+
+    vtt_content = None
+    try:
+        from sync_vtt_service import get_track_vtt
+        vtt_content = await get_track_vtt(type, target_id, track)
+    except Exception as e:
+        logger.warning("Error in serve_synced_vtt for %s (track=%s): %s", target_id, track, e)
+
+    if not vtt_content or not vtt_content.strip():
+        vtt_content = "WEBVTT\n\n1\n00:00:01.000 --> 00:00:05.000\n[Đang tải phụ đề tiếng Việt...]"
+        headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+
+    vtt_text = vtt_content.strip()
+    if not vtt_text.startswith("WEBVTT"):
+        vtt_text = "WEBVTT\n\n" + vtt_text
+
+    return Response(
+        content=vtt_text.encode("utf-8"),
+        media_type="text/vtt; charset=utf-8",
+        headers=headers,
+    )
+
+
+async def serve_synced_srt(request: Request, item_id: str, type: str = "movie"):
+    """Serve standard .SRT format with attachment download headers."""
+    track = (request.query_params.get("track") or "base").lower()
+    raw_id = request.query_params.get("orig_id") or item_id
+    target_id = raw_id[:-4] if raw_id.endswith((".srt", ".vtt")) else raw_id
+
+    clean_name = item_id[:-4] if item_id.endswith((".srt", ".vtt")) else item_id
+    filename = _safe_name(clean_name) + ("_vi" if track in (TRACK_FAST, TRACK_QUALITY) else "_eng") + ".srt"
+    headers = {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+        "Content-Disposition": f'attachment; filename="{filename}"',
+        "Cache-Control": "public, max-age=86400",
+    }
+    if request.method == "HEAD":
+        return Response(status_code=200, media_type="text/plain; charset=utf-8", headers=headers)
+
+    srt_content = None
+    try:
+        from sync_vtt_service import get_track_srt
+        srt_content = await get_track_srt(type, target_id, track)
+    except Exception as e:
+        logger.warning("Error in serve_synced_srt for %s (track=%s): %s", target_id, track, e)
+
+    if not srt_content or not srt_content.strip():
+        srt_content = "1\n00:00:01,000 --> 00:00:05,000\n[Đang tải phụ đề...]\n"
+
+    return Response(
+        content=srt_content.strip().encode("utf-8"),
+        media_type="text/plain; charset=utf-8",
+        headers=headers,
+    )
+
+
+async def subtitles_endpoint(request: Request, type: str, id: str, extra: Optional[str] = None):
     from config import Config
     if not getattr(Config, "ENABLE_SUBTITLES", True):
-        return JSONResponse({"subtitles": []})
+        return JSONResponse({"subtitles": []}, headers={"Access-Control-Allow-Origin": "*"})
 
-    base = getattr(Config, "ADDON_URL", "").rstrip("/")
-    if not base:
-        base = "http://localhost:7860"
+    base_url = _base_url(request)
+    raw_id = id.rstrip(".json") if id.endswith(".json") else id
+    clean_id = raw_id.replace(":", "_").replace("/", "_")
+    extra_clean = extra.rstrip(".json") if (extra and extra.endswith(".json")) else (extra or "")
+    subtitles_list: List[Dict[str, Any]] = []
 
-    subtitles = [
-        {
-            "id": f"4khdhub_sub_fast_{id}",
-            "url": _build_vtt_url(base, type, id, track=TRACK_FAST),
-            "lang": "vie",
-            "label": "🇻🇳 Tiếng Việt (AI Fast Progressive)",
-        },
-        {
-            "id": f"4khdhub_sub_quality_{id}",
-            "url": _build_vtt_url(base, type, id, track=TRACK_QUALITY),
-            "lang": "vie",
-            "label": "🇻🇳 Tiếng Việt (AI Quality Deep)",
-        },
-    ]
-    return JSONResponse({"subtitles": subtitles})
+    if getattr(Config, "AUTO_VIET_SUB", True):
+        subtitles_list.extend([
+            {
+                "id": "vi_fast_" + clean_id,
+                "url": f"{base_url}/subtitles/vtt/{clean_id}.vtt?type={type}&orig_id={urllib.parse.quote(raw_id)}&track=fast",
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - Nhanh (Lingva, toàn bộ phim)",
+            },
+            {
+                "id": "vi_quality_" + clean_id,
+                "url": f"{base_url}/subtitles/vtt/{clean_id}.vtt?type={type}&orig_id={urllib.parse.quote(raw_id)}&track=quality",
+                "lang": "vie",
+                "name": "🇻🇳 Tiếng Việt - AI chất lượng cao (Gemini, dịch ngầm)",
+            },
+        ])
+
+    imdb_id = raw_id
+    if raw_id.startswith("4khdhub:"):
+        slug = raw_id.replace("4khdhub:", "").split(":")[0]
+        resolved_imdb = await catalog.find_imdb_for_fourkhdhub_slug(slug, media_type=type)
+        logger.info("subtitles_endpoint slug=%s resolved_imdb=%s", slug, resolved_imdb)
+        if resolved_imdb:
+            imdb_id = resolved_imdb
+
+    if imdb_id and (imdb_id.startswith("tt") or ":" in imdb_id):
+        subs = await catalog.fetch_opensubtitles(imdb_id, media_type=type, extra=extra_clean)
+        if not subs and extra_clean:
+            subs = await catalog.fetch_opensubtitles(imdb_id, media_type=type, extra="")
+        logger.info("subtitles_endpoint fetched %d opensubtitles for %s", len(subs), imdb_id)
+        subtitles_list.extend(subs)
+
+    logger.info("subtitles_endpoint returning total %d subtitles for id=%s", len(subtitles_list), raw_id)
+    return JSONResponse(content={"subtitles": subtitles_list}, headers={"Access-Control-Allow-Origin": "*"})
 
 
 # ------------------------------------------------------------------
@@ -496,9 +627,16 @@ async def subtitles_endpoint(type: str, id: str):
 # ------------------------------------------------------------------
 fourkhdhub_router.add_api_route("/manifest.json", get_manifest, methods=["GET"])
 fourkhdhub_router.add_api_route("/catalog/{type}/{id}.json", catalog_endpoint, methods=["GET"])
-fourkhdhub_router.add_api_route("/catalog/{type}/{id}/{extra}.json", catalog_extra_endpoint, methods=["GET"])
+fourkhdhub_router.add_api_route("/catalog/{type}/{id}/{extra:path}", catalog_extra_endpoint, methods=["GET"])
 fourkhdhub_router.add_api_route("/meta/{type}/{id}.json", meta_endpoint, methods=["GET"])
+fourkhdhub_router.add_api_route("/meta/{type}/{id}/{extra:path}", meta_endpoint, methods=["GET"])
 fourkhdhub_router.add_api_route("/stream/{type}/{id}.json", stream_endpoint, methods=["GET"])
+fourkhdhub_router.add_api_route("/stream/{type}/{id}/{extra:path}", stream_endpoint, methods=["GET"])
 fourkhdhub_router.add_api_route("/playback", fourkhdhub_resolve, methods=["GET"])
 fourkhdhub_router.add_api_route("/stream_proxy", fourkhdhub_stream_proxy, methods=["GET"])
+fourkhdhub_router.add_api_route("/subtitles/vtt/{item_id}.vtt", serve_synced_vtt, methods=["GET", "HEAD"])
+fourkhdhub_router.add_api_route("/subtitles/srt/{item_id}.srt", serve_synced_srt, methods=["GET", "HEAD"])
+fourkhdhub_router.add_api_route("/subtitles/srt/{item_id}", serve_synced_srt, methods=["GET", "HEAD"])
 fourkhdhub_router.add_api_route("/subtitles/{type}/{id}.json", subtitles_endpoint, methods=["GET"])
+fourkhdhub_router.add_api_route("/subtitles/{type}/{id}/{extra:path}", subtitles_endpoint, methods=["GET"])
+

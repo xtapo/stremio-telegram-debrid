@@ -171,6 +171,62 @@ def _parse_movie_cards(html: str) -> List[Dict[str, Any]]:
     return items
 
 
+async def _lookup_imdb_id(title: str, year: Optional[int], media_type: str) -> Optional[str]:
+    clean_t = clean_title(title)
+    if not clean_t:
+        return None
+    key = f"fourkhd_imdb:{media_type}:{clean_t}:{year or ''}"
+
+    async def _fetch():
+        search_query = f"{clean_t} {year}" if year else clean_t
+        url = f"{CINEMETA_CATALOG}/{media_type}/top/search={urllib.parse.quote(search_query)}.json"
+        data = await perf.fetch_json(url)
+        metas = []
+        if isinstance(data, dict):
+            metas = data.get("metas") or []
+        if not metas and year:
+            url2 = f"{CINEMETA_CATALOG}/{media_type}/top/search={urllib.parse.quote(clean_t)}.json"
+            data2 = await perf.fetch_json(url2)
+            if isinstance(data2, dict):
+                metas = data2.get("metas") or []
+        if not metas:
+            return None
+
+        target_norm = re.sub(r"[^\w\s]", "", clean_t.lower()).strip()
+        for m in metas:
+            m_name = re.sub(r"[^\w\s]", "", (m.get("name") or "").lower()).strip()
+            if m_name == target_norm:
+                m_year = None
+                try:
+                    m_year = int(str(m.get("year") or "")[:4])
+                except Exception:
+                    pass
+                if not year or not m_year or abs(year - m_year) <= 1:
+                    return m.get("id")
+        return metas[0].get("id") if metas else None
+
+    return await cached_call(
+        key, _fetch, ttl=IMDB_TTL, stale_ttl=IMDB_TTL * 2, negative_ttl=NEGATIVE_TTL
+    )
+
+
+async def enrich_catalog_with_imdb(items: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    if not items:
+        return []
+    tasks = [
+        _lookup_imdb_id(it.get("name") or "", it.get("year"), it.get("type") or "movie")
+        for it in items
+    ]
+    results = await asyncio.gather(*tasks, return_exceptions=True)
+    enriched = []
+    for it, res in zip(items, results):
+        item_copy = dict(it)
+        if isinstance(res, str) and res.startswith("tt"):
+            item_copy["id"] = res
+        enriched.append(item_copy)
+    return enriched
+
+
 # ------------------------------------------------------------------
 # Catalog Fetching & Pagination
 # ------------------------------------------------------------------
@@ -202,7 +258,8 @@ async def get_catalog_items(category: str = "Tất cả", skip: int = 0) -> List
     offset_in_page = skip % WP_ITEMS_PER_PAGE
     if offset_in_page > 0 and len(items) > offset_in_page:
         items = items[offset_in_page:]
-    return items
+    # Enrich with IMDb IDs so third-party subtitle addons (OpenSubtitles, etc.) work automatically!
+    return await enrich_catalog_with_imdb(items)
 
 
 # ------------------------------------------------------------------
@@ -217,7 +274,8 @@ async def search_fourkhdhub(query: str, page: int = 1) -> List[Dict[str, Any]]:
         url = f"{base}/page/{page}/?s={clean_q}" if page > 1 else f"{base}/?s={clean_q}"
         candidates = mirror_candidates(url)
         html, _ = await race_fetch_text(candidates)
-        return _parse_movie_cards(html)
+        cards = _parse_movie_cards(html)
+        return await enrich_catalog_with_imdb(cards)
 
     return await cached_call(
         key, _fetch, ttl=SEARCH_TTL, stale_ttl=CATALOG_STALE_TTL, negative_ttl=NEGATIVE_TTL
@@ -413,3 +471,67 @@ async def get_meta_for_slug(slug: str, item_type: str = "movie") -> Optional[Dic
     return await cached_call(
         key, _fetch, ttl=META_TTL, stale_ttl=META_STALE_TTL, negative_ttl=NEGATIVE_TTL
     )
+
+
+# ------------------------------------------------------------------
+# Reverse Lookup: 4KHDHub slug -> IMDb ID
+# ------------------------------------------------------------------
+OPENSUBTITLES_BASE = "https://opensubtitles-v3.strem.io/subtitles/"
+SUBS_TTL = perf._env_int("FOURKHD_SUBS_TTL", 900)
+
+
+async def find_imdb_for_fourkhdhub_slug(slug: str, media_type: str = "movie") -> Optional[str]:
+    meta = await get_meta_for_slug(slug, item_type=media_type)
+    if not meta or not meta.get("name"):
+        return None
+
+    title = meta["name"]
+    year = meta.get("year")
+
+    # Search Cinemeta for title
+    url = f"{CINEMETA_CATALOG}/{media_type}/top/search={urllib.parse.quote(title)}.json"
+    data = await perf.fetch_json(url)
+    if not isinstance(data, dict):
+        return None
+    metas = data.get("metas") or []
+    if not metas:
+        return None
+
+    target_norm = re.sub(r"[^\w\s]", "", title.lower()).strip()
+    for m in metas:
+        m_name = re.sub(r"[^\w\s]", "", (m.get("name") or "").lower()).strip()
+        if m_name == target_norm:
+            m_year = None
+            try:
+                m_year = int(str(m.get("year") or "")[:4])
+            except Exception:
+                pass
+            if not year or not m_year or abs(year - m_year) <= 1:
+                return m.get("id")
+
+    return metas[0].get("id") if metas else None
+
+
+async def fetch_opensubtitles(imdb_id: str, media_type: str = "movie", extra: str = "") -> list:
+    if not imdb_id or not imdb_id.startswith("tt"):
+        return []
+    url = OPENSUBTITLES_BASE + media_type + "/" + urllib.parse.quote(imdb_id)
+    if extra:
+        url = url + "/" + urllib.parse.quote(extra)
+    url = url + ".json"
+
+    async def factory():
+        data = await perf.fetch_json(url)
+        if isinstance(data, dict):
+            return data.get("subtitles") or None
+        return None
+
+    subs = await cached_call(
+        "osubs:" + media_type + ":" + imdb_id + ":" + (extra or ""),
+        factory,
+        ttl=SUBS_TTL,
+        stale_ttl=IMDB_TTL,
+        negative_ttl=NEGATIVE_TTL,
+    )
+    return subs or []
+

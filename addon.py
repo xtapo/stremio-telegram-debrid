@@ -692,12 +692,18 @@ async def find_subtitles_for_video(
     return subtitles
 
 @app.get("/subtitles/{type}/{id}.json")
-@app.get("/subtitles/{type}/{id}/{extra}.json")
+@app.get("/subtitles/{type}/{id}/{extra:path}")
 @app.get("/{api_key}/subtitles/{type}/{id}.json")
-@app.get("/{api_key}/subtitles/{type}/{id}/{extra}.json")
+@app.get("/{api_key}/subtitles/{type}/{id}/{extra:path}")
 async def root_subtitles_handler(request: Request, type: str, id: str, extra: str = "", api_key: str = ""):
     if not getattr(Config, "ENABLE_SUBTITLES", True):
         return JSONResponse(content={"subtitles": []})
+    if id.startswith("4khdhub:"):
+        from fourkhdhub_router import subtitles_endpoint as fourkhd_subtitles
+        return await fourkhd_subtitles(request, type, id, extra)
+    if id.startswith("uhdmovies:"):
+        from uhdmovies_router import uhdmovies_subtitles
+        return await uhdmovies_subtitles(request, type, id, extra)
     from moviesdrive_router import moviesdrive_subtitles
     return await moviesdrive_subtitles(request, type, id, extra)
 
@@ -738,6 +744,14 @@ async def stream_handler(
     if stream_id.startswith("hdhub4u:"):
         from hdhub4u_router import stream_endpoint as hdh_stream
         return await hdh_stream(request, type, stream_id)
+
+    if stream_id.startswith("uhdmovies:"):
+        from uhdmovies_router import stream_endpoint as uhd_stream
+        return await uhd_stream(request, type, stream_id)
+
+    if stream_id.startswith("4khdhub:"):
+        from fourkhdhub_router import stream_endpoint as fourkhd_stream
+        return await fourkhd_stream(request, type, stream_id)
 
     if stream_id.startswith("tgfile_"):
         if "//" in stream_id:
