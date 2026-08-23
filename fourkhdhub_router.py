@@ -105,6 +105,7 @@ def get_fourkhdhub_manifest() -> Dict[str, Any]:
                 "type": "movie",
                 "id": "4khdhub_movies_latest",
                 "name": "4KHDHub - Phim Mới Cập Nhật",
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
                     {"name": "genre", "options": ["Tất cả"] + GENRE_OPTIONS, "isRequired": main_req},
                     {"name": "search", "isRequired": False},
@@ -115,6 +116,7 @@ def get_fourkhdhub_manifest() -> Dict[str, Any]:
                 "type": "movie",
                 "id": "4khdhub_movies_4k_hdr",
                 "name": "4KHDHub - 4K HDR & Dolby Vision",
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
                     {"name": "genre", "options": ["Tất cả"], "isRequired": True},
                     {"name": "search", "isRequired": False},
@@ -125,6 +127,7 @@ def get_fourkhdhub_manifest() -> Dict[str, Any]:
                 "type": "movie",
                 "id": "4khdhub_movies_english",
                 "name": "4KHDHub - English Movies 4K",
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
                     {"name": "genre", "options": ["Tất cả"], "isRequired": True},
                     {"name": "search", "isRequired": False},
@@ -135,6 +138,7 @@ def get_fourkhdhub_manifest() -> Dict[str, Any]:
                 "type": "series",
                 "id": "4khdhub_series_latest",
                 "name": "4KHDHub - Web Series & TV Shows 4K",
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
                     {"name": "genre", "options": ["Tất cả", "Web Series", "English Series", "Hindi Series", "Korean Series", "Drama Series", "Netflix", "Anime"], "isRequired": main_req},
                     {"name": "search", "isRequired": False},
@@ -269,7 +273,8 @@ async def catalog_extra_endpoint(type: str, id: str, extra: str = ""):
         genre = "Web Series"
 
     if extra:
-        for pair in extra.split("&"):
+        extra_clean = extra.rstrip(".json") if extra.endswith(".json") else extra
+        for pair in extra_clean.split("&"):
             if "=" not in pair:
                 continue
             k, v = pair.split("=", 1)

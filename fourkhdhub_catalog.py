@@ -36,14 +36,17 @@ CINEMETA_CATALOG = CINEMETA_BASE + "/catalog"
 
 CATALOG_TTL = perf._env_int("FOURKHD_CATALOG_TTL", 300)
 CATALOG_STALE_TTL = perf._env_int("FOURKHD_CATALOG_STALE_TTL", 1800)
+CATALOG_TTL = 3600
+CATALOG_STALE_TTL = 86400
 SEARCH_TTL = perf._env_int("FOURKHD_SEARCH_TTL", 600)
 META_TTL = perf._env_int("FOURKHD_META_TTL", 900)
 META_STALE_TTL = perf._env_int("FOURKHD_META_STALE_TTL", 7200)
 CINEMETA_TTL = perf._env_int("FOURKHD_CINEMETA_TTL", 3600)
 IMDB_TTL = perf._env_int("FOURKHD_IMDB_TTL", 86400)
 WP_ITEMS_PER_PAGE = 18
-STREMIO_PAGE_SIZE = perf._env_int("FOURKHD_CATALOG_PAGE_SIZE", 24)
+STREMIO_PAGE_SIZE = perf._env_int("FOURKHD_CATALOG_PAGE_SIZE", 54)
 PAGE_SIZE = STREMIO_PAGE_SIZE
+SEARCH_PAGE_SIZE = 18
 
 CATEGORIES_MAP = {
     "Tất cả": "movies",
@@ -252,14 +255,29 @@ async def get_catalog_page(category_slug: str, page: int = 1) -> List[Dict[str, 
 
 async def get_catalog_items(category: str = "Tất cả", skip: int = 0) -> List[Dict[str, Any]]:
     category_slug = CATEGORIES_MAP.get(category, "movies")
-    page = (skip // WP_ITEMS_PER_PAGE) + 1
-    items = await get_catalog_page(category_slug, page=page)
-    # If Stremio requests offset inside the page
-    offset_in_page = skip % WP_ITEMS_PER_PAGE
-    if offset_in_page > 0 and len(items) > offset_in_page:
-        items = items[offset_in_page:]
+    target_start = max(0, skip)
+    target_end = target_start + STREMIO_PAGE_SIZE
+    start_wp_page = (target_start // WP_ITEMS_PER_PAGE) + 1
+    end_wp_page = ((target_end - 1) // WP_ITEMS_PER_PAGE) + 1
+    wp_pages = list(range(start_wp_page, end_wp_page + 1))
+
+    results = await asyncio.gather(
+        *[get_catalog_page(category_slug, page=p) for p in wp_pages]
+    )
+
+    all_items: List[Dict[str, Any]] = []
+    seen = set()
+    for batch in results:
+        for it in batch or []:
+            it_key = it.get("slug") or it.get("url") or it.get("id")
+            if it_key and it_key not in seen:
+                seen.add(it_key)
+                all_items.append(it)
+
+    offset_in_first_page = max(0, target_start - (start_wp_page - 1) * WP_ITEMS_PER_PAGE)
+    selected = all_items[offset_in_first_page : offset_in_first_page + STREMIO_PAGE_SIZE]
     # Enrich with IMDb IDs so third-party subtitle addons (OpenSubtitles, etc.) work automatically!
-    return await enrich_catalog_with_imdb(items)
+    return await enrich_catalog_with_imdb(selected)
 
 
 # ------------------------------------------------------------------
