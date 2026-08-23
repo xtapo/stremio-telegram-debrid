@@ -116,6 +116,7 @@ from vidking_router import vidking_router
 from ernax_router import ernax_router
 from film4k_router import film4k_router
 from iptv_router import iptv_router
+from movies2watch_router import movies2watch_router
 from dashboard_router import dashboard_router
 
 app = FastAPI(lifespan=lifespan)
@@ -138,6 +139,7 @@ app.include_router(hdhub4u_router, prefix="/hdhub4u", tags=["HDHub4u Cinema"])
 app.include_router(uhdmovies_router, prefix="/uhdmovies", tags=["UHDMovies 4K Cinema"])
 app.include_router(fourkhdhub_router, prefix="/4khdhub", tags=["4KHDHub 4K Cinema"])
 app.include_router(hdtoday_router, prefix="/hdtoday", tags=["HDToday Cinema"])
+app.include_router(movies2watch_router, prefix="/movies2watch", tags=["Movies2Watch Cinema"])
 app.include_router(vidking_router, prefix="/vidking", tags=["Vidking Player"])
 app.include_router(ernax_router, prefix="/ernax", tags=["Ernax Player"])
 app.include_router(film4k_router, prefix="/film4k", tags=["Film4k Live TV"])

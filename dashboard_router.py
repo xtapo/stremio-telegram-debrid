@@ -748,6 +748,7 @@ async def api_update_config(request: Request):
         "enable_source_film4k": "ENABLE_SOURCE_FILM4K_TV",
         "enable_source_iptv": "ENABLE_SOURCE_IPTV",
         "enable_source_iptv_org": "ENABLE_SOURCE_IPTV",
+        "enable_source_movies2watch": "ENABLE_SOURCE_MOVIES2WATCH",
         "enable_source_subtitles": "ENABLE_SUBTITLES",
         "enable_source_subtitle": "ENABLE_SUBTITLES",
         "enable_subtitles": "ENABLE_SUBTITLES",
@@ -763,6 +764,7 @@ async def api_update_config(request: Request):
         "enable_board_4khdhub": "ENABLE_BOARD_4KHDHUB",
         "enable_board_topxx": "ENABLE_BOARD_TOPXX",
         "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
+        "enable_board_movies2watch": "ENABLE_BOARD_MOVIES2WATCH",
         "enable_board_vidking": "ENABLE_BOARD_VIDKING",
         "enable_board_ernax": "ENABLE_BOARD_ERNAX",
         "enable_board_film4k_tv": "ENABLE_BOARD_FILM4K_TV",
@@ -804,6 +806,7 @@ async def api_update_config(request: Request):
             "4khdhub": getattr(Config, "ENABLE_SOURCE_4KHDHUB", True),
             "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
             "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
+            "movies2watch": getattr(Config, "ENABLE_SOURCE_MOVIES2WATCH", True),
             "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_SOURCE_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True),
@@ -820,6 +823,7 @@ async def api_update_config(request: Request):
             "4khdhub": getattr(Config, "ENABLE_BOARD_4KHDHUB", True),
             "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
             "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
+            "movies2watch": getattr(Config, "ENABLE_BOARD_MOVIES2WATCH", True),
             "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_BOARD_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_BOARD_FILM4K_TV", True),
@@ -946,6 +950,24 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/hdtoday/manifest.json"
             },
             "routes": ["/hdtoday/manifest.json", "/hdtoday/catalog", "/hdtoday/stream"]
+        },
+        {
+            "id": "movies2watch",
+            "name": "Movies2Watch Cinema",
+            "tag": "Phim Lẻ & Series Đa Server",
+            "category": "Full HD / Multi-Server & Sub",
+            "icon": "fa-clapperboard",
+            "badge": "Multi-Server",
+            "badge_color": "teal",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_MOVIES2WATCH", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_MOVIES2WATCH", True)),
+            "description": "Kho phim lẻ & series truyền hình miễn phí từ Movies2Watch (movies2watch.vc) với đa máy chủ UpCloud, Vidmoly, Videasy, Vidsrc, Vidfast và luồng HLS trực tiếp.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/movies2watch/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/movies2watch/manifest.json",
+                "public": f"{domain_url}/movies2watch/manifest.json"
+            },
+            "routes": ["/movies2watch/manifest.json", "/movies2watch/catalog", "/movies2watch/meta", "/movies2watch/stream"]
         },
         {
             "id": "nguonc",
