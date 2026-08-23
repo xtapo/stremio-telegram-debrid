@@ -744,6 +744,27 @@ async def fetch_and_decrypt_server(
             sources = data.get("sources", [])
             subtitles = data.get("subtitles", [])
 
+            def _quality_sort_key(src_item: Any) -> int:
+                if not isinstance(src_item, dict):
+                    return 0
+                q_txt = str(src_item.get("quality", "")).lower()
+                u_txt = str(src_item.get("url", "")).lower()
+                if "2160" in q_txt or "4k" in q_txt or "2160" in u_txt:
+                    return 2160
+                if "1440" in q_txt or "2k" in q_txt or "1440" in u_txt:
+                    return 1440
+                if "1080" in q_txt or "fhd" in q_txt or "1080" in u_txt:
+                    return 1080
+                if "720" in q_txt or "hd" in q_txt or "720" in u_txt:
+                    return 720
+                if "480" in q_txt or "sd" in q_txt or "480" in u_txt:
+                    return 480
+                if "360" in q_txt or "360" in u_txt:
+                    return 360
+                return 100
+
+            sources = sorted(sources, key=_quality_sort_key, reverse=True)
+
             extracted = []
             for src in sources:
                 if not isinstance(src, dict):

@@ -760,14 +760,18 @@ async def movies2watch_stream_handler(request: Request, type: str, id: str):
                             seed=seed,
                             base_url=app_base_url,
                         )
-                        for srv in VIDKING_SERVERS[:4]
+                        for srv in VIDKING_SERVERS
                     ]
                     srv_results = await asyncio.gather(*tasks, return_exceptions=True)
                     for r_list in srv_results:
                         if isinstance(r_list, list):
                             for s_item in r_list:
                                 orig_name = s_item.get("name", "")
-                                s_item["name"] = orig_name.replace("Vidking", "Movies2Watch HD")
+                                # Enhance badge with Movies2Watch [Videasy] branding
+                                if "2160" in orig_name:
+                                    s_item["name"] = orig_name.replace("Vidking", "Movies2Watch [Videasy] 💎")
+                                else:
+                                    s_item["name"] = orig_name.replace("Vidking", "Movies2Watch [Videasy]")
                                 streams.append(s_item)
             except Exception as e:
                 logger.warning(f"Vidking direct stream resolution failed for TMDB {found_tmdb_id}: {e}")
@@ -831,6 +835,23 @@ async def movies2watch_stream_handler(request: Request, type: str, id: str):
                 }
             )
 
+        # Step 7: Sort streams by quality priority (2160p 4K first, then 1080p, 720p, etc.)
+        def _stream_sort_key(item: Dict[str, Any]) -> int:
+            name_str = (item.get("name") or "").lower()
+            title_str = (item.get("title") or "").lower()
+            if "2160" in name_str or "4k" in name_str or "2160" in title_str:
+                return 4000
+            if "1080" in name_str or "fhd" in name_str or "1080" in title_str:
+                return 2000
+            if "720" in name_str or "hd" in name_str or "720" in title_str:
+                return 1000
+            if "480" in name_str or "sd" in name_str or "480" in title_str:
+                return 500
+            if "externalurl" in item:
+                return 50
+            return 100
+
+        streams = sorted(streams, key=_stream_sort_key, reverse=True)
         return {"streams": streams}
 
     except Exception as e:
