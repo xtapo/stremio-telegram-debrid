@@ -739,6 +739,7 @@ async def api_update_config(request: Request):
         "enable_source_moviesdrive": "ENABLE_SOURCE_MOVIESDRIVE",
         "enable_source_hdhub4u": "ENABLE_SOURCE_HDHUB4U",
         "enable_source_uhdmovies": "ENABLE_SOURCE_UHDMOVIES",
+        "enable_source_4khdhub": "ENABLE_SOURCE_4KHDHUB",
         "enable_source_topxx": "ENABLE_SOURCE_TOPXX",
         "enable_source_hdtoday": "ENABLE_SOURCE_HDTODAY",
         "enable_source_vidking": "ENABLE_SOURCE_VIDKING",
@@ -759,6 +760,7 @@ async def api_update_config(request: Request):
         "enable_board_moviesdrive": "ENABLE_BOARD_MOVIESDRIVE",
         "enable_board_hdhub4u": "ENABLE_BOARD_HDHUB4U",
         "enable_board_uhdmovies": "ENABLE_BOARD_UHDMOVIES",
+        "enable_board_4khdhub": "ENABLE_BOARD_4KHDHUB",
         "enable_board_topxx": "ENABLE_BOARD_TOPXX",
         "enable_board_hdtoday": "ENABLE_BOARD_HDTODAY",
         "enable_board_vidking": "ENABLE_BOARD_VIDKING",
@@ -799,6 +801,7 @@ async def api_update_config(request: Request):
             "moviesdrive": getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_SOURCE_HDHUB4U", True),
             "uhdmovies": getattr(Config, "ENABLE_SOURCE_UHDMOVIES", True),
+            "4khdhub": getattr(Config, "ENABLE_SOURCE_4KHDHUB", True),
             "topxx": getattr(Config, "ENABLE_SOURCE_TOPXX", True),
             "hdtoday": getattr(Config, "ENABLE_SOURCE_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
@@ -814,6 +817,7 @@ async def api_update_config(request: Request):
             "moviesdrive": getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_BOARD_HDHUB4U", True),
             "uhdmovies": getattr(Config, "ENABLE_BOARD_UHDMOVIES", True),
+            "4khdhub": getattr(Config, "ENABLE_BOARD_4KHDHUB", True),
             "topxx": getattr(Config, "ENABLE_BOARD_TOPXX", False),
             "hdtoday": getattr(Config, "ENABLE_BOARD_HDTODAY", True),
             "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
@@ -1050,6 +1054,24 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/uhdmovies/manifest.json"
             },
             "routes": ["/uhdmovies/manifest.json", "/uhdmovies/catalog", "/uhdmovies/meta", "/uhdmovies/stream", "/uhdmovies/playback"]
+        },
+        {
+            "id": "4khdhub",
+            "name": "4KHDHub Cinema",
+            "tag": "4K UHD & Dolby Vision",
+            "category": "Ultra HD / Dolby Vision",
+            "icon": "fa-film",
+            "badge": "4K DV HDR",
+            "badge_color": "purple",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_4KHDHUB", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_4KHDHUB", True)),
+            "description": "Kho phim & series 4K UHD 2160p, Dolby Vision, HDR10+, 1080p HEVC REMUX từ 4KHDHub (4khdhub.one) với hạ tầng Cloudflare R2 & 10Gbps CDN trực tiếp.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/4khdhub/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/4khdhub/manifest.json",
+                "public": f"{domain_url}/4khdhub/manifest.json"
+            },
+            "routes": ["/4khdhub/manifest.json", "/4khdhub/catalog", "/4khdhub/meta", "/4khdhub/stream", "/4khdhub/playback"]
         },
         {
             "id": "topxx",

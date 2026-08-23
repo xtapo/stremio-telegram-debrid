@@ -563,6 +563,7 @@ Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phi
 | **MoviesDrive Cinema** | Hollywood, Bollywood, Web Series | 4K UHD / 1080p HubCloud, GDFlix | `http://<host>:7860/moviesdrive/manifest.json` | *Không hỗ trợ* | [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md) |
 | **HDHub4u Cinema** | Hollywood, Bollywood, Dual Audio | 4K / 1080p Cloudflare R2 / FastDL | `http://<host>:7860/hdhub4u/manifest.json` | *Không hỗ trợ* | [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md) |
 | **UHDMovies Cinema** | 4K UHD, 1080p HEVC, HDR DoVi, 60FPS | 4K / 1080p Google Drive Direct CDN | `http://<host>:7860/uhdmovies/manifest.json` | *Không hỗ trợ* | [UHDMOVIES_GUIDE.md](UHDMOVIES_GUIDE.md) |
+| **4KHDHub Cinema** | 4K UHD 2160p, Dolby Vision, HDR10+, REMUX | Cloudflare R2 / HubCloud 10Gbps CDN | `http://<host>:7860/4khdhub/manifest.json` | *Không hỗ trợ* | [FOURKHDHUB_GUIDE.md](FOURKHDHUB_GUIDE.md) |
 | **TopXX Cinema** | Phim người lớn (18+ Adult) | Full HD / Direct Stream | `http://<host>:7860/topxx/manifest.json` | `http://<host>:7071/topxx/manifest.json` | [TOPXX_GUIDE.md](TOPXX_GUIDE.md) |
 
 ---
@@ -647,7 +648,19 @@ Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phi
 
 ---
 
-### 8. 🔞 TopXX Cinema (Kho Phim Người Lớn 18+)
+### 8. 🎬 4KHDHub Cinema (4K UHD 2160p, Dolby Vision, HDR10+, REMUX)
+- **Mô tả**: Kho phim & series 4K Ultra HD 2160p, Dolby Vision, HDR10+, 1080p HEVC REMUX từ 4KHDHub (`4khdhub.one`) với hạ tầng Cloudflare R2 & 10Gbps CDN phát trực tiếp tốc độ cao.
+- **Tính năng nổi bật**:
+  - Phim chiếu rạp, bom tấn Netflix, Amazon Prime, Disney+, Apple TV+, Anime chuẩn 4K HDR / Dolby Vision.
+  - Tự động bóc tách link tải và giải mã chuỗi HubCloud ➔ GamerXYT ➔ Cloudflare R2 10Gbps CDN.
+  - Hỗ trợ đầy đủ ID Stremio (`4khdhub:...`) và ID IMDb chuẩn Cinemeta (`tt...`).
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/4khdhub/manifest.json`
+- **Tài liệu hướng dẫn**: [FOURKHDHUB_GUIDE.md](FOURKHDHUB_GUIDE.md).
+
+---
+
+### 9. 🔞 TopXX Cinema (Kho Phim Người Lớn 18+)
 - **Mô tả**: Addon giải trí 18+ chất lượng cao với hàng chục ngàn video được phân loại chi tiết theo thể loại, diễn viên, chuyên mục và phát trực tiếp native trên Stremio.
 - **Manifest URL**:
   - Khi chạy `addon.py`: `http://127.0.0.1:7860/topxx/manifest.json`
