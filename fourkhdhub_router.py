@@ -228,6 +228,9 @@ async def _warm_and_translate(
         direct_url = await resolve_candidate(candidates[0])
         if not direct_url:
             return
+        from config import Config
+        if not getattr(Config, "ENABLE_SUBTITLES", True) or not getattr(Config, "AUTO_VIET_SUB", True):
+            return
         try:
             from sync_vtt_service import STREAM_VIDEO_URL_CACHE, get_or_generate_fast_vtt
             STREAM_VIDEO_URL_CACHE[item_id] = direct_url

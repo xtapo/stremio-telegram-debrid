@@ -684,6 +684,10 @@ async def get_or_generate_fast_vtt(
     media_type: str, item_id: str, video_url: Optional[str] = None
 ) -> Optional[str]:
     """Default track: Lingva translates every cue in parallel, then we answer."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True) or not getattr(Config, "AUTO_VIET_SUB", True):
+        return None
+
     clean_id = _clean(item_id)
     cache_file = _fast_cache_file(clean_id)
 
@@ -942,6 +946,10 @@ async def get_or_generate_quality_vtt(
     media_type: str, item_id: str, video_url: Optional[str] = None
 ) -> Optional[str]:
     """Second track: served progressively while Gemini / Custom AI work through it."""
+    from config import Config
+    if not getattr(Config, "ENABLE_SUBTITLES", True) or not getattr(Config, "AUTO_VIET_SUB", True):
+        return None
+
     clean_id = _clean(item_id)
     cache_file = _quality_cache_file(clean_id)
 
