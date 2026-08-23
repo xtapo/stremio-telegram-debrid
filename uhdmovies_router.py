@@ -97,7 +97,7 @@ def get_uhdmovies_manifest() -> Dict[str, Any]:
         "name": "UHDMovies - 4K Ultra HD & 1080p HEVC",
         "description": "Watch 4K UHD 2160p, 4K HDR/Dolby Vision, 1080p 10Bit HEVC & 60FPS Movies & Series from UHDMovies with high-speed direct CDN streaming.",
         "resources": [
-            {"name": "catalog", "types": ["movie", "series"], "idPrefixes": ["uhdmovies:"]},
+            "catalog",
             {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["uhdmovies:", "tt"]},
             {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["uhdmovies:", "tt"]},
         ] + ([{"name": "subtitles", "types": ["movie", "series"], "idPrefixes": ["uhdmovies:", "tt"]}] if getattr(Config, "ENABLE_SUBTITLES", True) else []),
@@ -107,10 +107,10 @@ def get_uhdmovies_manifest() -> Dict[str, Any]:
                 "type": "movie",
                 "id": "uhdmovies_movies_latest",
                 "name": "UHDMovies - Phim Mới Cập Nhật",
-                "pageSize": catalog.PAGE_SIZE,
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
+                    {"name": "genre", "options": ["Tất cả"] + [g for g in GENRE_OPTIONS if g != "Tất cả"], "isRequired": False},
                     {"name": "search", "isRequired": False},
-                    {"name": "genre", "isRequired": False, "options": GENRE_OPTIONS},
                     {"name": "skip", "isRequired": False},
                 ],
             },
@@ -118,29 +118,30 @@ def get_uhdmovies_manifest() -> Dict[str, Any]:
                 "type": "movie",
                 "id": "uhdmovies_movies_4k_hdr",
                 "name": "UHDMovies - 4K HDR & Dolby Vision",
-                "pageSize": catalog.PAGE_SIZE,
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [{"name": "skip", "isRequired": False}],
             },
             {
                 "type": "movie",
                 "id": "uhdmovies_movies_2160p_hevc",
                 "name": "UHDMovies - 2160p 4K HEVC",
-                "pageSize": catalog.PAGE_SIZE,
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [{"name": "skip", "isRequired": False}],
             },
             {
                 "type": "movie",
                 "id": "uhdmovies_movies_1080p_10bit",
                 "name": "UHDMovies - 1080p 10Bit HEVC",
-                "pageSize": catalog.PAGE_SIZE,
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [{"name": "skip", "isRequired": False}],
             },
             {
                 "type": "series",
                 "id": "uhdmovies_series_latest",
                 "name": "UHDMovies - TV & Web Series",
-                "pageSize": catalog.PAGE_SIZE,
+                "pageSize": catalog.STREMIO_PAGE_SIZE,
                 "extra": [
+                    {"name": "genre", "options": ["Tất cả", "TV Series", "Web Series"], "isRequired": False},
                     {"name": "search", "isRequired": False},
                     {"name": "skip", "isRequired": False},
                 ],
@@ -219,24 +220,17 @@ async def catalog_extra_endpoint(
                     except ValueError:
                         pass
 
-    page = (skip_val // catalog.PAGE_SIZE) + 1
+    if genre_query == "Tất cả":
+        genre_query = None
 
     clean_id = id.replace(".json", "")
-    items: List[Dict[str, Any]] = []
-
-    if search_query:
-        items = await search_uhdmovies(search_query, page=page)
-    elif clean_id == "uhdmovies_movies_4k_hdr":
-        items = await get_category_page("4k-hdr", page=page)
-    elif clean_id == "uhdmovies_movies_2160p_hevc":
-        items = await get_category_page("2160p-hevc", page=page)
-    elif clean_id == "uhdmovies_movies_1080p_10bit":
-        items = await get_category_page("1080p-10bit", page=page)
-    elif clean_id == "uhdmovies_series_latest":
-        items = await get_category_page("tv-series", page=page)
-    else:
-        cat_slug = CATEGORIES_MAP.get(genre_query, "movies") if genre_query else "movies"
-        items = await get_category_page(cat_slug, page=page)
+    items = await catalog.get_catalog_items(
+        cat_type=type,
+        cat_id=clean_id,
+        genre=genre_query,
+        search=search_query,
+        skip=skip_val,
+    )
 
     metas = []
     for item in items:
@@ -250,6 +244,7 @@ async def catalog_extra_endpoint(
         })
 
     return JSONResponse({"metas": metas}, headers={"Access-Control-Allow-Origin": "*"})
+
 
 
 # ------------------------------------------------------------------

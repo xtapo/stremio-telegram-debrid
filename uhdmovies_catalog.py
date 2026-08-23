@@ -41,9 +41,12 @@ META_TTL = perf._env_int("UHD_META_TTL", 900)
 META_STALE_TTL = perf._env_int("UHD_META_STALE_TTL", 7200)
 CINEMETA_TTL = perf._env_int("UHD_CINEMETA_TTL", 3600)
 IMDB_TTL = perf._env_int("UHD_IMDB_TTL", 86400)
-PAGE_SIZE = perf._env_int("UHD_CATALOG_PAGE_SIZE", 24)
+WP_ITEMS_PER_PAGE = 12
+STREMIO_PAGE_SIZE = perf._env_int("UHD_CATALOG_PAGE_SIZE", 24)
+PAGE_SIZE = STREMIO_PAGE_SIZE
 
 CATEGORIES_MAP = {
+    "Tất cả": "movies",
     "Phim Mới": "movies",
     "4K HDR": "4k-hdr",
     "2160p HEVC": "2160p-hevc",
@@ -67,6 +70,7 @@ def looks_like_series(title: str, url: str) -> bool:
 
 def clean_title(title: str) -> str:
     t = title or ""
+    t = html_lib.unescape(t).replace("’", "'").replace("‘", "'").replace("`", "'")
     # Strip leading Download and icons
     t = re.sub(r"^Download\s+", "", t, flags=re.I).strip()
     t = re.sub(r"^[^\w\s]+", "", t).strip()
@@ -119,6 +123,9 @@ def _parse_post_items(html: str) -> List[Dict[str, Any]]:
             if img_tag:
                 raw_title = img_tag.get("alt") or img_tag.get("title", "")
 
+        raw_title = html_lib.unescape(raw_title or "").replace("’", "'").replace("‘", "'").replace("`", "'").strip()
+
+
         if not raw_title or len(raw_title) < 3:
             continue
         if any(w in href.lower() for w in SKIP_SLUG_WORDS):
@@ -159,7 +166,7 @@ def _parse_post_items(html: str) -> List[Dict[str, Any]]:
 
 
 # ------------------------------------------------------------------
-# Catalog Fetching
+# Catalog Fetching & Batching
 # ------------------------------------------------------------------
 async def get_category_page(category_slug: str, page: int = 1) -> List[Dict[str, Any]]:
     key = f"uhd:cat:{category_slug}:{page}"
@@ -181,6 +188,55 @@ async def get_category_page(category_slug: str, page: int = 1) -> List[Dict[str,
     return await cached_call(
         key, _fetch, ttl=CATALOG_TTL, stale_ttl=CATALOG_STALE_TTL, negative_ttl=NEGATIVE_TTL
     ) or []
+
+
+async def get_catalog_items(
+    cat_type: str,
+    cat_id: str,
+    genre: Optional[str] = None,
+    search: Optional[str] = None,
+    skip: int = 0,
+) -> List[Dict[str, Any]]:
+    """Retrieve catalog items with multi-page batching for seamless infinite scroll in Stremio."""
+    if search:
+        search_page = (skip // STREMIO_PAGE_SIZE) + 1
+        return await search_uhdmovies(search, page=search_page)
+
+    clean_id = cat_id.replace(".json", "")
+    if clean_id == "uhdmovies_movies_4k_hdr":
+        cat_slug = "4k-hdr"
+    elif clean_id == "uhdmovies_movies_2160p_hevc":
+        cat_slug = "2160p-hevc"
+    elif clean_id == "uhdmovies_movies_1080p_10bit":
+        cat_slug = "1080p-10bit"
+    elif clean_id == "uhdmovies_series_latest":
+        cat_slug = "tv-series" if genre != "Web Series" else "web-series"
+    else:
+        cat_slug = CATEGORIES_MAP.get(genre, "movies") if genre else "movies"
+
+    target_start = max(0, skip)
+    target_end = target_start + STREMIO_PAGE_SIZE
+    start_wp_page = (target_start // WP_ITEMS_PER_PAGE) + 1
+    end_wp_page = ((target_end - 1) // WP_ITEMS_PER_PAGE) + 1
+    wp_pages = list(range(start_wp_page, end_wp_page + 1))
+
+    results = await asyncio.gather(
+        *[get_category_page(cat_slug, page=p) for p in wp_pages]
+    )
+
+    all_items: List[Dict[str, Any]] = []
+    seen = set()
+    for batch in results:
+        for it in batch or []:
+            it_id = it.get("id")
+            if it_id and it_id not in seen:
+                seen.add(it_id)
+                all_items.append(it)
+
+    offset_in_first_page = max(0, target_start - (start_wp_page - 1) * WP_ITEMS_PER_PAGE)
+    selected = all_items[offset_in_first_page : offset_in_first_page + STREMIO_PAGE_SIZE]
+    return selected
+
 
 
 async def search_uhdmovies(query: str, page: int = 1) -> List[Dict[str, Any]]:
