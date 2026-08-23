@@ -26,7 +26,27 @@ _film4k_cache: Dict[str, Tuple[Any, float]] = {}
 _channels_by_id: Dict[str, Dict[str, Any]] = {}
 CHANNELS_CACHE_TTL = 3600   # 1 hour
 EVENTS_CACHE_TTL = 180      # 3 minutes
-STREAM_CACHE_TTL = 1800     # 30 minutes for signed stream URLs
+STREAM_CACHE_TTL = 300      # 5 minutes for signed stream URLs (ensures fresh CDN tokens)
+
+
+def convert_to_hls_url(url: str) -> str:
+    """Convert CDN DASH (.mpd) stream URLs to native adaptive HLS (.m3u8) for smooth, lag-free playback."""
+    if not url or not isinstance(url, str):
+        return url
+    if ".m3u8" in url:
+        return url
+
+    # Replacement rules for FPT / Film4k CDN
+    replacements = [
+        ("live247-dash-avc/index.mpd", "live247-hls-avc/index.m3u8"),
+        ("live-dash-avc/index.mpd", "live-hls-avc/index.m3u8"),
+        ("dash_avc/index.mpd", "hls_avc/index.m3u8"),
+        ("stream.mpd", "master.m3u8"),
+    ]
+    for old, new in replacements:
+        if old in url:
+            return url.replace(old, new)
+    return url
 
 _film4k_client: Optional[httpx.AsyncClient] = None
 _client_loop: Optional[asyncio.AbstractEventLoop] = None
@@ -593,6 +613,7 @@ async def stream_endpoint(request: Request, type: str, id: str, api_key: str = "
         return JSONResponse({"streams": []})
 
     stream_url = stream_data["url"]
+    hls_url = convert_to_hls_url(stream_url)
     
     # Check if channel name is known
     ch = _channels_by_id.get(clean_id)
@@ -610,7 +631,28 @@ async def stream_endpoint(request: Request, type: str, id: str, api_key: str = "
 
     streams: List[Dict[str, Any]] = []
 
-    # 1. If channel has DRM ClearKey, add Server-Side Auto-Decrypted Stream first (Fix Green Screen on Stremio Desktop / MPV!)
+    # 1. Primary: Native HLS Stream (Adaptive Full HD / 720p / 480p, Anti-lag, Multi-Audio VN/EN)
+    hls_stream: Dict[str, Any] = {
+        "name": "Film4k Live [HLS • Siêu Mượt]",
+        "title": f"⚡ {ch_name}\n[HLS Adaptive • Chống Giật Lag • Full HD/HD/SD • Bình luận VN]",
+        "url": hls_url,
+        "behaviorHints": {
+            "notWebReady": False,
+            "proxyHeaders": {
+                "request": {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                    "Referer": "https://film4k.net/tv"
+                }
+            }
+        }
+    }
+    if formatted_clearkeys:
+        hls_stream["behaviorHints"]["clearKeys"] = formatted_clearkeys
+        if clear_key:
+            hls_stream["behaviorHints"]["clearKey"] = clear_key
+    streams.append(hls_stream)
+
+    # 2. If channel has DRM ClearKey, add Server-Side Auto-Decrypted Stream (Fix Green Screen on Stremio Desktop / MPV!)
     if formatted_clearkeys:
         scheme = request.url.scheme
         host = request.headers.get("host") or f"127.0.0.1:{Config.PORT}"
@@ -627,28 +669,28 @@ async def stream_endpoint(request: Request, type: str, id: str, api_key: str = "
             }
         })
 
-    # 2. Direct CDN Stream
-    direct_stream: Dict[str, Any] = {
-        "name": "Film4k Live [Direct CDN]",
-        "title": f"📺 {ch_name}\n[Luồng trực tiếp CDN • Tốc độ cao]",
-        "url": stream_url,
-        "behaviorHints": {
-            "notWebReady": False,
-            "proxyHeaders": {
-                "request": {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
-                    "Referer": "https://film4k.net/tv"
+    # 3. Direct DASH Stream (Original CDN source fallback)
+    if hls_url != stream_url:
+        direct_stream: Dict[str, Any] = {
+            "name": "Film4k Live [DASH Gốc]",
+            "title": f"📺 {ch_name}\n[Luồng trực tiếp DASH CDN]",
+            "url": stream_url,
+            "behaviorHints": {
+                "notWebReady": False,
+                "proxyHeaders": {
+                    "request": {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+                        "Referer": "https://film4k.net/tv"
+                    }
                 }
             }
         }
-    }
+        if formatted_clearkeys:
+            direct_stream["behaviorHints"]["clearKeys"] = formatted_clearkeys
+            if clear_key:
+                direct_stream["behaviorHints"]["clearKey"] = clear_key
+        streams.append(direct_stream)
 
-    if formatted_clearkeys:
-        direct_stream["behaviorHints"]["clearKeys"] = formatted_clearkeys
-        if clear_key:
-            direct_stream["behaviorHints"]["clearKey"] = clear_key
-
-    streams.append(direct_stream)
     return JSONResponse({"streams": streams})
 
 
@@ -668,7 +710,7 @@ async def decrypt_stream_endpoint(request: Request, id: str, api_key: str = ""):
     if not stream_data or not stream_data.get("url"):
         raise HTTPException(status_code=404, detail="Stream not found")
 
-    url = stream_data["url"]
+    url = convert_to_hls_url(stream_data["url"])
     clear_key = stream_data.get("clearKey") or {}
     key_hex = clear_key.get("key")
     if not key_hex and stream_data.get("clearKeys") and isinstance(stream_data["clearKeys"], dict):
@@ -747,7 +789,8 @@ async def live_stream_redirect(id: str, api_key: str = ""):
     if not stream_data or not stream_data.get("url"):
         raise HTTPException(status_code=404, detail="Stream not found or expired token")
 
-    return RedirectResponse(url=stream_data["url"], status_code=302)
+    hls_url = convert_to_hls_url(stream_data["url"])
+    return RedirectResponse(url=hls_url, status_code=302)
 
 
 # ------------------------------------------------------------------
@@ -1261,8 +1304,52 @@ async def web_tv_player():
 
         const clearKey = stream.behaviorHints ? stream.behaviorHints.clearKey : null;
         const clearKeys = stream.behaviorHints ? stream.behaviorHints.clearKeys : null;
+        const hasDrm = (clearKey && clearKey.key) || (clearKeys && Object.keys(clearKeys).length > 0);
 
-        // 1. Shaka Player Engine (DASH .mpd, HLS .m3u8, and ClearKey DRM)
+        // 1. Native HLS.js Engine for .m3u8 (Zero lag, ultra smooth 50fps, adaptive bitrate)
+        if (!hasDrm && window.Hls && Hls.isSupported() && !currentStreamUrl.includes(".mpd")) {{
+          hlsPlayer = new Hls({{
+            enableWorker: true,
+            lowLatencyMode: false,
+            backBufferLength: 30,
+            maxBufferLength: 30,
+            maxMaxBufferLength: 60,
+            liveSyncDurationCount: 3,
+            liveMaxLatencyDurationCount: 10,
+            manifestLoadingTimeOut: 10000,
+            manifestLoadingMaxRetry: 4,
+            levelLoadingTimeOut: 10000,
+            levelLoadingMaxRetry: 4,
+            fragLoadingTimeOut: 15000,
+            fragLoadingMaxRetry: 6
+          }});
+          hlsPlayer.loadSource(currentStreamUrl);
+          hlsPlayer.attachMedia(video);
+          hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() {{
+            hideLoading();
+            video.muted = true;
+            video.play().then(() => checkMuted()).catch(e => console.log(e));
+          }});
+          hlsPlayer.on(Hls.Events.ERROR, function(event, data) {{
+            console.warn("HLS Error:", data);
+            if (data.fatal) {{
+              switch (data.type) {{
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  hlsPlayer.startLoad();
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  hlsPlayer.recoverMediaError();
+                  break;
+                default:
+                  showError("Lỗi kết nối luồng phát HLS.");
+                  break;
+              }}
+            }}
+          }});
+          return;
+        }}
+
+        // 2. Shaka Player Engine (For DASH .mpd or DRM ClearKey streams)
         if (window.shaka && shaka.Player.isBrowserSupported()) {{
           shakaPlayer = new shaka.Player(video);
 
@@ -1283,10 +1370,15 @@ async def web_tv_player():
           shakaPlayer.configure({{
             drm: drmConfig,
             streaming: {{
-              lowLatencyMode: true,
-              bufferingGoal: 6,
-              rebufferingGoal: 2,
-              bufferBehind: 15
+              lowLatencyMode: false,
+              bufferingGoal: 15,
+              rebufferingGoal: 4,
+              bufferBehind: 30,
+              retryParameters: {{
+                maxAttempts: 5,
+                baseDelay: 1000,
+                backoffFactor: 2
+              }}
             }}
           }});
 
@@ -1301,32 +1393,8 @@ async def web_tv_player():
             }});
             return;
           }} catch (shakaErr) {{
-            console.warn("Shaka load failed, trying Hls.js fallback:", shakaErr);
+            console.warn("Shaka load failed:", shakaErr);
           }}
-        }}
-
-        // 2. HLS.js fallback for HLS .m3u8 streams
-        if (window.Hls && Hls.isSupported() && !currentStreamUrl.includes(".mpd")) {{
-          hlsPlayer = new Hls({{
-            enableWorker: true,
-            lowLatencyMode: true,
-            backBufferLength: 20,
-            maxBufferLength: 6,
-            maxMaxBufferLength: 12
-          }});
-          hlsPlayer.loadSource(currentStreamUrl);
-          hlsPlayer.attachMedia(video);
-          hlsPlayer.on(Hls.Events.MANIFEST_PARSED, function() {{
-            hideLoading();
-            video.muted = true;
-            video.play().then(() => checkMuted()).catch(e => console.log(e));
-          }});
-          hlsPlayer.on(Hls.Events.ERROR, function(event, data) {{
-            if (data.fatal) {{
-              showError("Lỗi luồng phát HLS.");
-            }}
-          }});
-          return;
         }}
 
         // 3. Fallback native
