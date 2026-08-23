@@ -385,54 +385,79 @@ async def resolve_unblocked_link(url: str, timeout: float = 20.0) -> Optional[st
                 continue
             if "/zfile/" in href or "resume cloud" in btn_text:
                 zfile_url = urllib.parse.urljoin(str(r6.url), href)
-                break
-            if "instant download" in btn_text or "direct download" in btn_text:
-                instant_download_url = href
+            if "instant download" in btn_text or "direct download" in btn_text or "video-gen" in href:
+                instant_download_url = urllib.parse.urljoin(str(r6.url), href)
 
-        # If /zfile/ is present, follow it to get the direct Cloudflare Workers / CDN stream link
+        # Priority 1: Follow /zfile/ to get direct Cloudflare Workers / CDN stream
         if zfile_url:
-            r_z = await client.get(zfile_url, headers={"Referer": driveseed_file_url}, timeout=timeout)
-            soup_z = make_soup(r_z.text)
-            for a in soup_z.select("a[href]"):
-                h = a.get("href")
-                t = a.get_text(strip=True).lower()
-                if (
-                    "cloud resume download" in t
-                    or "workers.dev" in h
-                    or any(h.endswith(ext) or ext in h for ext in (".mkv", ".mp4", ".m4v"))
-                    or "googleusercontent" in h
-                ):
-                    return h
-
-        # Fallback to instant download URL resolution
-        if instant_download_url:
-            if any(k in instant_download_url for k in ("googleusercontent.com", "workers.dev", "r2.dev")):
-                return instant_download_url
             try:
-                r_head = await client.head(
+                r_z = await client.get(zfile_url, headers={"Referer": driveseed_file_url}, timeout=timeout)
+                soup_z = make_soup(r_z.text)
+                for a in soup_z.select("a[href]"):
+                    h = a.get("href")
+                    t = a.get_text(strip=True).lower()
+                    if (
+                        "cloud resume download" in t
+                        or "workers.dev" in h
+                        or any(h.endswith(ext) or ext in h for ext in (".mkv", ".mp4", ".m4v"))
+                        or "googleusercontent" in h
+                    ):
+                        return h
+            except Exception as e:
+                logger.debug("zfile fetch failed: %s", e)
+
+        # Priority 2: Follow Instant Download / video-seed / Google User Content stream
+        if instant_download_url:
+            try:
+                # Use client.stream to instantly read redirect headers without downloading video bytes into RAM
+                async with client.stream(
+                    "GET",
                     instant_download_url,
                     headers={"Referer": driveseed_file_url},
-                    timeout=10.0,
-                )
-                loc = r_head.headers.get("location", "")
-                if loc:
-                    if "url=" in loc:
-                        parsed_loc = urllib.parse.urlsplit(loc)
-                        q = urllib.parse.parse_qs(parsed_loc.query)
+                    timeout=12.0,
+                ) as r_inst:
+                    final_url_str = str(r_inst.url)
+                    if "url=" in final_url_str:
+                        q = urllib.parse.parse_qs(urllib.parse.urlsplit(final_url_str).query)
                         real_video_url = q.get("url", [None])[0]
                         if real_video_url and real_video_url.startswith("http"):
                             return real_video_url
-                    if loc.startswith("http"):
-                        return loc
-            except Exception:
-                pass
-            return instant_download_url
+                    if any(k in final_url_str for k in ("googleusercontent.com", "workers.dev", "r2.dev")):
+                        return final_url_str
+
+                    loc = r_inst.headers.get("location") or r_inst.headers.get("Location") or ""
+                    if loc:
+                        if "url=" in loc:
+                            q = urllib.parse.parse_qs(urllib.parse.urlsplit(loc).query)
+                            real_video_url = q.get("url", [None])[0]
+                            if real_video_url and real_video_url.startswith("http"):
+                                return real_video_url
+                        if any(k in loc for k in ("googleusercontent.com", "workers.dev", "r2.dev")):
+                            return loc
+
+                    # Only read a small slice if it's HTML text
+                    content_type = r_inst.headers.get("content-type", "").lower()
+                    if "html" in content_type or "text" in content_type:
+                        chunk = await r_inst.aread()
+                        text = chunk.decode("utf-8", errors="ignore")
+                        match_g = re.search(r'(https://video-downloads\.googleusercontent\.com/[^\s\'"<>]+)', text)
+                        if match_g:
+                            return match_g.group(1)
+
+                        match_w = re.search(r'(https://[^\s\'"<>]+workers\.dev/[^\s\'"<>]+)', text)
+                        if match_w:
+                            return match_w.group(1)
+
+            except Exception as e:
+                logger.debug("instant_download_url resolution failed: %s", e)
 
         return None
+
 
     except Exception as e:
         logger.debug(f"resolve_unblocked_link failed for {url}: {e}")
         return None
+
 
 
 # ------------------------------------------------------------------
