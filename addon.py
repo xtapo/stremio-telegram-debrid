@@ -109,6 +109,7 @@ from topxx_router import topxx_router
 from hhpanda_router import hhpanda_router
 from moviesdrive_router import moviesdrive_router
 from hdhub4u_router import hdhub4u_router
+from uhdmovies_router import uhdmovies_router
 from hdtoday_router import hdtoday_router
 from vidking_router import vidking_router
 from ernax_router import ernax_router
@@ -133,6 +134,7 @@ app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
 app.include_router(hhpanda_router, prefix="/hhpanda", tags=["HHPanda Anime 3D"])
 app.include_router(moviesdrive_router, prefix="/moviesdrive", tags=["MoviesDrive Cinema"])
 app.include_router(hdhub4u_router, prefix="/hdhub4u", tags=["HDHub4u Cinema"])
+app.include_router(uhdmovies_router, prefix="/uhdmovies", tags=["UHDMovies 4K Cinema"])
 app.include_router(hdtoday_router, prefix="/hdtoday", tags=["HDToday Cinema"])
 app.include_router(vidking_router, prefix="/vidking", tags=["Vidking Player"])
 app.include_router(ernax_router, prefix="/ernax", tags=["Ernax Player"])

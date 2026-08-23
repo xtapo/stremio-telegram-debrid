@@ -1,130 +1,91 @@
 import asyncio
-import httpx
+import os
+import sys
 import re
 import urllib.parse
-import json
-import html
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import httpx
 from bs4 import BeautifulSoup
+import uhdmovies_perf as perf
 
-HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Referer': 'https://new2.moviesdrive.christmas/'
-}
-
-async def search_moviesdrive(query: str, page: int = 1):
-    url = f"https://new2.moviesdrive.christmas/search.php?q={urllib.parse.quote(query)}&page={page}"
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-        resp = await client.get(url, headers=HEADERS)
-        if resp.status_code == 200:
-            return resp.json()
-        return {}
-
-async def resolve_hubcloud_links(post_url: str):
-    """From a post page on moviesdrive, extract hubcloud search-recover links."""
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-        resp = await client.get(post_url, headers=HEADERS)
-        if resp.status_code != 200:
-            return []
-        soup = BeautifulSoup(resp.text, 'html.parser')
-        content = soup.find('div', class_='entry-content') or soup.find('article') or soup
-        results = []
-        for a in content.find_all('a', href=True):
-            href = a.get('href', '')
-            text = a.get_text(strip=True)
-            if 'hubcloud' in href:
-                results.append({'text': text, 'url': href})
-        return results
-
-async def resolve_hubcloud_files(hubcloud_url: str):
-    """From a hubcloud search-recover url, query the search API to get individual file links."""
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-        resp = await client.get(hubcloud_url, headers={'User-Agent': HEADERS['User-Agent'], 'Referer': 'https://new2.moviesdrive.christmas/'})
-        page_html = resp.text
-        final_url = str(resp.url)
+async def test_full_resolution():
+    client = await perf.get_client()
+    
+    test_links = [
+        # Somebody 2025 1080p H.264 (6.47 GB)
+        'https://cloud.unblockedgames.world/?sid=a3Y4azk3STZ5RVphb1c0d0pkeDllaWVjc3NTd1dyeHJZSlNRUkszSnJFSGphampKSXNSZWwrcG5LYTJEYkE2UkZIZjJJc3VDQ1hhdW9jVTJmTTFzU29PMlFKZ0MzTmhvSC9NWEh6a0Z2T2RqWmdlSk9pYmVnRVpFYzFiVlNIcFB4NDY5NFJQUjZBR0Mvd1Q5QXp0UmJ5dmNpME9HajlVWlRReWRybnJNYWJwdHhxZ1NyVVM2TEZjQ3F1VThzSkR5NExYT3huY1A1MUltOTBJY29wcnA1MUVQSVJ3SVp1NWFiSERpTDNsL2lDb3ZOY2p0OFd2MUlNcHhHaGpQNGJmSg==',
+        # Somebody 2025 1080p HEVC (3.95 GB)
+        'https://cloud.unblockedgames.world/?sid=a3Y4azk3STZ5RVphb1c0d0pkeDllaWVjc3NTd1dyeHJZSlNRUkszSnJFSGphampKSXNSZWwrcG5LYTJEYkE2UkZIZjJJc3VDQ1hhdW9jVTJmTTFzU29PMlFKZ0MzTmhvSC9NWEh6a0Z2T2NIWXNlRVkyNmxrWWFjS1JjcE90cTd6aTF3ZFNCUFl6dSt2eHZkb01jdHNYRitsdXdZdkpVaWVXY2M2cWoxZ3dzQjJYaU5GemFkRGxZTTloeGltbnVjVmhBZWdnM2VFMGFUbHZjbEdzLzdSRGFRaG9PaGZRRHdFZEJBcFNNSFV2Ti96ZERMVFhjdGdHbTZsQ3IrUmVjTg=='
+    ]
+    
+    for link in test_links:
+        print("\n" + "="*50)
+        print("Resolving link:", link[:60] + "...")
         
-        q_match = re.search(r'const Q_INITIAL\s*=\s*"([^"]+)"', page_html)
-        token_match = re.search(r'const FROM_AC_TOKEN\s*=\s*"([^"]+)"', page_html)
+        # Step 1: GET landing
+        r1 = await client.get(link)
+        soup1 = BeautifulSoup(r1.text, "html.parser")
+        form1 = soup1.select_one("form")
+        action1 = form1.get("action") or link
+        data1 = {inp.get("name"): inp.get("value", "") for inp in form1.select("input") if inp.get("name")}
         
-        if not token_match:
-            return []
-            
-        token_val = token_match.group(1)
-        q_val = q_match.group(1) if q_match else ""
-        # decode escapes and html entities
-        try:
-            q_val = q_val.encode('utf-8').decode('unicode-escape')
-        except Exception:
-            pass
-        q_val = html.unescape(q_val)
-        # clean query for best search match
-        clean_q = re.sub(r'[\r\n\t]', ' ', q_val).strip()
+        # Step 2: POST form 1
+        r2 = await client.post(action1, data=data1, headers={"Referer": link})
+        soup2 = BeautifulSoup(r2.text, "html.parser")
+        form2 = soup2.select_one("form")
+        action2 = form2.get("action") or str(r2.url)
+        data2 = {inp.get("name"): inp.get("value", "") for inp in form2.select("input") if inp.get("name")}
         
-        api_url = f"https://hubcloud.cx/drive/search-recover.php?api=search&q={urllib.parse.quote(clean_q)}&page=1&from_ac={token_val}"
-        api_resp = await client.get(api_url, headers={'User-Agent': HEADERS['User-Agent'], 'Referer': final_url, 'Accept': 'application/json'})
-        if api_resp.status_code == 200:
-            data = api_resp.json()
-            return data.get('hits', [])
-        return []
-
-async def resolve_direct_stream(hubcloud_file_url: str):
-    """Given https://hubcloud.cx/drive/{id}, resolve to direct stream URL."""
-    async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
-        # Step 1: get gamerxyt link
-        resp1 = await client.get(hubcloud_file_url, headers={'User-Agent': HEADERS['User-Agent'], 'Referer': 'https://hubcloud.cx/'})
-        soup1 = BeautifulSoup(resp1.text, 'html.parser')
-        gamer_link = None
-        for a in soup1.find_all('a', href=True):
-            if 'gamerxyt.com' in a['href']:
-                gamer_link = a['href']
+        # Step 3: POST form 2
+        r3 = await client.post(action2, data=data2, headers={"Referer": str(r2.url)})
+        match_cookie = re.search(r"s_\d+\(\s*['\"]([^'\"]+)['\"]\s*,\s*['\"]([^'\"]+)['\"]", r3.text)
+        match_go = re.search(r"https?://[^'\"\s]+/\?go=([^'\"\s]+)", r3.text)
+        
+        c_name, c_val = match_cookie.groups()
+        go_param = match_go.group(1)
+        base_domain = urllib.parse.urlsplit(str(r3.url)).netloc
+        go_url = f"https://{base_domain}/?go={go_param}"
+        client.cookies.set(c_name, c_val, domain=base_domain)
+        
+        # Step 4: GET go_url
+        r4 = await client.get(go_url, headers={"Referer": str(r3.url)})
+        meta_refresh = re.search(r'content=["\']\d+;\s*url=([^"\']+)["\']', r4.text, re.I)
+        target_url = meta_refresh.group(1)
+        print("Target URL from unblockedgames:", target_url)
+        
+        # Step 5: Follow target url -> driveseed
+        r5 = await client.get(target_url, headers={"Referer": str(r4.url)})
+        file_match = re.search(r'window\.location\.replace\(["\']([^"\']+)["\']\)', r5.text)
+        driveseed_file_url = urllib.parse.urljoin(str(r5.url), file_match.group(1)) if file_match else str(r5.url)
+        print("Driveseed File Page:", driveseed_file_url)
+        
+        # Step 6: On driveseed file page, extract /zfile/ (Resume Cloud) or instant download
+        r6 = await client.get(driveseed_file_url, headers={"Referer": str(r5.url)})
+        soup6 = BeautifulSoup(r6.text, "html.parser")
+        
+        zfile_url = None
+        for a in soup6.select("a[href]"):
+            href = a.get("href")
+            btn_text = a.get_text(strip=True).lower()
+            if "/zfile/" in href or "resume cloud" in btn_text:
+                zfile_url = urllib.parse.urljoin(str(r6.url), href)
                 break
-        if not gamer_link:
-            return None
-            
-        # Step 2: fetch gamerxyt page
-        resp2 = await client.get(gamer_link, headers={'User-Agent': HEADERS['User-Agent'], 'Referer': hubcloud_file_url})
-        soup2 = BeautifulSoup(resp2.text, 'html.parser')
-        
-        streams = []
-        for a in soup2.find_all('a', href=True):
-            href = a['href']
-            text = a.get_text(strip=True)
-            if 'workers.dev' in href or 'video-downloads.googleusercontent.com' in href or 'pixel.hubcloud.cx' in href or 'dl.php?link=' in href:
-                streams.append({'type': text, 'url': href})
                 
-        return streams
-
-async def main():
-    print("--- Testing Search ---")
-    data = await search_moviesdrive("Inception")
-    hits = data.get('hits', [])
-    print(f"Found {len(hits)} hits for Inception")
-    if not hits:
-        return
-    
-    first = hits[0]['document']
-    print(f"Title: {first.get('post_title')} | URL: {first.get('permalink')}")
-    full_post_url = "https://new2.moviesdrive.christmas" + first.get('permalink')
-    
-    print("\n--- Testing Extract Hubcloud Links ---")
-    hc_links = await resolve_hubcloud_links(full_post_url)
-    print(f"Found {len(hc_links)} HubCloud buttons:")
-    for h in hc_links[:5]:
-        print(f" - [{h['text']}] => {h['url']}")
-        
-    if hc_links:
-        print("\n--- Testing HubCloud File Resolution ---")
-        files = await resolve_hubcloud_files(hc_links[0]['url'])
-        print(f"Found {len(files)} files:")
-        for f in files[:3]:
-            print(f" - File: {f.get('file_name')} ({f.get('size')}) => {f.get('url')}")
+        if zfile_url:
+            print("Found zfile URL:", zfile_url)
+            r_z = await client.get(zfile_url, headers={"Referer": driveseed_file_url})
+            soup_z = BeautifulSoup(r_z.text, "html.parser")
+            direct_video_url = None
+            for a in soup_z.select("a[href]"):
+                h = a.get("href")
+                t = a.get_text(strip=True).lower()
+                if "cloud resume download" in t or "workers.dev" in h or ".mkv" in h or ".mp4" in h or "googleusercontent" in h:
+                    direct_video_url = h
+                    break
+            print(">>> FINAL DIRECT STREAM URL:", direct_video_url)
             
-        if files:
-            print("\n--- Testing Direct Stream Resolution ---")
-            streams = await resolve_direct_stream(files[0]['url'])
-            print(f"Found {len(streams) if streams else 0} direct stream links:")
-            if streams:
-                for s in streams:
-                    print(f" - [{s['type']}] => {s['url']}")
+            # Check video stream response
+            r_stream = await client.get(direct_video_url, headers={"Range": "bytes=0-100"})
+            print(f"Stream verification: Status={r_stream.status_code}, Content-Type={r_stream.headers.get('content-type')}, Length={len(r_stream.content)}")
 
-if __name__ == '__main__':
-    asyncio.run(main())
+asyncio.run(test_full_resolution())

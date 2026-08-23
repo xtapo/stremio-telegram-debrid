@@ -562,6 +562,7 @@ Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phi
 | **HHPanda 3D Anime** | Hoạt hình 3D Trung Quốc (HH3D) | 4K / 1080P Vietsub chuẩn | `http://<host>:7860/hhpanda/manifest.json` | `http://<host>:7071/hhpanda/manifest.json` | [HHPANDA_GUIDE.md](HHPANDA_GUIDE.md) |
 | **MoviesDrive Cinema** | Hollywood, Bollywood, Web Series | 4K UHD / 1080p HubCloud, GDFlix | `http://<host>:7860/moviesdrive/manifest.json` | *Không hỗ trợ* | [MOVIESDRIVE_GUIDE.md](MOVIESDRIVE_GUIDE.md) |
 | **HDHub4u Cinema** | Hollywood, Bollywood, Dual Audio | 4K / 1080p Cloudflare R2 / FastDL | `http://<host>:7860/hdhub4u/manifest.json` | *Không hỗ trợ* | [HDHUB4U_GUIDE.md](HDHUB4U_GUIDE.md) |
+| **UHDMovies Cinema** | 4K UHD, 1080p HEVC, HDR DoVi, 60FPS | 4K / 1080p Google Drive Direct CDN | `http://<host>:7860/uhdmovies/manifest.json` | *Không hỗ trợ* | [UHDMOVIES_GUIDE.md](UHDMOVIES_GUIDE.md) |
 | **TopXX Cinema** | Phim người lớn (18+ Adult) | Full HD / Direct Stream | `http://<host>:7860/topxx/manifest.json` | `http://<host>:7071/topxx/manifest.json` | [TOPXX_GUIDE.md](TOPXX_GUIDE.md) |
 
 ---
@@ -634,7 +635,19 @@ Hệ thống cung cấp **7 nguồn phát đa dạng**, phục vụ từ kho phi
 
 ---
 
-### 7. 🔞 TopXX Cinema (Kho Phim Người Lớn 18+)
+### 7. 💎 UHDMovies Cinema (4K Ultra HD, 1080p HEVC, HDR DoVi)
+- **Mô tả**: Kho phim bom tấn 4K Ultra HD 2160p, 4K HDR/Dolby Vision, 1080p 10Bit HEVC, 60FPS từ UHDMovies (`uhdmovies.autos`) với Google Drive Direct CDN stream trực tiếp siêu tốc.
+- **Tính năng nổi bật**:
+  - Đầy đủ bản rip 4K UHD, Remux, HDR10+, Dolby Vision, Dual Audio Atmos.
+  - Tự động giải mã chuỗi UnblockedGames ➔ DriveSeed ➔ Instant Download CDN.
+  - Khớp ID IMDb thông minh cho mọi phim trên Stremio.
+- **Manifest URL**:
+  - Khi chạy `addon.py`: `http://127.0.0.1:7860/uhdmovies/manifest.json`
+- **Tài liệu hướng dẫn**: [UHDMOVIES_GUIDE.md](UHDMOVIES_GUIDE.md).
+
+---
+
+### 8. 🔞 TopXX Cinema (Kho Phim Người Lớn 18+)
 - **Mô tả**: Addon giải trí 18+ chất lượng cao với hàng chục ngàn video được phân loại chi tiết theo thể loại, diễn viên, chuyên mục và phát trực tiếp native trên Stremio.
 - **Manifest URL**:
   - Khi chạy `addon.py`: `http://127.0.0.1:7860/topxx/manifest.json`

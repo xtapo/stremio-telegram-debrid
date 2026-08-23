@@ -67,12 +67,14 @@ class Config:
     ENABLE_SOURCE_HHPANDA = os.getenv("ENABLE_SOURCE_HHPANDA", "True").lower() == "true"
     ENABLE_SOURCE_MOVIESDRIVE = os.getenv("ENABLE_SOURCE_MOVIESDRIVE", "True").lower() == "true"
     ENABLE_SOURCE_HDHUB4U = os.getenv("ENABLE_SOURCE_HDHUB4U", "True").lower() == "true"
+    ENABLE_SOURCE_UHDMOVIES = os.getenv("ENABLE_SOURCE_UHDMOVIES", "True").lower() == "true"
     ENABLE_SOURCE_TOPXX = os.getenv("ENABLE_SOURCE_TOPXX", "True").lower() == "true"
     ENABLE_SOURCE_HDTODAY = os.getenv("ENABLE_SOURCE_HDTODAY", "True").lower() == "true"
     ENABLE_SOURCE_VIDKING = os.getenv("ENABLE_SOURCE_VIDKING", "True").lower() == "true"
     ENABLE_SOURCE_ERNAX = os.getenv("ENABLE_SOURCE_ERNAX", "True").lower() == "true"
     ENABLE_SOURCE_FILM4K_TV = os.getenv("ENABLE_SOURCE_FILM4K_TV", "True").lower() == "true"
     ENABLE_SOURCE_IPTV = os.getenv("ENABLE_SOURCE_IPTV", os.getenv("ENABLE_SOURCE_IPTV_ORG", "True")).lower() == "true"
+    UHDMOVIES_BASE_URL = os.getenv("UHDMOVIES_BASE_URL", "https://uhdmovies.autos").rstrip("/")
     HDTODAY_BASE_URL = os.getenv("HDTODAY_BASE_URL", "https://hdtoday.sc").rstrip("/")
     FILM4K_BASE_URL = os.getenv("FILM4K_BASE_URL", "https://film4k.net").rstrip("/")
     FILM4K_COOKIE = os.getenv("FILM4K_COOKIE", "session=eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImphbWlkMjA0QGdtYWlsLmNvbSIsIm5hbWUiOiJUaGkgVHJhbiIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSV9HWURzQ3JHaFV4WUN1NVRkNWxka3laRHUxcm5TSUJQVGU0dkJKZUFaalhWYW95aUc9czk2LWMiLCJzdWIiOiI2YTg4NDYyOGQ5MmQwNmI3OTRjNjQ2NzUiLCJpYXQiOjE3ODczMTU3NTIsImV4cCI6MTc4OTkwNzc1Mn0.nNwoSi3H9HwNkYCYVTj4PhS0IVKoAdus4racY3pOMBo")
@@ -84,6 +86,7 @@ class Config:
     ENABLE_BOARD_HHPANDA = os.getenv("ENABLE_BOARD_HHPANDA", "True").lower() == "true"
     ENABLE_BOARD_MOVIESDRIVE = os.getenv("ENABLE_BOARD_MOVIESDRIVE", "True").lower() == "true"
     ENABLE_BOARD_HDHUB4U = os.getenv("ENABLE_BOARD_HDHUB4U", "True").lower() == "true"
+    ENABLE_BOARD_UHDMOVIES = os.getenv("ENABLE_BOARD_UHDMOVIES", "True").lower() == "true"
     ENABLE_BOARD_TOPXX = os.getenv("ENABLE_BOARD_TOPXX", "False").lower() == "true"
     ENABLE_BOARD_HDTODAY = os.getenv("ENABLE_BOARD_HDTODAY", "True").lower() == "true"
     ENABLE_BOARD_VIDKING = os.getenv("ENABLE_BOARD_VIDKING", "True").lower() == "true"
