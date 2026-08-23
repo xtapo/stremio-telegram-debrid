@@ -113,6 +113,7 @@ from hdtoday_router import hdtoday_router
 from vidking_router import vidking_router
 from ernax_router import ernax_router
 from film4k_router import film4k_router
+from iptv_router import iptv_router
 from dashboard_router import dashboard_router
 
 app = FastAPI(lifespan=lifespan)
@@ -136,12 +137,19 @@ app.include_router(hdtoday_router, prefix="/hdtoday", tags=["HDToday Cinema"])
 app.include_router(vidking_router, prefix="/vidking", tags=["Vidking Player"])
 app.include_router(ernax_router, prefix="/ernax", tags=["Ernax Player"])
 app.include_router(film4k_router, prefix="/film4k", tags=["Film4k Live TV"])
+app.include_router(iptv_router, prefix="/iptv", tags=["IPTV Org Live TV by Country"])
 
 
 @app.get("/tv", include_in_schema=False)
 @app.get("/player", include_in_schema=False)
 async def tv_redirect():
     return RedirectResponse(url="/film4k/tv", status_code=302)
+
+
+@app.get("/iptv-tv", include_in_schema=False)
+@app.get("/iptv-player", include_in_schema=False)
+async def iptv_redirect():
+    return RedirectResponse(url="/iptv/tv", status_code=302)
 
 
 

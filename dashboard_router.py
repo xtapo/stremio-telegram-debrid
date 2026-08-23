@@ -744,6 +744,8 @@ async def api_update_config(request: Request):
         "enable_source_ernax": "ENABLE_SOURCE_ERNAX",
         "enable_source_film4k_tv": "ENABLE_SOURCE_FILM4K_TV",
         "enable_source_film4k": "ENABLE_SOURCE_FILM4K_TV",
+        "enable_source_iptv": "ENABLE_SOURCE_IPTV",
+        "enable_source_iptv_org": "ENABLE_SOURCE_IPTV",
         "enable_source_subtitles": "ENABLE_SUBTITLES",
         "enable_source_subtitle": "ENABLE_SUBTITLES",
         "enable_subtitles": "ENABLE_SUBTITLES",
@@ -761,6 +763,8 @@ async def api_update_config(request: Request):
         "enable_board_ernax": "ENABLE_BOARD_ERNAX",
         "enable_board_film4k_tv": "ENABLE_BOARD_FILM4K_TV",
         "enable_board_film4k": "ENABLE_BOARD_FILM4K_TV",
+        "enable_board_iptv": "ENABLE_BOARD_IPTV",
+        "enable_board_iptv_org": "ENABLE_BOARD_IPTV",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -797,6 +801,7 @@ async def api_update_config(request: Request):
             "vidking": getattr(Config, "ENABLE_SOURCE_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_SOURCE_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True),
+            "iptv": getattr(Config, "ENABLE_SOURCE_IPTV", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -810,6 +815,7 @@ async def api_update_config(request: Request):
             "vidking": getattr(Config, "ENABLE_BOARD_VIDKING", True),
             "ernax": getattr(Config, "ENABLE_BOARD_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_BOARD_FILM4K_TV", True),
+            "iptv": getattr(Config, "ENABLE_BOARD_IPTV", True),
         }
     }
 
@@ -839,6 +845,25 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/manifest.json{api_key_suffix}"
             },
             "routes": ["/manifest.json", "/stream", "/meta", "/catalog"]
+        },
+        {
+            "id": "iptv",
+            "name": "IPTV Org Global Live TV",
+            "tag": "200+ Quốc Gia Toàn Cầu",
+            "category": "Live TV & M3U8",
+            "icon": "fa-satellite-dish",
+            "badge": "200+ Nước",
+            "badge_color": "cyan",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_IPTV", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_IPTV", True)),
+            "description": "Kho kênh truyền hình trực tiếp công khai miễn phí từ hơn 200 quốc gia (Việt Nam, Mỹ, Anh, Nhật Bản, Hàn Quốc, Pháp, Đức, v.v.) từ iptv-org/iptv. Hỗ trợ Stremio Addon & Web TV Player.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/iptv/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/iptv/manifest.json",
+                "public": f"{domain_url}/iptv/manifest.json"
+            },
+            "player_url": f"{domain_url}/iptv/tv",
+            "routes": ["/iptv/manifest.json", "/iptv/catalog", "/iptv/meta", "/iptv/stream", "/iptv/tv", "/iptv/player"]
         },
         {
             "id": "film4k_tv",
@@ -1074,6 +1099,14 @@ async def api_clear_cache():
         f_count = len(_film4k_cache)
         _film4k_cache.clear()
         cleared.append(f"Film4k Live TV Cache ({f_count} entries)")
+    except Exception:
+        pass
+
+    try:
+        from iptv_router import _iptv_cache
+        i_count = len(_iptv_cache)
+        _iptv_cache.clear()
+        cleared.append(f"IPTV Org Channels Cache ({i_count} entries)")
     except Exception:
         pass
 
@@ -2720,6 +2753,16 @@ async def dashboard_ui(request: Request):
             color: #f87171;
             border: 1px solid rgba(239, 68, 68, 0.35);
         }
+        .mod-iptv {
+            background: rgba(6, 182, 212, 0.18);
+            color: #22d3ee;
+            border: 1px solid rgba(6, 182, 212, 0.35);
+        }
+        .mod-film4k {
+            background: rgba(16, 185, 129, 0.18);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
         .mod-telegram, .mod-tg_client {
             background: rgba(6, 182, 212, 0.18);
             color: #22d3ee;
@@ -2941,7 +2984,7 @@ async def dashboard_ui(request: Request):
                     <a class="nav-item" onclick="switchTab('addons')">
                         <i class="fa-solid fa-puzzle-piece"></i>
                         <span>Quản Lý Nguồn</span>
-                        <span class="nav-badge">7 Nguồn</span>
+                        <span class="nav-badge">12 Addons</span>
                     </a>
                 </li>
                 <li>
@@ -3053,7 +3096,7 @@ async def dashboard_ui(request: Request):
                                 <p>Cài đặt nhanh các nguồn addon trực tiếp vào Stremio với 1 cú nhấp chuột.</p>
                             </div>
                             <button class="btn btn-primary btn-sm" onclick="switchTab('addons')">
-                                <i class="fa-solid fa-arrow-right"></i> Xem tất cả 7 Addon
+                                <i class="fa-solid fa-arrow-right"></i> Xem tất cả Addon
                             </button>
                         </div>
                         <div class="addons-grid" id="overviewAddonsGrid">
@@ -3714,14 +3757,18 @@ async def dashboard_ui(request: Request):
                                 <i class="fa-solid fa-globe"></i> Mở Web
                             </a>
                         </div>
-                        ${addon.playlist_url ? `
+                        ${(addon.player_url || addon.playlist_url) ? `
                         <div class="addon-actions" style="margin-top: 6px; display:flex; gap:8px;">
+                            ${addon.playlist_url ? `
                             <button class="btn btn-secondary btn-sm" style="justify-content:center; flex:1; font-size:11px;" onclick="copyToClipboard('${addon.playlist_url}', '${addon.name} M3U Playlist')">
-                                <i class="fa-solid fa-file-lines"></i> Copy M3U Link
+                                <i class="fa-solid fa-file-lines"></i> Copy M3U
                             </button>
+                            ` : ''}
+                            ${addon.player_url ? `
                             <a href="${addon.player_url}" target="_blank" class="btn btn-secondary btn-sm" style="justify-content:center; flex:1; font-size:11px;">
                                 <i class="fa-solid fa-tv"></i> Web TV Player
                             </a>
+                            ` : ''}
                         </div>
                         ` : ''}
                     </div>
@@ -3873,6 +3920,7 @@ async def dashboard_ui(request: Request):
             let icon = 'fa-cube';
             if (n.includes('nguonc')) { cls = 'mod-nguonc'; icon = 'fa-film'; }
             else if (n.includes('film4k')) { cls = 'mod-film4k'; icon = 'fa-tv'; }
+            else if (n.includes('iptv')) { cls = 'mod-iptv'; icon = 'fa-satellite-dish'; }
             else if (n.includes('vsmov')) { cls = 'mod-vsmov'; icon = 'fa-video'; }
             else if (n.includes('hhpanda')) { cls = 'mod-hhpanda'; icon = 'fa-dragon'; }
             else if (n.includes('moviesdrive')) { cls = 'mod-moviesdrive'; icon = 'fa-clapperboard'; }

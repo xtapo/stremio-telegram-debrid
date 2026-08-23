@@ -72,6 +72,7 @@ class Config:
     ENABLE_SOURCE_VIDKING = os.getenv("ENABLE_SOURCE_VIDKING", "True").lower() == "true"
     ENABLE_SOURCE_ERNAX = os.getenv("ENABLE_SOURCE_ERNAX", "True").lower() == "true"
     ENABLE_SOURCE_FILM4K_TV = os.getenv("ENABLE_SOURCE_FILM4K_TV", "True").lower() == "true"
+    ENABLE_SOURCE_IPTV = os.getenv("ENABLE_SOURCE_IPTV", os.getenv("ENABLE_SOURCE_IPTV_ORG", "True")).lower() == "true"
     HDTODAY_BASE_URL = os.getenv("HDTODAY_BASE_URL", "https://hdtoday.sc").rstrip("/")
     FILM4K_BASE_URL = os.getenv("FILM4K_BASE_URL", "https://film4k.net").rstrip("/")
     FILM4K_COOKIE = os.getenv("FILM4K_COOKIE", "session=eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImphbWlkMjA0QGdtYWlsLmNvbSIsIm5hbWUiOiJUaGkgVHJhbiIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSV9HWURzQ3JHaFV4WUN1NVRkNWxka3laRHUxcm5TSUJQVGU0dkJKZUFaalhWYW95aUc9czk2LWMiLCJzdWIiOiI2YTg4NDYyOGQ5MmQwNmI3OTRjNjQ2NzUiLCJpYXQiOjE3ODczMTU3NTIsImV4cCI6MTc4OTkwNzc1Mn0.nNwoSi3H9HwNkYCYVTj4PhS0IVKoAdus4racY3pOMBo")
@@ -88,6 +89,7 @@ class Config:
     ENABLE_BOARD_VIDKING = os.getenv("ENABLE_BOARD_VIDKING", "True").lower() == "true"
     ENABLE_BOARD_ERNAX = os.getenv("ENABLE_BOARD_ERNAX", "True").lower() == "true"
     ENABLE_BOARD_FILM4K_TV = os.getenv("ENABLE_BOARD_FILM4K_TV", "True").lower() == "true"
+    ENABLE_BOARD_IPTV = os.getenv("ENABLE_BOARD_IPTV", os.getenv("ENABLE_BOARD_IPTV_ORG", "True")).lower() == "true"
 
     # Subtitle timing.
     # Positive shifts subtitles later, negative shows them earlier.
