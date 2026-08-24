@@ -75,6 +75,7 @@ class Config:
     ENABLE_SOURCE_FILM4K_TV = os.getenv("ENABLE_SOURCE_FILM4K_TV", "True").lower() == "true"
     ENABLE_SOURCE_4KHDHUB = os.getenv("ENABLE_SOURCE_4KHDHUB", "True").lower() == "true"
     ENABLE_SOURCE_IPTV = os.getenv("ENABLE_SOURCE_IPTV", os.getenv("ENABLE_SOURCE_IPTV_ORG", "True")).lower() == "true"
+    ENABLE_SOURCE_TVRUN = os.getenv("ENABLE_SOURCE_TVRUN", "True").lower() == "true"
     ENABLE_SOURCE_MOVIES2WATCH = os.getenv("ENABLE_SOURCE_MOVIES2WATCH", "True").lower() == "true"
     UHDMOVIES_BASE_URL = os.getenv("UHDMOVIES_BASE_URL", "https://uhdmovies.autos").rstrip("/")
     FOURKHDHUB_BASE_URL = os.getenv("FOURKHDHUB_BASE_URL", "https://4khdhub.one").rstrip("/")
@@ -82,6 +83,7 @@ class Config:
     MOVIES2WATCH_BASE_URL = os.getenv("MOVIES2WATCH_BASE_URL", "https://movies2watch.vc").rstrip("/")
     FILM4K_BASE_URL = os.getenv("FILM4K_BASE_URL", "https://film4k.net").rstrip("/")
     FILM4K_COOKIE = os.getenv("FILM4K_COOKIE", "session=eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImphbWlkMjA0QGdtYWlsLmNvbSIsIm5hbWUiOiJUaGkgVHJhbiIsImltYWdlIjoiaHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29tL2EvQUNnOG9jSV9HWURzQ3JHaFV4WUN1NVRkNWxka3laRHUxcm5TSUJQVGU0dkJKZUFaalhWYW95aUc9czk2LWMiLCJzdWIiOiI2YTg4NDYyOGQ5MmQwNmI3OTRjNjQ2NzUiLCJpYXQiOjE3ODczMTU3NTIsImV4cCI6MTc4OTkwNzc1Mn0.nNwoSi3H9HwNkYCYVTj4PhS0IVKoAdus4racY3pOMBo")
+    TVRUN_BASE_URL = os.getenv("TVRUN_BASE_URL", "https://tvrun.online").rstrip("/")
 
     # Stremio Board (Home Screen) vs Discover Only Toggles
     ENABLE_BOARD_TELEGRAM = os.getenv("ENABLE_BOARD_TELEGRAM", "True").lower() == "true"
@@ -98,6 +100,7 @@ class Config:
     ENABLE_BOARD_ERNAX = os.getenv("ENABLE_BOARD_ERNAX", "True").lower() == "true"
     ENABLE_BOARD_FILM4K_TV = os.getenv("ENABLE_BOARD_FILM4K_TV", "True").lower() == "true"
     ENABLE_BOARD_IPTV = os.getenv("ENABLE_BOARD_IPTV", os.getenv("ENABLE_BOARD_IPTV_ORG", "True")).lower() == "true"
+    ENABLE_BOARD_TVRUN = os.getenv("ENABLE_BOARD_TVRUN", "True").lower() == "true"
     ENABLE_BOARD_MOVIES2WATCH = os.getenv("ENABLE_BOARD_MOVIES2WATCH", "True").lower() == "true"
 
     # Subtitle timing.

@@ -14,6 +14,7 @@ client = TestClient(app)
 manifests = [
     "/manifest.json",
     "/iptv/manifest.json",
+    "/tvrun/manifest.json",
     "/film4k/manifest.json",
     "/ernax/manifest.json",
     "/vidking/manifest.json",
@@ -36,6 +37,8 @@ print("\n=== VERIFYING WEB PLAYERS ===")
 web_players = [
     "/iptv/tv",
     "/iptv/player",
+    "/tvrun/tv",
+    "/tvrun/player",
     "/film4k/tv",
 ]
 for path in web_players:

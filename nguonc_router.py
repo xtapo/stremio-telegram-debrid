@@ -11,6 +11,9 @@ from fastapi.responses import JSONResponse, HTMLResponse, StreamingResponse, Res
 
 
 import httpx
+import hmac
+import hashlib
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 logger = logging.getLogger("nguonc_addon")
 
@@ -111,32 +114,100 @@ async def prefetch_next_pages(base_api_url: str, start_page: int, count: int = 4
     if tasks:
         await asyncio.gather(*tasks, return_exceptions=True)
 
-async def extract_m3u8_from_embed(embed_url: str) -> str:
-    """Extract direct m3u8 playlist URL from streamc embed page."""
+NGUONC_M3U8_CACHE: Dict[str, Tuple[str, float]] = {}
+NGUONC_M3U8_TTL = 600  # 10 minutes
+
+async def extract_and_decrypt_m3u8(embed_url: str, client: Optional[httpx.AsyncClient] = None) -> str:
+    """Extract and decrypt direct m3u8 playlist from NguonC streamc embed in pure Python."""
     if not embed_url:
         return ""
+        
+    now = time.time()
+    if embed_url in NGUONC_M3U8_CACHE:
+        cached_m3u8, ts = NGUONC_M3U8_CACHE[embed_url]
+        if now - ts < NGUONC_M3U8_TTL:
+            return cached_m3u8
+
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Referer': 'https://phim.nguonc.com/'
+    }
+    
+    close_client = False
+    if client is None:
+        client = httpx.AsyncClient(timeout=10.0, follow_redirects=True)
+        close_client = True
+        
     try:
+        # 1. Fetch embed page
+        resp = await client.get(embed_url, headers=headers)
+        if resp.status_code != 200:
+            return ""
+        html = resp.text
+        
+        obf_match = re.search(r'data-obf="([^"]+)"', html)
+        if not obf_match:
+            return ""
+            
+        obf_data = json.loads(base64.b64decode(obf_match.group(1)).decode('utf-8'))
+        sub_str = obf_data.get('sUb')
+        video_hash = obf_data.get('hD')
+        if not sub_str or not video_hash:
+            return ""
+            
         parsed = urllib.parse.urlparse(embed_url)
         domain = f"{parsed.scheme}://{parsed.netloc}"
+        m3u8_endpoint = f"{domain}/{sub_str}?d=1"
         
-        async with httpx.AsyncClient(timeout=4.0, follow_redirects=True) as client:
-            headers = {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                'Referer': 'https://phim.nguonc.com/'
-            }
-            resp = await client.get(embed_url, headers=headers)
-            if resp.status_code == 200:
-                html = resp.text
-                obf_match = re.search(r'data-obf="([^"]+)"', html)
-                if obf_match:
-                    obf = obf_match.group(1)
-                    d1 = json.loads(base64.b64decode(obf).decode('utf-8'))
-                    sub_str = d1.get('sUb')
-                    if sub_str:
-                        return f"{domain}/{sub_str}?d=1"
+        # 2. Fetch encrypted m3u8 playlist
+        m3u8_resp = await client.get(m3u8_endpoint, headers={
+            'User-Agent': headers['User-Agent'],
+            'Referer': embed_url
+        })
+        
+        if m3u8_resp.status_code != 200:
+            return ""
+            
+        raw_m3u8_text = m3u8_resp.text
+        
+        # If already plain m3u8 without encryption
+        if "#ENC-AESGCM" not in raw_m3u8_text:
+            if "#EXTM3U" in raw_m3u8_text:
+                NGUONC_M3U8_CACHE[embed_url] = (raw_m3u8_text, now)
+                return raw_m3u8_text
+            return ""
+            
+        # 3. Parse IV and base64 body
+        iv_match = re.search(r'#ENC-AESGCM;iv=([0-9a-fA-F]+)', raw_m3u8_text)
+        if not iv_match:
+            return ""
+        
+        iv_hex = iv_match.group(1)
+        iv_bytes = bytes.fromhex(iv_hex)
+        
+        b64_lines = [line.strip() for line in raw_m3u8_text.splitlines() if line.strip() and not line.strip().startswith('#')]
+        b64_str = "".join(b64_lines)
+        encrypted_bytes = base64.b64decode(b64_str)
+        
+        # 4. Derive AES key using HMAC-SHA256 (HMAC key: stream-derive-v1)
+        hmac_key = b"stream-derive-v1"
+        derived_aes_key = hmac.new(hmac_key, video_hash.encode('utf-8'), hashlib.sha256).digest()
+        
+        # 5. Decrypt using AES-GCM
+        aesgcm = AESGCM(derived_aes_key)
+        decrypted_bytes = aesgcm.decrypt(iv_bytes, encrypted_bytes, None)
+        decrypted_m3u8 = decrypted_bytes.decode('utf-8')
+        
+        if len(NGUONC_M3U8_CACHE) > 500:
+            NGUONC_M3U8_CACHE.clear()
+        NGUONC_M3U8_CACHE[embed_url] = (decrypted_m3u8, now)
+        return decrypted_m3u8
     except Exception as e:
-        logger.warning(f"Error extracting m3u8 from embed ({embed_url}): {e}")
-    return embed_url
+        logger.warning(f"Error decrypting m3u8 from embed ({embed_url}): {e}")
+        return ""
+    finally:
+        if close_client:
+            await client.aclose()
 
 def parse_movie_type(item: Dict[str, Any]) -> str:
     """Determine if movie or series based on NguonC category or total_episodes."""
@@ -518,7 +589,29 @@ async def nguonc_meta_handler(type: str, id: str):
         logger.error(f"Error fetching meta for {id}: {e}")
         return {"meta": {}}
 
+def make_direct_m3u8_playlist(m3u8_text: str, base_url: str) -> str:
+    """Ensure all relative segment URLs in decrypted m3u8 are absolute direct CDN URLs."""
+    lines = m3u8_text.splitlines()
+    new_lines = []
+    for line in lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith('#'):
+            if 'URI="' in stripped:
+                def make_abs(match):
+                    uri = match.group(1)
+                    full_uri = urllib.parse.urljoin(base_url, uri)
+                    return f'URI="{full_uri}"'
+                stripped = re.sub(r'URI="([^"]+)"', make_abs, stripped)
+            new_lines.append(stripped)
+        else:
+            full_segment_url = urllib.parse.urljoin(base_url, stripped)
+            new_lines.append(full_segment_url)
+    return "\n".join(new_lines)
+
 def rewrite_m3u8_playlist(m3u8_text: str, base_m3u8_url: str, referer: str, proxy_endpoint_url: str) -> str:
+    """Rewrite m3u8 playlist lines so all segments and keys route through our proxy with proper referer."""
     lines = m3u8_text.splitlines()
     new_lines = []
     
@@ -544,10 +637,55 @@ def rewrite_m3u8_playlist(m3u8_text: str, base_m3u8_url: str, referer: str, prox
 
 @nguonc_router.get("/stream_proxy")
 @nguonc_router.get("/nguonc/stream_proxy")
-async def nguonc_stream_proxy(request: Request, url: str, referer: Optional[str] = None):
-    """Proxy video streams with correct User-Agent and Referer headers for Stremio Player."""
+async def nguonc_stream_proxy(
+    request: Request,
+    url: Optional[str] = None,
+    embed: Optional[str] = None,
+    referer: Optional[str] = None,
+    direct: Optional[str] = None
+):
+    """Proxy video streams & segments with decryption, correct User-Agent, and Referer headers for Stremio."""
+    base_url = str(request.base_url).rstrip("/")
+    proxy_endpoint = f"{base_url}/nguonc/stream_proxy" if not base_url.endswith("/nguonc") else f"{base_url}/stream_proxy"
+    is_direct = direct in ("1", "true", "yes", "True")
+
+    # Mode 1: Direct Embed URL -> Decrypt & Return M3U8 Playlist
+    if embed:
+        ref = referer or embed
+        async with httpx.AsyncClient(timeout=12.0, follow_redirects=True) as client:
+            decrypted_m3u8 = await extract_and_decrypt_m3u8(embed, client)
+            if not decrypted_m3u8:
+                raise HTTPException(status_code=502, detail="Failed to decrypt NguonC stream")
+            
+            # If direct requested: return direct CDN segments without proxying video chunks
+            if is_direct:
+                direct_m3u8 = make_direct_m3u8_playlist(decrypted_m3u8, embed)
+                return Response(
+                    content=direct_m3u8,
+                    status_code=200,
+                    media_type="application/vnd.apple.mpegurl",
+                    headers={
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+                        "Cache-Control": "no-cache"
+                    }
+                )
+
+            # Full proxy mode: rewrites all segments through our server
+            rewritten_m3u8 = rewrite_m3u8_playlist(decrypted_m3u8, embed, ref, proxy_endpoint)
+            return Response(
+                content=rewritten_m3u8,
+                status_code=200,
+                media_type="application/vnd.apple.mpegurl",
+                headers={
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+                    "Cache-Control": "no-cache"
+                }
+            )
+
     if not url:
-        raise HTTPException(status_code=400, detail="Missing stream URL")
+        raise HTTPException(status_code=400, detail="Missing url or embed parameter")
     
     # Restore space to + if query string decoding converted + to space
     if " " in url:
@@ -559,19 +697,47 @@ async def nguonc_stream_proxy(request: Request, url: str, referer: Optional[str]
         "Referer": ref
     }
 
-    base_url = str(request.base_url).rstrip("/")
-    proxy_endpoint = f"{base_url}/nguonc/stream_proxy" if not base_url.endswith("/nguonc") else f"{base_url}/stream_proxy"
-
     try:
         async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:
             resp = await client.get(url, headers=headers)
-            content_type = resp.headers.get("Content-Type", "application/vnd.apple.mpegurl")
+            content_type = resp.headers.get("Content-Type", "application/octet-stream")
             
-            if "#EXTM3U" in resp.text:
-                rewritten_m3u8 = rewrite_m3u8_playlist(resp.text, url, ref, proxy_endpoint)
-                return Response(content=rewritten_m3u8, status_code=200, media_type="application/vnd.apple.mpegurl")
+            # Handle M3U8 playlists (including encrypted streams if routed through url)
+            if resp.status_code == 200 and ("#EXTM3U" in resp.text or url.endswith(".m3u8")):
+                raw_text = resp.text
+                if "#ENC-AESGCM" in raw_text:
+                    decrypted = await extract_and_decrypt_m3u8(ref, client)
+                    if decrypted:
+                        raw_text = decrypted
+                
+                if is_direct:
+                    final_m3u8 = make_direct_m3u8_playlist(raw_text, url)
+                else:
+                    final_m3u8 = rewrite_m3u8_playlist(raw_text, url, ref, proxy_endpoint)
+                    
+                return Response(
+                    content=final_m3u8,
+                    status_code=200,
+                    media_type="application/vnd.apple.mpegurl",
+                    headers={"Access-Control-Allow-Origin": "*"}
+                )
 
-            return Response(content=resp.content, status_code=resp.status_code, media_type=content_type)
+            # Handle TS/PNG video segments
+            resp_headers = {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS"
+            }
+            if "content-length" in resp.headers:
+                resp_headers["Content-Length"] = resp.headers["content-length"]
+            if "content-range" in resp.headers:
+                resp_headers["Content-Range"] = resp.headers["content-range"]
+
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type=content_type or "video/MP2T",
+                headers=resp_headers
+            )
     except Exception as e:
         logger.error(f"Stream proxy error for {url}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -642,6 +808,8 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
             streams = []
 
             base_url = str(request.base_url).rstrip("/")
+            proxy_base = f"{base_url}/nguonc/stream_proxy" if not base_url.endswith("/nguonc") else f"{base_url}/stream_proxy"
+            
             movie_name = movie.get("name", "")
             quality = movie.get("quality", "HD")
             lang = movie.get("language", "Vietsub")
@@ -666,16 +834,28 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
                     ep_title = target_item.get("name", "")
                     
                     if embed_url:
-                        # Extract direct sUb M3U8 stream URL
-                        m3u8_url = await extract_m3u8_from_embed(embed_url)
+                        encoded_embed = urllib.parse.quote(embed_url, safe='')
                         
-                        # Direct Python Proxy Stream URL for native internal Stremio player
-                        proxy_stream_url = f"{base_url}/nguonc/stream_proxy?url={urllib.parse.quote(m3u8_url, safe='')}&referer={urllib.parse.quote(embed_url, safe='')}"
-                        
-                        # 1. Native Stremio Internal Video Player (PRIMARY - url property)
+                        # 1. Direct CDN Stream (Không qua proxy video, kết nối trực tiếp CDN gốc)
+                        direct_stream_url = f"{proxy_base}?embed={encoded_embed}&direct=1&referer={encoded_embed}"
                         streams.append({
-                            "name": f"NguonC Proxy [{server_name}]",
-                            "title": f"▶ Phát Trực Tiếp Trong Stremio [{server_name}] - Tập {ep_title}\n🎬 {movie_name}\n⚡ {quality} | {lang}\n⚡ Trình phát mặc định Stremio (VLC/ExoPlayer)",
+                            "name": f"⚡ NguonC Direct [{server_name}]",
+                            "title": f"⚡ Nguồn Trực Tiếp (Không Proxy Video) [{server_name}] - Tập {ep_title}\n🎬 {movie_name}\n⚡ {quality} | {lang}\n⚡ Kết nối trực tiếp CDN gốc tốc độ tối đa",
+                            "url": direct_stream_url,
+                            "behaviorHints": {
+                                "notSupported": False,
+                                "requestHeaders": {
+                                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+                                    "Referer": embed_url
+                                }
+                            }
+                        })
+
+                        # 2. Full Proxy Stream (Dự phòng qua máy chủ nếu thiết bị bị chặn CDN)
+                        proxy_stream_url = f"{proxy_base}?embed={encoded_embed}&referer={encoded_embed}"
+                        streams.append({
+                            "name": f"🛡️ NguonC Proxy [{server_name}]",
+                            "title": f"🛡️ Qua Proxy Máy Chủ [{server_name}] - Tập {ep_title}\n🎬 {movie_name}\n⚡ {quality} | {lang}\n⚡ Tự động giải mã HLS & vượt chặn CDN",
                             "url": proxy_stream_url,
                             "behaviorHints": {
                                 "notSupported": False,
@@ -686,24 +866,9 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
                             }
                         })
 
-                        # 2. Direct HLS Stream (Fallback)
-                        if m3u8_url and m3u8_url != embed_url:
-                            streams.append({
-                                "name": f"NguonC Direct [{server_name}]",
-                                "title": f"⚡ Direct HLS Stream [{server_name}] - Tập {ep_title}",
-                                "url": m3u8_url,
-                                "behaviorHints": {
-                                    "notSupported": False,
-                                    "requestHeaders": {
-                                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-                                        "Referer": embed_url
-                                    }
-                                }
-                            })
-
                         # 3. External Web Player (Embed Backup)
                         streams.append({
-                            "name": f"NguonC Web [{server_name}]",
+                            "name": f"🌐 NguonC Web [{server_name}]",
                             "title": f"🌐 Mở Trình Duyệt Web [{server_name}] - Tập {ep_title}",
                             "externalUrl": embed_url
                         })

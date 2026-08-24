@@ -116,6 +116,7 @@ from vidking_router import vidking_router
 from ernax_router import ernax_router
 from film4k_router import film4k_router
 from iptv_router import iptv_router
+from tvrun_router import tvrun_router
 from movies2watch_router import movies2watch_router
 from dashboard_router import dashboard_router
 
@@ -144,6 +145,7 @@ app.include_router(vidking_router, prefix="/vidking", tags=["Vidking Player"])
 app.include_router(ernax_router, prefix="/ernax", tags=["Ernax Player"])
 app.include_router(film4k_router, prefix="/film4k", tags=["Film4k Live TV"])
 app.include_router(iptv_router, prefix="/iptv", tags=["IPTV Org Live TV by Country"])
+app.include_router(tvrun_router, prefix="/tvrun", tags=["TVRun Free Global Live TV"])
 
 
 @app.get("/tv", include_in_schema=False)
@@ -156,6 +158,12 @@ async def tv_redirect():
 @app.get("/iptv-player", include_in_schema=False)
 async def iptv_redirect():
     return RedirectResponse(url="/iptv/tv", status_code=302)
+
+
+@app.get("/tvrun-tv", include_in_schema=False)
+@app.get("/tvrun-player", include_in_schema=False)
+async def tvrun_redirect():
+    return RedirectResponse(url="/tvrun/tv", status_code=302)
 
 
 

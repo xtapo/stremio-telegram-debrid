@@ -748,6 +748,7 @@ async def api_update_config(request: Request):
         "enable_source_film4k": "ENABLE_SOURCE_FILM4K_TV",
         "enable_source_iptv": "ENABLE_SOURCE_IPTV",
         "enable_source_iptv_org": "ENABLE_SOURCE_IPTV",
+        "enable_source_tvrun": "ENABLE_SOURCE_TVRUN",
         "enable_source_movies2watch": "ENABLE_SOURCE_MOVIES2WATCH",
         "enable_source_subtitles": "ENABLE_SUBTITLES",
         "enable_source_subtitle": "ENABLE_SUBTITLES",
@@ -771,6 +772,7 @@ async def api_update_config(request: Request):
         "enable_board_film4k": "ENABLE_BOARD_FILM4K_TV",
         "enable_board_iptv": "ENABLE_BOARD_IPTV",
         "enable_board_iptv_org": "ENABLE_BOARD_IPTV",
+        "enable_board_tvrun": "ENABLE_BOARD_TVRUN",
     }
     for req_k, cfg_k in source_keys.items():
         if req_k in data:
@@ -811,6 +813,7 @@ async def api_update_config(request: Request):
             "ernax": getattr(Config, "ENABLE_SOURCE_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_SOURCE_FILM4K_TV", True),
             "iptv": getattr(Config, "ENABLE_SOURCE_IPTV", True),
+            "tvrun": getattr(Config, "ENABLE_SOURCE_TVRUN", True),
         },
         "board": {
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
@@ -828,6 +831,7 @@ async def api_update_config(request: Request):
             "ernax": getattr(Config, "ENABLE_BOARD_ERNAX", True),
             "film4k_tv": getattr(Config, "ENABLE_BOARD_FILM4K_TV", True),
             "iptv": getattr(Config, "ENABLE_BOARD_IPTV", True),
+            "tvrun": getattr(Config, "ENABLE_BOARD_TVRUN", True),
         }
     }
 
@@ -876,6 +880,26 @@ async def api_system_addons(request: Request):
             },
             "player_url": f"{domain_url}/iptv/tv",
             "routes": ["/iptv/manifest.json", "/iptv/catalog", "/iptv/meta", "/iptv/stream", "/iptv/tv", "/iptv/player"]
+        },
+        {
+            "id": "tvrun",
+            "name": "TVRun Free Global Live TV",
+            "tag": "Free Global TV Online",
+            "category": "Live TV & IPTV Multi-Source",
+            "icon": "fa-satellite-dish",
+            "badge": "2,000+ Channels",
+            "badge_color": "rose",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_TVRUN", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_TVRUN", True)),
+            "description": "Nguồn truyền hình trực tuyến toàn cầu miễn phí từ TVRun (tvrun.online) - Tích hợp 200+ quốc gia, Free-TV Global 2.000+ kênh, YouTube Live TV và TVRun Verified. Hỗ trợ Stremio Addon, M3U Playlist & Web TV Player.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/tvrun/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/tvrun/manifest.json",
+                "public": f"{domain_url}/tvrun/manifest.json"
+            },
+            "playlist_url": f"{domain_url}/tvrun/playlist.m3u",
+            "player_url": f"{domain_url}/tvrun/tv",
+            "routes": ["/tvrun/manifest.json", "/tvrun/catalog", "/tvrun/meta", "/tvrun/stream", "/tvrun/playlist.m3u", "/tvrun/tv", "/tvrun/player"]
         },
         {
             "id": "film4k_tv",
@@ -1173,6 +1197,14 @@ async def api_clear_cache():
         i_count = len(_iptv_cache)
         _iptv_cache.clear()
         cleared.append(f"IPTV Org Channels Cache ({i_count} entries)")
+    except Exception:
+        pass
+
+    try:
+        from tvrun_router import _tvrun_cache
+        t_count = len(_tvrun_cache)
+        _tvrun_cache.clear()
+        cleared.append(f"TVRun Channels Cache ({t_count} entries)")
     except Exception:
         pass
 
@@ -2824,6 +2856,11 @@ async def dashboard_ui(request: Request):
             color: #22d3ee;
             border: 1px solid rgba(6, 182, 212, 0.35);
         }
+        .mod-tvrun {
+            background: rgba(255, 71, 133, 0.18);
+            color: #ff7ab0;
+            border: 1px solid rgba(255, 71, 133, 0.35);
+        }
         .mod-film4k {
             background: rgba(16, 185, 129, 0.18);
             color: #34d399;
@@ -3986,6 +4023,7 @@ async def dashboard_ui(request: Request):
             let icon = 'fa-cube';
             if (n.includes('nguonc')) { cls = 'mod-nguonc'; icon = 'fa-film'; }
             else if (n.includes('film4k')) { cls = 'mod-film4k'; icon = 'fa-tv'; }
+            else if (n.includes('tvrun')) { cls = 'mod-tvrun'; icon = 'fa-satellite-dish'; }
             else if (n.includes('iptv')) { cls = 'mod-iptv'; icon = 'fa-satellite-dish'; }
             else if (n.includes('vsmov')) { cls = 'mod-vsmov'; icon = 'fa-video'; }
             else if (n.includes('hhpanda')) { cls = 'mod-hhpanda'; icon = 'fa-dragon'; }

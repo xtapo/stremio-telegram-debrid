@@ -1,0 +1,51 @@
+Starting test...
+Fetching embed URL: https://embed18.streamc.xyz/embed.php?hash=c9e5230c3e65847df88fc05ea66cbbb6
+Fetching player.js from domain: https://embed18.streamc.xyz
+Got player.js code length: 179352
+Running vm...
+[window get unknown]: playerInitialized
+[window set]: playerInitialized boolean
+[window set]: playerSetup function
+[window set]: playerTryResume function
+[window set]: getStreamURL function
+[window set]: getCurrentVideoHash function
+[window set]: resetPlayer function
+[window set]: timeTracker object
+[customFetch] /eyJoIjoiYzllNTIzMGMzZTY1ODQ3ZGY4OGZjMDVlYTY2Y2JiYjYiLCJ0IjoiN2Y4YjFhM2VkYjYxZGY2NjZiN2M2NTNmZGZiNjc4MDU1NDYxOTM5YTQ2MjUzNGJkNzQ3NThhNTI2YTRkN2ZmNiJ9?d=1 {"signal":{}}
+window.addEventListener: pagehide
+doc.addEventListener: visibilitychange
+setInterval called, delay: 4000
+VM executed successfully.
+[customFetch resp status] 200
+[CustomBlob constructed]
+[CustomBlob] text len: 14025
+[URL.createObjectURL called]
+[mockJwPlayer called] id: player
+[mockJwPlayer setup called] cfg: {"file":"blob:https://embed18.streamc.xyz/fake-m3u8","type":"hls","width":"100%","height":"100%","primary":"html5","autostart":false,"mute":false,"playbackRateControls":true,"skin":{"name":"netflix"},"cast":{"airplay":true},"preload":"metadata","advertising":{"client":"vast","skipoffset":"1","skiptext":"Bỏ qua quảng cáo","skipmessage":"Quảng cáo sẽ đóng sau xx giây.","admessage":"Quảng cáo sẽ đóng sau xx giây.","schedule":[{"offset":"120","tag":"https://raw.githubusercontent.com/bbbiiii12/kiiyu/refs/heads/main/tlk.xml?r=377293"}],"timeout":2000},"startparam":"start","startposition":0,"hlsjsdefault":true}
+setTimeout called, delay: 10000
+[mockJwPlayer on called] evt: ready
+[mockJwPlayer on called] evt: setupError
+[mockJwPlayer on called] evt: error
+[mockJwPlayer on called] evt: pause
+[mockJwPlayer on called] evt: seek
+[mockJwPlayer on called] evt: time
+[mockJwPlayer on called] evt: complete
+Decryption SUCCESS! Length: 14025
+Snippet:
+#EXTM3U
+#EXT-X-DISCONTINUITY
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:10.427089,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0000.png
+#EXTINF:10.427078,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0001.png
+#EXTINF:10.427089,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0002.png
+#EXTINF:10.427078,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0003.png
+#EXTINF:10.42
+Finished.
+doc.getElementById: player
+[player set]: innerHTML string

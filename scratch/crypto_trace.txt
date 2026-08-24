@@ -1,0 +1,26 @@
+Starting trace...
+Fetching embed URL: https://embed18.streamc.xyz/embed.php?hash=c9e5230c3e65847df88fc05ea66cbbb6
+[crypto.subtle.importKey CALL] raw Buf(16: 73747265616d2d6465726976652d7631...) {"name":"HMAC","hash":"SHA-256"} false ["sign"]
+[crypto.subtle.importKey RET] {}
+[crypto.subtle.sign CALL] HMAC {} Buf(32: 6339653532333063336536353834376466383866...)
+[crypto.subtle.sign RET] {}
+[crypto.subtle.importKey CALL] raw Buf(32: 1279078f30778ca2e653c4f560d65d9d0d868391...) {"name":"AES-GCM"} false ["decrypt"]
+[crypto.subtle.importKey RET] {}
+[crypto.subtle.decrypt CALL] {"name":"AES-GCM","iv":{"0":247,"1":218,"2":106,"3":11,"4":26,"5":81,"6":176,"7":165,"8":214,"9":75,"10":238,"11":24}} {} Buf(14041: e58eabdbfd90e588c413b8c089b7b470760e0a39...)
+[crypto.subtle.decrypt RET] {}
+Decrypted text available: true
+Decrypted M3U8 length: 14025
+M3U8 Sample:
+ #EXTM3U
+#EXT-X-DISCONTINUITY
+#EXT-X-VERSION:3
+#EXT-X-TARGETDURATION:10
+#EXT-X-MEDIA-SEQUENCE:0
+#EXTINF:10.427089,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0000.png
+#EXTINF:10.427078,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0001.png
+#EXTINF:10.427089,
+https://phili18.amass15.top/c9e5230c3e65847df88fc05ea66cbbb6/streamaaa0002.png
+#EXTINF:10.
+Trace done.
