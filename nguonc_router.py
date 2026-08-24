@@ -5,7 +5,7 @@ import re
 import base64
 import json
 import time
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 from fastapi import APIRouter, Request, HTTPException, Query
 from fastapi.responses import JSONResponse, HTMLResponse, StreamingResponse, Response
 
@@ -13,7 +13,11 @@ from fastapi.responses import JSONResponse, HTMLResponse, StreamingResponse, Res
 import httpx
 import hmac
 import hashlib
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+try:
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+except ImportError:
+    AESGCM = None
 
 logger = logging.getLogger("nguonc_addon")
 
@@ -194,6 +198,10 @@ async def extract_and_decrypt_m3u8(embed_url: str, client: Optional[httpx.AsyncC
         derived_aes_key = hmac.new(hmac_key, video_hash.encode('utf-8'), hashlib.sha256).digest()
         
         # 5. Decrypt using AES-GCM
+        if AESGCM is None:
+            logger.error("Thư viện 'cryptography' chưa được cài đặt. Hãy chạy 'pip install cryptography' để giải mã luồng NguonC.")
+            return ""
+
         aesgcm = AESGCM(derived_aes_key)
         decrypted_bytes = aesgcm.decrypt(iv_bytes, encrypted_bytes, None)
         decrypted_m3u8 = decrypted_bytes.decode('utf-8')
