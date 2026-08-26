@@ -1,0 +1,1612 @@
+dex
+035
+NDa{H
+xV4
+n A
+n @
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n @
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n >
+5V@
+n I
+r [
+q P
+q 8
+r W
+p -
+p -
+p /
+#(I
+ p0
+p /
+Uq w
+q o
+p L
+r S
+Tq2
+Tr1
+Ts5
+Tt0
+[h3
+ p0
+R =
+p /
+T <
+T!;
+n !
+R!:
+n  
+T1;
+R2:
+ p0
+[#@
+R ?
+Y ?
+T A
+[EG
+R@F
+Y@F
+T@H
+n@!
+p /
+n A
+n >
+(J"
+n A
+n A
+n ?
+n >
+n A
+n A
+n >
+n A
+n A
+n A
+n ?
+n >
+r S
+[yM
+ p0
+p /
+q o
+p L
+r S
+RAS
+TBR
+TCV
+ p0
+[4a
+R0`
+Y0`
+T0b
+n0&
+RPj
+p /
+TPi
+TQd
+TQh
+TQc
+TQg
+TQe
+TQf
+ p0
+[xv
+Rpu
+Ypu
+Tqw
+n0*
+n A
+n A
+n Q
+p0.
+8q 
+7q 
+TC$
+RE#
+p /
+T@"
+T@!
+TF 
+TE"
+TK!
+TJ 
+p@i
+r S
+[J 
+[C!
+[E"
+YB#
+r S
+r S
+r S
+[O 
+[A!
+[L"
+)YI#
+p0.
+r S
+(Fr
+"q]
+r S
+q w
+S(%
+q u
+p /
+n <
+ qX
+n A
+n A
+n A
+TC@
+R@?
+p /
+T@>
+T@>
+[H>
+YM?
+p E
+n A
+n A
+n A
+[(-
+p E
+n A
+n A
+n A
+R#F
+R#F
+CY#F
+T%G
+R&F
+p /
+T$E
+T&D
+T'C
+R&B
+T'D
+T(C
+(;R&B
+T'C
+['C
+Y&B
+Y/F
+['C
+[(D
+Y&B
+*Y*F
+p M
+n A
+n >
+[,C
+[.D
+[+E
+6Y&F
+r S
+n N
+K((
+(&r
+p /
+lq 
+r S
+r S
+n A
+n A
+n A
+n A
+r S
+TCv
+R@u
+p /
+REk
+T@t
+T@s
+T@r
+T@q
+T@p
+T@o
+T@n
+T@m
+T@l
+T@o
+TEn
+TFm
+TGl
+T@n
+TEm
+TFl
+[@l
+[Fm
+[En
+YLu
+[Kl
+[@m
+[Jn
+[Io
+YNu
+r X
+r X
+r X
+r X
+r X
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n )
+q m
+q m
+[Kl
+[Nm
+[Ln
+[Fo
+[Jp
+[Iq
+[Hr
+[Gs
+[Mt
+YEk
+0Y@u
+n A
+n A
+n A
+n A
+n )
+n A
+n B
+n )
+n A
+n A
+n A
+n A
+n >
+n )
+n A
+n A
+n )
+CY#
+p /
+T y
+T$x
+T ~
+T$}
+T+|
+T-{
+T.z
+T/y
+T%x
+T$~
+T%}
+T(|
+T){
+T,z
+T+y
+T!x
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+&#h
+q m
+q m
+[!x
+[)y
+[%z
+[,{
+[(|
+[+}
+[*~
+.qW
+r S
+n A
+n A
+n A
+n A
+n )
+['x
+['y
+['z
+['{
+['|
+['}
+['~
+#Y#
+n A
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+g#w
+q m
+q m
+q m
+q m
+q m
+q m
+r0Z
+n A
+n A
+[!x
+[&y
+[$z
+[%{
+[/|
+[.}
+[+~
+n A
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n )
+[$x
+[ y
+[!z
+[!{
+[!|
+[!}
+[!~
+AY!
+n A
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n )
+n A
+n A
+n A
+n A
+n )
+p /
+n A
+n A
+n A
+p0.
+r S
+p0b
+p0a
+'n@`
+ten ^
+p07
+q H
+q02
+n0;
+n0;
+n A
+n >
+n A
+n >
+n A
+q0/
+q '
+q "
+q m
+q m
+q m
+q m
+q m
+q m
+n A
+n @
+n A
+n A
+n >
+n07
+p04
+n A
+n @
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n A
+n >
+<---.----
+z,o
+y,p
+x,q
+w,r
+;ml
+<+=
+Z:K
+Z:K
+m"ZZ
+Z:K
+y,$
+Z:K
+Z:K
+ZZZ
+Z:J
+f7-
+f7-
+Z:J
+H:$
+Z:J
+Z:J
+f7-
++.K
+Z:J
+:0K
+:0K
+f7-
+f7-
+f7-
+Z:J
+Z:J
+%Z:
+;d"
+Z:J
+OkY
+OIkYx
+=KK
+K<-
+<-*
+<----
+0)H
+ Z2
+0#*
+0$2
+0'2
+0)2
+0+H
+0#0.2
+022
+0J@
+0.2
+072
+0$2
+:JF
+0A0?2
+0A0?H
+DJ\
+0A0?H
+LJB
+0A2
+0O2
+0A0?H
+0X2
+ - 
+ episode_slug=
+ nonce=
+ server=
+"episode_slug"\s*:\s*"([^"]+)"
+"post_id"\s*:\s*"(\d+)"
+"post_id"\s*:\s*(\d+)
+"restNonce"\s*:\s*"([^"]+)"
+"server"\s*:\s*"?(\d)
+$baseUrl
+$completion
+$continuation
+$description
+$epName
+$fallbackPoster
+$href
+6$i$a$-any-HoatHinh3DProvider$getMainPage$hasNextPage$1
+E$i$a$-filter-HoatHinh3DProvider$buildRecommendations$sameGenreItems$2
+?$i$a$-filter-HoatHinh3DProvider$buildRecommendations$tagLinks$2
+2$i$a$-filter-HoatHinh3DProvider$resolveOneServer$2
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+0$i$a$-forEach-HoatHinh3DPlugin$verifySignature$1
+7$i$a$-ifEmpty-HoatHinh3DProvider$buildRecommendations$2
+@$i$a$-ifEmpty-HoatHinh3DProvider$buildRecommendations$tagLinks$3
+,$i$a$-ifEmpty-HoatHinh3DProvider$load$tags$2
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+)$i$a$-let-HoatHinh3DProvider$getBaseUrl$2
+*$i$a$-let-HoatHinh3DProvider$getMainPage$2
+%$i$a$-let-HoatHinh3DProvider$load$2$1
+/$i$a$-let-HoatHinh3DProvider$load$description$1
+?$i$a$-map-HoatHinh3DProvider$buildRecommendations$partItems$1$1
+2$i$a$-map-HoatHinh3DProvider$getMainPage$grids$1$1
+@$i$a$-mapNotNull-HoatHinh3DProvider$buildRecommendations$parts$1
+I$i$a$-mapNotNull-HoatHinh3DProvider$buildRecommendations$sameGenreItems$1
+C$i$a$-mapNotNull-HoatHinh3DProvider$buildRecommendations$tagLinks$1
+E$i$a$-mapNotNull-HoatHinh3DProvider$buildRecommendations$tagLinks$3$1
+:$i$a$-mapNotNull-HoatHinh3DProvider$getMainPage$2$movies$1
+F$i$a$-mapNotNull-HoatHinh3DProvider$getMainPage$grids$1$1$1$1$movies$1
+3$i$a$-mapNotNull-HoatHinh3DProvider$load$episodes$1
+/$i$a$-mapNotNull-HoatHinh3DProvider$load$tags$1
+1$i$a$-mapNotNull-HoatHinh3DProvider$load$tags$2$1
+,$i$a$-mapNotNull-HoatHinh3DProvider$search$2
+E$i$a$-none-HoatHinh3DProvider$buildRecommendations$sameGenreItems$2$1
+>$i$a$-runCatching-HoatHinh3DProvider$getMainPage$grids$1$1$1$1
+D$i$a$-takeIf-HoatHinh3DProvider$buildRecommendations$parts$1$title$1
+9$i$a$-takeIf-HoatHinh3DProvider$load$episodes$1$rawName$1
+$i$f$any
+$i$f$filter
+$i$f$filterTo
+$i$f$forEach
+$i$f$hh3dJson
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$none
+$latestEpisodeText
+$mainFilmPoster
+$name
+$page
+$parts
+$poster
+$posterUrl
+$qualityInt
+&$r8$lambda$288RJ28vmOUGJX_W5UpwyLHa1A0
+&$r8$lambda$MoM9vGAlgw6kozmHeblIFz1czvQ
+&$r8$lambda$XTrr08Gan7feVTUHN15B9EBGarQ
+&$r8$lambda$t_CA-t2En-GEGwqo5ysBo9Do08Q
+&$r8$lambda$wH3US3j42iNPEkHvCh0wBLfbOug
+$rating
+$receiver
+$recommendations
+$refererUrl
+$result
+$slug
+$tags
+$this
+$this$any$iv
+$this$async
+$this$cleanUrl
+$this$coroutineScope
+$this$encodeUri
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newTvSeriesLoadResponse
+$this$none$iv
+$this$toSearchResponse
+$title
+$year
+%02X
+%20
+&server_id=
+&subsv_id=&post_id=
+' error: 
+()Ljava/lang/Boolean;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+H(Ljava/lang/Boolean;Ljava/lang/String;)Lrecloudstream/PlayerKeyResponse;
+((Ljava/lang/Boolean;Ljava/lang/String;)V
+(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lrecloudstream/EncryptedPlayerResponse;
+(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+y(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lrecloudstream/PlayerSource;
+^(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Lorg/jsoup/nodes/Document;Lorg/jsoup/nodes/Element;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Lrecloudstream/PlayerSource;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+) or episode_slug(
+)TT;
+*>;)
+, file=
+, iv=
+, key=
+, kid=
+, label=
+, payload=
+, status=
+, title=
+, type=
+.html
+.m3u8
+/cn-animation
+/co-trang
+/huyen-huyen
+/page/
+/search/
+/tien-hiep
+/trung-sinh
+)/wp-content/themes/halimmovies/player.php
+7/wp-content/themes/halimmovies/player.php?episode_slug=
+/wp-json/halim/v1/player-key
+/xuyen-khong
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+://
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+AES
+AES/GCM/NoPadding
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Cartoon
+t l
+Companion
+Content-Type
+Cookie
+ Trang
+D8$$SyntheticClass
+"EncryptedPlayerResponse(encrypted=
+FAIL_ON_UNKNOWN_PROPERTIES
+FALLBACK_DOMAIN
+HALIM_PLAYER_KEY_API
+HALIM_PLAYER_THEME
+HOME_GRIDS
+HoatHinh3D
+HoatHinh3D: [
+HoatHinh3D: done, anySuccess=
+)HoatHinh3D: error fetching episode page: 
+HoatHinh3D: missing post_id(
+HoatHinh3D: post_id=
+HoatHinh3D: server '
+HoatHinh3DPlugin.kt
+HoatHinh3DProvider.kt
+HoatHinh3D_debug
+Huy
+n Huy
+I$0
+ILI
+INSTANCE
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+LII
+LILL
+LJI
+LLCCZIL
+LLCLIL
+LLI
+LLL
+LLLIIL
+LLLL
+LLLLIL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLIL
+LLLLLLLL
+LLLLLLLLLL
+LLLLLLLLLLL
+LLLLLLLLLLLIL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZ
+LLLLZIL
+LLZ
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/annotation/JsonProperty;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+7Lcom/fasterxml/jackson/databind/DeserializationFeature;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+$Lcom/lagradost/cloudstream3/Episode;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/PrintStream;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+Ljava/lang/Float;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Long;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/System;
+Ljava/lang/Throwable;
+Ljava/net/URL;
+Ljava/net/URLEncoder;
+Ljava/nio/charset/Charset;
+Ljava/security/Key;
+Ljava/security/MessageDigest;
++Ljava/security/spec/AlgorithmParameterSpec;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Base64$Decoder;
+Ljava/util/Base64;
+Ljava/util/Collection;
+Ljava/util/Iterator;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map;
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/UUID;
+Ljava/util/concurrent/TimeUnit;
+Ljavax/crypto/Cipher;
+$Ljavax/crypto/spec/GCMParameterSpec;
+!Ljavax/crypto/spec/SecretKeySpec;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Pair<
+Lkotlin/Result$Companion;
+Lkotlin/Result;
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/Triple<
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+#Lkotlin/jvm/internal/Ref$ObjectRef;
+#Lkotlin/jvm/internal/Ref$ObjectRef<
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/RequestBody$Companion;
+Lokhttp3/RequestBody;
+Lokhttp3/Response;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+'Lrecloudstream/EncryptedPlayerResponse;
+:Lrecloudstream/HoatHinh3DPlugin$$ExternalSyntheticLambda0;
+ Lrecloudstream/HoatHinh3DPlugin;
+<Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda0;
+<Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda1;
+<Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda2;
+,Lrecloudstream/HoatHinh3DProvider$Companion;
+9Lrecloudstream/HoatHinh3DProvider$buildRecommendations$1;
+aLrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1$1$1$$ExternalSyntheticLambda0;
+GLrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1$1$1;
+CLrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1;
+/Lrecloudstream/HoatHinh3DProvider$emitSource$1;
+4Lrecloudstream/HoatHinh3DProvider$emitSource$link$1;
+/Lrecloudstream/HoatHinh3DProvider$getBaseUrl$1;
+0Lrecloudstream/HoatHinh3DProvider$getMainPage$1;
+:Lrecloudstream/HoatHinh3DProvider$getMainPage$grids$1$1$1;
+6Lrecloudstream/HoatHinh3DProvider$getMainPage$grids$1;
+)Lrecloudstream/HoatHinh3DProvider$load$1;
+)Lrecloudstream/HoatHinh3DProvider$load$2;
+.Lrecloudstream/HoatHinh3DProvider$loadLinks$1;
+GLrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$1;
+GLrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$2;
+GLrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$3;
+5Lrecloudstream/HoatHinh3DProvider$resolveOneServer$1;
++Lrecloudstream/HoatHinh3DProvider$search$1;
+"Lrecloudstream/HoatHinh3DProvider;
+/Lrecloudstream/HoatHinh3DProviderKt$hh3dJson$1;
+$Lrecloudstream/HoatHinh3DProviderKt;
+!Lrecloudstream/PlayerKeyResponse;
+Lrecloudstream/PlayerSource;
+M3U8
+i C
+p Nh
+Origin
+PlayerKeyResponse(success=
+PlayerSource(status=
+ROOT
+Referer
+SDK_INT
+SHA-256
+SMAP
+HoatHinh3DPlugin.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DPlugin.kt
+recloudstream/HoatHinh3DPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 HoatHinh3DPlugin.kt
+recloudstream/HoatHinh3DPlugin
+49#1:60,2
+SMAP
+HoatHinh3DProvider.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 4 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProviderKt
+1#1,640:1
+1#2:641
+1#2:652
+1#2:668
+1#2:681
+1#2:694
+1#2:707
+1#2:720
+1#2:733
+1#2:749
+1#2:762
+1611#3,9:642
+1863#3:651
+1864#3:653
+1620#3:654
+1755#3,3:655
+1611#3,9:658
+1863#3:667
+1864#3:669
+1620#3:670
+1611#3,9:671
+1863#3:680
+1864#3:682
+1620#3:683
+1611#3,9:684
+1863#3:693
+1864#3:695
+1620#3:696
+1611#3,9:697
+1863#3:706
+1864#3:708
+1620#3:709
+1611#3,9:710
+1863#3:719
+1864#3:721
+1620#3:722
+1611#3,9:723
+1863#3:732
+1864#3:734
+1620#3:735
+774#3:736
+865#3,2:737
+1611#3,9:739
+1863#3:748
+1864#3:750
+1620#3:751
+1611#3,9:752
+1863#3:761
+1864#3:763
+1620#3:764
+774#3:765
+865#3:766
+2632#3,3:767
+866#3:770
+774#3:771
+865#3,2:772
+25#4:774
+25#4:775
+25#4:776
+*S KotlinDebug
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider
+190#1:652
+223#1:668
+274#1:681
+275#1:694
+282#1:707
+332#1:720
+361#1:733
+363#1:749
+368#1:762
+190#1:642,9
+190#1:651
+190#1:653
+190#1:654
+211#1:655,3
+223#1:658,9
+223#1:667
+223#1:669
+223#1:670
+274#1:671,9
+274#1:680
+274#1:682
+274#1:683
+275#1:684,9
+275#1:693
+275#1:695
+275#1:696
+282#1:697,9
+282#1:706
+282#1:708
+282#1:709
+332#1:710,9
+332#1:719
+332#1:721
+332#1:722
+361#1:723,9
+361#1:732
+361#1:734
+361#1:735
+362#1:736
+362#1:737,2
+363#1:739,9
+363#1:748
+363#1:750
+363#1:751
+368#1:752,9
+368#1:761
+368#1:763
+368#1:764
+370#1:765
+370#1:766
+373#1:767,3
+370#1:770
+500#1:771
+500#1:772,2
+502#1:774
+550#1:775
+569#1:776
+SMAP
+HoatHinh3DProvider.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,640:1
+1557#2:641
+1628#2,3:642
+*S KotlinDebug
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1
+347#1:641
+347#1:642,3
+SMAP
+HoatHinh3DProvider.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$getMainPage$grids$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,640:1
+1557#2:641
+1628#2,3:642
+*S KotlinDebug
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$getMainPage$grids$1
+162#1:641
+162#1:642,3
+SMAP
+HoatHinh3DProvider.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$getMainPage$grids$1$1$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,640:1
+1611#2,9:641
+1863#2:650
+1864#2:652
+1620#2:653
+1#3:651
+*S KotlinDebug
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$getMainPage$grids$1$1$1
+171#1:641,9
+171#1:650
+171#1:652
+171#1:653
+171#1:651
+SMAP
+HoatHinh3DProvider.kt
+Kotlin
+*S Kotlin
++ 1 HoatHinh3DProvider.kt
+recloudstream/HoatHinh3DProvider$load$2
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,640:1
+1#2:641
+Set-Cookie
+TT;>;
+n Hi
+ng Sinh
+UTF-8
+UTF_8
+Unknown
+VIDEO
+VIL
+VILL
+VILLL
+VIP 1
+VIP 2
+VLIL
+VLILLLL
+VLL
+VLLL
+VLLLLL
+VLLLLLL
+VLLLLLLL
+VLLLLLLLLL
+VLLLLLLLLLIL
+VLLZIL
+X-Halim-Client
+X-Requested-With
+X-WP-Nonce
+XMLHttpRequest
+Xuy
+n Kh
+ZLL
+ZLLZ
+ZLLZIL
+[Landroid/content/pm/Signature;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+[data-episode-slug]
+[data-post-id]
+[data-server]
+\d+
+] AES decrypt error: 
+] decrypted source has no file
+] emitted link 
+] missing kid/iv/payload
+] no playable source: 
+] player-key POST -> 
+] player-key POST error: 
+] player-key invalid result
+] player.php GET -> 
+] player.php GET error: 
+_encrypted
+a.halim-thumb
+a.halim-trending-link
+access$buildRecommendations
+access$emitSource
+access$getBaseUrl
+access$getCompanion$p
+access$getHOME_GRIDS$cp
+access$getHh3dMapper$p
+access$resolveOneServer
+access$toSearchResponse
+accessFlags
+active
+add
+addQuality
+aesGcmDecrypt
+allowedPackages
+anySuccess
+apiLevel
+append
+application/json
+areEqual
+async$default
+attr
+attr(...)
+awaitAll
+baseUrl
+booleanValue
+boxBoolean
+boxFloat
+buildRecommendations
+byteValue
+cachedBaseUrl
+/call to 'resume' before 'invoke' with coroutine
+callback
+card
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+cipher
+cipherBytes
+cleanHref
+cleanUrl
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+component1
+component2
+component3
+component4
+component5
+component6
+component7
+component8
+component9
+configure
+constructor-impl
+contains
+contains$default
+content
+context
+copy
+copy$default
+copyOf
+coroutineScope
+create
+createFailure
+currentHash
+currentPackage
+currentSlug
+currentTimeMillis
+currentUrl
+data
+data-episode-slug
+data-post-id
+data-poster
+data-server
+data-src
+decode
+decode(...)
+decodeBase64Url
+description
+destination$iv$iv
+digest
+:div#halim-list-server ul.halim-list-eps li.halim-episode a
+ div.entry-content div.wp-content
+(div.film-content div#info div.wp-content
+(div.halim-movie-wrapper.tpl-2.info-movie
+#div.halim-post-title h2.entry-title
+div.halim-trending-card
+div.halim-trending-slider
+div.head div.first img
+div.head h1.movie_name
+Hdiv.info-hero__facts a[rel=tag], div.info-hero__facts a[href*=/release/]
+div.info-hero__tags a
+div.last div.list_cate a
+div.last span.released a
+%div.section-bar h3.section-title span
+doFinal
+doc
+document
+element
+element$iv
+element$iv$iv
+emitSource
+emptyList
+encode
+encode(...)
+encodeUri
+encrypted
+epA
+epLink
+epName
+episodePageDocument
+episodePageUrl
+episodeSlug
+episodes
+equals
+expectedHashes
+expectedSignatures
+f$0
+f$1
+fallbackPoster
+figure img.img-responsive
+file
+filterNotNull
+finalUrl
+find$default
+first
+firstOrNull
+fixUrl
+fixUrlNull
+floatValue
+format
+format(...)
+from10
+generateHalimClient
+get
+get$default
+getApkContentsSigners
+getApp
+getBaseUrl
+getCOROUTINE_SUSPENDED
+getDecoder
+getDocument
+getEncrypted
+getFile
+getFirst
+getGroupValues
+getHOME_GRIDS
+getHasChromecastSupport
+getHasDownloadSupport
+getHasMainPage
+getHost
+getInstance
+getIv
+getKey
+getKid
+getLabel
+getLang
+getList
+getMainPage
+&getMainPage$lambda$4$lambda$3$lambda$2
+getMainUrl
+getMessage
+getName
+getOkhttpResponse
+getPackageInfo
+getPackageManager
+getPackageName
+getPayload
+getProtocol
+getStatus
+getSuccess
+getSupportedTypes
+getText
+getTitle
+getType
+getUrl
+getValue
+gridUrl
+grids
+h1.info-hero__title
+h3.halim-trending-title-text
+halim_pk_sess=
+hasChromecastSupport
+hasClass
+hasDownloadSupport
+hasMainPage
+hasNext
+hasNextPage
+hashCode
+headers
+hh3dJson
+hh3dMapper
+hls
+homePageList
+href
+http
+https://bit.ly
+https://bit.ly/hh3d
+https://hoathinh3d.ad
+img.halim-trending-poster-image
+img.info-v2-poster-img
+info
+init
+intValue
+invoke
+invokeSuspend
+invokeSuspend$lambda$0
+isBlank
+isCasting
+isEmpty
+isFailure-impl
+it$iv$iv
+item$iv$iv
+iterator
+ivB64u
+ivBytes
+jacksonObjectMapper
+joinToString$default
+jsonBody
+key
+keyB64u
+keyBytes
+keyResponse
+keySpec
+kid
+kind
+kotlin.jvm.PlatformType
+label
+lang
+latestEpisodeText
+length
+link
+linkTag
+linkType
+listOf
+load
+load$lambda$13$lambda$12
+loadLinks
+*main#main-contents article.thumb.grid-item
+mainFilmPoster
+mainUrl
+mapOf
+matches
+meta[property=og:description]
+meta[property=og:url]
+movieWrapper
+movies
+mutableMapOf
+name
+needClassReification
+newAnimeSearchResponse$default
+newEpisode
+newExtractorLink
+newHomePageResponse
+newTvSeriesLoadResponse
+next
+nonce
+none
+normalized
+other
+out
+padded
+page
+parse
+partItems
+partSlug
+parts
+payload
+payloadB64u
+plain
+plainText
+playerUrl
+plus
+post$default
+postHeaders
+postId
+poster
+posterUrl
+println
+put
+qualityInt
+qualityLabel
+query
+randomUUID
+rating
+ratingScoreText
+rawHtml
+rawName
+readValue
+readValue(...)
+recDoc
+ recloudstream.HoatHinh3DProvider
+Arecloudstream.HoatHinh3DProvider$buildRecommendations$partItems$1
+Erecloudstream.HoatHinh3DProvider$buildRecommendations$partItems$1$1$1
+2recloudstream.HoatHinh3DProvider$emitSource$link$1
+4recloudstream.HoatHinh3DProvider$getMainPage$grids$1
+8recloudstream.HoatHinh3DProvider$getMainPage$grids$1$1$1
+'recloudstream.HoatHinh3DProvider$load$2
+-recloudstream/HoatHinh3DProviderKt$hh3dJson$1
+recommendations
+refererUrl
+registerMainAPI
+repeat
+replace
+replace$default
+request
+resolveOneServer
+resp
+respSlug
+response
+result
+reversed
+sameGenreItems
+search
+searchUrl
+section
+sectionTitle
+select
+select(...)
+selectFirst
+serverId
+serverName
+servers
+sessionCookie
+setCookies
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setScore
+setTags
+setYear
+sid
+sig
+signatures
+signingInfo
+slug
+source
+span
+span.episode
+span.halim-rating-score
+src
+startsWith
+startsWith$default
+status
+substring
+substring(...)
+substringAfterLast$default
+substringBefore$default
+subtitleCallback
+success
+supportedTypes
+tagLinks
+tags
+take
+text
+this
+this$0
+throwOnFailure
+thumbLink
+title
+toByteArray
+toFloatOrNull
+toIntOrNull
+toLowerCase
+toLowerCase(...)
+toSearchResponse
+toSearchResponse$lambda$1
+toString
+toString(...)
+trending
+trim
+type
+$ul#list-movies-part li.movies-part a
+url
+value
+value$iv
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+videoType
+videoUrl
+xHalimClient
+year
+yearText
+{"key_id":"
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/EncryptedPlayerResponse;":"88df0014","Lrecloudstream/HoatHinh3DPlugin$$ExternalSyntheticLambda0;":"-280e941df","Lrecloudstream/HoatHinh3DPlugin;":"838e2654","Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda0;":"2722688fb","Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda1;":"2f7138e16","Lrecloudstream/HoatHinh3DProvider$$ExternalSyntheticLambda2;":"195cffe2b","Lrecloudstream/HoatHinh3DProvider$Companion;":"b727b3ed","Lrecloudstream/HoatHinh3DProvider$buildRecommendations$1;":"8724b4b","Lrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1$1$1$$ExternalSyntheticLambda0;":"378fd7c7","Lrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1$1$1;":"36e578e","Lrecloudstream/HoatHinh3DProvider$buildRecommendations$partItems$1;":"c1059df6","Lrecloudstream/HoatHinh3DProvider$emitSource$1;":"fea08ef5","Lrecloudstream/HoatHinh3DProvider$emitSource$link$1;":"835af62a","Lrecloudstream/HoatHinh3DProvider$getBaseUrl$1;":"7b4f8581","Lrecloudstream/HoatHinh3DProvider$getMainPage$1;":"4fd7899a","Lrecloudstream/HoatHinh3DProvider$getMainPage$grids$1$1$1;":"90107da5","Lrecloudstream/HoatHinh3DProvider$getMainPage$grids$1;":"a2bb881a","Lrecloudstream/HoatHinh3DProvider$load$1;":"bea26099","Lrecloudstream/HoatHinh3DProvider$load$2;":"c6a9de5a","Lrecloudstream/HoatHinh3DProvider$loadLinks$1;":"4277f1c8","Lrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$1;":"ac40adbc","Lrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$2;":"17b25ebb","Lrecloudstream/HoatHinh3DProvider$resolveOneServer$$inlined$hh3dJson$3;":"233b8256","Lrecloudstream/HoatHinh3DProvider$resolveOneServer$1;":"df70dae3","Lrecloudstream/HoatHinh3DProvider$search$1;":"eaf3f28d","Lrecloudstream/HoatHinh3DProvider;":"b18d5281","Lrecloudstream/HoatHinh3DProviderKt$hh3dJson$1;":"749999c7","Lrecloudstream/HoatHinh3DProviderKt;":"9a29d4ea","Lrecloudstream/PlayerKeyResponse;":"14fd1223","Lrecloudstream/PlayerSource;":"4e96fe6f"}
+ang Th
+nh H
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+y78
+x7U
+w7D
+w7C
+w7U
+w7D
+w7+
+w7D
+w7}
+w7&
+w7o
+w7D
+w7D
+x7Y
+w7D
+w7D
+w7D
+z7Z
+y78
+z7,
+y78

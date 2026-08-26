@@ -1,0 +1,1675 @@
+dex
+035
+'$0
+xV4
+5V@
+n X
+r q
+q \
+q M
+r e
+p A
+p A
+q@L
+q0M
+n U
+n U
+n U
+n U
+n R
+n U
+n T
+n U
+n U
+n U
+n U
+n U
+n U
+n R
+q0R
+[E#
+R@"
+Y@"
+T@$
+n@b
+q P
+'qX
+*qX
+q Y
+[4)
+R0(
+Y0(
+T0*
+n0h
+R01
+p C
+T00
+T12
+T2,
+T1/
+n  
+T1+
+T1.
+T1-
+ p0
+R09
+p C
+T08
+T1:
+T24
+n #
+T17
+n &
+T13
+n "
+T16
+n %
+T15
+n $
+ p0
+p C
+r m
+n U
+n U
+n U
+n U
+n U
+p0L
+ p0
+n0 
+n !
+p C
+(:w
+p b
+r0n
+r f
+r f
+p0L
+e(6q
+r f
+p [
+r ]
+TqD
+TrH
+TsE
+TtC
+[hF
+ p0
+n0&
+n0$
+n '
+p C
+p [
+r ]
+TqJ
+TrN
+TsK
+TtI
+[hL
+ p0
+n0,
+n /
+n0-
+R Z
+p C
+T Y
+T!W
+n ,
+T!X
+n *
+T1W
+T2X
+p@+
+ p0
+n01
+n 4
+n02
+R ^
+p C
+T ]
+T![
+n ,
+T!\
+n *
+T1[
+T2\
+p@0
+ p0
+n06
+n 9
+n07
+R@b
+p C
+T@a
+TA_
+n ,
+TC`
+TC_
+n *
+T1_
+T2`
+p@5
+ p0
+n0=
+n @
+n0>
+R p
+p C
+T o
+n ,
+n +
+T!n
+n *
+T!n
+p0<
+ p0
+n0D
+n G
+n0E
+p C
+T!~
+n ,
+T!}
+n *
+T1~
+T2}
+p@C
+ p0
+q@X
+n0p
+p Z
+p t
+6pH
+Lp[K
+! 6
+p@]
+p^K
+/qS
+n O
+p@]
+p@]
+n@x
+p 8
+n v
+n@<
+p0y
+r c
+p0y
+r c
+n ;
+!69
+!bq0
+@5P
+p0^
+p@o
+p C
+(=q
+p0y
+p C
+n U
+n R
+n U
+4(("
+n U
+n R
+n U
+n U
+n S
+p u
+r ]
+p C
+(Gq
+p [
+r ]
+p u
+r ]
+n P
+,qQ
+r m
+r0n
+r c
+p [
+r ]
+n U
+n U
+n U
+n R
+r ]
+p0)
+p C
+=q 
+p0L
+r m
+n U
+n R
+n U
+n U
+p@+
+r f
+n U
+n U
+p@0
+r f
+r f
+n U
+n U
+n U
+n U
+n U
+p@5
+p0:
+p C
+r f
+r f
+;q 
+r f
+n U
+n U
+n U
+n U
+r0n
+r0n
+r0n
+r06
+r0n
+p0\
+p0\
+p0\
+&q 
+p [
+q E
+r ]
+p0L
+r0n
+p [
+n U
+n R
+n U
+r ]
+r o
+r0n
+n U
+n U
+p0<
+R#z
+R#z
+CY#z
+p0A
+T,{
+R$z
+p C
+T u
+T$t
+T%s
+T&r
+T'q
+T y
+T$x
+T%w
+T&v
+T'u
+T(t
+T)s
+T*r
+T+q
+T w
+T$v
+T%u
+T&t
+T's
+T(r
+T)q
+T q
+T$v
+T%u
+T&t
+T's
+T(r
+T)q
+V(0q
+[)q
+[(r
+['s
+[%t
+[$u
+[&v
+Y*z
+p0^
+q W
+p@C
+[*q
+[%r
+[%s
+[%t
+[%u
+[%v
+Y,z
+[ q
+[+r
+[!s
+[&t
+[*u
+[%v
+[.w
+3Y#z
+p@o
+r0n
+@p0[
+[*q
+[/r
+[.s
+[+t
+[!u
+[,v
+[)w
+[#x
+[ y
+DY$z
+[*q
+[+r
+[.s
+[!t
+[ u
+[$v
+[$w
+[$x
+[$y
+TY$z
+r m
+[ q
+[ r
+[ s
+[ t
+[ u
+`Y z
+qR(
+p0H
+p C
+7q 
+*qY
+n U
+n U
+r0n
+p0y
+p0J
+p C
+([q
+n U
+n U
+n U
+p u
+r ]
+p [
+n U
+n U
+n U
+n U
+n U
+r ]
+n R
+n U
+n R
+q@v
+q0j
+R#"
+r f
+r f
+r f
+p0!
+r f
+r f
+r0n
+r0n
+9ml
+<---(
+-ZZZZxxy
+KiKG"
+`8K
+ZZZZ
+`8K
+ZZZZ
+x,&
+ili
+|,!
+`8Z
+`8K
+t!ZZ
+`8K
+t!ZZ
+`8K
+t!Z
+`8K
+t!Z
+`8K
+t!ZZ
+Kx.
+u e
+--x
+-X>
+`8J
+`8J
+y,$
+`8J
+l7-
+`8J
+`8J
+xxZ
+},K
+`8J
+`8>
+`8J
+v,'
+`8J
+ "sY<<
+X#rY
+<KK<K-
+ _2
+_`aB
+0 2
+0"2
+0$H
+0'*
+0(H
+0'0
+0-2
++JF
+05032
+0503H
+8JN
+052
+05032
+0503H
+=J.
+0@0?2
++J6
+0?2
+0@H
+EJ$
+052
+0503H
+052
+0JH
+0J2
+0503H
+OJV
+0@2
+0503H
+0T2
+07H
+0W2
+0WH
+0"2
+0W2
+0"2
+0"H
+0W2
+0WH
+ - 
+","tag":"
+"Android"
+("Chromium";v="137", "Not/A)Brand";v="24"
+#.m3u8
+#EXT-X-STREAM-INF:
+l#info-film .tab div, .detail-content, #film-content, .film-content, .short-description, .tab div p, .tab div
+#player
+$baseStrictHeaders
+$callback
+$completion
+$continuation
+$currentIframeUrl
+$data
+$description
+$displayName
+$epData
+$epNum
+$epText
+$exoPlayerHeaders
+8$i$a$-apply-PhimHDCSProvider$processHdcApi$postHeaders$1
+C$i$a$-apply-PhimHDCSProvider$processSmartLinkRouter$strictHeaders$1
+@$i$a$-apply-PhimHDCSProvider$resolveInnerIframe$updatedHeaders$1
+A$i$a$-associate-PhimHDCSProvider$loadLinks$2$1$1$serverNamesMap$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+2$i$a$-forEach-MapsKt___MapsKt$mapNotNullTo$1$iv$iv
+.$i$a$-forEach-PhimHDCSPlugin$verifySignature$1
+3$i$a$-forEach-PhimHDCSProvider$extractSubtitles$1$1
+0$i$a$-forEach-PhimHDCSProvider$fetchAllCookies$1
+0$i$a$-forEach-PhimHDCSProvider$fetchAllCookies$2
+%$i$a$-forEach-PhimHDCSProvider$load$2
+'$i$a$-forEach-PhimHDCSProvider$load$2$1
+*$i$a$-getOrPut-PhimHDCSProvider$load$2$1$1
+;$i$a$-ifEmpty-PhimHDCSProvider$toSearchResult$posterUrl$1$1
+5$i$a$-ifEmpty-PhimHDCSProvider$toSearchResult$title$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+0$i$a$-let-MapsKt___MapsKt$mapNotNullTo$1$1$iv$iv
+-$i$a$-let-PhimHDCSProvider$extractSubtitles$1
+<$i$a$-let-PhimHDCSProvider$getVideoInterceptor$1$intercept$1
+<$i$a$-let-PhimHDCSProvider$getVideoInterceptor$1$intercept$2
+*$i$a$-let-PhimHDCSProvider$processHdcApi$2
+5$i$a$-let-PhimHDCSProvider$toSearchResult$posterUrl$1
++$i$a$-let-PhimHDCSProviderKt$tryParseJson$1
+.$i$a$-let-PhimHDCSProviderKt$tryParseJson$1$iv
+5$i$a$-map-PhimHDCSProvider$load$createJsonStr$items$1
+9$i$a$-map-PhimHDCSProvider$load$episodes$1$combinedTags$1
+&$i$a$-map-PhimHDCSProvider$load$tags$1
+($i$a$-map-PhimHDCSProvider$loadLinks$2$1
+,$i$a$-map-PhimHDCSProvider$loadLinks$2$1$1$1
+7$i$a$-map-PhimHDCSProvider$processHdcApi$2$asciiBytes$1
+9$i$a$-map-PhimHDCSProvider$processHdcApi$finalCookieStr$1
+4$i$a$-mapNotNull-PhimHDCSProvider$getMainPage$home$1
+1$i$a$-mapNotNull-PhimHDCSProvider$load$episodes$1
+8$i$a$-mapNotNull-PhimHDCSProvider$load$recommendations$1
+*$i$a$-mapNotNull-PhimHDCSProvider$search$2
+4$i$a$-sortBy-PhimHDCSProvider$decryptTiktokPngToTs$1
+/$i$a$-sortedBy-PhimHDCSProvider$load$episodes$2
+$i$f$associate
+$i$f$associateTo
+$i$f$forEach
+$i$f$getOrPut
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$parsedSafe
+$i$f$sortBy
+$i$f$sortedBy
+$i$f$tryParseJson
+$pair
+$poster
+$posterUrl
+&$r8$lambda$BUqjT7K4IVnqQnkCENjOPxu52Ac
+&$r8$lambda$CCwhz557DXqertimhCiyKcnbPtk
+&$r8$lambda$uTsIHkvYBOZUxbyr8Rfz2Wdr-GY
+$realUserAgent
+$receiver
+$recommendations
+$referer
+$result
+$salt
+$serverNamesMap
+$strictHeaders
+$subtitleCallback
+$tags
+$this
+$this$associate$iv
+$this$associateTo$iv$iv
+$this$async
+$this$coroutineScope
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$getOrPut$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newTvSeriesLoadResponse
+#$this$processHdcApi_u24lambda_u2422
+,$this$processSmartLinkRouter_u24lambda_u2416
+($this$resolveInnerIframe_u24lambda_u2417
+$this$sortBy$iv
+$this$sortedBy$iv
+$this$toSearchResult
+$year
+%02X
+&do=getVideo
+()Ljava/lang/Boolean;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+:(?:const|let|var)\s+url\s*=\s*["']([^"']+\.m3u8[^"']*)["']
+0(?:hash|data)\s*[:=]\s*['"]([a-fA-F0-9]{32})['"]
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+y(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lrecloudstream/PhimHDCSProvider$VideoResponse;
+L(Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+'(Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+U(Ljava/lang/String;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+$(https?://[^/"']+)/player/index\.php
+(https?://[^/]+)
+)TT;
+*/*
+*>;)
+, ck=
+, securedLink=
+, tag=
+, videoSource=
+.html
+.js-server-episode-container
+.label
+.list-episode a
+b.list-films li.item, ul#film_hot li.item, ul.film-moi li.item, .list-films li.film-item-ver, .item
+.m3u8
+.poster img
+.text a, .name a
+.text-muted
+.ts
+.txt
+&/(?:video|embed|hls)/([a-fA-F0-9]{32})
+/?search=
+/master.m3u8?delivery=
+/player/index.php?data=
+/r/
+/video/
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+>;>;>;
+>;>;>;)
+?page=
+API_DOMAIN_REGEX
+Accept
+Accept-Language
+Anime
+AsianDrama
+B64_PAYLOAD_REGEX
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+COMMON_USER_AGENT
+Chi
+u R
+Companion
+Comparisons.kt
+Content-Type
+Cookie
+D8$$SyntheticClass
+DATA_PAYLOAD_REGEX
+DOT_MATCHES_ALL
+EXT_STREAM_INF_REGEX
+EpisodeLink
+EpisodeLink(url=
+HASH_HTML_REGEX
+HASH_URL_REGEX
+III
+ILI
+ILII
+ILL
+INSTANCE
+'JSON\.parse\(atob\(['"]([^'"]+)['"]\)\)
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+LILL
+LLI
+LLII
+LLL
+LLLIIL
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLIL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLZIIL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+Landroid/util/Base64;
+Landroid/webkit/CookieManager;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/annotation/JsonProperty;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+$Lcom/lagradost/cloudstream3/Episode;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/ByteArrayOutputStream;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Class;
+Ljava/lang/Comparable;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/net/URLDecoder;
+Ljava/nio/charset/Charset;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Ljava/util/zip/Inflater;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Pair<
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+ Lkotlin/jvm/internal/Reflection;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/RangesKt;
+Lkotlin/reflect/KClass;
+Lkotlin/text/CharsKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/RegexOption;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lokhttp3/Cookie;
+Lokhttp3/CookieJar;
+Lokhttp3/HttpUrl$Companion;
+Lokhttp3/HttpUrl;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/OkHttpClient;
+Lokhttp3/Request$Builder;
+Lokhttp3/Request;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+8Lrecloudstream/PhimHDCSPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/PhimHDCSPlugin;
+:Lrecloudstream/PhimHDCSProvider$$ExternalSyntheticLambda0;
+:Lrecloudstream/PhimHDCSProvider$$ExternalSyntheticLambda1;
+*Lrecloudstream/PhimHDCSProvider$Companion;
+,Lrecloudstream/PhimHDCSProvider$EpisodeLink;
+.Lrecloudstream/PhimHDCSProvider$VideoResponse;
+GLrecloudstream/PhimHDCSProvider$decryptTiktokPngToTs$$inlined$sortBy$1;
+1Lrecloudstream/PhimHDCSProvider$getBaseHeaders$1;
+.Lrecloudstream/PhimHDCSProvider$getMainPage$1;
+6Lrecloudstream/PhimHDCSProvider$getVideoInterceptor$1;
+9Lrecloudstream/PhimHDCSProvider$load$$inlined$sortedBy$1;
+'Lrecloudstream/PhimHDCSProvider$load$1;
+'Lrecloudstream/PhimHDCSProvider$load$3;
+'Lrecloudstream/PhimHDCSProvider$load$4;
+4Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$1$1;
+VLrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$invokeSuspend$$inlined$tryParseJson$1;
+VLrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$invokeSuspend$$inlined$tryParseJson$2;
+0Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1;
+RLrecloudstream/PhimHDCSProvider$loadLinks$2$invokeSuspend$$inlined$tryParseJson$1;
+,Lrecloudstream/PhimHDCSProvider$loadLinks$2;
+MLrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$$inlined$tryParseJson$1;
+7Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$1;
+7Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$2;
+7Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$3;
+7Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$4;
+0Lrecloudstream/PhimHDCSProvider$processHdcApi$1;
+0Lrecloudstream/PhimHDCSProvider$processHdcApi$3;
+9Lrecloudstream/PhimHDCSProvider$processSmartLinkRouter$1;
+9Lrecloudstream/PhimHDCSProvider$processSmartLinkRouter$2;
+5Lrecloudstream/PhimHDCSProvider$resolveInnerIframe$1;
+)Lrecloudstream/PhimHDCSProvider$search$1;
+ Lrecloudstream/PhimHDCSProvider;
+3Lrecloudstream/PhimHDCSProviderKt$tryParseJson$1$1;
+"Lrecloudstream/PhimHDCSProviderKt;
+M3U8
+M3U8_PATH_REGEX
+Movie
+oMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36
+Origin
+Phim B
+Phim Full
+Phim L
+PhimHDCS
+PhimHDCSPlugin.kt
+PhimHDCSProvider.kt
+PhimHDCS_debug
+ROOT
+Range
+Referer
+SALT_REGEX
+SDK_INT
+SHA-256
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider
+1#1,102:1
+152#2:103
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider
+1#1,102:1
+610#2:103
+SMAP
+PhimHDCSPlugin.kt
+Kotlin
+*S Kotlin
++ 1 PhimHDCSPlugin.kt
+recloudstream/PhimHDCSPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 PhimHDCSPlugin.kt
+recloudstream/PhimHDCSPlugin
+49#1:60,2
+SMAP
+PhimHDCSProvider.kt
+Kotlin
+*S Kotlin
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 Maps.kt
+kotlin/collections/MapsKt__MapsKt
++ 5 _Maps.kt
+kotlin/collections/MapsKt___MapsKt
++ 6 NiceResponse.kt
+com/lagradost/nicehttp/NiceResponse
++ 7 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProviderKt
+1#1,650:1
+1611#2,9:651
+1863#2:660
+1864#2:662
+1620#2:663
+1611#2,9:665
+1863#2:674
+1864#2:676
+1620#2:677
+1557#2:678
+1628#2,3:679
+1611#2,9:682
+1863#2:691
+1864#2:693
+1620#2:694
+1863#2:695
+1863#2:696
+1864#2:704
+1864#2:705
+1557#2:716
+1628#2,3:717
+1053#2:723
+1863#2,2:725
+1863#2,2:727
+1863#2,2:729
+1557#2:736
+1628#2,3:737
+1010#2,2:746
+1557#2:748
+1628#2,3:749
+1#3:661
+1#3:664
+1#3:675
+1#3:692
+1#3:720
+1#3:724
+1#3:745
+381#4,7:697
+136#5,9:706
+216#5:715
+217#5:721
+145#5:722
+126#5:740
+153#5,3:741
+52#6,5:731
+25#7:744
+*S KotlinDebug
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider
+72#1:651,9
+72#1:660
+72#1:662
+72#1:663
+99#1:665,9
+99#1:674
+99#1:676
+99#1:677
+112#1:678
+112#1:679,3
+116#1:682,9
+116#1:691
+116#1:693
+116#1:694
+120#1:695
+129#1:696
+129#1:704
+120#1:705
+145#1:716
+145#1:717,3
+152#1:723
+310#1:725,2
+324#1:727,2
+331#1:729,2
+383#1:736
+383#1:737,3
+610#1:746,2
+139#1:748
+139#1:749,3
+72#1:661
+99#1:675
+116#1:692
+143#1:720
+422#1:745
+133#1:697,7
+143#1:706,9
+143#1:715
+143#1:721
+143#1:722
+389#1:740
+389#1:741,3
+364#1:731,5
+422#1:744
+SMAP
+PhimHDCSProvider.kt
+Kotlin
+*S Kotlin
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider$loadLinks$2
++ 2 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProviderKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,650:1
+25#2:651
+1#3:652
+1557#4:653
+1628#4,3:654
+*S KotlinDebug
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider$loadLinks$2
+190#1:651
+190#1:652
+192#1:653
+192#1:654,3
+SMAP
+PhimHDCSProvider.kt
+Kotlin
+*S Kotlin
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider$loadLinks$2$1$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProviderKt
++ 4 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,650:1
+1187#2,2:651
+1261#2,4:653
+1557#2:661
+1628#2,3:662
+25#3:657
+25#3:659
+1#4:658
+1#4:660
+*S KotlinDebug
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProvider$loadLinks$2$1$1
+197#1:651,2
+197#1:653,4
+214#1:661
+214#1:662,3
+204#1:657
+208#1:659
+204#1:658
+208#1:660
+SMAP
+PhimHDCSProvider.kt
+Kotlin
+*S Kotlin
++ 1 PhimHDCSProvider.kt
+recloudstream/PhimHDCSProviderKt
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,650:1
+1#2:651
+SUBTITLE_BLOCK_REGEX
+SUBTITLE_ITEM_REGEX
+Server 
+p Chi
+TARGET_DOMAIN_REGEX
+TIKTOK_DELIVERY_REGEX
+TIKTOK_KEY_REGEX
+TT;>;
+Thuy
+t Minh
+TvSeries
+US_ASCII
+UTF-8
+UTF_8
+Unknown
+User-Agent
+VIL
+VLII
+VLIIL
+VLL
+VLLL
+VLLLL
+VLLLLIL
+VLLLLL
+VLLLLLLL
+VLLLLLLLL
+VLZZLLIL
+VideoResponse
+VideoResponse(hls=
+Vietsub
+X-Requested-With
+XMLHttpRequest
+ZLL
+ZLLZ
+ZLLZIL
+[?&]delivery=([^&]+)
+[?&]key=([a-zA-Z0-9-]+)
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+[^0-9]
+\[(.*?)\](.*)
+_0xData\s*=\s*(\{.*?\})\s*;
+_0xS\s*=\s*["']([^"']+)["']
+1a#btn-film-watch, a.btn-see, a:contains(Xem Phim)
+a.streaming-server
+a[rel=next], a.next, a.next-page, ul.pagination li.active + li:not(.disabled), .pagination a:contains(
+), .pagination a:contains(Next), .pagination a.current ~ a:not([href=javascript:void(0)])
+access$decryptTiktokPngToTs
+access$getB64_PAYLOAD_REGEX$cp
+access$getBaseHeaders
+access$getDATA_PAYLOAD_REGEX$cp
+access$getMapper$p
+access$getSALT_REGEX$cp
+access$processFhdcAndTiktok
+access$processHdcApi
+access$processSmartLinkRouter
+access$resolveInnerIframe
+access$skipByteError
+accessFlags
+add
+addDubStatus$default
+allowedPackages
+answer$iv
+apiDomain
+apiLevel
+apiResp
+apiUrl
+append
+0application/x-www-form-urlencoded; charset=UTF-8
+areEqual
+asciiBytes
+async$default
+attr
+attr(...)
+awaitAll
+b64Payload
+baseStrictHeaders
+baseUrl
+blockTitle
+body
+booleanValue
+boxBoolean
+boxByte
+buffer
+build
+builder
+byteArray
+byteValue
+bytecdn.cn
+bytes
+/call to 'resume' before 'invoke' with coroutine
+callback
+capacity$iv
+chain
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+checkRadix
+chunkBuf
+chunked
+ckDecoded
+ckToken
+clear
+close
+code
+coerceAtLeast
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+combinedB64Stream
+combinedTags
+compare
+compareValues
+component1
+component2
+component3
+component4
+compressedLen
+compressionFlag
+container
+contains
+contains$default
+content
+contentType
+context
+cookieJar
+copy
+copy$default
+copyOf
+copyOfRange
+coroutineScope
+cors
+count
+create
+currentHash
+currentIframeUrl
+currentPackage
+currentUrl
+danh-sach/phim-bo
+danh-sach/phim-chieu-rap
+danh-sach/phim-hoan-thanh
+danh-sach/phim-le
+danh-sach/phim-sap-chieu
+data
+data-id
+data-obf
+data-src
+dataEnd
+dataList
+dataPayload
+dataStart
+decode
+decode(...)
+decoded
+decryptTiktokPngToTs
+decryptedTsBytes
+delivery
+description
+destination$iv$iv
+digest
+direct
+displayName
+distinct
+do=getVideo
+doc
+document
+dt:contains(N
+m s
+n xu
+t) + dd
+dt:contains(S
+p) + dd
+dt:contains(Th
+ lo
+i) + dd a
+dummyList
+e$iv
+element$iv
+element$iv$iv
+empty
+emptyList
+end
+entrySet
+epData
+epDataList
+epName
+epNum
+epText
+epUrl
+episodes
+epsMap
+equals
+exoPlayerHeaders
+exoReadyFallbackUrl
+expectedHashes
+expectedSignatures
+extractSubtitles
+extractorLink
+f$0
+f$1
+f$2
+fetchAllCookies
+finalBase64Bytes
+finalCookieStr
+finalUrl
+find$default
+findZeroByte
+finished
+fixUrlNull
+fixedBytes
+format
+format(...)
+frags
+get
+get$default
+getApkContentsSigners
+getApp
+getBaseClient
+getBaseHeaders
+getCOROUTINE_SUSPENDED
+getCk
+getCookie
+getData
+getDocument
+getEpisode
+getFirst
+getGroupValues
+getHasDownloadSupport
+getHasMainPage
+getHls
+getInstance
+getKey
+getLang
+getMainPage
+getMainUrl
+getName
+getOkhttpResponse
+getOrCreateKotlinClass
+getPackageInfo
+getPackageManager
+getPackageName
+getParser
+getSecond
+getSecuredLink
+getSupportedTypes
+getTag
+getText
+getUrl
+getValue
+getVideoInterceptor
+getVideoSource
+"h1 span.title, h1[itemprop=name] a
+handledByFhdc
+handledByHdc
+hasDownloadSupport
+hasMainPage
+hasNext
+hash
+hashCode
+header
+headers
+hexStripped
+hls
+home
+href
+html
+http
+https://phimhdcss.com
+https://phimhdcss.com/
+iTXt
+ibyteimg.com
+idx
+iframe
+iframeData
+iframeLink
+iframeResp
+iframeUrl
+img
+inflate
+inflater
+info
+initialUrl
+innerIframeSrc
+intValue
+intercept
+invoke
+invokeSuspend
+isBlank
+isCasting
+isEmpty
+isHdcHost
+isJunkSegment
+isMovie
+isSegment
+isSuccessful
+isTiktokCDN
+it$iv
+it$iv$iv
+item$iv$iv
+items
+iterator
+jacksonObjectMapper
+javascript
+joinToString$default
+json
+key
+keyMatch
+keyword
+keywordEnd
+kind
+label
+lang
+langEnd
+len
+length
+link=
+list
+listOf
+load
+load$createJsonStr
+load$lambda$14$lambda$13
+loadExtractor
+loadForRequest
+loadLinks
+ng ti
+m3u8
+m3u8Headers
+m3u8Link
+m3u8Path
+mainPage
+mainPageOf
+mainUrl
+map
+mapCapacity
+mapOf
+mapper
+match
+5meta[name=description], meta[property=og:description]
+name
+needClassReification
+needsInput
+newAnimeSearchResponse$default
+newBody
+newBuilder
+newEpisode
+newExtractorLink
+newHomePageResponse
+newMovieLoadResponse
+newTvSeriesLoadResponse
+newUrl
+next
+obf
+offset
+other
+outStream
+page
+pageHtml
+pair
+parse
+parse(...)
+parseInt
+parseSafe
+part
+parts
+payload-
+-playerjsSubtitle\s*=\s*(?:'|")([^'"]+)(?:'|")
+pngBytes
+post$default
+postHeaders
+poster
+posterUrl
+previousElementSibling
+printStackTrace
+proceed
+processFhdcAndTiktok
+processHdcApi
+processSmartLinkRouter
+put
+query
+rawServerName
+readValue
+realUserAgent
+recloudstream.PhimHDCSProvider
+%recloudstream.PhimHDCSProvider$load$3
+%recloudstream.PhimHDCSProvider$load$4
+*recloudstream.PhimHDCSProvider$loadLinks$2
+.recloudstream.PhimHDCSProvider$loadLinks$2$1$1
+2recloudstream.PhimHDCSProvider$loadLinks$2$1$1$1$1
+5recloudstream.PhimHDCSProvider$processFhdcAndTiktok$2
+5recloudstream.PhimHDCSProvider$processFhdcAndTiktok$3
+5recloudstream.PhimHDCSProvider$processFhdcAndTiktok$4
+.recloudstream.PhimHDCSProvider$processHdcApi$3
+7recloudstream.PhimHDCSProvider$processSmartLinkRouter$2
+4recloudstream/PhimHDCSProvider$getVideoInterceptor$1
+1recloudstream/PhimHDCSProviderKt$tryParseJson$1$1
+recommendations
+referer
+registerMainAPI
+remove
+removeHeader
+replace
+replace$default
+request
+res
+resolveInnerIframe
+response
+result
+reversed
+sUb
+salt
+same-origin
+search
+sec-ch-ua
+sec-ch-ua-mobile
+sec-ch-ua-platform
+sec-fetch-dest
+sec-fetch-mode
+sec-fetch-site
+securedLink
+segment.cloudbeta.win
+select
+select(...)
+selectFirst
+serverId
+serverList
+serverName
+serverNamesMap
+serversMap
+sessionCookiesMap
+setEpisode
+setHeaders
+setInput
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setTags
+setYear
+sig
+signatures
+signingInfo
+size
+skipByteError
+sortWith
+sortedWith
+split$default
+src
+start
+startsWith$default
+streamUrl
+streamphimhdc
+streamxemphimhd
+strictHeaders
+subItem
+subString
+subUrl
+substring
+substring(...)
+substringAfter$default
+substringBefore$default
+subtitleCallback
+supportedTypes
+tag
+tags
+take
+targetLink
+targetUrl
+text
+text(...)
+this
+this$0
+this_$iv
+throwOnFailure
+thuy
+t minh
+tiktok.phimhdc
+tiktokcdn.com
+tiktokv.com
+title
+toByteArray
+toIntOrNull
+toList
+toLowerCase
+toLowerCase(...)
+toMutableMap
+toSearchResult
+toSearchResult$lambda$4
+toString
+transEnd
+trim
+tryParseJson
+type
+ul#film_related li.item
+updatedHeaders
+url
+value
+value$iv
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vi-VN,vi;q=0.9
+video/mp2t
+videoBytes
+videoSource
+vietsub
+vipah
+watchUrl
+webkitCookies
+write
+year
+zwZhz
+{"url":"
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/PhimHDCSPlugin$$ExternalSyntheticLambda0;":"2ca4738d7","Lrecloudstream/PhimHDCSPlugin;":"e658d744","Lrecloudstream/PhimHDCSProvider$$ExternalSyntheticLambda0;":"50c34e4b8","Lrecloudstream/PhimHDCSProvider$$ExternalSyntheticLambda1;":"-2b9cd04c2","Lrecloudstream/PhimHDCSProvider$Companion;":"e68f83f3","Lrecloudstream/PhimHDCSProvider$EpisodeLink;":"385184f2","Lrecloudstream/PhimHDCSProvider$VideoResponse;":"1dc2a8df","Lrecloudstream/PhimHDCSProvider$decryptTiktokPngToTs$$inlined$sortBy$1;":"2184d700","Lrecloudstream/PhimHDCSProvider$getBaseHeaders$1;":"9dee4645","Lrecloudstream/PhimHDCSProvider$getMainPage$1;":"8b201053","Lrecloudstream/PhimHDCSProvider$getVideoInterceptor$1;":"3ddd41c","Lrecloudstream/PhimHDCSProvider$load$$inlined$sortedBy$1;":"c715dce5","Lrecloudstream/PhimHDCSProvider$load$1;":"338eeebb","Lrecloudstream/PhimHDCSProvider$load$3;":"e2e1180e","Lrecloudstream/PhimHDCSProvider$load$4;":"5c7a3b17","Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$1$1;":"e5b9ea71","Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$invokeSuspend$$inlined$tryParseJson$1;":"e5872ebf","Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1$invokeSuspend$$inlined$tryParseJson$2;":"a1666ca8","Lrecloudstream/PhimHDCSProvider$loadLinks$2$1$1;":"8e84e680","Lrecloudstream/PhimHDCSProvider$loadLinks$2$invokeSuspend$$inlined$tryParseJson$1;":"2ecb43ce","Lrecloudstream/PhimHDCSProvider$loadLinks$2;":"e2b505fa","Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$$inlined$tryParseJson$1;":"25805f5d","Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$1;":"37ce7a8f","Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$2;":"99257382","Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$3;":"85d64706","Lrecloudstream/PhimHDCSProvider$processFhdcAndTiktok$4;":"de7a28e3","Lrecloudstream/PhimHDCSProvider$processHdcApi$1;":"3e7ff4e3","Lrecloudstream/PhimHDCSProvider$processHdcApi$3;":"ad08d187","Lrecloudstream/PhimHDCSProvider$processSmartLinkRouter$1;":"cff0c929","Lrecloudstream/PhimHDCSProvider$processSmartLinkRouter$2;":"83fff95a","Lrecloudstream/PhimHDCSProvider$resolveInnerIframe$1;":"29747e0d","Lrecloudstream/PhimHDCSProvider$search$1;":"a713400c","Lrecloudstream/PhimHDCSProvider;":"6253d937","Lrecloudstream/PhimHDCSProviderKt$tryParseJson$1$1;":"d880655b","Lrecloudstream/PhimHDCSProviderKt;":"3efeba1a"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l

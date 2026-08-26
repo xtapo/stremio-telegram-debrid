@@ -1,0 +1,1299 @@
+dex
+035
+xV4
+5V@
+n <
+r H
+q @
+q 3
+q Z
+q [
+r E
+p0x
+n w
+p *
+p *
+ Qo
+q X
+n :
+n :
+n 7
+ ap
+q X
+q X
+n :
+n 9
+n :
+n 9
+n 7
+ aq
+q X
+q X
+q X
+n :
+n :
+n :
+n :
+n :
+n :
+n 7
+ ar
+q X
+q X
+q X
+n :
+n :
+n :
+n :
+n :
+n :
+n 7
+ as
+q X
+q X
+n :
+n 9
+n :
+n 9
+n 7
+ at
+TS 
+q X
+q X
+T@ 
+T@ 
+n :
+T! 
+n 9
+n :
+n 9
+n 7
+ au
+TS!
+q X
+TS"
+q X
+T@!
+T@!
+TC"
+TA"
+n :
+T!!
+n 9
+n :
+T!"
+n 9
+n 7
+[E&
+R@%
+Y@%
+T@'
+p U
+R )
+p ,
+T *
+T!(
+T1*
+T2(
+ p0V
+p ,
+(mw
+n l
+q Z
+q L
+p ?
+r A
+q g
+T1+
+T2.
+ p0V
+[49
+R08
+Y08
+T0:
+n0!
+p U
+R@C
+p ,
+T@B
+TA>
+TA=
+TAA
+TA@
+TA?
+TC<
+q J
+TC;
+q J
+ p0V
+R E
+p ,
+T F
+T!D
+T1F
+T2D
+ p0V
+p ,
+(mw
+n l
+q Z
+q L
+p ?
+r A
+q g
+T1G
+T2J
+ p0V
+[xO
+RpN
+YpN
+TqP
+p U
+p ,
+(,q
+TqR
+TrU
+TsS
+TtQ
+ p0V
+p ,
+(,q
+TqW
+TrZ
+TsX
+TtV
+ p0V
+p ,
+r D
+r D
+q g
+ p0V
+[xe
+Rpd
+Ypd
+Tqf
+p U
+R0h
+p ,
+T0g
+T2i
+n :
+n 7
+n  
+T!i
+ p0V
+p U
+p U
+[4|
+R0{
+Y0{
+T0}
+n0(
+p U
+p ,
+T!~
+T2~
+ p0V
+p ,
+(mw
+n l
+q Z
+q L
+p ?
+r A
+q g
+ p0V
+q Z
+p ,
+n p
+n p
+n p
+n n
+n p
+n n
+n n
+q Z
+q X
+n p
+n n
+n n
+q Z
+n n
+q Z
+)qQb
+p `
+qQa
+r F
+p0z
+T?&
+R4%
+p ,
+T0$
+T4#
+T4$
+T5#
+n :
+n :
+n 8
+[<#
+[=$
+Y>%
+q0i
+n m
+p ,
+(Iq
+q Z
+n m
+n m
+n n
+n n
+q Z
+n m
+n n
+q_b
+p `
+q_a
+r F
+n m
+n l
+q Z
+q L
+p ?
+r A
+n m
+n 5
+q Z
+q X
+q X
+n l
+q Z
+n n
+q Z
+n n
+q X
+'qTd
+n :
+n :
+n n
+q Z
+n n
+q X
+n n
+q Z
+n n
+q X
+p |
+r D
+r D
+r D
+r D
+r D
+p `
+qVa
+r F
+p `
+qWa
+r F
+n :
+n :
+n :
+n :
+n 8
+p ~
+r D
+q0i
+TcO
+R`N
+p ,
+T`M
+TdL
+TeK
+p `
+q[a
+r F
+r F
+n :
+n :
+n :
+n :
+n 8
+n :
+[`K
+[iL
+[jM
+YnN
+r0&
+q0i
+p ,
+|(iq
+qUb
+n :
+n 7
+n :
+n :
+n :
+n :
+r W
+Tdq
+R`p
+p ,
+T`n
+Tem
+Tgl
+Thk
+Tij
+T`o
+T`n
+T`m
+Thl
+Tik
+Tjj
+T`o
+T`n
+T`m
+Thl
+Tik
+Tjj
+n :
+n 7
+[kj
+[ik
+[`l
+[hm
+[jn
+[go
+Ylp
+p `
+q[a
+r F
+p `
+q[a
+r F
+n :
+n :
+n :
+n :
+n :
+n :
+n 7
+q J
+r0&
+q X
+r W
+n :
+n 7
+p ,
+,q[b
+q[b
+q[b
+q[b
+q[b
+q[b
+n :
+n 7
+$(%
+n :
+n 7
+p ,
+(Zq
+n :
+n :
+n :
+q0i
+qQd
+n :
+n :
+q "
+q #
+q0-
+q [
+n :
+n 8
+q [
+n :
+n 8
+q [
+n p
+n p
+R#"
+n :
+n :
+q J
+n :
+n :
+q J
+n :
+n :
+q J
+n :
+n :
+q J
+n :
+n :
+q J
+q [
+q [
+q [
+5ml
+<-*
+<--)
+<--)
+<-*
+<-*
+<-*
+94K
+94K
+ZZZZZ
+94K
+94K
+94K
+94K
+94J
+{,"
+y,$
+94J
+94J
+94J
+x,%+
+94J
+94J
+v,'K
+94J
+EYx
+2IDYx
+<KK<K-
+ C2
+CDEFGHIJB
+0!2
+0#2
+0%H
+0(0
+0,2
+*JF
+04022
+0402H
+7JN
+042
+04022
+0402H
+;JN
+042
+04022
+0402H
+;J:
+042
+0402H
+0@*
+0AH
+ - 
+$callback
+$completion
+$continuation
+$currentEp
+$doc
+$dubs
+$element
+$epNum
+$episodesDubbed
+$episodesSubbed
+.$i$a$-forEach-AnimeKaiPlugin$verifySignature$1
+%$i$a$-forEach-AnimeKaiProvider$load$2
+,$i$a$-forEach-AnimeKaiProvider$loadLinks$2$1
+,$i$a$-forEach-AnimeKaiProvider$loadLinks$2$2
+0$i$a$-forEach-AnimeKaiProvider$resolveMegaPlay$2
+($i$a$-let-AnimeKaiProvider$load$poster$1
+2$i$a$-let-AnimeKaiProvider$toSearchResult$poster$1
+4$i$a$-map-AnimeKaiProvider$getMainPage$homeItems$1$1
+3$i$a$-map-AnimeKaiProvider$load$recommendations$1$1
+&$i$a$-map-AnimeKaiProvider$load$tags$1
+%$i$a$-map-AnimeKaiProvider$search$2$1
+($i$a$-run-AnimeKaiProvider$load$poster$2
+-$i$a$-takeIf-AnimeKaiProvider$load$poster$1$1
+7$i$a$-takeIf-AnimeKaiProvider$toSearchResult$poster$1$1
+$i$f$forEach
+$i$f$map
+$i$f$mapTo
+$i$f$parseJson
+$i$f$parsedSafe
+$jobs
+$plot
+$poster
+&$r8$lambda$9y6xUGuxGiVzNDIMHnBND-Bpyws
+&$r8$lambda$PkzLAkoSR-kVo6evm_oErkNSVMI
+&$r8$lambda$_Rn6USXkAkiYtfrBnzHf_OXqHcU
+&$r8$lambda$e_4xzJz350COzGgixTL4Nj4mjWI
+$receiver
+$recommendations
+$result
+$server
+$status
+$subs
+$subtitleCallback
+$tags
+$this
+$this$forEach$iv
+$this$map$iv
+$this$mapTo$iv$iv
+$this$newAnimeLoadResponse
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$toSearchResult
+$this$withContext
+$this_toSearchResult
+%02X
+&id=
+()Ljava/lang/Integer;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+)()Lrecloudstream/AnimeKaiProvider$MpFile;
+1()Lrecloudstream/AnimeKaiProvider$SourcesEpisode;
+/()Lrecloudstream/AnimeKaiProvider$SourcesGroup;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+W(Ljava/lang/Integer;Ljava/lang/Integer;)Lrecloudstream/AnimeKaiProvider$SourcesEpisode;
+)(Ljava/lang/Integer;Ljava/lang/Integer;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+#(Ljava/util/List;Ljava/util/List;)V
+:(Lrecloudstream/AnimeKaiProvider$MpFile;Ljava/util/List;)V
+_(Lrecloudstream/AnimeKaiProvider$SourcesEpisode;Lrecloudstream/AnimeKaiProvider$SourcesGroup;)V
+)TT;
+*>;)
+, dub=
+, kind=
+, label=
+, number=
+, serverName=
+, sourceUrl=
+, sources=
+, tracks=
+.aitem
+.desc
+.detail .title
+.dub
+.eplist ul.range li a
+.m3u8
+.mkv
+.mp4
+.poster-wrap .poster img
+.poster-wrap .poster-wrap-bg
+.sub
+.title
+/browser?keyword=
+/ep-
+/ep-(\d+)
+/ep/
+/movie
+/new-releases
+/ongoing
+/sources
+/stream/getSources?id=
+/tv
+/updates
+/watch/
+&/watch/([^/]+?)(?:/ep-\d+)?(?:[/?].*)?
+/watch/([^/]+?)/ep-(\d+)
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+<title>\s*File\s+(\d+)
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+?page=
+Accept
+Anime
+AnimeKAI
+AnimeKaiPlugin.kt
+AnimeKaiProvider.kt
+AnimeKai_debug
+AnimeMovie
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Companion
+Completed
+D8$$SyntheticClass
+Dub
+Dubbed
+English
+Episode 
+File\s+ID[:\s]*(\d+)
+FixUrl
+ILI
+INSTANCE
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+LIL
+LILL
+LLI
+LLL
+LLLIIL
+LLLIL
+LLLL
+LLLLIL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLLZLLIL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+Latest Updates
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/annotation/JsonProperty;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+.Lcom/lagradost/cloudstream3/AnimeLoadResponse;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+&Lcom/lagradost/cloudstream3/DubStatus;
+$Lcom/lagradost/cloudstream3/Episode;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
++Lcom/lagradost/cloudstream3/SearchResponse;
+'Lcom/lagradost/cloudstream3/ShowStatus;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Class;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Iterator;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map;
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+#Lkotlin/jvm/internal/Ref$ObjectRef;
+ Lkotlin/jvm/internal/Reflection;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/reflect/KClass;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+(Lkotlinx/coroutines/CoroutineDispatcher;
+#Lkotlinx/coroutines/CoroutineScope;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lkotlinx/coroutines/Deferred<
+ Lkotlinx/coroutines/Dispatchers;
+Lokhttp3/Interceptor;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+8Lrecloudstream/AnimeKaiPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/AnimeKaiPlugin;
+:Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda0;
+:Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda1;
+:Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda2;
+*Lrecloudstream/AnimeKaiProvider$Companion;
+'Lrecloudstream/AnimeKaiProvider$MpFile;
+2Lrecloudstream/AnimeKaiProvider$MpSourcesResponse;
+(Lrecloudstream/AnimeKaiProvider$MpTrack;
+-Lrecloudstream/AnimeKaiProvider$ServerSource;
+/Lrecloudstream/AnimeKaiProvider$SourcesEpisode;
+-Lrecloudstream/AnimeKaiProvider$SourcesGroup;
+0Lrecloudstream/AnimeKaiProvider$SourcesResponse;
+.Lrecloudstream/AnimeKaiProvider$getMainPage$1;
+<Lrecloudstream/AnimeKaiProvider$getMainPage$homeItems$1$1$1;
+8Lrecloudstream/AnimeKaiProvider$getMainPage$homeItems$1;
+'Lrecloudstream/AnimeKaiProvider$load$1;
+'Lrecloudstream/AnimeKaiProvider$load$3;
+;Lrecloudstream/AnimeKaiProvider$load$recommendations$1$1$1;
+7Lrecloudstream/AnimeKaiProvider$load$recommendations$1;
+,Lrecloudstream/AnimeKaiProvider$loadLinks$1;
+0Lrecloudstream/AnimeKaiProvider$loadLinks$2$1$1;
+0Lrecloudstream/AnimeKaiProvider$loadLinks$2$2$1;
+,Lrecloudstream/AnimeKaiProvider$loadLinks$2;
+4Lrecloudstream/AnimeKaiProvider$processDirectLink$1;
+4Lrecloudstream/AnimeKaiProvider$processDirectLink$2;
+2Lrecloudstream/AnimeKaiProvider$resolveMegaPlay$1;
+0Lrecloudstream/AnimeKaiProvider$resolveStream$1;
+)Lrecloudstream/AnimeKaiProvider$search$1;
+-Lrecloudstream/AnimeKaiProvider$search$2$1$1;
+)Lrecloudstream/AnimeKaiProvider$search$2;
+ Lrecloudstream/AnimeKaiProvider;
+.Lrecloudstream/AnimeKaiProviderKt$parseJson$1;
+"Lrecloudstream/AnimeKaiProviderKt;
+M3U8
+Movies
+oMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+MpFile
+MpFile(file=
+MpSourcesResponse
+MpSourcesResponse(sources=
+MpTrack
+MpTrack(file=
+New Releases
+OVA
+Ongoing
+ROOT
+SDK_INT
+SHA-256
+SMAP
+AnimeKaiPlugin.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiPlugin.kt
+recloudstream/AnimeKaiPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 AnimeKaiPlugin.kt
+recloudstream/AnimeKaiPlugin
+49#1:60,2
+SMAP
+AnimeKaiProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 4 NiceResponse.kt
+com/lagradost/nicehttp/NiceResponse
+1#1,368:1
+1#2:369
+1557#3:370
+1628#3,3:371
+1863#3,2:374
+1863#3,2:386
+52#4,5:376
+52#4,5:381
+*S KotlinDebug
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider
+128#1:370
+128#1:371,3
+141#1:374,2
+303#1:386,2
+209#1:376,5
+298#1:381,5
+SMAP
+AnimeKaiProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$getMainPage$homeItems$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,368:1
+1557#2:369
+1628#2,3:370
+*S KotlinDebug
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$getMainPage$homeItems$1
+86#1:369
+86#1:370,3
+SMAP
+AnimeKaiProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$load$recommendations$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,368:1
+1557#2:369
+1628#2,3:370
+*S KotlinDebug
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$load$recommendations$1
+177#1:369
+177#1:370,3
+SMAP
+AnimeKaiProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$loadLinks$2
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,368:1
+1863#2,2:369
+1863#2,2:371
+*S KotlinDebug
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$loadLinks$2
+216#1:369,2
+224#1:371,2
+SMAP
+AnimeKaiProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$search$2
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,368:1
+1557#2:369
+1628#2,3:370
+*S KotlinDebug
++ 1 AnimeKaiProvider.kt
+recloudstream/AnimeKaiProvider$search$2
+106#1:369
+106#1:370,3
+Server
+ServerSource
+ServerSource(id=
+SourcesEpisode
+SourcesEpisode(id=
+SourcesGroup
+SourcesGroup(sub=
+SourcesResponse
+SourcesResponse(episode=
+Sub
+Subbed
+TT;>;
+TV Series
+USER_AGENT
+Unknown
+VIDEO
+VIL
+VLL
+VLLL
+VLLLLL
+VLLLLLLL
+VLLLLLLLL
+VLZZLLIL
+ZLL
+ZLLZIL
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+a.poster
+a.title
+access$processDirectLink
+access$resolveMegaPlay
+access$resolveStream
+access$toSearchResult
+accessFlags
+add
+addDubStatus$default
+allowedPackages
+apiLevel
+append
+!application/json, text/plain, */*
+areEqual
+Xaside.sidebar .aitem, .movie-recommend .aitem, .related-anime .aitem, .suggestion .aitem
+async$default
+attr
+attr(...)
+awaitAll
+background-image
+boxBoolean
+byteValue
+/call to 'resume' before 'invoke' with coroutine
+callback
+captions
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+completed
+component1
+component2
+component3
+contains
+contains$default
+context
+copy
+copy$default
+copyOf
+create
+currentEp
+currentHash
+currentPackage
+data
+data-dub
+data-jp
+data-src
+data-sub
+destination$iv$iv
+digest
+div:contains(Genres:) a
+div:contains(Status:) span
+doc
+dub
+dubCount
+dubs
+e$iv
+element
+element$iv
+emptyList
+epData
+epNum
+episode
+episodesDubbed
+episodesSubbed
+equals
+expectedHashes
+expectedSignatures
+f$0
+f$1
+file
+fileId
+filterNotNull
+find$default
+format
+format(...)
+get
+get$default
+getApkContentsSigners
+getApp
+getCOROUTINE_SUSPENDED
+getData
+getDocument
+getDub
+getEpisode
+getFile
+getGroupValues
+getHasDownloadSupport
+getHasMainPage
+getIO
+getId
+getInstance
+getKind
+getLabel
+getLang
+getMainPage
+getMainUrl
+getName
+getNumber
+getOrCreateKotlinClass
+getPackageInfo
+getPackageManager
+getPackageName
+getParser
+getServerName
+getSourceUrl
+getSources
+getSub
+getSupportedTypes
+getText
+getTracks
+getValue
+h1.title
+hasDownloadSupport
+hasDub
+hasMainPage
+hasNext
+hasNextPage
+hasSub
+hashCode
+homeItems
+href
+htmlRaw
+https://animekai.be
+https://megaplay.buzz
+img
+info
+intValue
+invoke
+invokeSuspend
+isBlank
+isCasting
+isEmpty
+item$iv$iv
+iterator
+jacksonObjectMapper
+jobs
+joinToString$default
+kind
+label
+lang
+langTag
+length
+linkType
+listOf
+load
+load$lambda$5$lambda$4
+load$lambda$6
+loadExtractor
+loadLinks
+mainPage
+mainPageOf
+mainUrl
+mapOf
+mapper
+match
+megacloud
+megaplay
+megaplayHost
+megaup
+mutableMapOf
+name
+needClassReification
+newAnimeLoadResponse$default
+newAnimeSearchResponse$default
+newEpisode
+newExtractorLink
+newHomePageResponse
+next
+num
+number
+ongoing
+other
+ownText
+page
+pageHtml
+parse
+parse(...)
+parseJson
+parseSafe
+plot
+poster
+printStackTrace
+processDirectLink
+query
+readValue
+readValue(...)
+recloudstream.AnimeKaiProvider
+6recloudstream.AnimeKaiProvider$getMainPage$homeItems$1
+:recloudstream.AnimeKaiProvider$getMainPage$homeItems$1$1$1
+%recloudstream.AnimeKaiProvider$load$3
+5recloudstream.AnimeKaiProvider$load$recommendations$1
+9recloudstream.AnimeKaiProvider$load$recommendations$1$1$1
+*recloudstream.AnimeKaiProvider$loadLinks$2
+.recloudstream.AnimeKaiProvider$loadLinks$2$1$1
+.recloudstream.AnimeKaiProvider$loadLinks$2$2$1
+2recloudstream.AnimeKaiProvider$processDirectLink$2
+'recloudstream.AnimeKaiProvider$search$2
++recloudstream.AnimeKaiProvider$search$2$1$1
+,recloudstream/AnimeKaiProviderKt$parseJson$1
+recommendations
+registerMainAPI
+request
+resolveMegaPlay
+resolveStream
+resp
+response
+result
+search
+select
+select(...)
+selectFirst
+server
+serverName
+server_name
+setEpisode
+setEpisodes
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setShowStatus
+setTags
+sig
+signatures
+signingInfo
+slug
+sourceUrl
+source_url
+sources
+sourcesUrl
+src
+startsWith$default
+status
+statusText
+stream
+style
+sub
+subCount
+subs
+subtitleCallback
+supportedTypes
+tags
+text
+this
+this$0
+this_$iv
+throwOnFailure
+title
+titleNode
+toByteArray
+toIntOrNull
+toLowerCase
+toLowerCase(...)
+toSearchResult
+toSearchResult$lambda$10
+toString
+track
+tracks
+trim
+_ul.pagination li.page-item a[rel=next], .pagination a.next, .pagination a:has(i.fa-angle-right)
+url
+url\(['"]?(.*?)['"]?\)
+value
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+withContext
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/AnimeKaiPlugin$$ExternalSyntheticLambda0;":"b40be4a7","Lrecloudstream/AnimeKaiPlugin;":"6554960d","Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda0;":"-1f5d4990f","Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda1;":"-1c88670a9","Lrecloudstream/AnimeKaiProvider$$ExternalSyntheticLambda2;":"-2a0696436","Lrecloudstream/AnimeKaiProvider$Companion;":"e7f7440a","Lrecloudstream/AnimeKaiProvider$MpFile;":"86c259c2","Lrecloudstream/AnimeKaiProvider$MpSourcesResponse;":"fc11a5ea","Lrecloudstream/AnimeKaiProvider$MpTrack;":"ac4f8b24","Lrecloudstream/AnimeKaiProvider$ServerSource;":"78ae525","Lrecloudstream/AnimeKaiProvider$SourcesEpisode;":"4a374ac7","Lrecloudstream/AnimeKaiProvider$SourcesGroup;":"d5cd0165","Lrecloudstream/AnimeKaiProvider$SourcesResponse;":"5c139510","Lrecloudstream/AnimeKaiProvider$getMainPage$1;":"26f402ab","Lrecloudstream/AnimeKaiProvider$getMainPage$homeItems$1$1$1;":"3e3c3842","Lrecloudstream/AnimeKaiProvider$getMainPage$homeItems$1;":"7207e0a","Lrecloudstream/AnimeKaiProvider$load$1;":"adfa420f","Lrecloudstream/AnimeKaiProvider$load$3;":"b1e26589","Lrecloudstream/AnimeKaiProvider$load$recommendations$1$1$1;":"6b87388c","Lrecloudstream/AnimeKaiProvider$load$recommendations$1;":"9d9d9796","Lrecloudstream/AnimeKaiProvider$loadLinks$1;":"f96c9aa0","Lrecloudstream/AnimeKaiProvider$loadLinks$2$1$1;":"b6a7372c","Lrecloudstream/AnimeKaiProvider$loadLinks$2$2$1;":"252932d4","Lrecloudstream/AnimeKaiProvider$loadLinks$2;":"5db4528d","Lrecloudstream/AnimeKaiProvider$processDirectLink$1;":"7751b2de","Lrecloudstream/AnimeKaiProvider$processDirectLink$2;":"ad053587","Lrecloudstream/AnimeKaiProvider$resolveMegaPlay$1;":"bcc5aaaf","Lrecloudstream/AnimeKaiProvider$resolveStream$1;":"9072e550","Lrecloudstream/AnimeKaiProvider$search$1;":"651e44bb","Lrecloudstream/AnimeKaiProvider$search$2$1$1;":"52a8ed45","Lrecloudstream/AnimeKaiProvider$search$2;":"ed84a183","Lrecloudstream/AnimeKaiProvider;":"32cb1680","Lrecloudstream/AnimeKaiProviderKt$parseJson$1;":"c6071ade","Lrecloudstream/AnimeKaiProviderKt;":"80f493aa"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+T7A
+K7K
+K7K
+K7d
+o7R
+K7d
+o7S
+e7"
+K79
+K7B
+o7T
+K79
+K7d
+o7U
+o7V
+K7d
+o7W
+K7B
+o7X
+K7d
+o7Y
+K7N
+o7Z
+K79
+K7N
+o7[
+o7\
+K79
+K7d
+o7]
+K7d
+o7^
+K7d
+o7_
+K7d
+o7`
+K7d
+o7a
+K7d
+o7b
+K7B
+o7c
+L7d
+T7I
+[7U
+U7<
+P7P
+_7A

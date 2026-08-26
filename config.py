@@ -77,6 +77,10 @@ class Config:
     ENABLE_SOURCE_IPTV = os.getenv("ENABLE_SOURCE_IPTV", os.getenv("ENABLE_SOURCE_IPTV_ORG", "True")).lower() == "true"
     ENABLE_SOURCE_TVRUN = os.getenv("ENABLE_SOURCE_TVRUN", "True").lower() == "true"
     ENABLE_SOURCE_MOVIES2WATCH = os.getenv("ENABLE_SOURCE_MOVIES2WATCH", "True").lower() == "true"
+    ENABLE_SOURCE_KKPHIM = os.getenv("ENABLE_SOURCE_KKPHIM", "True").lower() == "true"
+    ENABLE_SOURCE_RIDOMOVIES = os.getenv("ENABLE_SOURCE_RIDOMOVIES", "True").lower() == "true"
+    ENABLE_SOURCE_CLBPHIMXUA = os.getenv("ENABLE_SOURCE_CLBPHIMXUA", "True").lower() == "true"
+    ENABLE_SOURCE_YANHH3D = os.getenv("ENABLE_SOURCE_YANHH3D", "True").lower() == "true"
     UHDMOVIES_BASE_URL = os.getenv("UHDMOVIES_BASE_URL", "https://uhdmovies.autos").rstrip("/")
     FOURKHDHUB_BASE_URL = os.getenv("FOURKHDHUB_BASE_URL", "https://4khdhub.one").rstrip("/")
     HDTODAY_BASE_URL = os.getenv("HDTODAY_BASE_URL", "https://hdtoday.sc").rstrip("/")
@@ -89,6 +93,10 @@ class Config:
     ENABLE_BOARD_TELEGRAM = os.getenv("ENABLE_BOARD_TELEGRAM", "True").lower() == "true"
     ENABLE_BOARD_NGUONC = os.getenv("ENABLE_BOARD_NGUONC", "True").lower() == "true"
     ENABLE_BOARD_VSMOV = os.getenv("ENABLE_BOARD_VSMOV", "True").lower() == "true"
+    ENABLE_BOARD_KKPHIM = os.getenv("ENABLE_BOARD_KKPHIM", "True").lower() == "true"
+    ENABLE_BOARD_RIDOMOVIES = os.getenv("ENABLE_BOARD_RIDOMOVIES", "True").lower() == "true"
+    ENABLE_BOARD_CLBPHIMXUA = os.getenv("ENABLE_BOARD_CLBPHIMXUA", "True").lower() == "true"
+    ENABLE_BOARD_YANHH3D = os.getenv("ENABLE_BOARD_YANHH3D", "True").lower() == "true"
     ENABLE_BOARD_HHPANDA = os.getenv("ENABLE_BOARD_HHPANDA", "True").lower() == "true"
     ENABLE_BOARD_MOVIESDRIVE = os.getenv("ENABLE_BOARD_MOVIESDRIVE", "True").lower() == "true"
     ENABLE_BOARD_HDHUB4U = os.getenv("ENABLE_BOARD_HDHUB4U", "True").lower() == "true"

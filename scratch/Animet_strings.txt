@@ -1,0 +1,2013 @@
+dex
+035
+c_H
+xV4
+5V@
+n _
+r ~
+q e
+q P
+r s
+p >
+p >
+q@Z
+q T
+q Y
+[40
+R0/
+Y0/
+T01
+q@\
+[#5
+R 4
+Y 4
+T 6
+q ]
+[E>
+R@=
+Y@=
+T@?
+n@n
+q0_
+n \
+n \
+[4P
+R0O
+Y0O
+T0Q
+n0|
+n0&
+n )
+n0'
+R`[
+p @
+T`Z
+Ta\
+n %
+TaT
+n (
+TaY
+n -
+TaS
+n &
+TaW
+n $
+!n *
+TaU
+n ,
+TaV
+n +
+TaX
+n )
+TaT
+Ta\
+TaT
+Td\
+%qR
+TbR
+n '
+ p0
+[x_
+Rp^
+Yp^
+Tq`
+n00
+n0.
+n 1
+p @
+n \
+n \
+>("T
+n \
+n \
+n \
+n \
+n \
+n \
+ p0
+n05
+n03
+n 6
+p @
+%(b
+%(!w
+q ]
+r t
+r t
+p b
+r j
+n \
+n \
+n \
+n \
+Tqq
+Trl
+Tsm
+Ttk
+[hn
+ p0
+n0:
+n08
+n ;
+p @
+p b
+r j
+Tqt
+Trw
+Tss
+Ttr
+[hu
+ p0
+[4{
+R0z
+Y0z
+T0|
+q@`
+n0?
+n B
+n0@
+R ~
+p @
+T }
+n 0
+p >
+ p0
+n0F
+n I
+n0G
+p @
+n 0
+p0E
+ p0
+nUL
+n M
+p @
+n T
+ XJ
+()r
+r }
+n \
+n \
+n \
+p0E
+1r 
+@p0
+q0b
+q@c
+!'5v
+!%q0
+0!n 
+(&;
+q@H
+q F
+r r
+n 8
+n \
+n \
+p g
+p g
+q e
+q P
+p@f
+p h
+Td0
+Rc/
+p @
+T`.
+T`-
+T`,
+[c,
+[m-
+[l.
+Yo/
+p e
+r t
+n \
+n \
+n \
+n \
+n \
+n \
+n \
+n \
+n \
+R#4
+R#4
+CY#4
+T%5
+R&4
+p @
+T(3
+T)2
+T(3
+T)2
+[&2
+['3
+Y-4
+[,2
+[.3
+Y/4
+/q^
+r t
+n \
+n \
+n \
+n \
+n \
+n \
+n Y
+n \
+n \
+3MH
+Td>
+Rc=
+p @
+T`<
+T`;
+Te:
+Tg9
+Th8
+Rc7
+Te9
+Tg8
+z(#
+[c8
+[e9
+Yg7
+Yo=
+p h
+n \
+n Y
+n \
+n \
+n \
+n Z
+n \
+n \
+n \
+[j8
+[k9
+[i:
+[h;
+[c<
+Yn=
+p g
+(8n
+p g
+r j
+\(B
+r j
+n \
+n \
+n Y
+p0#
+TdP
+R`O
+p @
+T`B
+T`A
+T`F
+T`E
+T`D
+T`C
+T`N
+T`M
+T`L
+T`K
+T`J
+T`I
+T`H
+T`G
+T`B
+T`A
+T`F
+T`E
+T`D
+T`C
+T`N
+T`M
+T`L
+T`K
+T`J
+T`I
+T`H
+T`G
+T`B
+T`A
+T`G
+TeB
+TgA
+T`B
+T`A
+[gA
+[eB
+YmO
+p h
+[jA
+[kB
+[`G
+%YeO
+p g
+r j
+(Br
+ &J
+(!r
+ &J
+ &J
+( r
+p g
+[sA
+[tB
+[~H
+[|I
+[}J
+[{K
+[uL
+[zM
+[uN
+[qC
+[rD
+[vE
+[xF
+1YqO
+r j
+n \
+n \
+r j
+p g
+[RA
+[QB
+[WG
+[XH
+[YI
+[ZJ
+[[K
+[]L
+[\M
+[^N
+[_C
+[SD
+[TE
+[_F
+BYRO
+ 8 &
+p g
+r z
+"!E
+r0{
+r r
+p b
+n \
+n \
+r j
+n \
+n \
+%(M
+%(F
+n \
+n \
+p0+
+T4_
+R5^
+p @
+T0]
+n m
+n c
+[5]
+Y6^
+REz
+REz
+eYEz
+p0<
+TG{
+RHz
+p @
+T@y
+TBx
+THy
+TIx
+n \
+n \
+[Mx
+[Ly
+YOz
+r t
+n f
+p0N
+n Q
+n0[
+n Y
+n \
+n Y
+n0[
+n Q
+n Q
+q d
+p@u
+!n 
+n \
+n \
+n Y
+n \
+n Y
+n0[
+n Y
+n0[
+n Y
+n Z
+n \
+p >
+[Nx
+[My
+ Y@z
+n \
+n \
+p0C
+p @
+$Yd
+r t
+/qU
+r t
+n \
+n \
+n \
+n \
+n \
+n \
+p0N
+p @
+p@f
+r j
+n \
+n \
+n \
+p@f
+r j
+p0P
+p @
+p h
+q ^
+n \
+n \
+n \
+n \
+%Ye
+r j
+n \
+n \
+n \
+n \
+p0R
+p @
+r t
+r t
+n \
+n \
+n \
+n \
+r t
+r t
+9r t
+Jr t
+n \
+n Y
+n \
+n \
+n \
+$qR
+n \
+n \
+n \
+n \
+p b
+r <
+r j
+n Q
+q d
+n \
+n0[
+n Y
+n Z
+n Y
+n0[
+n Y
+n0[
+n Y
+n Z
+n Q
+p@u
+n g
+n Q
+n g
+n _
+n O
+n O
+n \
+n \
+5#_
+52V
+r t
+n \
+n \
+n \
+r t
+q p
+q }
+p0z
+&q 
+7q 
+Gq 
+n \
+n \
+n Y
+n \
+9"+
+q@H
+r t
+r t
+q@H
+q@G
+!bq
+n \
+n0[
+n Y
+n0[
+n Y
+n0[
+n \
+n \
+n0[
+n Y
+n \
+n \
+n0[
+n Y
+n0[
+n \
+n \
+n \
+n \
+n \
+n \
+n Y
+>ml
+t<K
+ZZZ
+ZZZ
+t<K
+t<K
+t<J
+t<J
+t<J
+t<J
+5g 
+t<J
+<iL
+t<J
+|J.
+t<J
+)t<
+t<i
+t<J
+z,#
+t<J
+t<J
+i) 
+|,K
+<KK<K-
+W V!U
+_as
+czu `
+<-*
+0#2
+0%2
+0'H
+0.2
+002
+072
+5JF
+0>0<2
+0>0<H
+AJF
+0>0<2
+0>0<H
+0SH
+0S2
+0S2
+0S2
+0SH
+0%2
+0Z2
+0Z2
+0%2
+0ZH
+0>0<H
+`J@
+0S2
+0Z2
+0Z2
+0%2
+0Z2
+0Z2
+0ZH
+0f2
+0h2
+0f2
+0hH
+0f2
+0h2
+0S2
+0Z2
+0Z2
+0ZH
+0q2
+0@H
+0t0
+5J 
+0%2
+0%2
+0 0
+0H8BX
+0N8BX
+ (finalUrl=
+ - 
+ th
+t b
+i cho 
+"file"\s*:\s*"(/[^"]+\.html)"
+$BLOCKED
+$baseCdn
+$callback
+$completion
+$continuation
+$currentBaseUrl
+$description
+$element
+$emittedUrls
+$epName
+$episodeId
+$finalPosterUrl
+$frag
+$genres
+.$i$a$-any-AnimetProvider$load$isDonghuaGenre$1
+&$i$a$-any-AnimetProvider$load$tvType$1
+&$i$a$-any-AnimetProvider$load$tvType$2
+&$i$a$-any-AnimetProvider$load$tvType$3
+9$i$a$-distinctBy-AnimetProvider$loadLinks$uniqueSources$1
+2$i$a$-firstOrNull-AnimetProvider$resolveHydrax$s$1
+2$i$a$-firstOrNull-AnimetProvider$resolveHydrax$s$2
+,$i$a$-forEach-AnimetPlugin$verifySignature$1
+.$i$a$-forEach-AnimetProvider$hydraxReadRange$2
+#$i$a$-forEach-AnimetProvider$load$3
+%$i$a$-forEach-AnimetProvider$load$3$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+5$i$a$-forEachIndexed-AnimetProvider$hydraxReadRange$1
+($i$a$-getOrPut-AnimetProvider$load$3$1$1
+4$i$a$-ifBlank-AnimetProvider$load$3$1$epIdentifier$1
+4$i$a$-ifBlank-AnimetProvider$load$finalPosterUrl$1$1
+B$i$a$-ifBlank-AnimetProvider$mapElementToSearchResponse$poster$1$1
+:$i$a$-let-AnimetProvider$getVideoInterceptor$1$intercept$1
+,$i$a$-let-AnimetProvider$hydraxReadRange$2$1
+*$i$a$-let-AnimetProvider$load$3$1$epHref$1
+!$i$a$-let-AnimetProvider$load$6$1
+.$i$a$-let-AnimetProvider$load$finalPosterUrl$1
+.$i$a$-let-AnimetProvider$load$finalPosterUrl$2
+.$i$a$-let-AnimetProvider$load$firstGenreLink$1
+,$i$a$-let-AnimetProvider$load$watchPageUrl$1
+<$i$a$-let-AnimetProvider$mapElementToSearchResponse$poster$1
+<$i$a$-let-AnimetProvider$mapElementToSearchResponse$poster$2
+($i$a$-let-AnimetProvider$resolveSsplay$2
+($i$a$-let-AnimetProvider$resolveSsplay$3
+1$i$a$-let-AnimetProvider$tryResolveDirectStream$2
+1$i$a$-let-AnimetProvider$tryResolveDirectStream$3
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+1$i$a$-map-AnimetProvider$hydraxToken$digitBytes$1
+$i$a$-map-AnimetProvider$load$4
+&$i$a$-map-AnimetProvider$loadLinks$2$1
+*$i$a$-map-AnimetProvider$loadLinks$2$1$1$1
+2$i$a$-mapNotNull-AnimetProvider$getMainPage$home$1
+2$i$a$-mapNotNull-AnimetProvider$getMainPage$home$2
+&$i$a$-mapNotNull-AnimetProvider$load$2
+2$i$a$-mapNotNull-AnimetProvider$load$genreMovies$1
+-$i$a$-mapNotNull-AnimetProvider$load$genres$1
+($i$a$-mapNotNull-AnimetProvider$search$2
+4$i$a$-none-AnimetProvider$resolvePlayer$emitM3u8$1$1
+$$i$a$-sortedBy-AnimetProvider$load$5
+/$i$a$-takeIf-AnimetProvider$load$displayTitle$1
+/$i$a$-takeIf-AnimetProvider$load$displayTitle$2
++$i$a$-takeIf-AnimetProvider$load$genres$1$1
+2$i$a$-withLock$default-AnimetProvider$getBaseUrl$2
+$i$f$any
+$i$f$distinctBy
+$i$f$firstOrNull
+$i$f$forEach
+$i$f$forEachIndexed
+$i$f$getOrPut
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$none
+$i$f$parseJson
+$i$f$sortedBy
+$i$f$withLock
+$idx
+$latch
+$md5Id
+$movieId
+$off
+$parsedStatus
+$poster
+$posterUrl
+&$r8$lambda$0A3Q8kDTnI3v5woutvhnCZKEpVs
+&$r8$lambda$ObQhFRQ-57R-UroS07jfuKPzJJE
+&$r8$lambda$XUhC7KIFpi3Uijea8b8eoJFNA3g
+&$r8$lambda$_-TrsjiWCI2h95hlyeLGMV5eO3s
+&$r8$lambda$bBfB0cnNbnxdnixoY8Ftxj__PgY
+&$r8$lambda$fw1Fv7vg3XlTZ08hIShXMauJkWc
+&$r8$lambda$xTjHAyoG6Sbd9wgIqw37j01v3yY
+&$r8$lambda$xoPrhid3gjH3QzZiSqN4bRyHwjQ
+$rating
+$receiver
+$recommendations
+$ref
+$resId
+$result
+$results
+$serverName
+$size
+$source
+$subtitleCallback
+$take
+$this
+$this$any$iv
+$this$async
+$this$coroutineScope
+$this$distinctBy$iv
+$this$firstOrNull$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$forEachIndexed$iv
+$this$getOrPut$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newTvSeriesLoadResponse
+$this$none$iv
+$this$sortedBy$iv
+$this$toJson
+$this$withLock_u24default$iv
+$uniqueSources
+$year
+%02X
+%02x
+&#038;
+&amp;
+' at url 
+' cho server 
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+(()Ljava/util/concurrent/ExecutorService;
+()Lokhttp3/OkHttpClient;
+()V
+()Z
+(?![A-Za-z0-9_])
+F(?:src|data-src|file)\\s*[:=]\\s*['\"]([^'\"]+\.(?:m3u8|mp4|mkv))['\"]
+(?<![A-Za-z0-9_])
+(CN)
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+'(Ljava/lang/String;Ljava/lang/String;)V
+X(Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+f(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+)TT;
+*>;)
+, scriptMainUrl=
+, url=
+.html
++.list-server1 .server-item span[data-index]
+.m3u8
+.mkv
+.mp4
+.tiktokcdn.
+/ajax/player
+/bang-xep-hang/day.html
+/cn-animation/
+/danh-sach/phim-moi-cap-nhat/
+/danh-sach/phim-sieu-nhan/
+/movie-ova/
+/mp4/
+/sora/
+/the-loai/cn-animation
+/the-loai/cn-animation/
+/the-loai/tokusatsu
+/tim-kiem/
+/tokusatsu/
+/video.mp4
+$0123456789abcdefghijklmnopqrstuvwxyz
+1080p
+1s_blank
+2dvent
+333x
+480p
+720p
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+&: kh
+ng t
+m th
+y file HLS trong packer
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+<unused var>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+>;>;>;)
+AES
+AES/CTR/NoPadding
+Accept-Ranges
+Anime
+AnimeMovie
+Animet
+AnimetPlugin.kt
+AnimetProvider.kt
+Animet_debug
+ApiOk.php
+BLOCKED
+Bad Request
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+CN Animation
+Cartoon
+Companion
+Comparisons.kt
+Completed
+Content-Length
+Content-Range
+Content-Type
+Could not determine base URL
+D8$$SyntheticClass
+DOT_MATCHES_ALL
+Donghua
+EpisodeId\s*=\s*['"](\d+)['"]
+EpisodeSource(server=
+Full
+HTTP_1_1
+HTTP_2
+n th
+t h
+nh Trung Qu
+Hydrax
+I$0
+ILI
+ILL
+ILLL
+INSTANCE
+ISO_8859_1
+JJJ
+*Kh
+ng c
+ iframe trong response cho server 
+'Kh
+ng extract 
+c link raw t
+ iframe '
+"Kh
+ng parse 
+c api.anime3s.com: 
+3Kh
+ng t
+m th
+y MovieId ho
+c EpisodeId trong trang: 
+ng t
+m th
+y ti
+L$0
+L$1
+L$10
+L$11
+L$12
+L$13
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LIJJIJ
+LILI
+LILL
+LJL
+LLCL
+LLI
+LLII
+LLIIL
+LLJJIJJJ
+LLL
+LLLIIL
+LLLJJJ
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLZIIL
+LLZLLL
+LZIL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/net/Uri;
+Landroid/os/Build$VERSION;
+Landroid/util/Log;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/annotation/JsonProperty;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+)Lcom/fasterxml/jackson/databind/JsonNode;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+$Lcom/lagradost/cloudstream3/Episode;
+2Lcom/lagradost/cloudstream3/ErrorLoadingException;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+'Lcom/lagradost/cloudstream3/ShowStatus;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/ByteArrayOutputStream;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Comparable;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+Ljava/lang/Float;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Long;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/Runnable;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/Throwable;
+Ljava/net/URLEncoder;
+Ljava/nio/charset/Charset;
+Ljava/security/Key;
+Ljava/security/MessageDigest;
++Ljava/security/spec/AlgorithmParameterSpec;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Base64$Decoder;
+Ljava/util/Base64$Encoder;
+Ljava/util/Base64;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/HashSet;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/LinkedHashSet;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Set;
+Ljava/util/Set<
+%Ljava/util/concurrent/CountDownLatch;
+&Ljava/util/concurrent/ExecutorService;
+ Ljava/util/concurrent/Executors;
+Ljava/util/concurrent/TimeUnit;
+Ljavax/crypto/Cipher;
+#Ljavax/crypto/spec/IvParameterSpec;
+!Ljavax/crypto/spec/SecretKeySpec;
+Lkotlin/Function1;
+Lkotlin/Lazy;
+Lkotlin/LazyKt;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Pair<
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function0;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+ Lkotlin/jvm/functions/Function4;
+ Lkotlin/jvm/functions/Function4<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+#Lkotlin/jvm/internal/Ref$ObjectRef;
+#Lkotlin/jvm/internal/Ref$ObjectRef<
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/RangesKt;
+Lkotlin/sequences/Sequence;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex$Companion;
+Lkotlin/text/Regex;
+Lkotlin/text/RegexOption;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lkotlinx/coroutines/sync/Mutex;
+!Lkotlinx/coroutines/sync/MutexKt;
+Load failed for URL 
+Lokhttp3/Call;
+Lokhttp3/HttpUrl;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/OkHttpClient$Builder;
+Lokhttp3/OkHttpClient;
+Lokhttp3/Protocol;
+Lokhttp3/Request$Builder;
+Lokhttp3/Request;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+Lokio/Buffer;
+Lokio/BufferedSource;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+6Lrecloudstream/AnimetPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/AnimetPlugin;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda0;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda1;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda2;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda3;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda4;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda5;
+8Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda6;
+-Lrecloudstream/AnimetProvider$decodeSsplay$1;
++Lrecloudstream/AnimetProvider$getBaseUrl$1;
+,Lrecloudstream/AnimetProvider$getMainPage$1;
+4Lrecloudstream/AnimetProvider$getVideoInterceptor$1;
+7Lrecloudstream/AnimetProvider$load$$inlined$sortedBy$1;
+%Lrecloudstream/AnimetProvider$load$1;
+%Lrecloudstream/AnimetProvider$load$6;
+=Lrecloudstream/AnimetProvider$loadLinks$$inlined$parseJson$1;
+*Lrecloudstream/AnimetProvider$loadLinks$1;
+2Lrecloudstream/AnimetProvider$loadLinks$2$1$1$1$1;
+.Lrecloudstream/AnimetProvider$loadLinks$2$1$1;
+*Lrecloudstream/AnimetProvider$loadLinks$2;
+.Lrecloudstream/AnimetProvider$resolveHydrax$1;
+.Lrecloudstream/AnimetProvider$resolveHydrax$2;
+.Lrecloudstream/AnimetProvider$resolvePlayer$1;
+9Lrecloudstream/AnimetProvider$resolvePlayer$emitM3u8$1$2;
+7Lrecloudstream/AnimetProvider$resolvePlayer$emitM3u8$1;
+.Lrecloudstream/AnimetProvider$resolveSsplay$1;
+'Lrecloudstream/AnimetProvider$search$1;
+7Lrecloudstream/AnimetProvider$tryResolveDirectStream$1;
+Lrecloudstream/AnimetProvider;
+,Lrecloudstream/AnimetProviderKt$parseJson$1;
+ Lrecloudstream/AnimetProviderKt;
+Lrecloudstream/EpisodeSource;
+i khi g
+i API LoadPlayer cho server 
+i khi l
+y baseUrl t
+ redirect: 
+i khi l
+y recommendation t
+ genre: 
+i khi x
+ source: 
+M3U8
+MD5
+MULTILINE
+Movie
+Movie & OVA
+MovieId\s*=\s*['"](\d+)['"]
+Mutex$default
+OVA
+Ongoing
+Origin
+Partial Content
+Phim M
+i C
+p Nh
+ROOT
+Range
+Referer
+SDK_INT
+SECONDS
+SHA-256
+SMAP
+AnimetPlugin.kt
+Kotlin
+*S Kotlin
++ 1 AnimetPlugin.kt
+recloudstream/AnimetPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 AnimetPlugin.kt
+recloudstream/AnimetPlugin
+49#1:60,2
+SMAP
+AnimetProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 Mutex.kt
+kotlinx/coroutines/sync/MutexKt
++ 5 Maps.kt
+kotlin/collections/MapsKt__MapsKt
++ 6 _Maps.kt
+kotlin/collections/MapsKt___MapsKt
++ 7 AnimetProvider.kt
+recloudstream/AnimetProviderKt
++ 8 _Strings.kt
+kotlin/text/StringsKt___StringsKt
++ 9 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,807:1
+1611#2,9:808
+1863#2:817
+1864#2:819
+1620#2:820
+1611#2,9:821
+1863#2:830
+1864#2:832
+1620#2:833
+1611#2,9:846
+1863#2:855
+1864#2:857
+1620#2:858
+1611#2,9:860
+1863#2:869
+1864#2:871
+1620#2:872
+1755#2,3:873
+1755#2,3:876
+1755#2,3:879
+1755#2,3:882
+1611#2,9:885
+1863#2:894
+1864#2:896
+1620#2:897
+1611#2,9:898
+1863#2:907
+1864#2:909
+1620#2:910
+1863#2:911
+1863#2:912
+1864#2:920
+1864#2:921
+1053#2:926
+1663#2,8:928
+295#2,2:940
+295#2,2:942
+1872#2,3:944
+1#3:818
+1#3:831
+1#3:845
+1#3:856
+1#3:859
+1#3:870
+1#3:895
+1#3:908
+1#3:948
+116#4,11:834
+381#5,7:913
+126#6:922
+153#6,3:923
+33#7:927
+975#8:936
+1046#8,3:937
+13402#9:947
+13403#9:949
+*S KotlinDebug
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider
+82#1:808,9
+82#1:817
+82#1:819
+82#1:820
+94#1:821,9
+94#1:830
+94#1:832
+94#1:833
+190#1:846,9
+190#1:855
+190#1:857
+190#1:858
+231#1:860,9
+231#1:869
+231#1:871
+231#1:872
+233#1:873,3
+243#1:876,3
+244#1:879,3
+245#1:882,3
+256#1:885,9
+256#1:894
+256#1:896
+256#1:897
+268#1:898,9
+268#1:907
+268#1:909
+268#1:910
+282#1:911
+284#1:912
+284#1:920
+282#1:921
+308#1:926
+344#1:928,8
+558#1:940,2
+559#1:942,2
+596#1:944,3
+82#1:818
+94#1:831
+190#1:856
+231#1:870
+256#1:895
+268#1:908
+120#1:834,11
+290#1:913,7
+296#1:922
+296#1:923,3
+343#1:927
+531#1:936
+531#1:937,3
+611#1:947
+611#1:949
+SMAP
+AnimetProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$load$6
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,807:1
+1#2:808
+SMAP
+AnimetProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$loadLinks$2
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,807:1
+1557#2:808
+1628#2,3:809
+*S KotlinDebug
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$loadLinks$2
+347#1:808
+347#1:809,3
+SMAP
+AnimetProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$loadLinks$2$1$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,807:1
+1557#2:808
+1628#2,3:809
+*S KotlinDebug
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$loadLinks$2$1$1
+360#1:808
+360#1:809,3
+SMAP
+AnimetProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$resolvePlayer$emitM3u8$1
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,807:1
+2632#2,3:808
+*S KotlinDebug
++ 1 AnimetProvider.kt
+recloudstream/AnimetProvider$resolvePlayer$emitM3u8$1
+438#1:808,3
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 AnimetProvider.kt
+recloudstream/AnimetProvider
+1#1,102:1
+309#2:103
+Search failed for query '
+Server
+TT;>;
+Tokusatsu
+TvSeries
+US_ASCII
+UTF-8
+UTF_8
+VIDEO
+VIL
+VILL
+VLJLIJIJJILIL
+VLL
+VLLL
+VLLLLL
+VLLLLLL
+VLLLLLLLLL
+VLLLLLLLLLL
+VLLZIL
+X-Requested-With
+XMLHttpRequest
+Xem Nhi
+u Trong Ng
+ZLCZIL
+ZLL
+ZLLZ
+ZLLZIL
+[?&]v=([A-Za-z0-9_-]+)
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+[Lkotlin/text/RegexOption;
+[[B
+[^0-9]
+a.thumb img
+a.watch_button_more
+abysscdn.com
+access$decodeSsplay
+access$getBaseUrl
+access$getBaseUrl$p
+access$getMapper$p
+access$hydraxResponse
+access$resolveHydrax
+access$resolvePlayer
+access$resolveSsplay
+access$skipByteError
+access$toJson
+access$tryResolveDirectStream
+accessFlags
+actualEnd
+adclick
+add
+adsystem
+ajaxResponse
+ajaxUrl
+allowedPackages
+anime3s.com
+answer$iv
+apiLevel
+append
+areEqual
+article a
+$article.TPost header div.Description
+.article.TPost header div.Image figure.Objf img
+asInt
+asLong
+asText
+asText(...)
+async$default
+attr
+attr(...)
+await
+awaitAll
+bang-xep-hang
+baseCdn
+baseUrl
+baseUrl = 
+baseUrlMutex
+bf.
+body
+booleanValue
+boxBoolean
+boxFloat
+boxInt
+buffer
+build
+byteArray
+byteValue
+bytes
+bytes 
+bytes=
+bytes=(\d+)-(\d*)
+/call to 'resume' before 'invoke' with coroutine
+callback
+chain
+charAt
+charset
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+clickserve
+clone
+close
+code
+codec
+coerceAtMost
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+compare
+compareValues
+component1
+component2
+component3
+connectTimeout
+contains
+contains$default
+contentType
+context
+copy
+copy$default
+copyOf
+copyOf(...)
+copyOfRange
+coroutineScope
+countDown
+create
+create$default
+currentBaseReferer
+currentBaseUrl
+currentHash
+currentPackage
+data
+data-epname
+data-index
+data-score
+data-src
+datasB64
+datas\s*=\s*"([^"]+)"
+decode
+decode(...)
+decodePackedScripts
+ decodePackedScripts l
+i 1 
+n: 
+decodeSsplay
+decoded
+decrypted
+description
+destination$iv$iv
+digest
+digitBytes
+displayTitle
+@div#MvTb-Info div.mvici-left ul.InfoList li:contains(Th
+ lo
+i) a
+@div#MvTb-Info div.mvici-left ul.InfoList li:contains(Tr
+ng th
+div#star
+div.Image figure img
+,div.MovieListRelated ul.MovieList li.TPostMv
+ div.server.clearfix.server-group
+<div.wp-pagenavi > a.next, div.wp-pagenavi > span.current + a
+doFinal
+doFinal(...)
+doc
+document
+domain
+domains
+doubleclick
+e$iv
+element
+element$iv
+element$iv$iv
+embedUrl
+emitM3u8
+emittedUrls
+emptyList
+enc
+encode
+encodeToString
+encodeToString(...)
+encodedQuery
+end
+endRaw
+endsWith$default
+entrySet
+epElement
+epHref
+epIdentifier
+epName
+episodeId
+episodeListPageDocument
+episodeMap
+episodes
+equals
+escape
+Xeval\(function\(p,a,c,k,e,d\)\{.*?\}\('([^']*)',(\d+),(\d+),'([^']*)'\.split\('\|'\)\)\)
+execute
+expectedHashes
+expectedSignatures
+extractorLink
+f$0
+f$1
+f$10
+f$11
+f$2
+f$3
+f$4
+f$5
+f$6
+f$7
+f$8
+f$9
+filePath
+file\s*:\s*['"]([^'"]+)['"]
+finalPosterUrl
+finalUrl
+find$default
+findAll$default
+first
+firstGenreLink
+firstOrNull
+fixUrl
+fixUrlBased
+fixedBytes
+floatValue
+format
+format(...)
+frag
+from10
+genreDoc
+genreElements
+genreMovies
+genres
+get
+get$default
+getApkContentsSigners
+getApp
+getBaseUrl
+getBuffer
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getData
+getDecoder
+getDocument
+getEncoder
+getGroupValues
+getHasDownloadSupport
+getHasMainPage
+getHydraxClient
+getHydraxPool
+getInstance
+getKey
+getLang
+getMainPage
+getMainPage failed for url '
+getMainPage$lambda$1$lambda$0
+getMainUrl
+getMessage
+getName
+getOrNull
+getPackageInfo
+getPackageManager
+getPackageName
+getQueryParameter
+getServer
+getSupportedTypes
+getText
+getUrl
+getValue
+getValue(...)
+getVideoInterceptor
+googleads
+h1.Title
+h2.SubTitle
+h2.Title
+h264
+h3.server-name
+h3.title-item a
+hasDownloadSupport
+hasMainPage
+hasNext
+hasNextPage
+hashCode
+head
+header
+headers
+home
+href
+hrx_qc.php
+html
+http
+https:
+https://
+https://abysscdn.com/
+https://anime14.site
+https://hx.animet.local/
+https://playhydrax.com/
+https://playhydrax.com/?v=
+https://ssplay.net
+'https?://[^"'<>\\s]+?\.(?:m3u8|mp4|mkv)
+hx.animet.local/
+hydAesCtr
+hydrax readRange 
+hydrax seg 
+hydraxClient
+hydraxClient$delegate
+hydraxClient_delegate$lambda$33
+hydraxPool
+hydraxPool$delegate
+hydraxPool_delegate$lambda$34
+hydraxReadRange
+#hydraxReadRange$lambda$40$lambda$39
+hydraxResponse
+hydraxToken
+i9bet
+ibyteimg.com
+idx
+iframe
+iframeSrc
+img
+index
+index$iv
+info
+init
+intValue
+intercept
+invoke
+invokeSuspend
+isBlank
+isCasting
+isDonghuaGenre
+isDonghuaTitle
+isDonghuaUrl
+isEmpty
+isMovieUrl
+isTokusatsuUrl
+it$iv$iv
+item$iv
+item$iv$iv
+iterator
+jacksonObjectMapper
+joinToString$default
+joyads
+key
+key$iv
+keyHex
+kind
+label
+lang
+latch
+lazy
+length
+link
+linkTag
+list$iv
+listOf
+load
+load$lambda$30$lambda$29
+*load: Error fetching/parsing episode page 
+loadLinks
+loadLinks th
+t b
+i ho
+n to
+lock
+logTag
+longValue
+lowered
+mainDocument
+mainPage
+mainPageOf
+mainTitle
+mainUrl
+mapElementToSearchResponse
+#mapElementToSearchResponse$lambda$7
+mapOf
+mapper
+max
+md5Hex
+md5Hex$lambda$35
+md5Id
+md5_id
+media
+mediaBytes
+message
+min
+movieId
+mp4
+mp4Json
+name
+nappyonset
+needClassReification
+newAnimeSearchResponse$default
+newBody
+newBuilder
+newCall
+newEpisode
+newExtractorLink
+newFixedThreadPool
+newHomePageResponse
+newTvSeriesLoadResponse
+next
+nextIndex
+null2
+off
+other
+out
+ownText
+owner$iv
+p.Info span.Date a
+page
+pageHtml
+parse
+parse(...)
+parseInt
+parseJson
+parsedStatus
+parts
+path
+path(...)
+pattern
+playerHtml
+playhydrax.com
+pos
+post$default
+postData
+poster
+posterUrl
+pref
+proceed
+protocol
+put
+query
+range
+rangeResponse
+rating
+ratingText
+raw
+rawUrl
+readByteArray
+readTimeout
+readTree
+readValue
+readValue(...)
+recloudstream.AnimetProvider
+#recloudstream.AnimetProvider$load$6
+(recloudstream.AnimetProvider$loadLinks$2
+,recloudstream.AnimetProvider$loadLinks$2$1$1
+0recloudstream.AnimetProvider$loadLinks$2$1$1$1$1
+,recloudstream.AnimetProvider$resolveHydrax$2
+5recloudstream.AnimetProvider$resolvePlayer$emitM3u8$1
+7recloudstream.AnimetProvider$resolvePlayer$emitM3u8$1$2
+2recloudstream/AnimetProvider$getVideoInterceptor$1
+*recloudstream/AnimetProviderKt$parseJson$1
+recommendations
+ref
+referer
+refs
+registerMainAPI
+removePrefix
+removeSuffix
+replace
+replace$default
+req
+request
+resId
+res_id
+resolveHydrax
+resolveHydrax th
+t b
+i: 
+resolvePlayer
+resolveSsplay
+resolved
+resp
+response
+responseBody
+responseText
+result
+results
+root
+run
+s=SG
+scriptMainUrl
+search
+searchUrl
+segReq
+segs
+select
+select(...)
+selectFirst
+sentinel
+serve
+server
+serverBlock
+serverElements
+serverName
+set$iv
+setApiName
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterHeaders
+setPosterUrl
+setRecommendations
+setReferer
+setScore
+setShowStatus
+setTags
+setYear
+sgUrl
+shuffled
+sig
+signatures
+signingInfo
+size
+skipByteError
+skipByteError failed for URL: 
+slug
+sortedWith
+source
+sourceFile
+sources
+span.Info
+split$default
+src
+ssLinks
+ssplay-SG
+ssplay-SU
+ssplay.net
+start
+startsWith$default
+statusElement
+statusText
+sub
+subTitle
+substringAfter
+subtitleCallback
+suffix
+supportedTypes
+svId
+tag
+take
+text
+text(...)
+this
+this$0
+throwIndexOverflow
+throwOnFailure
+title
+titleElement
+toByteArray
+toByteArray(...)
+toFloatOrNull
+toIntOrNull
+toJson
+toLongOrNull
+toLowerCase
+toLowerCase(...)
+toString
+total
+trang-
+trim
+trimEnd
+tryResolveDirectStream
+$tryResolveDirectStream th
+t b
+i cho 
+tvType
+ul.MovieList li.TPostMv
+ul.bxh-movie-phimletv li.group
+)ul.list-episode li.episode a.episode-link
+uniqueSources
+unlock
+unpackPacked
+unpackPacked$digit
+unpackPacked$encode
+url
+userId
+user_id
+vParam
+value
+value$iv
+valueOf
+#var MAIN_URL\s*=\s*['"]([^'"]+)['"]
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vid
+video/mp4
+video888
+want
+watchPageUrl
+write
+writeTimeout
+writeValueAsString
+xbet
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/AnimetPlugin$$ExternalSyntheticLambda0;":"291b24266","Lrecloudstream/AnimetPlugin;":"f4f93f5b","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda0;":"-858355bd","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda1;":"-1cdc85d14","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda2;":"-3af8ee840","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda3;":"-370120071","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda4;":"-1009f7076","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda5;":"-19267ae0c","Lrecloudstream/AnimetProvider$$ExternalSyntheticLambda6;":"-2244fee8e","Lrecloudstream/AnimetProvider$decodeSsplay$1;":"42230389","Lrecloudstream/AnimetProvider$getBaseUrl$1;":"9e908d09","Lrecloudstream/AnimetProvider$getMainPage$1;":"22e83d4d","Lrecloudstream/AnimetProvider$getVideoInterceptor$1;":"2d71b58d","Lrecloudstream/AnimetProvider$load$$inlined$sortedBy$1;":"617a54bf","Lrecloudstream/AnimetProvider$load$1;":"83208fdc","Lrecloudstream/AnimetProvider$load$6;":"e6ab017e","Lrecloudstream/AnimetProvider$loadLinks$$inlined$parseJson$1;":"a80b3ae0","Lrecloudstream/AnimetProvider$loadLinks$1;":"190b8cd1","Lrecloudstream/AnimetProvider$loadLinks$2$1$1$1$1;":"5899d28d","Lrecloudstream/AnimetProvider$loadLinks$2$1$1;":"36899202","Lrecloudstream/AnimetProvider$loadLinks$2;":"59ee16e8","Lrecloudstream/AnimetProvider$resolveHydrax$1;":"ea512e89","Lrecloudstream/AnimetProvider$resolveHydrax$2;":"7cd0ac3d","Lrecloudstream/AnimetProvider$resolvePlayer$1;":"1d7f1382","Lrecloudstream/AnimetProvider$resolvePlayer$emitM3u8$1$2;":"1fb7ba38","Lrecloudstream/AnimetProvider$resolvePlayer$emitM3u8$1;":"55a89c53","Lrecloudstream/AnimetProvider$resolveSsplay$1;":"879270e3","Lrecloudstream/AnimetProvider$search$1;":"74035a9a","Lrecloudstream/AnimetProvider$tryResolveDirectStream$1;":"8880a59f","Lrecloudstream/AnimetProvider;":"654cd30b","Lrecloudstream/AnimetProviderKt$parseJson$1;":"c13690ac","Lrecloudstream/AnimetProviderKt;":"cbe7c55d","Lrecloudstream/EpisodeSource;":"8f88f884"}
+ang ti
+n h
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+#7x
+#7 
+,7x
+,7 

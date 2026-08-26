@@ -105,6 +105,10 @@ async def lifespan(app: FastAPI):
 
 from nguonc_router import nguonc_router
 from vsmov_router import vsmov_router
+from kkphim_router import kkphim_router
+from ridomovies_router import ridomovies_router
+from clbphimxua_router import clbphimxua_router
+from yanhh3d_router import yanhh3d_router
 from topxx_router import topxx_router
 from hhpanda_router import hhpanda_router
 from moviesdrive_router import moviesdrive_router
@@ -133,6 +137,10 @@ app.add_middleware(
 app.include_router(dashboard_router)
 app.include_router(nguonc_router, prefix="/nguonc", tags=["NguonC Cinema"])
 app.include_router(vsmov_router, prefix="/vsmov", tags=["VSMov Cinema"])
+app.include_router(kkphim_router, prefix="/kkphim", tags=["KKPhim Cinema"])
+app.include_router(ridomovies_router, prefix="/ridomovies", tags=["RidoMovies Cinema"])
+app.include_router(clbphimxua_router, prefix="/clbphimxua", tags=["CLBPhimXua Cinema"])
+app.include_router(yanhh3d_router, prefix="/yanhh3d", tags=["Yanhh3d Anime 3D"])
 app.include_router(topxx_router, prefix="/topxx", tags=["TopXX Cinema"])
 app.include_router(hhpanda_router, prefix="/hhpanda", tags=["HHPanda Anime 3D"])
 app.include_router(moviesdrive_router, prefix="/moviesdrive", tags=["MoviesDrive Cinema"])

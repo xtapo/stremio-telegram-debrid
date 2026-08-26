@@ -1,0 +1,1924 @@
+dex
+035
+BSM?
+xV4
+5V@
+n ^
+r y
+q c
+q I
+r n
+p 6
+p 6
+q m
+q0n
+q >
+q0k
+q l
+q0i
+n U
+n R
+n U
+r o
+r o
+r0x
+r o
+r o
+r0x
+TS!
+TS$
+TS"
+TS 
+TS#
+T@!
+TB$
+TB$
+TB"
+TB"
+TB 
+TB 
+TB#
+TB#
+n U
+T!!
+n T
+n U
+T!$
+n T
+n U
+T!"
+n T
+n U
+T! 
+n T
+n U
+T!#
+n T
+n U
+n U
+n R
+TE!
+TF$
+TG"
+TH 
+TI#
+TS%
+TS&
+TS(
+TS'
+T0%
+T2&
+T2(
+T2'
+n U
+T!%
+n U
+n U
+T!&
+n U
+n U
+T!(
+n U
+n U
+T!'
+n U
+n R
+[4,
+R0+
+Y0+
+T0-
+q0r
+[42
+R01
+Y01
+T03
+q@s
+[#5
+R 4
+Y 4
+T 6
+q t
+[E<
+R@;
+Y@;
+T@=
+[4B
+R0A
+Y0A
+T0C
+n00
+n0.
+n 1
+p 9
+(+w
+p -
+ p0
+n05
+n03
+n 6
+RaG
+p 9
+TaH
+TbF
+TcE
+YeG
+q@s
+TAH
+TBF
+TCE
+pV2
+ p0
+n0:
+n08
+n ;
+RqK
+p 9
+TqI
+TsJ
+TqL
+TsJ
+TtI
+YvK
+q@s
+TAI
+TBJ
+TCL
+pV7
+ p0
+n0?
+n0=
+n @
+p 9
+(^T
+(Dq
+pX2
+pX7
+TqR
+TrN
+TsM
+TtO
+[hP
+ p0
+[xY
+RpX
+YpX
+TqZ
+n0D
+n G
+n0E
+R \
+p 9
+T [
+n +
+n ,
+p C
+ p0
+n0I
+n L
+n0J
+R ^
+p 9
+T ]
+n +
+p H
+ p0
+n0P
+n0N
+n Q
+p 9
+q u
+r0x
+r0x
+n U
+n U
+q0r
+[[c
+[\d
+YPb
+YTe
+T0`
+T4a
+p C
+[0c
+[9d
+TY4e
+Br 
+5(R
+Z(R
+Z(O
+(IqY
+p H
+2r 
+Tqa
+Trf
+Ts_
+Tt`
+ p0
+n0U
+n0S
+n V
+p 9
+p a
+r d
+Tqi
+Trl
+Tsg
+Tth
+[hj
+ p0
+[4r
+R0q
+Y0q
+T0s
+[4w
+R0v
+Y0v
+T0x
+q@v
+n0`
+n c
+n0a
+p 9
+TQ}
+TQ~
+n %
+TQ|
+ p0
+n0e
+n h
+n0f
+p 9
+n %
+!n 
+21B
+21<
+(+#1
+ p0
+($r
+n U
+n R
+n U
+n R
+n U
+p z
+Fp0
++qT
+q ?
+n0N
+5e@
+n H
+n0N
+q =
+p0|
+p0#
+TC,
+RE+
+p 9
+T@*
+TE)
+TE*
+TF)
+o(Q
+[L)
+[M*
+YO+
+r o
+r o
+r o
+n U
+n U
+n U
+n U
+q ]
+n U
+[?)
+[<*
+Y8+
+p0%
+p 9
+(Yq
+Ip 
+r0x
+r o
+p W
+p0X
+r0x
+p0'
+TT5
+RS4
+p 9
+YV4
+p W
+n U
+n U
+n U
+p0)
+p 9
+n U
+n U
+(Un
+n U
+n U
+(0"
+n U
+n U
+n U
+n S
+n U
+(mn
+r d
+p0+
+p 9
+p -
+,qX
+n U
+n U
+ HI
+R4X
+R4X
+TY4X
+p0A
+T5Y
+R7X
+p 9
+T0W
+T2V
+T7U
+T;T
+T<S
+T7U
+T;T
+T<S
+[7S
+[<T
+[;U
+Y:X
+r m
+[<S
+[;T
+[7U
+[=V
+[>W
+ Y0X
+r m
+[1S
+[1T
+[1U
+[1V
+[1W
+1Y1X
+p0Y
+T4r
+R0q
+p 9
+T0p
+T5o
+T7n
+T9m
+T0p
+T0o
+T0n
+T0m
+@(Z
+([T0n
+T9m
+[0m
+[9n
+Y8q
+[<m
+[;n
+[:o
+[9p
+ Y0q
+n P
+r d
+n U
+n U
+n U
+n R
+[<m
+[:n
+[=o
+[0p
+9Y9q
+r d
+(6"
+n P
+n U
+n R
+n P
+n U
+p0y
+r d
+p0[
+p 9
+r0x
+r0x
+r0x
+r0x
+$#D
+n U
+n U
+r d
+n h
+n b
+p0]
+p 9
+!q^
+r d
+(#r
+(#r
+5xC
+r o
+r o
+n M
+n0N
+n M
+r0x
+r w
+r w
+n J
+n U
+n U
+n J
+n }
+#n@|
+n U
+n R
+n z
+p0F
+r0r
+r d
+q ]
+r d
+%qP
+n U
+n U
+p W
+p0X
+r o
+'5p
+r o
+n U
+n R
+p0F
+n H
+n R
+q \
+(-"
+,qX
+r o
+r m
+,qW
+r m
+p x
+!{q ?
+n U
+n R
+n U
+n R
+n U
+n U
+n U
+n R
+n U
+n R
+n U
+p x
+n J
+n }
+$n@|
+n z
+p0F
++qT
++qV
+p0F
+n U
+n R
+n U
+n U
+n U
+p@}
+#(L
+#(D
+#(8
+#(*
+p ~
+r m
+r o
+p G
+r d
+r w
+"!G
+r0x
+r m
+r w
+r0x
+r m
+p a
+r d
+p a
+r d
+r0x
+r0x
+n $
+n H
+p x
+32M
+3CF
+3C?
+55T
+tq0
+p0F
+q \
+n P
+'qY
+r d
+n P
+?ml
+<---(
+o>K+
+o>K
+x,%i
+,F#
+?-.-i
+?i.-i
+o>K
+o>K
+o>K
+o>J
+) G
+o>J
+o>J
+vwZ
+o>J
+z,#
+o>J
+v,'
+o>J
+o>x
+o>J
+o>J
+xxxZ
+>iL
+o>J
+(o>
+xWXI$
+UiL
+q<x
++:+
+=KK
+0%2
+ |2
+|}~B
+0'2
+0)2
+0+H
+0.0#2
+0#H
+0.0#2
+082
+0;2
+0)2
+0)H
+0)2
+0E0D2
+0;2
+0;2
+0K2
+0J"
+0R2
+0#2
+0]0[2
+0]0[H
+0b*
+0.*
+0d2
+0.0#*
+08*
+0#2
+0)2
+0p2
+0)2
+0s2
+0x0#2
+0$0#X
+#EXT-X-ENDLIST
+#EXT-X-ENDLIST
+#EXT-X-KEY
+#EXTINF
+#EXTINF:
+$actors
+$bannerImg
+$baseUrl
+$callback
+$completion
+$continuation
+$duration
+$epCount
+$epName
+$eps
+$finalTvType
+$genres
+,$i$a$-any-AnimeVietsubProvider$containsAny$1
+0$i$a$-any-AnimeVietsubProvider$load$isUpcoming$1
+;$i$a$-any-AnimeVietsubProvider$toLoadResponse$finalTvType$1
+;$i$a$-any-AnimeVietsubProvider$toLoadResponse$finalTvType$2
+>$i$a$-apply-AnimeVietsubProvider$loadLinks$3$1$1$ajaxHeaders$1
+;$i$a$-apply-AnimeVietsubProvider$searchViaSuggest$headers$1
+D$i$a$-buildString-AnimeVietsubProvider$processEncryptedM3u8$jtiOdd$1
+8$i$a$-distinctBy-AnimeVietsubProvider$searchViaSuggest$3
+E$i$a$-filter-AnimeVietsubProvider$decryptM3u8SegmentUrls$cleanLines$1
+*$i$a$-filter-AnimeVietsubProvider$search$3
+1$i$a$-filter-AnimeVietsubProvider$search$tokens$1
+A$i$a$-firstOrNull-AnimeVietsubProvider$extractPosterUrl$metaImg$2
+8$i$a$-firstOrNull-AnimeVietsubProvider$loadLinks$3$1$1$1
+2$i$a$-forEach-AnimeVietsubPlugin$verifySignature$1
+;$i$a$-forEach-AnimeVietsubProvider$Companion$mergeCookies$1
+;$i$a$-forEach-AnimeVietsubProvider$Companion$mergeCookies$2
+;$i$a$-forEach-AnimeVietsubProvider$decryptM3u8SegmentUrls$1
+.$i$a$-forEach-AnimeVietsubProvider$loadLinks$2
+2$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$1
+4$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$1$1
+2$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$2
+4$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$5$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+7$i$a$-getOrPut-AnimeVietsubProvider$parseEpisodes$1$1$1
+5$i$a$-getOrPut-AnimeVietsubProvider$parseEpisodes$2$1
+<$i$a$-ifBlank-AnimeVietsubProvider$parseEpisodes$1$1$epNum$1
+:$i$a$-ifBlank-AnimeVietsubProvider$parseEpisodes$2$epNum$1
+?$i$a$-ifBlank-AnimeVietsubProvider$toSearchResponse$posterUrl$1
+*$i$a$-let-AnimeVietsubProvider$encodeUri$1
+'$i$a$-let-AnimeVietsubProvider$fixUrl$2
++$i$a$-let-AnimeVietsubProvider$getBaseUrl$2
+:$i$a$-let-AnimeVietsubProvider$searchViaSuggest$2$poster$1
+1$i$a$-let-AnimeVietsubProvider$toLoadResponse$2$1
+1$i$a$-let-AnimeVietsubProvider$toLoadResponse$3$1
+3$i$a$-let-AnimeVietsubProvider$toLoadResponse$eps$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+,$i$a$-map-AnimeVietsubProvider$loadLinks$3$1
+.$i$a$-map-AnimeVietsubProvider$parseEpisodes$3
+.$i$a$-map-AnimeVietsubProvider$parseEpisodes$5
+7$i$a$-mapNotNull-AnimeVietsubProvider$extractInfoMeta$1
+@$i$a$-mapNotNull-AnimeVietsubProvider$extractPosterUrl$metaImg$1
+>$i$a$-mapNotNull-AnimeVietsubProvider$extractRecommendations$1
+8$i$a$-mapNotNull-AnimeVietsubProvider$getMainPage$home$1
+.$i$a$-mapNotNull-AnimeVietsubProvider$search$2
+8$i$a$-mapNotNull-AnimeVietsubProvider$searchViaSuggest$2
+=$i$a$-mapNotNull-AnimeVietsubProvider$toLoadResponse$actors$1
+3$i$a$-sortedBy-AnimeVietsubProvider$parseEpisodes$4
+;$i$a$-takeIf-AnimeVietsubProvider$extractPosterUrl$srcImg$1
+*$i$a$-takeIf-AnimeVietsubProvider$fixUrl$1
+;$i$a$-takeWhile-AnimeVietsubProvider$deriveSeed$hexPrefix$1
+$i$f$any
+$i$f$distinctBy
+$i$f$filter
+$i$f$filterTo
+$i$f$firstOrNull
+$i$f$forEach
+$i$f$getOrPut
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$sortedBy
+$i$f$takeWhile
+$plot
+$poster
+$posterImg
+$posterUrl
+&$r8$lambda$3rLmSC1B53bLTCFHpMQ3KWlfH0s
+&$r8$lambda$7WvRetzFeUYRRndIaeH8v8jlj90
+&$r8$lambda$DdXHLSKyrbG7nxIZU6D2ORLTyZI
+&$r8$lambda$FqLe2bfkD0_EScr0XrHpTCkP2_E
+&$r8$lambda$H_tAjPJH-n9gIU-MDtSSzI5SeFg
+&$r8$lambda$Koa_nzxjH_EU0W_Zo3Z2f1uPY3c
+&$r8$lambda$Ry36tQop4RGN5Bay4b9gkWuAy38
+&$r8$lambda$ah8_pZU3uTNrgBz2-WhapHG6F3c
+&$r8$lambda$jf1lNGCy456SkiZvlqAR5gmEDhQ
+$rating
+$receiver
+$recs
+$result
+$servers
+$sk
+$state
+$status
+$statusText
+$targetSource
+$this
+$this$any$iv
+$this$containsAny
+$this$coroutineScope
+$this$distinctBy$iv
+$this$encodeUri
+$this$extractBannerUrl
+$this$extractInfoMeta
+$this$extractPosterUrl
+$this$extractRecommendations
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$firstOrNull$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$getOrPut$iv
+"$this$invokeSuspend_u24lambda_u240
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeLoadResponse
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieSearchResponse
+*$this$processEncryptedM3u8_u24lambda_u2415
+%$this$searchViaSuggest_u24lambda_u247
+$this$sortedBy$iv
+$this$takeWhile$iv
+$this$toLoadResponse
+$this$toSearchResponse
+$url
+$watchPageUrl
+$year
+%02X
+%20
+)()Lcom/lagradost/cloudstream3/ShowStatus;
+()Ljava/lang/Float;
+()Ljava/lang/Integer;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+K(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+X(Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Float;Ljava/lang/Integer;Lcom/lagradost/cloudstream3/ShowStatus;Ljava/lang/String;)Lrecloudstream/AnimeVietsubProvider$InfoMeta;
+(Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Float;Ljava/lang/Integer;Lcom/lagradost/cloudstream3/ShowStatus;Ljava/lang/String;)V
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Lorg/jsoup/nodes/Document;Lcom/lagradost/cloudstream3/MainAPI;Ljava/lang/String;Ljava/lang/String;Lorg/jsoup/nodes/Document;Ljava/util/List;Ljava/lang/Integer;Ljava/lang/Float;Ljava/lang/Integer;Lcom/lagradost/cloudstream3/ShowStatus;Ljava/lang/String;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+(\d+)
+*/*
+*>;)
+, country=
+, duration=
+, hash=
+, href=
+, id=
+, rating=
+, status=
+, year=
+.html
+.m3u8
+.server-group
+.ss-info p
+.ss-title
+/ajax/player
+/ajax/suggest
+/anime-moi/
+/anime-sap-chieu/
+/bang-xep-hang/day.html
+/hls/
+/hls/([0-9a-f]{24})\.ts
+/hls/[0-9a-f]{24}\.ts
+/hls/[0-9a-f]{24}\.ts\?e=
+/player/([0-9a-f]+)
+/playlist.m3u8?token=
+/playlist/
+/tim-kiem/
+/trang-
+/xem-phim.html
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+://
+<T:
+<anonymous>
+<clinit>
+<get-entries>(...)
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+AES
+AES/CTR/NoPadding
+AES/GCM/NoPadding
+Accept
+Accept-Language
+Anime
+Anime s
+p chi
+AnimeMovie
+AnimeVietsub
+AnimeVietsubPlugin.kt
+AnimeVietsubProvider.kt
+Animevietsub_debug
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Cartoon
+Companion
+Comparisons.kt
+Completed
+Content-Type
+Cookie
+CoroutineScope
+D8$$SyntheticClass
+N T
+HmacSHA256
+I$0
+III
+ILCIZIL
+ILI
+ILL
+INSTANCE
+ISO_8859_1
+InfoMeta
+InfoMeta(genres=
+JLI
+L$0
+L$1
+L$2
+L$3
+L$4
+LII
+LIL
+LILL
+LJL
+LLCCZIL
+LLI
+LLII
+LLL
+LLLIIL
+LLLIL
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLLIL
+LLLLLLL
+LLLLLLLLIL
+LLLLLLLLLLLLLZL
+LLLLLLLLLLLLZL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLLZLLIL
+LLLLZIL
+LLLZIIL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+Landroid/util/Base64;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+"Lcom/lagradost/cloudstream3/Actor;
+&Lcom/lagradost/cloudstream3/ActorData;
+&Lcom/lagradost/cloudstream3/ActorRole;
+.Lcom/lagradost/cloudstream3/AnimeLoadResponse;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+&Lcom/lagradost/cloudstream3/DubStatus;
+$Lcom/lagradost/cloudstream3/Episode;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+0Lcom/lagradost/cloudstream3/MovieSearchResponse;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+'Lcom/lagradost/cloudstream3/ShowStatus;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Comparable;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+Ljava/lang/Float;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Long;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/net/URL;
+Ljava/net/URLDecoder;
+Ljava/net/URLEncoder;
+Ljava/nio/charset/Charset;
+Ljava/security/Key;
+Ljava/security/MessageDigest;
++Ljava/security/spec/AlgorithmParameterSpec;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/HashSet;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Ljavax/crypto/Cipher;
+Ljavax/crypto/Mac;
+$Ljavax/crypto/spec/GCMParameterSpec;
+#Ljavax/crypto/spec/IvParameterSpec;
+!Ljavax/crypto/spec/SecretKeySpec;
+Lkotlin/Function0;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Pair<
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function0;
+ Lkotlin/jvm/functions/Function0<
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+ Lkotlin/jvm/internal/Ref$IntRef;
+#Lkotlin/jvm/internal/Ref$ObjectRef;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/sequences/Sequence;
+Lkotlin/sequences/SequencesKt;
+Lkotlin/text/CharsKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+(Lkotlinx/coroutines/CoroutineDispatcher;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lkotlinx/coroutines/DelayKt;
+ Lkotlinx/coroutines/Dispatchers;
+Lkotlinx/coroutines/Job;
+Lokhttp3/Headers;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/RequestBody$Companion;
+Lokhttp3/RequestBody;
+Lokhttp3/Response;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/json/JSONArray;
+Lorg/json/JSONObject;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+<Lrecloudstream/AnimeVietsubPlugin$$ExternalSyntheticLambda0;
+"Lrecloudstream/AnimeVietsubPlugin;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda0;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda1;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda2;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda3;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda4;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda5;
+>Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda6;
+HLrecloudstream/AnimeVietsubProvider$Companion$$ExternalSyntheticLambda0;
+.Lrecloudstream/AnimeVietsubProvider$Companion;
+-Lrecloudstream/AnimeVietsubProvider$InfoMeta;
+/Lrecloudstream/AnimeVietsubProvider$ServerData;
+;Lrecloudstream/AnimeVietsubProvider$decryptGoogleApisCdn$1;
+6Lrecloudstream/AnimeVietsubProvider$fetchWithBypass$1;
+1Lrecloudstream/AnimeVietsubProvider$getBaseUrl$1;
+2Lrecloudstream/AnimeVietsubProvider$getMainPage$1;
++Lrecloudstream/AnimeVietsubProvider$load$1;
++Lrecloudstream/AnimeVietsubProvider$load$2;
+:Lrecloudstream/AnimeVietsubProvider$load$3$infoDeferred$1;
+;Lrecloudstream/AnimeVietsubProvider$load$3$watchDeferred$1;
++Lrecloudstream/AnimeVietsubProvider$load$3;
+0Lrecloudstream/AnimeVietsubProvider$loadLinks$1;
+6Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1$2;
+6Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1$3;
+4Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1;
+0Lrecloudstream/AnimeVietsubProvider$loadLinks$3;
+FLrecloudstream/AnimeVietsubProvider$parseEpisodes$$inlined$sortedBy$1;
+-Lrecloudstream/AnimeVietsubProvider$search$1;
+7Lrecloudstream/AnimeVietsubProvider$searchViaSuggest$1;
+5Lrecloudstream/AnimeVietsubProvider$toLoadResponse$1;
+5Lrecloudstream/AnimeVietsubProvider$toLoadResponse$2;
+5Lrecloudstream/AnimeVietsubProvider$toLoadResponse$3;
+$Lrecloudstream/AnimeVietsubProvider;
+M3U8
+Movie
+oMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36
+i C
+p Nh
+n v
+Ongoing
+Origin
+ROOT
+Referer
+SDK_INT
+SHA-256
+SMAP
+AnimeVietsubPlugin.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubPlugin.kt
+recloudstream/AnimeVietsubPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 AnimeVietsubPlugin.kt
+recloudstream/AnimeVietsubPlugin
+49#1:60,2
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 4 _Strings.kt
+kotlin/text/StringsKt___StringsKt
++ 5 Maps.kt
+kotlin/collections/MapsKt__MapsKt
+1#1,773:1
+1#2:774
+1#2:785
+1#2:801
+1#2:820
+1#2:856
+1#2:869
+1#2:882
+1#2:897
+1611#3,9:775
+1863#3:784
+1864#3:786
+1620#3:787
+774#3:788
+865#3,2:789
+1611#3,9:791
+1863#3:800
+1864#3:802
+1620#3:803
+774#3:804
+865#3,2:805
+1755#3,3:807
+1611#3,9:810
+1863#3:819
+1864#3:821
+1620#3:822
+1663#3,8:823
+1755#3,3:831
+1863#3,2:839
+774#3:841
+865#3,2:842
+1863#3,2:844
+1611#3,9:846
+1863#3:855
+1864#3:857
+1620#3:858
+1611#3,9:859
+1863#3:868
+1864#3:870
+1620#3:871
+1611#3,9:872
+1863#3:881
+1864#3:883
+1620#3:884
+295#3,2:885
+1611#3,9:887
+1863#3:896
+1864#3:898
+1620#3:899
+1755#3,3:900
+1755#3,3:903
+1863#3:906
+1863#3:907
+1864#3:915
+1864#3:916
+1863#3:917
+1864#3:925
+1557#3:926
+1628#3,3:927
+1053#3:930
+1557#3:931
+1628#3,2:932
+1863#3,2:934
+1630#3:936
+648#4,5:834
+381#5,7:908
+381#5,7:918
+*S KotlinDebug
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider
+132#1:785
+162#1:801
+188#1:820
+628#1:856
+667#1:869
+673#1:882
+689#1:897
+132#1:775,9
+132#1:784
+132#1:786
+132#1:787
+159#1:788
+159#1:789,2
+162#1:791,9
+162#1:800
+162#1:802
+162#1:803
+163#1:804
+163#1:805,2
+173#1:807,3
+188#1:810,9
+188#1:819
+188#1:821
+188#1:822
+203#1:823,8
+229#1:831,3
+478#1:839,2
+511#1:841
+511#1:842,2
+536#1:844,2
+628#1:846,9
+628#1:855
+628#1:857
+628#1:858
+667#1:859,9
+667#1:868
+667#1:870
+667#1:871
+673#1:872,9
+673#1:881
+673#1:883
+673#1:884
+674#1:885,2
+689#1:887,9
+689#1:896
+689#1:898
+689#1:899
+697#1:900,3
+698#1:903,3
+728#1:906
+730#1:907
+730#1:915
+728#1:916
+741#1:917
+741#1:925
+752#1:926
+752#1:927,3
+755#1:930
+755#1:931
+755#1:932,2
+757#1:934,2
+755#1:936
+249#1:834,5
+736#1:908,7
+747#1:918,7
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$Companion
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,773:1
+1863#2,2:774
+1863#2,2:776
+*S KotlinDebug
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$Companion
+41#1:774,2
+45#1:776,2
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$loadLinks$3
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,773:1
+1557#2:774
+1628#2,3:775
+*S KotlinDebug
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$loadLinks$3
+547#1:774
+547#1:775,3
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$loadLinks$3$1$1
++ 2 _Sequences.kt
+kotlin/sequences/SequencesKt___SequencesKt
+1#1,773:1
+183#2,2:774
+*S KotlinDebug
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$loadLinks$3$1$1
+580#1:774,2
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$toLoadResponse$2
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,773:1
+1#2:774
+SMAP
+AnimeVietsubProvider.kt
+Kotlin
+*S Kotlin
++ 1 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider$toLoadResponse$3
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,773:1
+1#2:774
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 AnimeVietsubProvider.kt
+recloudstream/AnimeVietsubProvider
+1#1,102:1
+755#2:103
+ServerData
+ServerData(groupName=
+Set-Cookie
+Subbed
+p Chi
+UTF-8
+UTF_8
+Unknown
+Upgrade-Insecure-Requests
+User-Agent
+VIDEO
+VIL
+VILL
+VIP
+VLL
+VLLL
+VLLLIL
+VLLLL
+VLLLLIL
+VLLLLL
+VLLLLLL
+VLLLLLLLLL
+VLLLLLLLLLLLLL
+VLLZIL
+VietSub
+X-Requested-With
+XMLHttpRequest
+Xem Nhi
+u Trong Ng
+ZLL
+ZLLZ
+ZLLZIL
+[?&]_t=([^&\s]+)
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+![Lkotlin/jvm/functions/Function1;
+[^a-z0-9]+
+\b(19|20)\d{2}\b
+\d+
+\d+([.,]\d+)?
+^(https?://[^/]+)
+Ca.btn-episode.active, a.episode-link.active, .list-episode a.active
+a.thumb
+a.thumb img
+access$decryptGoogleApisCdn
+access$fetchWithBypass
+access$getBaseUrl
+access$getBypassHeaders
+access$mergeCookies
+access$searchViaSuggest
+access$toLoadResponse
+accessFlags
+activeDomain
+actors
+add
+addDubStatus
+addDubStatus$default
+aesKey
+ajaxHeaders
+ajaxSearch
+allowedPackages
+anon
+answer$iv
+apiLevel
+append
+0application/x-www-form-urlencoded; charset=UTF-8
+areEqual
+async$default
+attempt
+attempts
+attr
+attr(...)
+avsToken
+await
+awaitAll
+b64UrlDecode
+bang-xep-hang
+banner
+bannerImg
+baseUrl
+baseUrlMatch
+bit.ly
+body
+boxBoolean
+boxFloat
+byteValue
+bytes
+/call to 'resume' before 'invoke' with coroutine
+callback
+charAt
+chars
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+checkRadix
+cipher
+clean
+cleanLines
+closest
+cnBytes
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+compare
+compareValues
+component1
+component1(...)
+component2
+component2(...)
+component3
+component4
+component5
+component6
+concatenated
+const\s+avsToken\s*=\s*"([^"]+)
+contains
+contains$default
+containsAny
+containsMatchIn
+content
+context
+cookieMap
+copy
+copy$default
+copyOf
+copyOfRange
+coroutineScope
+counter
+country
+create
+createPrng
+createPrng$lambda$14
+currentHash
+currentPackage
+currentUrl
+p nh
+data
+data-hash
+data-id
+data-score
+data-src
+decode
+decode(...)
+decoded
+decryptGoogleApisCdn
+decryptM3u8SegmentUrls
+decrypted
+decryptedM3u8
+decryptedUrl
+default/images/bg
+delay
+deriveSeed
+descramble
+descrambled
+destination$iv$iv
+digest
+2div#MvTb-Cast ul.ListCast li a, div.Cast-list li a
+div#star
+div.Description
+!div.Image img, div.TPost img, img
+cdiv.MovieListRelated .TPostMv, section#single-home .TPostMv, div.Wdgt div.MovieListRelated .TPostMv
+*div.TPost.Single div.Image figure.Objf img
+div.TPostBg.Objf img.TPostBg
+"div.server-group, li.backup-server
+8div.wp-pagenavi a.next, div.wp-pagenavi span.current + a
+doFinal
+doc
+document
+documentToExtractInfo
+duration
+durationRegex
+e$iv
+eParam
+eRaw
+element
+element$iv
+element$iv$iv
+element$iv$iv$iv
+emptyList
+encode
+encode(...)
+encodeUri
+encryptedBlob
+entrySet
+envB64
+envHeader
+envJson
+epCount
+epEl
+epFloat
+epMatch
+epName
+epNum
+epNumRegex
+epStr
+episodesMap
+eps
+equals
+existing
+expectedHashes
+expectedSignatures
+extractBannerUrl
+extractInfoMeta
+extractPosterUrl
+extractRecommendations
+f$0
+f$1
+fallbackPoster
+fetchWithBypass
+fetchWithBypass$default
+fileId
+finalPacebinUrl
+finalTvType
+finalUrlString
+find$default
+findAll$default
+fixUrl
+floatValue
+format
+format(...)
+from10
+full
+fullM3u8Text
+gcmKeyBytes
+gcmSpec
+genres
+get
+get$default
+getApkContentsSigners
+getApp
+getBaseUrl
+getBypassHeaders
+getBypassHeaders$default
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getCountry
+getData
+getDuration
+getGenres
+getGroupName
+getGroupValues
+getHasMainPage
+getHash
+getHost
+getHref
+getIO
+getId
+getInstance
+getJSONObject
+getKey
+getLang
+getMainPage
+getMainPage$lambda$2$lambda$1
+getMainUrl
+getName
+getOkhttpResponse
+getPackageInfo
+getPackageManager
+getPackageName
+getProtocol
+getRating
+getStatus
+getSupportedTypes
+getText
+getThird
+getUrl
+getValue
+getYear
+globalCookies
+googleapiscdn.com
+group
+groupName
+h1.Title, h1, .Title, header h1
+h2.Title, .Title, h1.Title
+-h3.server-name, h3.server-title, .server-name
+h3.title-item a
+hasClass
+hasEncryptedUrls
+hasMainPage
+hasNext
+hash
+hashCode
+hashMatch
+hay
+headerLines
+headers
+hexPrefix
+hlsRe
+hmacData
+hmacFormats
+home
+n th
+t h
+href
+html
+http
+https:
+https://animevietsub.site
+https://bit.ly/animevietsubtv
+https://pacebin.onrender.com/
+.https://pacebin.onrender.com/animevietsub.m3u8
+!https://stream.googleapiscdn.com/
+iParam
+idx
+ifBlank(...)
+iframe
+img
+imgTag
+index$iv
+indexOf$default
+info
+infoDeferred
+infoDocument
+infoUrl
+init
+initialCookies
+initialUrl
+intValue
+intermediateM3u8
+invoke
+invokeSuspend
+isBlank
+isCasting
+isEmpty
+isSeries
+isUpcoming
+it$iv$iv
+item
+item$iv$iv
+iterator
+iterator(...)
+joinToString$default
+jsonArr
+jsonObj
+jsonStr
+jti
+jtiOdd
+jwtParts
+key$iv
+keysearch
+kind
+label
+lang
+lastOrNull
+launch$default
+lcgNext
+len
+length
+line
+lineSequence
+lines
+link
+linkElement
+list$iv
+listOf
+load
+loadLinks
+longValue
+lowerText
+m3u8Body
+m3u8Headers
+m3u8Response
+m3u8Text
+m3u8Url
+mac
+mainPage
+mainPageOf
+mainUrl
+mapOf
+mergeCookies
+mergeCookies$lambda$2
+metaImg
+-meta[property=og:image], meta[itemprop=image]
+)meta[property=og:title], meta[name=title]
+min
+movie
+mutableMapOf
+name
+newAnimeLoadResponse$default
+newAnimeSearchResponse$default
+newCookies
+newEpisode
+newExtractorLink
+newHomePageResponse
+newMovieSearchResponse$default
+newSetCookies
+next
+next(...)
+t b
+obj
+optString
+optString(...)
+other
+outLines
+output
+pacebinRes
+page
+params
+parse
+parse(...)
+parseEnvelope
+parseEpisodes
+!parseEpisodes$lambda$43$lambda$42
+parseLong
+parseStyleBackground
+parts
+payload
+payloadJson
+payloadLen
+payloadRaw
+perm
+permKey
+permSalt
+phim l
+playTech
+playerResponse
+playerUrl
+plot
+plus
+post$default
+postBody
+poster
+posterImg
+posterUrl
+processEncryptedM3u8
+processEncryptedM3u8$lambda$16
+processEncryptedM3u8$lambda$17
+provider
+put
+qIdx
+query
+c gia:
+rating
+rawResult
+"recloudstream.AnimeVietsubProvider
+)recloudstream.AnimeVietsubProvider$load$2
+)recloudstream.AnimeVietsubProvider$load$3
+8recloudstream.AnimeVietsubProvider$load$3$infoDeferred$1
+9recloudstream.AnimeVietsubProvider$load$3$watchDeferred$1
+.recloudstream.AnimeVietsubProvider$loadLinks$3
+2recloudstream.AnimeVietsubProvider$loadLinks$3$1$1
+4recloudstream.AnimeVietsubProvider$loadLinks$3$1$1$2
+4recloudstream.AnimeVietsubProvider$loadLinks$3$1$1$3
+3recloudstream.AnimeVietsubProvider$toLoadResponse$2
+3recloudstream.AnimeVietsubProvider$toLoadResponse$3
+recs
+redirectMatch
+redirectPath
+redirectRegex
+referer
+registerMainAPI
+removePrefix
+removeSuffix
+replace$default
+request
+resp
+response
+result
+rng
+search
+searchViaSuggest
+#searchViaSuggest$lambda$10$lambda$9
+season:
+seed
+select
+select(...)
+selectFirst
+serverGroups
+servers
+set
+set$iv
+setActors
+setBackgroundPosterUrl
+setComingSoon
+setDuration
+setEpisodes
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setScore
+setShowStatus
+setTags
+setYear
+sig
+signatures
+signingInfo
+size
+sortedWith
+sourceList
+*span.mli-eps, span.mli-quality, span.label
+split
+split$default
+src
+srcImg
+ss-bottom
+startsWith$default
+state
+status
+statusEl
+statusText
+str
+stringUnshuffle
+style
+sub
+substring
+substring(...)
+substringBefore$default
+subtitleCallback
+suggestResults
+supportedTypes
+swaps
+tValues
+targetSource
+text
+text(...)
+Utext/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+text/plain
+textBody
+this
+this$0
+throwOnFailure
+thumb
+ lo
+i l
+ng:
+title
+titleEl
+titleElement
+tmp
+toByteArray
+toCharArray
+toCharArray(...)
+toFloatOrNull
+toIntOrNull
+toLoadResponse
+toLowerCase
+toLowerCase(...)
+toMutableList
+toMutableMap
+toSearchResponse
+toSearchResponse$lambda$23
+toString
+toString(...)
+tokenMatch
+tokens
+trim
+trimmed
+ng th
+uid
+ul.InfoList li
+ul.MovieList li.TPostMv
+7ul.bxh-movie-phimletv li.group, ul.MovieList li.TPostMv
+Iul.list-episode > li > a.btn-episode, div.list-episode a, .list-episode a
+unshuffleFn
+unshuffleMethods
+unshuffled
+url
+url-cipher|
+urlObject
+#url\s*\(\s*['"]?([^'")]+)['"]?\s*\)
+urn:avs:shield
+value
+value$iv
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vi,en-US;q=0.9,en;q=0.8
+videoHash
+watchDeferred
+watchPageDoc
+watchPageUrl
+window.location.href
+-window\.location\.href\s*=\s*["']([^"']+)["']
+x-avs-envelope
+x-cache-node
+x-edge-tag
+x-envelope
+x-proxy-digest
+x-request-trace
+x-stream-envelope
+xem-phim.html
+xorState
+year
+yearRegex
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/AnimeVietsubPlugin$$ExternalSyntheticLambda0;":"-17eef86a5","Lrecloudstream/AnimeVietsubPlugin;":"fce44d23","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda0;":"1881d871a","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda1;":"-3b320dbb9","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda2;":"-5e4cfba39","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda3;":"-29ed6b42","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda4;":"2678d0fe9","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda5;":"-48ce3a329","Lrecloudstream/AnimeVietsubProvider$$ExternalSyntheticLambda6;":"-336716f2c","Lrecloudstream/AnimeVietsubProvider$Companion$$ExternalSyntheticLambda0;":"-d381e612","Lrecloudstream/AnimeVietsubProvider$Companion;":"b260265b","Lrecloudstream/AnimeVietsubProvider$InfoMeta;":"f889b04d","Lrecloudstream/AnimeVietsubProvider$ServerData;":"63aa64db","Lrecloudstream/AnimeVietsubProvider$decryptGoogleApisCdn$1;":"208c887b","Lrecloudstream/AnimeVietsubProvider$fetchWithBypass$1;":"283730ac","Lrecloudstream/AnimeVietsubProvider$getBaseUrl$1;":"6292f45a","Lrecloudstream/AnimeVietsubProvider$getMainPage$1;":"8f3003e8","Lrecloudstream/AnimeVietsubProvider$load$1;":"76f8a731","Lrecloudstream/AnimeVietsubProvider$load$2;":"134005e","Lrecloudstream/AnimeVietsubProvider$load$3$infoDeferred$1;":"4bd58747","Lrecloudstream/AnimeVietsubProvider$load$3$watchDeferred$1;":"bfd68051","Lrecloudstream/AnimeVietsubProvider$load$3;":"3b32c18","Lrecloudstream/AnimeVietsubProvider$loadLinks$1;":"c7440217","Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1$2;":"ea0f39f4","Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1$3;":"c8ca975","Lrecloudstream/AnimeVietsubProvider$loadLinks$3$1$1;":"2993deda","Lrecloudstream/AnimeVietsubProvider$loadLinks$3;":"9156bbba","Lrecloudstream/AnimeVietsubProvider$parseEpisodes$$inlined$sortedBy$1;":"63a03d01","Lrecloudstream/AnimeVietsubProvider$search$1;":"2abda653","Lrecloudstream/AnimeVietsubProvider$searchViaSuggest$1;":"ea53c182","Lrecloudstream/AnimeVietsubProvider$toLoadResponse$1;":"7758caba","Lrecloudstream/AnimeVietsubProvider$toLoadResponse$2;":"fd974645","Lrecloudstream/AnimeVietsubProvider$toLoadResponse$3;":"7aa038d1","Lrecloudstream/AnimeVietsubProvider;":"2efa7769"}
+ang chi
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l

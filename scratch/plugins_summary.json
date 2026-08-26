@@ -1,0 +1,704 @@
+{
+  "Anikoto": {
+    "name": "Anikoto",
+    "language": "en",
+    "tvTypes": [
+      "Anime",
+      "Movie",
+      "OVA"
+    ],
+    "domains": [
+      "https://anikototv.to"
+    ],
+    "endpoints": [
+      "$ajaxHeaders",
+      "0$i$a$-mapNotNull-AnikotoProvider$load$episodes$1",
+      ")$i$a$-mapNotNull-AnikotoProvider$search$2",
+      "5$i$a$-takeIf-AnikotoProvider$load$episodes$1$epName$1",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResult",
+      "-()Lrecloudstream/AnikotoProvider$EmbedSource;",
+      ".()Lrecloudstream/AnikotoProvider$ServerResult;",
+      "*()Lrecloudstream/AnikotoProvider$SkipData;",
+      "0(ILrecloudstream/AnikotoProvider$ServerResult;)V",
+      "\"(Lrecloudstream/AnikotoProvider;)V",
+      "/ajax/",
+      "/ajax/episode/list/",
+      "/ajax/home/widget/updated-all"
+    ]
+  },
+  "Anikuro": {
+    "name": "Anikuro",
+    "language": "en",
+    "tvTypes": [
+      "Anime"
+    ],
+    "domains": [
+      "https://anikuro.ru",
+      "https://graphql.anilist.co/"
+    ],
+    "endpoints": [
+      "            query RecentlyAiredEpisodes($page: Int, $perPage: Int, $currentTime: Int) {",
+      "                        episode",
+      "            query($page:Int,$perPage:Int,$search:String,$sort:[MediaSort]) {",
+      "                media(type:ANIME,sort:$sort,isAdult:false,search:$search){",
+      "$currentEpisode",
+      "$episodeNum",
+      "0$i$a$-mapNotNull-AnikuroProvider$load$episodes$1",
+      ")$i$a$-mapNotNull-AnikuroProvider$search$2",
+      ".$i$a$-sortedBy-AnikuroProvider$load$episodes$2",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "+()Lrecloudstream/AnikuroProvider$AnimeData;",
+      "1()Lrecloudstream/AnikuroProvider$AnimeDetailData;",
+      "(()Lrecloudstream/AnikuroProvider$Images;"
+    ]
+  },
+  "Anime47": {
+    "name": "Anime47",
+    "language": "vi",
+    "tvTypes": [
+      "Anime"
+    ],
+    "domains": [
+      "https://anime47.best",
+      "https://anime47.love/api"
+    ],
+    "endpoints": [
+      "$episodeIds",
+      "$episodes",
+      ";$i$a$-filter-Anime47Provider$createSearchResponse$epCount$1",
+      ",$i$a$-filter-Anime47Provider$load$episodes$3",
+      "-$i$a$-flatMap-Anime47Provider$load$episodes$1",
+      "-$i$a$-flatMap-Anime47Provider$load$episodes$2",
+      "-$i$a$-groupBy-Anime47Provider$load$episodes$4",
+      ")$i$a$-map-Anime47Provider$load$episodes$5",
+      "6$i$a$-map-Anime47Provider$load$episodes$5$idListJson$1",
+      ")$i$a$-mapNotNull-Anime47Provider$search$2",
+      ".$i$a$-sortedBy-Anime47Provider$load$episodes$6",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "/()Lrecloudstream/Anime47Provider$ApiFilterData;",
+      ",()Lrecloudstream/Anime47Provider$DetailPost;"
+    ]
+  },
+  "Animehay": {
+    "name": "Animehay",
+    "language": "vi",
+    "tvTypes": [
+      "AnimeMovie",
+      "Anime",
+      "OVA"
+    ],
+    "domains": [
+      "https://proxy.cors.sh/",
+      "https://ahay.in"
+    ],
+    "endpoints": [
+      "#EXT-X-STREAM-INF:",
+      "$episodes",
+      "$hasEpisodes",
+      "B$i$a$-all-AnimeHayProvider$toLoadResponse$episodes$1$finalEpName$1",
+      "?$i$a$-filter-AnimeHayProvider$toLoadResponse$episodes$1$epNum$1",
+      "<$i$a$-filter-AnimeHayProvider$toSearchResponse$1$1$epCount$1",
+      "*$i$a$-mapNotNull-AnimeHayProvider$search$2",
+      ";$i$a$-mapNotNull-AnimeHayProvider$toLoadResponse$episodes$1",
+      "5$i$a$-runCatching-AnimeHayProvider$toSearchResponse$1",
+      "8$i$a$-takeIf-AnimeHayProvider$toSearchResponse$1$title$1",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "%$this$toSearchResponse_u24lambda_u249",
+      "$this_toSearchResponse"
+    ]
+  },
+  "AnimeKai": {
+    "name": "AnimeKai",
+    "language": "en",
+    "tvTypes": [
+      "Anime"
+    ],
+    "domains": [
+      "https://megaplay.buzz",
+      "https://animekai.be"
+    ],
+    "endpoints": [
+      "$episodesDubbed",
+      "$episodesSubbed",
+      "2$i$a$-let-AnimeKaiProvider$toSearchResult$poster$1",
+      "%$i$a$-map-AnimeKaiProvider$search$2$1",
+      "7$i$a$-takeIf-AnimeKaiProvider$toSearchResult$poster$1$1",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResult",
+      "$this_toSearchResult",
+      ")()Lrecloudstream/AnimeKaiProvider$MpFile;",
+      "1()Lrecloudstream/AnimeKaiProvider$SourcesEpisode;",
+      "/()Lrecloudstream/AnimeKaiProvider$SourcesGroup;",
+      "_(Lrecloudstream/AnimeKaiProvider$SourcesEpisode;Lrecloudstream/AnimeKaiProvider$SourcesGroup;)V",
+      ".m3u8",
+      "/stream/getSources?id="
+    ]
+  },
+  "Animet": {
+    "name": "Animet",
+    "language": "vi",
+    "tvTypes": [
+      "AnimeMovie",
+      "Anime",
+      "OVA",
+      "Cartoons",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://playhydrax.com/",
+      "https://anime14.site",
+      "https://ssplay.net",
+      "https://abysscdn.com/",
+      "https://hx.animet.local/",
+      "https://playhydrax.com/?v="
+    ],
+    "endpoints": [
+      "$episodeId",
+      "B$i$a$-ifBlank-AnimetProvider$mapElementToSearchResponse$poster$1$1",
+      "<$i$a$-let-AnimetProvider$mapElementToSearchResponse$poster$1",
+      "<$i$a$-let-AnimetProvider$mapElementToSearchResponse$poster$2",
+      "1$i$a$-let-AnimetProvider$tryResolveDirectStream$2",
+      "1$i$a$-let-AnimetProvider$tryResolveDirectStream$3",
+      "($i$a$-mapNotNull-AnimetProvider$search$2",
+      "4$i$a$-none-AnimetProvider$resolvePlayer$emitM3u8$1$1",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "F(?:src|data-src|file)\\\\s*[:=]\\\\s*['\\\"]([^'\\\"]+\\.(?:m3u8|mp4|mkv))['\\\"]",
+      ".m3u8",
+      "/ajax/player",
+      "/tim-kiem/",
+      "EpisodeId\\s*=\\s*['\"](\\d+)['\"]"
+    ]
+  },
+  "Animevietsub": {
+    "name": "Animevietsub",
+    "language": "vi",
+    "tvTypes": [
+      "Anime",
+      "Cartoon",
+      "Movie"
+    ],
+    "domains": [
+      "https://bit.ly/animevietsubtv",
+      "https://pacebin.onrender.com/",
+      "https://animevietsub.site"
+    ],
+    "endpoints": [
+      ">$i$a$-apply-AnimeVietsubProvider$loadLinks$3$1$1$ajaxHeaders$1",
+      ";$i$a$-apply-AnimeVietsubProvider$searchViaSuggest$headers$1",
+      "D$i$a$-buildString-AnimeVietsubProvider$processEncryptedM3u8$jtiOdd$1",
+      "8$i$a$-distinctBy-AnimeVietsubProvider$searchViaSuggest$3",
+      "E$i$a$-filter-AnimeVietsubProvider$decryptM3u8SegmentUrls$cleanLines$1",
+      "*$i$a$-filter-AnimeVietsubProvider$search$3",
+      "1$i$a$-filter-AnimeVietsubProvider$search$tokens$1",
+      ";$i$a$-forEach-AnimeVietsubProvider$decryptM3u8SegmentUrls$1",
+      "2$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$1",
+      "4$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$1$1",
+      "2$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$2",
+      "4$i$a$-forEach-AnimeVietsubProvider$parseEpisodes$5$1",
+      "7$i$a$-getOrPut-AnimeVietsubProvider$parseEpisodes$1$1$1",
+      "5$i$a$-getOrPut-AnimeVietsubProvider$parseEpisodes$2$1",
+      "<$i$a$-ifBlank-AnimeVietsubProvider$parseEpisodes$1$1$epNum$1"
+    ]
+  },
+  "AnimeX": {
+    "name": "AnimeX",
+    "language": "en",
+    "tvTypes": [
+      "Anime"
+    ],
+    "domains": [
+      "https://animex.one",
+      "https://graphql.anilist.co",
+      "https://pp.animex.one/rest/api"
+    ],
+    "endpoints": [
+      "$episodes",
+      "($i$a$-mapNotNull-AnimexProvider$search$2",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "()Lrecloudstream/AnilistCover;",
+      "()Lrecloudstream/AnilistData;",
+      "$()Lrecloudstream/AnilistDetailsData;",
+      "%()Lrecloudstream/AnilistMediaDetails;",
+      ",()Lrecloudstream/AnilistMediaRecommendation;",
+      "()Lrecloudstream/AnilistPage;",
+      "(()Lrecloudstream/AnilistRecommendations;",
+      "\"()Lrecloudstream/AnilistStartDate;",
+      "()Lrecloudstream/AnilistTitle;",
+      "()Lrecloudstream/AnimexEpTitle;"
+    ]
+  },
+  "ASUPNIMER": {
+    "name": "ASUPNIMER",
+    "language": "vi",
+    "tvTypes": [
+      "Anime",
+      "Cartoon",
+      "AsianDrama"
+    ],
+    "domains": [
+      "https://hx.asupnim.local/",
+      "https://playhydrax.com/",
+      "https://abysscdn.com/",
+      "https://www.asup.lol",
+      "https://cdn.loadvid.com",
+      "https://playhydrax.com/?v="
+    ],
+    "endpoints": [
+      "9$i$a$-firstOrNull-ASUPNIMERProvider$load$toEpisode$urls$1",
+      "3$i$a$-let-ASUPNIMERProvider$load$seriesEpisodes$1$1",
+      ".$i$a$-let-ASUPNIMERProvider$load$toEpisode$1$1",
+      ".$i$a$-let-ASUPNIMERProvider$load$toEpisode$u$1",
+      "2$i$a$-mapNotNull-ASUPNIMERProvider$load$episodes$1",
+      "8$i$a$-mapNotNull-ASUPNIMERProvider$load$seriesEpisodes$1",
+      "+$i$a$-mapNotNull-ASUPNIMERProvider$search$2",
+      "6$i$a$-sortedBy-ASUPNIMERProvider$load$seriesEpisodes$2",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "$this_toSearchResponse",
+      ".m3u8",
+      "ASUPNIMER: search ",
+      "HYDRAX_EMBED"
+    ]
+  },
+  "BluPhim": {
+    "name": "BluPhim",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "Anime",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://proxy.cors.sh/",
+      "https://freetube.com.mx",
+      "https://bluphim.uk.com"
+    ],
+    "endpoints": [
+      "2$i$a$-filter-BluPhimProvider$getEpisodes$2$epNum$1",
+      "+$i$a$-forEach-BluPhimProvider$getEpisodes$2",
+      "4$i$a$-let-BluPhimProvider$getEpisodes$2$server2Url$1",
+      "8$i$a$-let-BluPhimProvider$toSearchResult$fullPosterUrl$1",
+      ")$i$a$-mapNotNull-BluPhimProvider$search$2",
+      "3$i$a$-takeIf-BluPhimProvider$toSearchResult$title$1",
+      "$iframeEmbedSrc",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      "$this$toSearchResult",
+      ", episode=",
+      ".m3u8",
+      "/search?k=",
+      "/streaming?id=",
+      "7Lrecloudstream/BluPhimPlugin$$ExternalSyntheticLambda0;"
+    ]
+  },
+  "CLBPhimXua": {
+    "name": "CLBPhimXua",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "TvSeries",
+      "AsianDrama"
+    ],
+    "domains": [
+      "https://playhydrax.com/",
+      "https://clbphimxua.com",
+      "https://abysscdn.com/",
+      "https://playhydrax.com/?v=",
+      "https://hx.clbpx.local/"
+    ],
+    "endpoints": [
+      "@$i$a$-firstNotNullOfOrNull-CLBPhimXuaProvider$embeddedPoster$1$1",
+      "3$i$a$-let-CLBPhimXuaProvider$postToSearch$isMovie$1",
+      "'$i$a$-let-CLBPhimXuaProvider$search$2$1",
+      "5$i$a$-runCatching-CLBPhimXuaProvider$embeddedPoster$1",
+      "-$i$a$-runCatching-CLBPhimXuaProvider$search$2",
+      "4$i$a$-takeIf-CLBPhimXuaProvider$embeddedPoster$1$1$1",
+      "2$i$a$-takeIf-CLBPhimXuaProvider$embeddedPoster$1$2",
+      "#$this$embeddedPoster_u24lambda_u248",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$search_u24lambda_u2416",
+      "&_embed",
+      "&per_page=20&_embed",
+      "/wp-json/wp/v2/categories/",
+      "/wp-json/wp/v2/categories?slug="
+    ]
+  },
+  "HDVNN": {
+    "name": "HDVNN",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "TvSeries",
+      "Anime",
+      "AsianDrama"
+    ],
+    "domains": [
+      "https://hdvnn.xyz",
+      "https://hdvnn.net",
+      "https://playhydrax.com/",
+      "https://hx.hdvnn.local/",
+      "https://vk.com/",
+      "https://abysscdn.com/",
+      "https://playhydrax.com/?v="
+    ],
+    "endpoints": [
+      "$episodeText",
+      "+$i$a$-all-HDVNNProvider$load$episodes$4$1$1",
+      "0$i$a$-distinctBy-HDVNNProvider$load$episodeIds$2",
+      "9$i$a$-filter-HDVNNProvider$toSearchResponse$1$1$epCount$1",
+      "3$i$a$-let-HDVNNProvider$toSearchResponse$1$poster$1",
+      "'$i$a$-map-HDVNNProvider$load$episodes$4",
+      "0$i$a$-mapNotNull-HDVNNProvider$load$episodeIds$1",
+      "'$i$a$-mapNotNull-HDVNNProvider$search$2",
+      "/$i$a$-maxByOrNull-HDVNNProvider$load$episodes$1",
+      "2$i$a$-runCatching-HDVNNProvider$toSearchResponse$1",
+      ",$i$a$-sortedBy-HDVNNProvider$load$episodes$3",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "&$this$toSearchResponse_u24lambda_u2450"
+    ]
+  },
+  "HoatHinh3D": {
+    "name": "HoatHinh3D",
+    "language": "vi",
+    "tvTypes": [
+      "Cartoon"
+    ],
+    "domains": [
+      "https://bit.ly/hh3d",
+      "https://hoathinh3d.ad",
+      "https://bit.ly"
+    ],
+    "endpoints": [
+      " episode_slug=",
+      "\"episode_slug\"\\s*:\\s*\"([^\"]+)\"",
+      "3$i$a$-mapNotNull-HoatHinh3DProvider$load$episodes$1",
+      ",$i$a$-mapNotNull-HoatHinh3DProvider$search$2",
+      "9$i$a$-takeIf-HoatHinh3DProvider$load$episodes$1$rawName$1",
+      "$latestEpisodeText",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      ") or episode_slug(",
+      ".m3u8",
+      "/search/",
+      ")/wp-content/themes/halimmovies/player.php",
+      "7/wp-content/themes/halimmovies/player.php?episode_slug=",
+      "/wp-json/halim/v1/player-key"
+    ]
+  },
+  "KKPhim": {
+    "name": "KKPhim",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "Anime",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://phimimg.com",
+      "https://kkphim.com",
+      "https://phimapi.com"
+    ],
+    "endpoints": [
+      "$episodeData",
+      "$finalEpisodeName",
+      "=$i$a$-filter-KKPhimProvider$load$finalEpisodes$1$serverTags$2",
+      "2$i$a$-let-KKPhimProvider$toSearchResponse$poster$1",
+      "-$i$a$-map-KKPhimProvider$load$finalEpisodes$1",
+      ":$i$a$-map-KKPhimProvider$load$finalEpisodes$1$serverTags$1",
+      "O$i$a$-mapNotNull-KKPhimProvider$getMainPage$homePageLists$1$1$1$searchResults$1",
+      "($i$a$-mapNotNull-KKPhimProvider$search$2",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      ",()Lrecloudstream/KKPhimProvider$DetailMovie;",
+      ",()Lrecloudstream/KKPhimProvider$EpisodeData;",
+      "+()Lrecloudstream/KKPhimProvider$SearchData;",
+      ")()Lrecloudstream/KKPhimProvider$TmdbInfo;",
+      ",(Lrecloudstream/KKPhimProvider$SearchData;)V"
+    ]
+  },
+  "NguonC": {
+    "name": "NguonC",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "Anime",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://phim.nguonc.com"
+    ],
+    "endpoints": [
+      "$embedUrl",
+      "+$i$a$-filter-NguonCProvider$load$episodes$2",
+      "?$i$a$-find-NguonCProvider$loadLinks$results$1$1$1$episodeItem$1",
+      ",$i$a$-flatMap-NguonCProvider$load$episodes$1",
+      ",$i$a$-groupBy-NguonCProvider$load$episodes$3",
+      ">$i$a$-let-NguonCProvider$loadLinks$results$1$1$1$embedOrigin$1",
+      "*$i$a$-map-NguonCProvider$load$episodes$1$1",
+      "($i$a$-map-NguonCProvider$load$episodes$4",
+      "6$i$a$-mapNotNull-NguonCProvider$load$episodes$4$tags$1",
+      "($i$a$-mapNotNull-NguonCProvider$search$2",
+      "-$i$a$-sortedBy-NguonCProvider$load$episodes$5",
+      ":$i$a$-takeIf-NguonCProvider$toSearchResponse$finalPoster$1",
+      ":$i$a$-takeIf-NguonCProvider$toSearchResponse$finalPoster$2",
+      "$playerHeaders",
+      "$this$newEpisode"
+    ]
+  },
+  "Onflix": {
+    "name": "Onflix",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "TvSeries",
+      "Anime"
+    ],
+    "domains": [
+      "https://onflixstatus.com",
+      "https://onflix.lat",
+      "https://k8s.onflixcdn.com/api",
+      "https://onflix.lat/",
+      "https://playembed.vip/"
+    ],
+    "endpoints": [
+      "\"id\":((?:\"[^\"]*\")|\\d+),\"image_url\":\"[^\"]*\",\"link_embed\":\"([^\"]*)\",\"link_m3u8\":\"([^\"]*)\",\"name\":\"([^\"]*)\",\"server_name\":\"([^\"]*)\",\"slug\":\"([^\"]*)\",\"src\":\"([^\"]*)\",\"type\":\"([^\"]*)\"",
+      "!\"initialM3u8\":\"(enc_[a-fA-F0-9]+)",
+      "'\"initialM3u8\\\\?\":\\\\?\"(enc_[a-fA-F0-9]+)",
+      "$embedOrigin",
+      "7$i$a$-filter-OnflixProvider$extractEpisodeNum$cleaned$1",
+      "B$i$a$-firstOrNull-OnflixProvider$extractM3u8FromPhimapi$urlParam$1",
+      "2$i$a$-forEach-OnflixProvider$parseEpisodeRecords$1",
+      "4$i$a$-ifBlank-OnflixProvider$parseEpisodeRecords$1$1",
+      "4$i$a$-ifBlank-OnflixProvider$parseEpisodeRecords$1$2",
+      "6$i$a$-let-OnflixProvider$extractStreamcDirect$origin$1",
+      "4$i$a$-let-OnflixProvider$resolveRecord$embedOrigin$1",
+      "($i$a$-map-OnflixProvider$load$episodes$1",
+      ":$i$a$-mapNotNull-OnflixProvider$load$episodes$1$playable$1",
+      "6$i$a$-mapNotNull-OnflixProvider$load$episodes$1$tags$1",
+      "($i$a$-mapNotNull-OnflixProvider$search$2"
+    ]
+  },
+  "PhimDinhCao": {
+    "name": "PhimDinhCao",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://proxy.cors.sh/",
+      "https://www.1phim22.com",
+      "https://phimlongtieng.link"
+    ],
+    "endpoints": [
+      "$absoluteIframeUrlPlayerPage",
+      "$finalEpisodeName",
+      "$playerPageDocument",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      ".m3u8",
+      "/search/",
+      "): Could not get iframeUrlPlayerPage from ",
+      "!: Player Page URL (player.html): ",
+      ";Lrecloudstream/PhimDinhCaoPlugin$$ExternalSyntheticLambda0;",
+      "!Lrecloudstream/PhimDinhCaoPlugin;",
+      "=Lrecloudstream/PhimDinhCaoProvider$$ExternalSyntheticLambda0;",
+      "=Lrecloudstream/PhimDinhCaoProvider$$ExternalSyntheticLambda1;",
+      "=Lrecloudstream/PhimDinhCaoProvider$$ExternalSyntheticLambda2;",
+      "=Lrecloudstream/PhimDinhCaoProvider$$ExternalSyntheticLambda3;"
+    ]
+  },
+  "PhimHDCS": {
+    "name": "PhimHDCS",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "TvSeries",
+      "Anime",
+      "AsianDrama"
+    ],
+    "domains": [
+      "https://phimhdcss.com",
+      "https://phimhdcss.com/"
+    ],
+    "endpoints": [
+      "#.m3u8",
+      "#EXT-X-STREAM-INF:",
+      "#player",
+      "$exoPlayerHeaders",
+      ";$i$a$-ifEmpty-PhimHDCSProvider$toSearchResult$posterUrl$1$1",
+      "5$i$a$-ifEmpty-PhimHDCSProvider$toSearchResult$title$1",
+      "5$i$a$-let-PhimHDCSProvider$toSearchResult$posterUrl$1",
+      "9$i$a$-map-PhimHDCSProvider$load$episodes$1$combinedTags$1",
+      "1$i$a$-mapNotNull-PhimHDCSProvider$load$episodes$1",
+      "*$i$a$-mapNotNull-PhimHDCSProvider$search$2",
+      "/$i$a$-sortedBy-PhimHDCSProvider$load$episodes$2",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResult",
+      ":(?:const|let|var)\\s+url\\s*=\\s*[\"']([^\"']+\\.m3u8[^\"']*)[\"']"
+    ]
+  },
+  "PhimSea": {
+    "name": "PhimSea",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "Anime",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://phimsea.com",
+      "https://image.tmdb.org/t/p/w342",
+      "https://pacebin.onrender.com/"
+    ],
+    "endpoints": [
+      "$episodes",
+      "$playerHeaders",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      ".m3u8",
+      "/api/subtitle/",
+      "/api/titles/",
+      "#Lrecloudstream/PhimSeaAuth$login$1;",
+      "Lrecloudstream/PhimSeaAuth;",
+      "7Lrecloudstream/PhimSeaPlugin$$ExternalSyntheticLambda0;",
+      "7Lrecloudstream/PhimSeaPlugin$$ExternalSyntheticLambda1;",
+      "Lrecloudstream/PhimSeaPlugin;",
+      "9Lrecloudstream/PhimSeaProvider$$ExternalSyntheticLambda0;",
+      "9Lrecloudstream/PhimSeaProvider$$ExternalSyntheticLambda1;",
+      "9Lrecloudstream/PhimSeaProvider$$ExternalSyntheticLambda2;"
+    ]
+  },
+  "RidoMovies": {
+    "name": "RidoMovies",
+    "language": "en",
+    "tvTypes": [
+      "Movie",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://ridomovies.su"
+    ],
+    "endpoints": [
+      " embedUrl=",
+      "3$i$a$-distinctBy-RidoMoviesProvider$load$episodes$2",
+      "9$i$a$-filter-RidoMoviesProvider$extractRidoEmbed$dbgIdx$1",
+      "3$i$a$-forEach-RidoMoviesProvider$extractRidoEmbed$4",
+      "1$i$a$-let-RidoMoviesProvider$extractRidoEmbed$4$1",
+      "3$i$a$-mapNotNull-RidoMoviesProvider$load$episodes$1",
+      ",$i$a$-mapNotNull-RidoMoviesProvider$search$2",
+      "8$i$a$-takeIf-RidoMoviesProvider$extractRidoEmbed$label$1",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      "/api/search?q=",
+      "ApiSearchItem",
+      "ApiSearchItem(id=",
+      "ApiSearchResponse",
+      "ApiSearchResponse(data="
+    ]
+  },
+  "VSMOV": {
+    "name": "VSMOV",
+    "language": "vi",
+    "tvTypes": [
+      "Movie",
+      "Anime",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://vsmov.com"
+    ],
+    "endpoints": [
+      "'$i$a$-mapNotNull-VsmovProvider$search$2",
+      "$this$newEpisode",
+      "$this$newMovieSearchResponse",
+      "$this$toSearchResponse",
+      "$this_toSearchResponse",
+      ")()Lrecloudstream/VsmovProvider$MovieInfo;",
+      "(()Lrecloudstream/VsmovProvider$TmdbInfo;",
+      "G(?:const|let|var)\\s+url\\s*=\\s*[`'\"](https?://[^`'\"]+\\.m3u8[^`'\"]*)[`'\"]",
+      ", episodes=",
+      ", link_embed=",
+      ", link_m3u8=",
+      ".m3u8",
+      "/api/danh-sach/",
+      "/api/phim/",
+      "/api/the-loai/"
+    ]
+  },
+  "Yanhh3d": {
+    "name": "Yanhh3d",
+    "language": "vi",
+    "tvTypes": [
+      "Cartoon"
+    ],
+    "domains": [
+      "https://bit.ly/yanhh3d"
+    ],
+    "endpoints": [
+      "#player",
+      "$episodeName",
+      "$episodeNum",
+      "0$i$a$-getOrPut-Yanhh3dProvider$load$episodes$1$1",
+      "0$i$a$-getOrPut-Yanhh3dProvider$load$episodes$1$2",
+      "-$i$a$-let-Yanhh3dProvider$load$episodes$1$4$1",
+      "5$i$a$-let-Yanhh3dProvider$toSearchResult$episodeNum$1",
+      "+$i$a$-map-Yanhh3dProvider$load$episodes$1$3",
+      ")$i$a$-mapNotNull-Yanhh3dProvider$search$2",
+      "4$i$a$-onFailure-Yanhh3dProvider$handleIframePlayer$3",
+      "6$i$a$-runCatching-Yanhh3dProvider$handleIframePlayer$2",
+      "<$i$a$-runCatching-Yanhh3dProvider$load$episodes$1$watchDoc$1",
+      "0$i$a$-sortedBy-Yanhh3dProvider$load$episodes$1$4",
+      "($this$handleIframePlayer_u24lambda_u2411",
+      "$this$newAnimeSearchResponse"
+    ]
+  },
+  "YumeiAnime": {
+    "name": "YumeiAnime",
+    "language": "vi",
+    "tvTypes": [
+      "AnimeMovie",
+      "Anime",
+      "OVA",
+      "Cartoon",
+      "TvSeries"
+    ],
+    "domains": [
+      "https://yumei-anime.com"
+    ],
+    "endpoints": [
+      "0$i$a$-filter-YumeiAnimeProvider$recentEpisodes$2",
+      ")$i$a$-forEach-YumeiAnimeProvider$search$3",
+      ")$i$a$-forEach-YumeiAnimeProvider$search$5",
+      ":$i$a$-mapIndexedNotNull-YumeiAnimeProvider$load$episodes$1",
+      "($i$a$-takeIf-YumeiAnimeProvider$search$2",
+      "($i$a$-takeIf-YumeiAnimeProvider$search$4",
+      "4$i$a$-takeIf-YumeiAnimeProvider$toSearchResponse$t$1",
+      "$this$newAnimeSearchResponse",
+      "$this$newEpisode",
+      "$this$toSearchResponse",
+      "$this_toSearchResponse",
+      ":Lrecloudstream/YumeiAnimePlugin$$ExternalSyntheticLambda0;",
+      " Lrecloudstream/YumeiAnimePlugin;",
+      "<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda0;",
+      "<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda1;"
+    ]
+  }
+}

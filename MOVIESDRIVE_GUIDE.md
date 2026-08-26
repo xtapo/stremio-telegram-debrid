@@ -111,9 +111,11 @@ Kiểm tra nhanh bằng tay:
 curl -I https://new2.moviesdrive.christmas
 ```
 
-Sửa:
-
 ```env
+# Tự động cập nhật domain mới nhất từ trang chủ điều hướng (mặc định: https://moviesdrives.cfd)
+MD_PORTAL_URL=https://moviesdrives.cfd
+
+# Hoặc cấu hình thủ công:
 MD_BASE_URL=https://ten-mien-dang-song
 MD_MIRRORS=https://mirror-1,https://mirror-2
 # Hoặc để addon tự sinh và tự dò:
@@ -121,7 +123,7 @@ MD_MIRROR_TEMPLATES=https://new{n}.moviesdrive.christmas
 MD_MIRROR_RANGE=1-8
 ```
 
-Rồi restart addon. Addon sẽ tự dò lại (`MD_BASE_DISCOVERY_TTL`) khi mirror đang ghim chết.
+Addon sẽ tự động truy vấn `MD_PORTAL_URL` để giải mã các domain mới nhất khi khởi động hoặc khi tất cả các mirror hiện tại bị lỗi/chặn. Bạn cũng có thể kích hoạt dò lại định kỳ (`MD_BASE_DISCOVERY_TTL`).
 
 ### Trường hợp 2 - Bị Cloudflare chặn
 

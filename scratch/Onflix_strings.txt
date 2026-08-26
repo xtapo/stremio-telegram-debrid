@@ -1,0 +1,1883 @@
+dex
+035
+N:y.
+xV4
+n ]
+n \
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+n Z
+n ]
+n \
+n ]
+n \
+n Z
+1pP
+n ]
+n ]
+n ]
+n \
+n Z
+TS!
+TS#
+TS"
+TS$
+TS%
+TS 
+TC!
+TC!
+TC#
+TC#
+TC"
+TC"
+TC$
+TC$
+TC%
+TC%
+TC 
+TC 
+n ]
+n \
+n ]
+T!!
+n ]
+n ]
+T!#
+n ]
+n ]
+n ]
+n ]
+n ]
+n ]
+T!"
+n ]
+n ]
+T!$
+n ]
+n ]
+T!%
+n \
+n ]
+T! 
+n ]
+n ]
+n ]
+n Z
+TS&
+TS'
+T@&
+T@&
+TC'
+TA'
+n ]
+T!&
+n \
+n ]
+T!'
+n \
+n Z
+n0&
+p0"
+1pP#
+p0"
+5V@
+n c
+r z
+q g
+q Q
+r p
+p03
+n 2
+p C
+p C
+T )
+T!*
+TS.
+TS-
+T@.
+T@.
+TC-
+TA-
+n ]
+T!.
+n \
+n ]
+T!-
+n ]
+n Z
+n0F
+p0C
+TS/
+TS0
+T0/
+T20
+n ]
+T!/
+n ]
+n ]
+T!0
+n ]
+n Z
+n0P
+p0M
+[46
+R05
+Y05
+T07
+n0Z
+n ]
+n0[
+p E
+p Y
+ p0
+[4;
+R0:
+Y0:
+T0<
+[E@
+R@?
+Y@?
+T@A
+[4H
+R0G
+Y0G
+T0I
+[4N
+R0M
+Y0M
+T0O
+[4R
+R0Q
+Y0Q
+T0S
+[#W
+R V
+Y V
+T X
+[E]
+R@\
+Y@\
+T@^
+[4o
+R0n
+Y0n
+T0p
+n0r
+n u
+n0s
+R y
+p E
+T x
+T!s
+n  
+T!v
+T!w
+n #
+T!r
+T!u
+n "
+T!q
+T!t
+n !
+ p0
+n0w
+n z
+n0x
+p E
+T!|
+n *
+n (
+n -
+T!{
+n )
+T!~
+n ,
+T!z
+n '
+T!}
+n +
+ p0
+n0|
+n0}
+p E
+n *
+n (
+n -
+n )
+n ,
+n '
+n +
+ p0
+n V
+Sq 
+n V
+p E
+n 6
+n 5
+n 4
+ p0
+p E
+n ]
+n Z
+n 6
+n 5
+n ]
+n Z
+n 4
+ p0
+p E
+n 6
+n 5
+"#"
+n 4
+ p0
+!'5v
+!%q0
+p _
+n V
+(;T
+ $H
+($r
+!r q
+r q
+n ]
+n ]
+n ]
+p A
+p ?
+r q
+q G
+r @
+r =
+n Z
+n ]
+n ]
+r q
+p0W
+TT6
+RP5
+p E
+TW4
+TX3
+TY2
+TZ1
+TP2
+TV1
+[P1
+[\2
+Y_5
+r0<
+r w
+ kO
+r w
+r w
+r w
+p Y
+[Z1
+[W2
+[X3
+[W4
+.Y^5
+p0_
+TT;
+RS:
+p E
+TP9
+p _
+n ]
+n ]
+n ]
+&#f
+[^9
+YX:
+(_q
+n h
+p0N
+r w
+ C>
+n ]
+n Z
+n ]
+p0M
+p0a
+TT@
+RS?
+p E
+TP>
+TS=
+n ]
+n ]
+n [
+[S=
+[_>
+YV?
+r0<
+r j
+p0c
+TSH
+RPG
+p E
+TYF
+TZE
+T[D
+T\C
+T]B
+TPB
+[PB
+YVG
+r0<
+[YB
+[\C
+[[D
+[ZE
+[YF
+-Y]G
+r j
+e( 
+p0e
+TTN
+RSM
+p E
+TPL
+TSK
+TVJ
+TSL
+TVK
+TWJ
+}($
+[SJ
+[WK
+[VL
+Y\M
+)q_
+r q
+n ]
+n ]
+n ]
+n ]
+[]J
+[SK
+[[L
+YYM
+r0<
+r j
+r j
+p0g
+TSR
+RTQ
+p E
+TPP
+TTP
+n ]
+n ]
+n ]
+n ]
+[]P
+Y^Q
+r q
+p0C
+[EP
+YHQ
+r0<
+p0C
+p0C
+p0i
+TTW
+RSV
+p E
+TPU
+TPT
+[ST
+[^U
+Y_V
+r q
+p0k
+p E
+n P
+n P
+(]"
+n ]
+n ]
+n [
+n P
+n ]
+n ]
+n [
+(*"
+n ]
+n ]
+n [
+p0o
+p E
+n ]
+n ]
+n ]
+r q
+r o
+/qZ
+ }H
+(.r
+p0}
+r j
+r w
+r0x
+r o
+r j
+p f
+r j
+(Tn
+(8n
+r j
+n ]
+n \
+n ]
+n ]
+n Z
+n ]
+p0=
+r j
+p E
+r j
+!qW
+(R[<
+r w
+ Y0
+?Y?
+p E
+p _
+n ]
+n ]
+n ]
+p E
+:(!q
+r w
+r w
+ FL
+ GO
+r w
+ t<
+n ]
+n ]
+n [
+6YV
+r0<
+r w
+p E
+n ]
+n ]
+n ]
+&YV
+r0<
+r j
+@n T
+6&0
+n0U
+n O
+n Z
+q b
+22"
+n0U
+n ]
+$qR
+q b
+r q
+p 5
+F(-r
+n Z
+n ]
+n ]
+r q
+n ]
+r q
+n ]
+n ]
+r q
+r q
+n V
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+n P
+?KT
+n0U
+n0U
+(qQ
+r q
+r q
+<r q
+Lr q
+\r q
+lr q
+|r q
+r q
+r o
+n %
+n &
+n /
+n 0
+p0m
+B#"
+n ]
+n \
+n ]
+n \
+n ]
+n ]
+n Z
+<-------
+x+[*\)](^
+{,_
+z,`
+y,p
+<-*
+<-*
+<---------
+x+[*\)](^
+{,n
+z,o
+y,p
+x,q
+w,r
+<-*
+?ml
+q>K
+ZZZZZZZ
+q>K
+ZZZZZZZ
+q>K
+ZZZZZZZ
+q>K
+q>K
+q>K
+<iL
+xZZ($
+q>J
+q>J
+q>J
+ ^Z
+q>J
+q>J
+z,#
+.i)/
+q>J
+ ^Z
+q>J
+q>J
+{,"G
+(!9
+) >
+z,=%
+q>J
+?Zi
+z<-
+{P-
+zJ'
+z<-
+z<-
+% ^
+q>J
+{,%
+%-<
+q>J
+q>J
+y,$
+q>J
+ ^Z
+{J#
+Y<<
+Y<x
+Y<x
+<KKK<
+MNM
+<--)
+0+2
+0!2
+0$H
+xyB
+0*2
+0,2
+0.H
+010
+3J$
+010
+7J$
+010
+0,2
+01*
+0<2
+010
+0@2
+3JF
+0G0E2
+0G0EH
+JJ4
+0I2
+0M2
+0G0EH
+0Q2
+0[2
+7J<
+0I2
+0G0EH
+0G2
+0G0EH
+0M0
+0MH
+0,*
+0,2
+0v2
+0IH
+0#8BX
+0'0
+":("(?:[^"\\]|\\.)*")
+":(-?\d+)
+"])
+"actors":[
+"content":("(?:[^"\\]|\\.)*")
+"id":((?:"[^"]*")|\d+),"image_url":"[^"]*","link_embed":"([^"]*)","link_m3u8":"([^"]*)","name":"([^"]*)","server_name":"([^"]*)","slug":"([^"]*)","src":"([^"]*)","type":"([^"]*)"
+!"initialM3u8":"(enc_[a-fA-F0-9]+)
+'"initialM3u8\\?":\\?"(enc_[a-fA-F0-9]+)
+"type":"phim-le"
+$actors
+$amassRegex
+$completion
+$continuation
+$displayName
+$embedOrigin
+$epNum
+$hihihohoRegex
+'$i$a$-any-OnflixProvider$isHostUsable$1
+'$i$a$-any-OnflixProvider$load$isAnime$1
+%$i$a$-apply-OnflixProviderKt$mapper$1
+7$i$a$-filter-OnflixProvider$extractEpisodeNum$cleaned$1
+2$i$a$-filter-OnflixProvider$fetchRecommendations$2
+/$i$a$-filter-OnflixProvider$load$movieRecords$1
+6$i$a$-filter-OnflixProvider$loadLinks$orderedRecords$1
+B$i$a$-firstOrNull-OnflixProvider$extractM3u8FromPhimapi$urlParam$1
+7$i$a$-firstOrNull-OnflixProvider$loadLinks$soraRecord$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+,$i$a$-forEach-OnflixPlugin$verifySignature$1
+0$i$a$-forEach-OnflixProvider$emitSoraSubtitles$2
+#$i$a$-forEach-OnflixProvider$load$2
+2$i$a$-forEach-OnflixProvider$parseEpisodeRecords$1
+C$i$a$-getOrPut-CollectionsKt___CollectionsKt$groupByTo$list$1$iv$iv
++$i$a$-groupBy-OnflixProvider$load$grouped$2
++$i$a$-ifBlank-OnflixProvider$load$pageUrl$1
+($i$a$-ifBlank-OnflixProvider$load$plot$2
+4$i$a$-ifBlank-OnflixProvider$parseEpisodeRecords$1$1
+4$i$a$-ifBlank-OnflixProvider$parseEpisodeRecords$1$2
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+6$i$a$-let-OnflixProvider$extractStreamcDirect$origin$1
+5$i$a$-let-OnflixProvider$fetchSoraMaster$dataVodUrl$1
+%$i$a$-let-OnflixProvider$getBaseUrl$2
+:$i$a$-let-OnflixProvider$getVideoInterceptor$1$intercept$1
+$$i$a$-let-OnflixProvider$load$plot$1
+4$i$a$-let-OnflixProvider$resolveRecord$embedOrigin$1
+-$i$a$-let-OnflixProvider$resolveSoraCdn$qid$1
+)$i$a$-let-OnflixProvider$subtitleEnName$1
+($i$a$-map-OnflixProvider$load$episodes$1
+0$i$a$-mapNotNull-OnflixProvider$fetchAnimeList$2
++$i$a$-mapNotNull-OnflixProvider$fetchList$2
+6$i$a$-mapNotNull-OnflixProvider$fetchRecommendations$3
+:$i$a$-mapNotNull-OnflixProvider$load$episodes$1$playable$1
+6$i$a$-mapNotNull-OnflixProvider$load$episodes$1$tags$1
+.$i$a$-mapNotNull-OnflixProvider$load$grouped$1
+($i$a$-mapNotNull-OnflixProvider$search$2
+0$i$a$-maxByOrNull-OnflixProvider$findPlot$best$1
+B$i$a$-sortedByDescending-OnflixProvider$loadLinks$orderedRecords$2
+4$i$a$-takeIf-OnflixProvider$extractM3u8FromPhimapi$1
+:$i$a$-takeIf-OnflixProvider$fetchSoraMaster$dataVodUrl$1$1
+($i$a$-takeIf-OnflixProvider$findActors$1
+8$i$a$-takeIf-OnflixProvider$findActors$actors$1$imgRaw$1
+6$i$a$-takeIf-OnflixProvider$findActors$actors$1$name$1
+&$i$a$-takeIf-OnflixProvider$findPlot$1
+8$i$a$-takeIf-OnflixProvider$load$episodes$1$playable$1$1
+1$i$a$-takeIf-OnflixProvider$resolveRecord$idStr$1
+$i$f$any
+$i$f$filter
+$i$f$filterTo
+$i$f$firstOrNull
+$i$f$forEach
+$i$f$getOrPut
+$i$f$groupBy
+$i$f$groupByTo
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$maxByOrNull
+$i$f$parseJson
+$i$f$parsedSafe
+$i$f$sortedByDescending
+$plot
+$poster
+$posterUrl
+&$r8$lambda$6v6yXLd8M7maH6-NBcD56XoDjAI
+&$r8$lambda$7Nxh6CvcLISPnGx8vecM_Q3T7eQ
+&$r8$lambda$AtYp6P9cr79iELAObJjEV3iGbHQ
+&$r8$lambda$IlsxfNHLlu6Vj3aths3tg26qpQ0
+&$r8$lambda$MQwAU4a-a088zn_Ad7KE_ERfkX4
+&$r8$lambda$det5PnLxqalBT0lE5QDW2c84hPY
+&$r8$lambda$s7NFOKO5_fsLWvPYKI5Kfq66gBs
+&$r8$lambda$urz8sLlGx6LeFRRwE3awSHIsLLk
+$receiver
+$recommendations
+$result
+$tags
+$this
+$this$any$iv
+$this$extractEpisodeNum
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$firstOrNull$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$getOrPut$iv$iv$iv
+$this$groupBy$iv
+$this$groupByTo$iv$iv
+$this$hasPlayableLink
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$mapper_u24lambda_u240
+$this$maxByOrNull$iv
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newMovieSearchResponse
+$this$newTvSeriesLoadResponse
+$this$newTvSeriesSearchResponse
+$this$sortedByDescending$iv
+$this$toJson
+$this$toSearchResponse
+$thumbUrl
+$year
+%02X
+&page=1
+&q=
+&src=
+()Ljava/lang/Integer;
+()Ljava/lang/Object;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Map;
+()Ljava/util/Set;
+"()Lrecloudstream/OnflixPagination;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+G(ILjava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+H(Ljava/lang/Integer;Ljava/lang/Integer;)Lrecloudstream/OnflixPagination;
+)(Ljava/lang/Integer;Ljava/lang/Integer;)V
+(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)Lrecloudstream/OnflixMovieItem;
+(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/Object;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+'(Ljava/lang/String;)Ljava/lang/Integer;
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/Integer;
+'(Ljava/lang/String;Ljava/lang/String;)V
+X(Ljava/lang/String;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+y(Ljava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+%(Ljava/lang/String;Ljava/util/List;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+f(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+5(Ljava/util/List;Ljava/util/List;Ljava/lang/String;)V
+3(Ljava/util/List;Lrecloudstream/OnflixPagination;)V
+$(Ljava/util/Map;Ljava/lang/String;)V
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+x(Lrecloudstream/OnflixEpisodeRecord;ZLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+)TT;
+**>;>;
+*>;)
+, dataVodUrl=
+, episodeCurrent=
+, linkEmbed=
+, linkM3u8=
+, movies=
+, name=
+, origin=
+, originalTitle=
+, pagination=
+, posterUrl=
+, quality=
+, query=
+, records=
+, serverName=
+, slug=
+, src=
+, thumbUrl=
+, title=
+, totalPages=
+, type=
+, year=
+/anime
+/movies?category=
+ /movies?category=hoat-hinh&page=
+/movies?page=
+/movies?type=phim-bo&page=
+/movies?type=phim-le&page=
+/phim-bo
+/phim-le
+/phim/
+/search?q=
+/w185/
+/w300/
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+:"((?:[^"\\]|\\.)*)"
+://
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+<unused var>
+>;)
+>;)V
+>;)Z
+>;>;)
+Anime
+AnimeMovie
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Chinese
+Companion
+Comparisons.kt
+D8$$SyntheticClass
+English
+FAIL_ON_UNKNOWN_PROPERTIES
+French
+German
+t H
+I$0
+I$1
+ILCIZIL
+ILI
+ILL
+ILLIZIL
+INSTANCE
+Japanese
+Korean
+L$0
+L$1
+L$10
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LII
+LILL
+LLCCZIL
+LLCLIL
+LLI
+LLII
+LLILL
+LLL
+LLLIIL
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLL
+LLLLLLLLLLIL
+LLLLLLLLLLL
+LLLLLLLLLLLLIL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLLZLL
+LLLZIIL
+LLLZLL
+LLZ
+LLZLL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/annotation/JsonProperty;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+7Lcom/fasterxml/jackson/databind/DeserializationFeature;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+"Lcom/lagradost/cloudstream3/Actor;
+&Lcom/lagradost/cloudstream3/ActorData;
+&Lcom/lagradost/cloudstream3/ActorRole;
+$Lcom/lagradost/cloudstream3/Episode;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
+0Lcom/lagradost/cloudstream3/MovieSearchResponse;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+3Lcom/lagradost/cloudstream3/TvSeriesSearchResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/lang/Appendable;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Class;
+Ljava/lang/Comparable;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/net/URI;
+Ljava/net/URLDecoder;
+Ljava/nio/charset/Charset;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Base64$Decoder;
+Ljava/util/Base64;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/SortedMap;
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+ Lkotlin/jvm/internal/Reflection;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/IntProgression;
+Lkotlin/ranges/IntRange;
+Lkotlin/ranges/RangesKt;
+Lkotlin/reflect/KClass;
+Lkotlin/sequences/Sequence;
+Lkotlin/sequences/SequencesKt;
+Lkotlin/text/CharsKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lokhttp3/HttpUrl;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/Request;
+Lokhttp3/RequestBody$Companion;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+Lokio/Buffer;
+Lokio/BufferedSource;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+#Lrecloudstream/OnflixEpisodeRecord;
+"Lrecloudstream/OnflixListResponse;
+Lrecloudstream/OnflixLoadData;
+Lrecloudstream/OnflixMovieItem;
+ Lrecloudstream/OnflixPagination;
+6Lrecloudstream/OnflixPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/OnflixPlugin;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda0;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda1;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda2;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda3;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda4;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda5;
+8Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda6;
+*Lrecloudstream/OnflixProvider$SoraCdnData;
+)Lrecloudstream/OnflixProvider$StreamcRef;
+2Lrecloudstream/OnflixProvider$emitSoraSubtitles$1;
+4Lrecloudstream/OnflixProvider$emitSoraSubtitles$2$1;
+HLrecloudstream/OnflixProvider$extractStreamcDirect$$inlined$parseJson$1;
+5Lrecloudstream/OnflixProvider$extractStreamcDirect$1;
+/Lrecloudstream/OnflixProvider$fetchAnimeList$1;
+*Lrecloudstream/OnflixProvider$fetchList$1;
+5Lrecloudstream/OnflixProvider$fetchRecommendations$1;
+0Lrecloudstream/OnflixProvider$fetchSoraMaster$1;
++Lrecloudstream/OnflixProvider$getBaseUrl$1;
+,Lrecloudstream/OnflixProvider$getMainPage$1;
+4Lrecloudstream/OnflixProvider$getVideoInterceptor$1;
+%Lrecloudstream/OnflixProvider$load$1;
+%Lrecloudstream/OnflixProvider$load$3;
+%Lrecloudstream/OnflixProvider$load$4;
+%Lrecloudstream/OnflixProvider$load$5;
+=Lrecloudstream/OnflixProvider$loadLinks$$inlined$parseJson$1;
+FLrecloudstream/OnflixProvider$loadLinks$$inlined$sortedByDescending$1;
+*Lrecloudstream/OnflixProvider$loadLinks$1;
+.Lrecloudstream/OnflixProvider$resolveRecord$1;
+.Lrecloudstream/OnflixProvider$resolveRecord$2;
+.Lrecloudstream/OnflixProvider$resolveRecord$3;
+/Lrecloudstream/OnflixProvider$resolveSoraCdn$1;
+/Lrecloudstream/OnflixProvider$resolveSoraCdn$2;
+'Lrecloudstream/OnflixProvider$search$1;
+Lrecloudstream/OnflixProvider;
+,Lrecloudstream/OnflixProviderKt$parseJson$1;
+ Lrecloudstream/OnflixProviderKt;
+$Lrecloudstream/OnflixSearchResponse;
+ng Ti
+ng ti
+M3U8
+Movie
+vMozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Mobile Safari/537.36
+Onflix
+OnflixEpisodeRecord(id=
+OnflixListResponse(data=
+OnflixLoadData(url=
+OnflixMovieItem(id=
+OnflixPagination(currentPage=
+OnflixPlugin.kt
+OnflixProvider.kt
+OnflixSearchResponse(actors=
+Onflix_debug
+Phim B
+Phim L
+Phim M
+i C
+p Nh
+ROOT
+Referer
+SDK_INT
+SHA-256
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareByDescending$1
++ 2 OnflixProvider.kt
+recloudstream/OnflixProvider
+1#1,121:1
+385#2,2:122
+SMAP
+OnflixPlugin.kt
+Kotlin
+*S Kotlin
++ 1 OnflixPlugin.kt
+recloudstream/OnflixPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 OnflixPlugin.kt
+recloudstream/OnflixPlugin
+49#1:60,2
+SMAP
+OnflixProvider.kt
+Kotlin
+*S Kotlin
++ 1 OnflixProvider.kt
+recloudstream/OnflixProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 NiceResponse.kt
+com/lagradost/nicehttp/NiceResponse
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 5 _Sequences.kt
+kotlin/sequences/SequencesKt___SequencesKt
++ 6 Maps.kt
+kotlin/collections/MapsKt__MapsKt
++ 7 _Maps.kt
+kotlin/collections/MapsKt___MapsKt
++ 8 OnflixProvider.kt
+recloudstream/OnflixProviderKt
++ 9 _Strings.kt
+kotlin/text/StringsKt___StringsKt
+1#1,853:1
+1#2:854
+1#2:870
+1#2:891
+1#2:909
+1#2:927
+1#2:945
+1#2:978
+1#2:991
+52#3,5:855
+52#3,5:873
+52#3,5:894
+52#3,5:912
+52#3,5:1008
+52#3,5:1013
+52#3,5:1018
+1611#4,9:860
+1863#4:869
+1864#4:871
+1620#4:872
+774#4:878
+865#4,2:879
+1611#4,9:881
+1863#4:890
+1864#4:892
+1620#4:893
+1611#4,9:899
+1863#4:908
+1864#4:910
+1620#4:911
+1611#4,9:917
+1863#4:926
+1864#4:928
+1620#4:929
+1755#4,3:932
+1611#4,9:935
+1863#4:944
+1864#4:946
+1620#4:947
+1485#4:948
+1510#4,3:949
+1513#4,3:959
+774#4:962
+865#4,2:963
+1611#4,9:968
+1863#4:977
+1864#4:979
+1620#4:980
+1611#4,9:981
+1863#4:990
+1864#4:992
+1620#4:993
+774#4:996
+865#4,2:997
+1062#4:999
+295#4,2:1000
+1755#4,3:1003
+295#4,2:1006
+1863#4,2:1023
+1971#4,14:1033
+1317#5,2:930
+1317#5,2:1025
+381#6,7:952
+126#7:965
+153#7,2:966
+155#7:994
+27#8:995
+27#8:1002
+434#9:1027
+507#9,5:1028
+*S KotlinDebug
++ 1 OnflixProvider.kt
+recloudstream/OnflixProvider
+156#1:870
+175#1:891
+188#1:909
+231#1:927
+281#1:945
+325#1:978
+329#1:991
+155#1:855,5
+171#1:873,5
+187#1:894,5
+230#1:912,5
+559#1:1008,5
+594#1:1013,5
+651#1:1018,5
+156#1:860,9
+156#1:869
+156#1:871
+156#1:872
+173#1:878
+173#1:879,2
+175#1:881,9
+175#1:890
+175#1:892
+175#1:893
+188#1:899,9
+188#1:908
+188#1:910
+188#1:911
+231#1:917,9
+231#1:926
+231#1:928
+231#1:929
+271#1:932,3
+281#1:935,9
+281#1:944
+281#1:946
+281#1:947
+285#1:948
+285#1:949,3
+285#1:959,3
+291#1:962
+291#1:963,2
+325#1:968,9
+325#1:977
+325#1:979
+325#1:980
+329#1:981,9
+329#1:990
+329#1:992
+329#1:993
+383#1:996
+383#1:997,2
+384#1:999
+395#1:1000,2
+509#1:1003,3
+516#1:1006,2
+653#1:1023,2
+764#1:1033,14
+263#1:930,2
+705#1:1025,2
+285#1:952,7
+324#1:965
+324#1:966,2
+324#1:994
+375#1:995
+496#1:1002
+729#1:1027
+729#1:1028,5
+SoraCdnData
+SoraCdnData(master=
+Spanish
+StreamcRef
+StreamcRef(m3u8Url=
+Sub
+TT;>;
+Thailand
+Thuy
+TvSeries
+UTF-8
+UTF_8
+Unknown
+User-Agent
+VIL
+VLL
+VLLIL
+VLLL
+VLLLIL
+VLLLLIL
+VLLLLLLLL
+VLLLLLLLLIL
+VLLLLLLLLLL
+VLLLLLLLLLLIL
+VLLZIL
+Vietnamese
+Vietsub
+Vietsub (SN) 1080p
+Z$0
+ZLL
+ZLLZ
+ZLLZIL
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+\(\s*([A-Za-z][A-Za-z ]*)\s*\)
+\\u([0-9a-fA-F]{4})
+E\{"id":\d+,"image_url":"((?:[^"\\]|\\.)*)","name":"((?:[^"\\]|\\.)*)"
+,\{"id":\d+,"name":"([^"]+)","slug":"[^"]+"\}
+,\{"id":\d+,"name":"[^"]+","slug":"([^"]+)"\}
+^\$(\w+)$
+__next_f.push([1,"
+access$emitSoraSubtitles
+access$extractStreamcDirect
+access$fetchAnimeList
+access$fetchList
+access$fetchRecommendations
+access$fetchSoraMaster
+access$getBaseUrl
+access$getMapper$p
+access$getSrcPriority$p
+access$getUserAgent$p
+access$resolveRecord
+access$resolveSoraCdn
+access$toJson
+access$trimTsJunk
+accessFlags
+actors
+add
+allowedPackages
+amassRegex
+amass\d+\.top
+answer$iv$iv$iv
+apiLevel
+apiUrl
+append
+application/vnd.apple.mpegurl
+areEqual
+attr
+baseUrl
+best
+block
+blockEnd
+blockStart
+body
+boxBoolean
+boxInt
+buffer
+build
+byte
+byteArray
+byteValue
+cachedBaseUrl
+/call to 'resume' before 'invoke' with coroutine
+callback
+candidates
+catRegex
+catSlug
+chain
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+checkRadix
+chinese
+cleaned
+clone
+close
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+compare
+compareValues
+component1
+component10
+component2
+component3
+component4
+component5
+component6
+component7
+component8
+component9
+configure
+contains
+contains$default
+containsMatchIn
+content
+contentStart
+contentType
+context
+copy
+copy$default
+copyOf
+copyOfRange
+create
+currentHash
+currentPackage
+currentPage
+currentSlug
+current_page
+data
+data-obf
+dataVodUrl
+deadHosts
+decode
+decode(...)
+decodeEnc
+destination$iv$iv
+digest
+direct
+directM3u8
+displayName
+distinct
+distinctBy
+div#player
+e$iv
+element$iv
+element$iv$iv
+embedOrigin
+embedUrl
+emitSoraSubtitles
+emitted
+emptyList
+encMatch
+enc_
+encoded
+end
+english
+entrySet
+epId
+epNum
+ep_
+episodeCurrent
+episode_current
+episodes
+equals
+expectedHashes
+expectedSignatures
+extractDevalue
+extractEpisodeNum
+extractM3u8FromPhimapi
+extractStreamcDirect
+extractorLink
+extras
+f$0
+f$1
+fetchAnimeList
+fetchList
+fetchRecommendations
+fetchSoraMaster
+find$default
+findActors
+findActors$lambda$45
+findActors$lambda$46
+findAll$default
+findInt
+findPlot
+findPlot$lambda$39
+findString
+firstOrNull
+fixed
+format
+format(...)
+french
+genres
+german
+get
+get$default
+getActor
+getActors
+getApkContentsSigners
+getApp
+getBaseUrl
+getBuffer
+getCOROUTINE_SUSPENDED
+getCurrentPage
+getData
+getDataVodUrl
+getDecoder
+getEpisodeCurrent
+getFirst
+getGroupValues
+getHasMainPage
+getHeaders
+getHost
+getId
+getInstance
+getKey
+getLang
+getLast
+getLinkEmbed
+getLinkM3u8
+getM3u8Url
+getMainPage
+getMainUrl
+getMaster
+getMovies
+getName
+getOrCreateKotlinClass
+getOrigin
+getOriginalTitle
+getPackageInfo
+getPackageManager
+getPackageName
+getPagination
+getParser
+getPosterUrl
+getQuality
+getQuery
+getRecords
+getScheme
+getServerName
+getSlug
+getSrc
+getStep
+getSupportedTypes
+getText
+getThumbUrl
+getTitle
+getTotalPages
+getType
+getUrl
+getValue
+getVideoInterceptor
+getYear
+grouped
+hasMainPage
+hasNext
+hasPlayableLink
+hashCode
+headers
+hex
+hihihohoRegex
+hihihoho\d+\.top
+hoathinh
+host
+html
+http
+https://k8s.onflixcdn.com/api
+https://onflix.lat
+https://onflix.lat/
+https://onflixstatus.com
+(https://pacebin.onrender.com/onflix.m3u8
+https://playembed.vip/
+#https://playembed.vip/player?ep_id=
+idStr
+idx
+img
+imgRaw
+index$iv$iv
+indexOf
+indexOf$default
+info
+input
+intValue
+intercept
+invoke
+invokeSuspend
+isAnime
+isBlank
+isCasting
+isDigit
+isEmpty
+isHostUsable
+isMovie
+it$iv$iv
+item$iv$iv
+iterator
+iterator$iv
+jacksonObjectMapper
+japanese
+joinToString$default
+key
+key$iv$iv
+kind
+korean
+label
+lang
+length
+link
+linkEmbed
+linkM3u8
+link_embed
+link_m3u8
+list$iv$iv
+listOf
+load
+load$lambda$20$lambda$19
+loadData
+loadLinks
+m3u8
+m3u8Url
+mainPage
+mainPageOf
+mainUrl
+mapNotNull
+mapOf
+mapper
+master
+matchEntire
+maxElem$iv
+maxValue$iv
+movieData
+movieRecords
+movies
+name
+needClassReification
+newBody
+newBuilder
+newEpisode
+newExtractorLink
+newHomePageResponse
+newMovieLoadResponse
+newMovieSearchResponse$default
+newSubtitleFile
+newTvSeriesLoadResponse
+!newTvSeriesSearchResponse$default
+next
+nextIndex
+noDirectLink
+obf
+ogUrl
+onflix_secure_stream_v2_2026
+orderedRecords
+origin
+originalTitle
+original_title
+other
+outer
+page
+pageUrl
+pagination
+params
+parse
+parseEpisodeRecords
+parseInt
+parseJson
+parseSafe
+payload
+peHtml
+phim-le
+playResp
+playUrl
+playVid
+playVidUrl
+play_vid
+playable
+player.phimapi.com/player/
+plot
+post$default
+poster
+posterUrl
+poster_url
+printStackTrace
+proceed
+;property=["']og:url["']\s+content=["'](https?://[^"']+)["']
+put
+qid
+qualities
+quality
+query
+raw
+rawLabel
+rawName
+rawPlot
+rawType
+rawUrl
+readByteArray
+readValue
+readValue(...)
+rec
+recloudstream.OnflixProvider
+2recloudstream.OnflixProvider$emitSoraSubtitles$2$1
+#recloudstream.OnflixProvider$load$3
+#recloudstream.OnflixProvider$load$4
+#recloudstream.OnflixProvider$load$5
+,recloudstream.OnflixProvider$resolveRecord$2
+,recloudstream.OnflixProvider$resolveRecord$3
+-recloudstream.OnflixProvider$resolveSoraCdn$2
+2recloudstream/OnflixProvider$getVideoInterceptor$1
+*recloudstream/OnflixProviderKt$parseJson$1
+recommendations
+records
+recs
+ref
+registerMainAPI
+removePrefix
+replace
+replace$default
+request
+resolveRecord
+resolveSoraCdn
+resolved
+resp
+response
+responseBody
+result
+results
+sUb
+search
+selectFirst
+serverName
+server_name
+setActors
+setBackgroundPosterUrl
+setEpisode
+setHeaders
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setTags
+setYear
+sig
+signatures
+signingInfo
+size
+slug
+sora
+soraKey
+soraRecord
+sortedWith
+source
+spain
+split$default
+src
+srcPriority
+ss.onflixstream.site
+start
+startsWith$default
+statusPage
+step
+streamc.xyz
+sub
+subShown
+subUrl
+subs
+substring
+substring(...)
+substringAfter$default
+substringAfterLast$default
+substringBefore$default
+subtitleCallback
+subtitleEnName
+subtitles
+supportedTypes
+tags
+take
+text
+thailand
+this
+this$0
+this_$iv
+throwOnFailure
+thumbUrl
+thumb_url
+tieng-anh
+tieng-duc
+tieng-han
+tieng-nhat
+tieng-phap
+tieng-tay-ban-nha
+tieng-thai
+tieng-trung
+tieng-viet
+title
+toByteArray
+toIntOrNull
+toJson
+toList
+toLowerCase
+toLowerCase(...)
+toSearchResponse
+toSearchResponse$lambda$5
+toSearchResponse$lambda$6
+toSortedMap
+toString
+toString(...)
+totalPages
+total_episode
+total_pages
+trim
+trimEnd
+trimTsJunk
+tvType
+type
+unescapeUnicode
+unescapeUnicode$lambda$42
+until
+url
+url=
+urlParam
+userAgent
+v$iv
+value
+value$iv
+value$iv$iv$iv
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vietnamese
+vip.opstream90.com
+vodHeaders
+writeValueAsString
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/OnflixEpisodeRecord;":"dd89fbb1","Lrecloudstream/OnflixListResponse;":"668457f6","Lrecloudstream/OnflixLoadData;":"17740142","Lrecloudstream/OnflixMovieItem;":"24e4975c","Lrecloudstream/OnflixPagination;":"5deda725","Lrecloudstream/OnflixPlugin$$ExternalSyntheticLambda0;":"14d3fa6eb","Lrecloudstream/OnflixPlugin;":"7198c549","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda0;":"-25b9f1f92","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda1;":"-1867080c5","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda2;":"-10ee6ea69","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda3;":"-1f135e2c2","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda4;":"-8095aed1","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda5;":"20616d612","Lrecloudstream/OnflixProvider$$ExternalSyntheticLambda6;":"-28483d4b5","Lrecloudstream/OnflixProvider$SoraCdnData;":"80812c3d","Lrecloudstream/OnflixProvider$StreamcRef;":"d53d7167","Lrecloudstream/OnflixProvider$emitSoraSubtitles$1;":"b85a8931","Lrecloudstream/OnflixProvider$emitSoraSubtitles$2$1;":"42c80d02","Lrecloudstream/OnflixProvider$extractStreamcDirect$$inlined$parseJson$1;":"da52c3fb","Lrecloudstream/OnflixProvider$extractStreamcDirect$1;":"d371128a","Lrecloudstream/OnflixProvider$fetchAnimeList$1;":"c6e46486","Lrecloudstream/OnflixProvider$fetchList$1;":"7f28c1ca","Lrecloudstream/OnflixProvider$fetchRecommendations$1;":"7beaf004","Lrecloudstream/OnflixProvider$fetchSoraMaster$1;":"1c6dc0ce","Lrecloudstream/OnflixProvider$getBaseUrl$1;":"2cb59158","Lrecloudstream/OnflixProvider$getMainPage$1;":"5ce967ea","Lrecloudstream/OnflixProvider$getVideoInterceptor$1;":"7a59aa9f","Lrecloudstream/OnflixProvider$load$1;":"42988651","Lrecloudstream/OnflixProvider$load$3;":"19c564b2","Lrecloudstream/OnflixProvider$load$4;":"75924e90","Lrecloudstream/OnflixProvider$load$5;":"997e7e81","Lrecloudstream/OnflixProvider$loadLinks$$inlined$parseJson$1;":"d88d23b7","Lrecloudstream/OnflixProvider$loadLinks$$inlined$sortedByDescending$1;":"97856db0","Lrecloudstream/OnflixProvider$loadLinks$1;":"3f17ee19","Lrecloudstream/OnflixProvider$resolveRecord$1;":"3841035","Lrecloudstream/OnflixProvider$resolveRecord$2;":"42d79432","Lrecloudstream/OnflixProvider$resolveRecord$3;":"d2cdd6ce","Lrecloudstream/OnflixProvider$resolveSoraCdn$1;":"522bbd63","Lrecloudstream/OnflixProvider$resolveSoraCdn$2;":"c0fd0b6e","Lrecloudstream/OnflixProvider$search$1;":"5aab58de","Lrecloudstream/OnflixProvider;":"302d57c1","Lrecloudstream/OnflixProviderKt$parseJson$1;":"9a86cd8c","Lrecloudstream/OnflixProviderKt;":"ca3b83c2","Lrecloudstream/OnflixSearchResponse;":"50ce647f"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l

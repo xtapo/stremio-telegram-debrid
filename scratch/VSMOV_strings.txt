@@ -1,0 +1,1495 @@
+dex
+035
+)Qk6m
+j`(dw
+xV4
+5V@
+n P
+r [
+q S
+q D
+q m
+q n
+r Y
+p ;
+p ;
+q0X
+q Y
+ ae
+q k
+q k
+n M
+n M
+n M
+n M
+n J
+1pP
+ ag
+q k
+q k
+q k
+n M
+n N
+n M
+n M
+n M
+n L
+n M
+n L
+n J
+ ah
+q k
+q k
+q k
+q k
+n M
+n M
+n M
+n M
+n M
+n M
+n M
+n M
+n J
+ ai
+q k
+q k
+n M
+n M
+n M
+n L
+n J
+q n
+q n
+1pP
+q n
+q n
+ aj
+TS"
+q k
+TS$
+q k
+TS 
+q k
+TS#
+q k
+TS%
+q k
+TS(
+q k
+TS'
+q k
+q k
+TS!
+q k
+q k
+TS&
+q k
+T@"
+T@"
+TC$
+TC$
+TC 
+TC 
+TC#
+TC#
+TC%
+TC%
+TC(
+TC(
+TC'
+TC'
+TC!
+TC!
+TC&
+TA&
+n M
+T2"
+n M
+n M
+T2$
+n M
+n M
+T2 
+n M
+n M
+T2#
+n L
+n M
+T2%
+n L
+n M
+T2(
+n L
+n M
+T2'
+n M
+n M
+n L
+n M
+T2!
+n L
+n M
+n L
+n M
+T2&
+n L
+n J
+ ak
+TS)
+q k
+TS+
+q k
+TS*
+q k
+TS,
+q k
+TS.
+q k
+TS-
+q k
+T@)
+T@)
+TC+
+TC+
+TC*
+TC*
+TC,
+TC,
+TC.
+TC.
+TC-
+TA-
+n M
+T!)
+n M
+n M
+T!+
+n M
+n M
+T!*
+n L
+n M
+T!,
+n L
+n M
+T!.
+n L
+n M
+T!-
+n L
+n J
+TE)
+TF+
+TG*
+TH,
+TI.
+TJ-
+ am
+US0
+TS/
+q k
+U00
+T2/
+n M
+U!0
+n N
+n M
+T!/
+n L
+n J
+q n
+q n
+ an
+TS1
+q k
+TS2
+q k
+TS3
+q k
+T@1
+T@1
+TC2
+TC2
+TC3
+TA3
+n M
+T!1
+n L
+n M
+T!2
+n M
+n M
+T!3
+n L
+n J
+ ao
+TS5
+q k
+TS6
+q k
+TS4
+q k
+T@5
+T@5
+TC6
+TC6
+TC4
+TA4
+n M
+T!5
+n M
+n M
+T!6
+n M
+n M
+T!4
+n M
+n J
+ Qp
+TC7
+q k
+n M
+T!7
+n M
+n J
+n %
+p "
+p@#
+p "
+[4;
+R0:
+Y0:
+T0<
+q0[
+p h
+[E@
+R@?
+Y@?
+T@A
+n@b
+p h
+[4M
+R0L
+Y0L
+T0N
+n0h
+p h
+n06
+n 9
+n07
+R V
+p =
+T U
+T!R
+T!P
+T!Q
+n  
+T!Q
+T!T
+T!O
+T!S
+ p0i
+n0;
+n >
+n0<
+R ^
+p =
+T ]
+T!Z
+n '
+T!X
+n %
+T!Y
+n *
+T!Y
+n &
+T!\
+n )
+T!W
+n $
+T![
+n (
+ p0i
+[xi
+Rph
+Yph
+Tqj
+p h
+n0B
+n E
+n0C
+R0l
+p =
+T0k
+T2m
+n M
+n J
+n 0
+n /
+T!m
+p0A
+ p0i
+n0G
+n J
+n0H
+R q
+p =
+T p
+T!n
+n 0
+R!o
+n /
+T1n
+R2o
+p@F
+ p0i
+n0L
+n O
+n0M
+R t
+p =
+T s
+T!r
+n 0
+n /
+T!r
+p0K
+ p0i
+n0Q
+n T
+n0R
+R w
+p =
+T v
+T!u
+n 0
+n /
+T!u
+p0P
+ p0i
+[4z
+R0y
+Y0y
+T0{
+n0l
+p h
+q m
+q k
+q k
+n M
+n M
+n M
+n C
+n C
+n C
+q k
+p0^
+p0-
+TC;
+RE:
+p =
+T@9
+TE8
+n M
+n M
+n M
+n M
+[N8
+[L9
+YO:
+q m
+q k
+r T
+q b
+p p
+r T
+p00
+p =
+n M
+n M
+n M
+n M
+n K
+n M
+q m
+p p
+r T
+p03
+p =
+(lq
+q]}
+n M
+n M
+n M
+q m
+ g:
+ g:
+ g:
+]p0g
+r X
+r T
+r T
+p0^
+3;X
+p0?
+p =
+(Kq
+qX|
+q0u
+p0A
+r j
+qZv
+n M
+n J
+q ]
+q ]
+p0\
+p0\
+p ]
+q k
+n M
+n M
+n M
+n M
+p0\
+qS|
+(^9
+qS~
+qS|
+n M
+n M
+n M
+n J
+n M
+p k
+r j
+F(:
+p0s
+'qS~
+qSt
+2P 
+n M
+n 1
+n M
+p@F
+Nr j
+p r
+qSt
+r Z
+p0K
+r j
+p0\
+q0u
+p0P
+r j
+qQ|
+n M
+n J
+q_-
+p0V
+p =
+(aq
+n M
+n M
+n M
+n M
+q m
+p p
+r T
+n M
+n M
+n M
+p r
+qUt
+r Z
+n M
+n M
+n M
+p r
+qUt
+r Z
+n H
+q m
+n C
+n C
+n C
+n C
+n C
+q0i
+q q
+q n
+q0w
+((q
+n M
+n M
+r 8
+r 5
+q n
+n "
+n #
+n B
+n0G
+q m
+q m
+\p|
+[q~
+\p}
+q ]
+q ]
+q ]
+q ]
+q ]
+q ]
+q ]
+q ]
+q n
+q n
+q n
+;ml
+<-*
+<---(
+<---(
+<-*
+K+LH>
+<----------
+x+[*\)](m
+{,n
+z,o
+y,p
+x,q
+w,r
+<-----
+Z+[*\)](^
+{,_
+Y<-*
+LH>
+<--)
+<--)
+::K
+ZZZ
+::K
+ZZZ
+::K
+::K
+F#ZZ
+::K
+F#Z
+::K
+F#Z
+jiZ
+::J
+::J
+::J
+::J
+zJ&
+{J%
+!::i
+::J
+;EY
+KHY
+KKiLKxK-\
+<KK<K-
+0!2
+032
+GHIJKLMNOPB
+0%2
+0-2
+0/2
+01H
+0)2
+072
+0)2
+0;H
+<JF
+0C0A2
+0C0AH
+0*0)X
+$actors
+$background
+$completion
+$continuation
+$data
+$ep
+$$i$a$-apply-VsmovProviderKt$mapper$1
+1$i$a$-filter-VsmovProvider$fetchRecommendations$2
+'$i$a$-filter-VsmovProvider$load$2$1$1$2
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
++$i$a$-forEach-VsmovPlugin$verifySignature$1
+"$i$a$-forEach-VsmovProvider$load$2
+$$i$a$-forEach-VsmovProvider$load$2$1
+'$i$a$-forEach-VsmovProvider$loadLinks$3
+($i$a$-ifBlank-VsmovProvider$load$2$1$1$1
+-$i$a$-ifBlank-VsmovProvider$mapSubtitleLang$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+&$i$a$-let-VsmovProvider$extractJsVar$1
+&$i$a$-let-VsmovProvider$extractJsVar$2
++$i$a$-let-VsmovProvider$loadLinks$quality$1
+5$i$a$-mapNotNull-VsmovProvider$fetchRecommendations$3
+6$i$a$-mapNotNull-VsmovProvider$getMainPage$homeItems$1
+,$i$a$-mapNotNull-VsmovProvider$load$actors$1
+*$i$a$-mapNotNull-VsmovProvider$load$tags$1
+'$i$a$-mapNotNull-VsmovProvider$search$2
+$i$f$filter
+$i$f$filterTo
+$i$f$forEach
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$parseJson
+$movie
+$poster
+$quality
+&$r8$lambda$BWRKERN8Nsfl7YPTc1O9-eEikLk
+&$r8$lambda$Q12_rqweHBTe2AxFQxuYaDIk9lw
+&$r8$lambda$forofd6LqoFdpkM4vHVt34KkAKk
+$recommendations
+$result
+$serverName
+$tags
+$this
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapper_u24lambda_u240
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newMovieSearchResponse
+$this$newTvSeriesLoadResponse
+$this$toSearchResponse
+$this_toSearchResponse
+%02X
+&limit=24
+()Ljava/lang/Boolean;
+()Ljava/lang/Integer;
+()Ljava/lang/Object;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+)()Lrecloudstream/VsmovProvider$MovieInfo;
+(()Lrecloudstream/VsmovProvider$TmdbInfo;
+()V
+()Z
+(?:const|let|var)\s+\Q
+G(?:const|let|var)\s+url\s*=\s*[`'"](https?://[^`'"]+\.m3u8[^`'"]*)[`'"]
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+b(Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)Lrecloudstream/VsmovProvider$PlayerOptions;
+8(Ljava/lang/Boolean;Ljava/lang/String;Ljava/util/List;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+'(Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;Lrecloudstream/VsmovProvider$TmdbInfo;)Lrecloudstream/VsmovProvider$MovieItem;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;Lrecloudstream/VsmovProvider$TmdbInfo;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lrecloudstream/VsmovProvider$TmdbInfo;)Lrecloudstream/VsmovProvider$MovieInfo;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Integer;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Lrecloudstream/VsmovProvider$TmdbInfo;)V
+K(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+%(Ljava/lang/String;Ljava/util/List;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+[(Lrecloudstream/VsmovProvider$MovieInfo;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+M(ZLjava/lang/String;Lrecloudstream/VsmovProvider$MovieInfo;Ljava/util/List;)V
+(ZLjava/util/List;)V
+(\d{3,4})p|4k
+)TT;
+*>;)
+, ]
+, actor=
+, category=
+, code=
+, content=
+, director=
+, episodes=
+, items=
+, link_embed=
+, link_m3u8=
+, movie=
+, msg=
+, poster_url=
+, server_data=
+, signedMasterUrl=
+, slug=
+, subtitles=
+, thumb_url=
+, tmdb=
+, type=
+, url=
+, year=
+, }
+.m3u8
+/api/danh-sach/
+/api/phim/
+/api/the-loai/
+/api/tim-kiem?keyword=
+/master.m3u8
+/phim/
+/stream/
+/video/
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+</head>
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;)
+?page=
+?page=1&limit=15
+ALLOW_SINGLE_QUOTES
+ALLOW_UNQUOTED_FIELD_NAMES
+Anime
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+CategoryInfo
+CategoryInfo(name=
+Companion
+D8$$SyntheticClass
+DetailResponse
+DetailResponse(status=
+English
+EpisodeData
+EpisodeData(name=
+EpisodeServer
+EpisodeServer(server_name=
+FAIL_ON_UNKNOWN_PROPERTIES
+Full
+IGNORE_CASE
+ILCIZIL
+ILLIZIL
+INSTANCE
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LII
+LILL
+LLI
+LLL
+LLLIIL
+LLLIL
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLIL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLIL
+LLLLLLLLLLLL
+LLLLLLLLLLLLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLZ
+LLZLIL
+LLZLLL
+LLZLLLIL
+LZL
+LZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/core/JsonParser$Feature;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+7Lcom/fasterxml/jackson/databind/DeserializationFeature;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+"Lcom/lagradost/cloudstream3/Actor;
+&Lcom/lagradost/cloudstream3/ActorData;
+&Lcom/lagradost/cloudstream3/ActorRole;
+$Lcom/lagradost/cloudstream3/Episode;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
+0Lcom/lagradost/cloudstream3/MovieSearchResponse;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+6Lcom/lagradost/cloudstream3/utils/Qualities$Companion;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/lang/Appendable;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Iterator;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map;
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/RegexOption;
+Lkotlin/text/StringsKt;
+Lokhttp3/Interceptor;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+5Lrecloudstream/VsmovPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/VsmovPlugin;
+7Lrecloudstream/VsmovProvider$$ExternalSyntheticLambda0;
+7Lrecloudstream/VsmovProvider$$ExternalSyntheticLambda1;
+*Lrecloudstream/VsmovProvider$CategoryInfo;
+HLrecloudstream/VsmovProvider$DetailResponse$$ExternalSyntheticBackport0;
+,Lrecloudstream/VsmovProvider$DetailResponse;
+)Lrecloudstream/VsmovProvider$EpisodeData;
++Lrecloudstream/VsmovProvider$EpisodeServer;
+'Lrecloudstream/VsmovProvider$MovieInfo;
+'Lrecloudstream/VsmovProvider$MovieItem;
+GLrecloudstream/VsmovProvider$PagedResponse$$ExternalSyntheticBackport0;
++Lrecloudstream/VsmovProvider$PagedResponse;
++Lrecloudstream/VsmovProvider$PlayerOptions;
+,Lrecloudstream/VsmovProvider$PlayerSubtitle;
+&Lrecloudstream/VsmovProvider$TmdbInfo;
+GLrecloudstream/VsmovProvider$extractPlayerOptions$$inlined$parseJson$1;
+GLrecloudstream/VsmovProvider$fetchRecommendations$$inlined$parseJson$1;
+4Lrecloudstream/VsmovProvider$fetchRecommendations$1;
+>Lrecloudstream/VsmovProvider$getMainPage$$inlined$parseJson$1;
++Lrecloudstream/VsmovProvider$getMainPage$1;
+7Lrecloudstream/VsmovProvider$load$$inlined$parseJson$1;
+$Lrecloudstream/VsmovProvider$load$1;
+$Lrecloudstream/VsmovProvider$load$3;
+$Lrecloudstream/VsmovProvider$load$4;
+)Lrecloudstream/VsmovProvider$loadLinks$1;
+)Lrecloudstream/VsmovProvider$loadLinks$2;
+)Lrecloudstream/VsmovProvider$loadLinks$4;
+)Lrecloudstream/VsmovProvider$loadLinks$5;
+)Lrecloudstream/VsmovProvider$loadLinks$6;
+9Lrecloudstream/VsmovProvider$search$$inlined$parseJson$1;
+&Lrecloudstream/VsmovProvider$search$1;
+Lrecloudstream/VsmovProvider;
++Lrecloudstream/VsmovProviderKt$parseJson$1;
+Lrecloudstream/VsmovProviderKt;
+M3U8
+Movie
+MovieInfo
+MovieInfo(name=
+MovieItem
+MovieItem(name=
+<Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
+PagedResponse
+PagedResponse(status=
+Phim 4K
+Phim B
+Phim L
+Phim L
+ng Ti
+Phim M
+i C
+p Nh
+Phim Thuy
+t Minh
+Phim 
+ang Chi
+PlayerOptions
+PlayerOptions(enableSignedUrl=
+PlayerSubtitle
+PlayerSubtitle(name=
+ROOT
+Referer
+SDK_INT
+SHA-256
+SMAP
+VsmovPlugin.kt
+Kotlin
+*S Kotlin
++ 1 VsmovPlugin.kt
+recloudstream/VsmovPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 VsmovPlugin.kt
+recloudstream/VsmovPlugin
+49#1:60,2
+SMAP
+VsmovProvider.kt
+Kotlin
+*S Kotlin
++ 1 VsmovProvider.kt
+recloudstream/VsmovProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 VsmovProvider.kt
+recloudstream/VsmovProviderKt
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 5 _Strings.kt
+kotlin/text/StringsKt___StringsKt
+1#1,458:1
+1#2:459
+1#2:472
+1#2:486
+1#2:504
+1#2:517
+1#2:534
+18#3:460
+18#3:461
+18#3:475
+18#3:489
+18#3:520
+1611#4,9:462
+1863#4:471
+1864#4:473
+1620#4:474
+1611#4,9:476
+1863#4:485
+1864#4:487
+1620#4:488
+1863#4:490
+1863#4,2:491
+1864#4:493
+1611#4,9:494
+1863#4:503
+1864#4:505
+1620#4:506
+1611#4,9:507
+1863#4:516
+1864#4:518
+1620#4:519
+774#4:521
+865#4,2:522
+1611#4,9:524
+1863#4:533
+1864#4:535
+1620#4:536
+1863#4,2:537
+434#5:539
+507#5,5:540
+*S KotlinDebug
++ 1 VsmovProvider.kt
+recloudstream/VsmovProvider
+212#1:472
+224#1:486
+269#1:504
+270#1:517
+307#1:534
+177#1:460
+210#1:461
+222#1:475
+239#1:489
+303#1:520
+212#1:462,9
+212#1:471
+212#1:473
+212#1:474
+224#1:476,9
+224#1:485
+224#1:487
+224#1:488
+248#1:490
+250#1:491,2
+248#1:493
+269#1:494,9
+269#1:503
+269#1:505
+269#1:506
+270#1:507,9
+270#1:516
+270#1:518
+270#1:519
+305#1:521
+305#1:522,2
+307#1:524,9
+307#1:533
+307#1:535
+307#1:536
+370#1:537,2
+262#1:539
+262#1:540,5
+Subteam
+TT;>;
+TmdbInfo
+TmdbInfo(type=
+TvSeries
+Unknown
+User-Agent
+VIL
+VLIL
+VLL
+VLLIL
+VLLL
+VLLLIL
+VLLLL
+VLLLLIL
+VLLLLLL
+VLLLLLLIL
+VLLLLLLL
+VLLLLLLLLLLL
+VLLLLLLLLLLLIL
+VSMOV
+VSMOV 
+VSMOV HD
+VSMOV VIP
+VSMOV_debug
+VZL
+VZLIL
+VZLLL
+VZLLLIL
+Vietnamese
+VsmovPlugin.kt
+VsmovProvider.kt
+ZLL
+ZLLZ
+ZLLZIL
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+\E\s*=\s*["']([^"']+)["']
+access$fetchRecommendations
+access$getMapper$p
+accessFlags
+actor
+actors
+add
+allowedPackages
+apiLevel
+apiUrl
+append
+areEqual
+background
+base
+baseUrl
+boxBoolean
+boxInt
+byteValue
+/call to 'resume' before 'invoke' with coroutine
+callback
+category
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+code
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+component1
+component10
+component11
+component2
+component3
+component4
+component5
+component6
+component7
+component8
+component9
+configure
+const playerOptions = 
+contains
+contains$default
+content
+context
+copy
+copy$default
+copyOf
+create
+currentHash
+currentPackage
+dang-chieu
+data
+depth
+destination$iv$iv
+digest
+director
+element$iv
+element$iv$iv
+emptyList
+enableSignedUrl
+eng
+episodes
+equals
+escaped
+expectedHashes
+expectedSignatures
+extractJsVar
+extractPlayerOptions
+f$0
+f$1
+fetchRecommendations
+find$default
+firstCat
+firstOrNull
+format
+format(...)
+fullSubUrl
+get
+get$default
+getActor
+getApkContentsSigners
+getApp
+getCOROUTINE_SUSPENDED
+getCategory
+getCode
+getContent
+getData
+getDirector
+getEnableSignedUrl
+getEpisodes
+getGroupValues
+getHasMainPage
+getHasQuickSearch
+getInstance
+getItems
+getLang
+getLink_embed
+getLink_m3u8
+getMainPage
+getMainUrl
+getMovie
+getMsg
+getName
+getPackageInfo
+getPackageManager
+getPackageName
+getPoster_url
+getQualityFromName
+getServer_data
+getServer_name
+getSignedMasterUrl
+getSlug
+getStatus
+getStringByInt
+getSubtitles
+getSupportedTypes
+getText
+getThumb_url
+getTmdb
+getTvType
+getType
+getUrl
+getValue
+getYear
+hasMainPage
+hasNext
+hasQuickSearch
+hashCode
+hoathinh
+homeItems
+html
+http
+https://vsmov.com
+inString
+index$iv$iv
+indexOf$default
+info
+invoke
+invokeSuspend
+isBlank
+isCasting
+isDigit
+isEmpty
+it$iv$iv
+item
+items
+iterator
+jacksonObjectMapper
+joinToString$default
+json
+kind
+label
+lang
+legacyRegex
+length
+linkToPlay
+link_embed
+link_m3u8
+listOf
+load
+ load$lambda$10$lambda$9$lambda$8
+loadExtractor
+loadLinks
+long-tieng
+m3u8Link
+mainPage
+mainPageOf
+mainUrl
+mapOf
+mapSubtitleLang
+mapper
+match
+movie
+movieType
+msg
+name
+needClassReification
+newEpisode
+newExtractorLink
+newHomePageResponse
+newMovieLoadResponse
+newMovieSearchResponse$default
+newSubtitleFile$default
+newTvSeriesLoadResponse
+next
+objStart
+options
+other
+page
+parseJson
+phim-bo
+phim-le
+phim-moi-cap-nhat
+playerSource
+poster
+poster_url
+printStackTrace
+quality
+qualityMatch
+query
+rawName
+readValue
+readValue(...)
+recloudstream.VsmovProvider
+"recloudstream.VsmovProvider$load$3
+"recloudstream.VsmovProvider$load$4
+'recloudstream.VsmovProvider$loadLinks$2
+'recloudstream.VsmovProvider$loadLinks$4
+'recloudstream.VsmovProvider$loadLinks$5
+'recloudstream.VsmovProvider$loadLinks$6
+)recloudstream/VsmovProviderKt$parseJson$1
+recommendations
+registerMainAPI
+replace$default
+request
+resp
+response
+result
+search
+series
+server
+serverName
+server_data
+server_name
+setActors
+setBackgroundPosterUrl
+setEpisode
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setTags
+setYear
+sig
+signatures
+signedMasterUrl
+signingInfo
+singleUrl
+slug
+start
+startsWith$default
+status
+streamvsmov.com/video/
+sub
+subUrl
+substring
+substring(...)
+substringAfterLast$default
+substringBefore$default
+subteam
+subtitleCallback
+subtitles
+supportedTypes
+tags
+take
+this
+this$0
+throwOnFailure
+thumb_url
+thuyet-minh
+title
+tmdb
+tmdbType
+toByteArray
+toIntOrNull
+toLowerCase
+toLowerCase(...)
+toSearchResponse
+toSearchResponse$lambda$0
+toString
+trim
+tvType
+tvshows
+type
+url
+value
+valueOf
+varName
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+videoHash
+videoSrc
+vie
+window\.\Q
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/VsmovPlugin$$ExternalSyntheticLambda0;":"258f5510e","Lrecloudstream/VsmovPlugin;":"8e9a111b","Lrecloudstream/VsmovProvider$$ExternalSyntheticLambda0;":"-34f484502","Lrecloudstream/VsmovProvider$$ExternalSyntheticLambda1;":"-5d4d5d373","Lrecloudstream/VsmovProvider$CategoryInfo;":"1697e75f","Lrecloudstream/VsmovProvider$DetailResponse$$ExternalSyntheticBackport0;":"-155fc3825","Lrecloudstream/VsmovProvider$DetailResponse;":"8a7faf46","Lrecloudstream/VsmovProvider$EpisodeData;":"d8291576","Lrecloudstream/VsmovProvider$EpisodeServer;":"7457cc91","Lrecloudstream/VsmovProvider$MovieInfo;":"b5b846f8","Lrecloudstream/VsmovProvider$MovieItem;":"7ca241d7","Lrecloudstream/VsmovProvider$PagedResponse$$ExternalSyntheticBackport0;":"6b4becc","Lrecloudstream/VsmovProvider$PagedResponse;":"3b61c46b","Lrecloudstream/VsmovProvider$PlayerOptions;":"176c1e0e","Lrecloudstream/VsmovProvider$PlayerSubtitle;":"cc992eba","Lrecloudstream/VsmovProvider$TmdbInfo;":"e41615cf","Lrecloudstream/VsmovProvider$extractPlayerOptions$$inlined$parseJson$1;":"70fe29e1","Lrecloudstream/VsmovProvider$fetchRecommendations$$inlined$parseJson$1;":"4f36d4e3","Lrecloudstream/VsmovProvider$fetchRecommendations$1;":"216beb5d","Lrecloudstream/VsmovProvider$getMainPage$$inlined$parseJson$1;":"43e54c3c","Lrecloudstream/VsmovProvider$getMainPage$1;":"4ac6c2b2","Lrecloudstream/VsmovProvider$load$$inlined$parseJson$1;":"385700b6","Lrecloudstream/VsmovProvider$load$1;":"c8563db7","Lrecloudstream/VsmovProvider$load$3;":"eb400464","Lrecloudstream/VsmovProvider$load$4;":"ad1fffb3","Lrecloudstream/VsmovProvider$loadLinks$1;":"fcd225ab","Lrecloudstream/VsmovProvider$loadLinks$2;":"531671fc","Lrecloudstream/VsmovProvider$loadLinks$4;":"90a0bac2","Lrecloudstream/VsmovProvider$loadLinks$5;":"98742e6e","Lrecloudstream/VsmovProvider$loadLinks$6;":"c72e05a5","Lrecloudstream/VsmovProvider$search$$inlined$parseJson$1;":"1063dcef","Lrecloudstream/VsmovProvider$search$1;":"cc8c0235","Lrecloudstream/VsmovProvider;":"51642af3","Lrecloudstream/VsmovProviderKt$parseJson$1;":"7e6b7fb2","Lrecloudstream/VsmovProviderKt;":"234b447a"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+W7r
+a75
+R7>
+l7+
+N73
+l7+
+ 7^
+m7?
+X74
+R73
+U7(
+g75
+R7>
+M7+
+N73
+M7+
+h7<
+R7;
+M7+
+N73
+N73
+M7+
+p7a
+87a
+f75
+R7>
+Q7D
+P7(
+S7&
+&7b
+c75
+R7>
+Q7D
+P7(
+l73
+N73
+l73
+n7?
+X7-
+M7!
+N73
+M7!
+^7'
+O7!
+R7A
+d75
+R7H
+`7G
+M7x
+M7x
+M7x
+M7+
+M7*
+s7D
+M7+
+M7x
+M7x
+M7+
+M7+
+M7+
+M7x
+M7a
+N77
+N73
+M7+
+M7+
+M7+
+R7x
+W7{
+X7k
+i7r
+k7u

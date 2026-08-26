@@ -1,0 +1,1280 @@
+dex
+035
+xV4
+5V@
+n T
+r d
+q Y
+q A
+q {
+q |
+r _
+p :
+p :
+p v
+p v
+q |
+32L
+[4(
+R0'
+Y0'
+T0)
+p v
+R 1
+p ;
+T 0
+T!,
+n %
+T!/
+n )
+T!*
+n $
+T!.
+n '
+T!+
+n (
+T!-
+n &
+ p0w
+R 9
+p ;
+T 8
+T!4
+T!7
+n !
+T!2
+T!6
+T!3
+n  
+T!5
+ p0w
+R0=
+p ;
+T0<
+T2:
+n K
+n G
+n .
+n -
+T1;
+n ,
+T1:
+T2;
+ p0w
+p ;
+K(Q
+Xq k
+q {
+q {
+&q^
+n G
+n0I
+n K
+n K
+2#$
+q k
+q k
+q k
+q m
+q ~
+p ^
+r `
+r `
+q k
+r0c
+n K
+n K
+n K
+n K
+r b
+n K
+n K
+r b
+n K
+b#$
+q k
+q k
+q k
+q k
+q k
+q k
+r x
+r b
+n K
+n K
+n K
+n K
+n K
+n K
+r b
+n K
+n K
+n K
+n K
+r b
+n K
+n K
+n K
+n K
+n @
+n0E
+q {
+q {
+r b
+r b
+[FA
+[GB
+[FC
+mYMF
+r x
+T(5
+TqG
+Tr?
+Ts>
+Tt@
+ p0w
+R J
+p ;
+T I
+T!H
+n .
+n -
+T!H
+ p0w
+p ;
+%(H
+q {
+q {
+n K
+n K
+r x
+TAL
+TBO
+TCK
+ p0w
+p ;
+q {
+TqQ
+TrU
+TsP
+TtR
+[hS
+ p0w
+[4X
+R0W
+Y0W
+T0Y
+p v
+q {
+%(F
+%(,
+q {
+'qQ
+n K
+n K
+n K
+n K
+q Y
+q A
+q {
+p ;
+n K
+n K
+n K
+q {
+q {
+q {
+r 7
+r 4
+n K
+n K
+q {
+,qZ
+q {
+n K
+n K
+n K
+n K
+n X
+p ;
+q y
+q {
+r Z
+n K
+n K
+n H
+q {
+r Z
+p ;
+(Kq
+q {
+n K
+n K
+q {
+q {
+n0#
+q {
+q m
+p W
+r Z
+q {
+r Z
+q {
+ vA
+(,r
+n K
+n K
+n K
+n K
+p ;
+(^q
+n K
+n K
+n K
+q {
+r Z
+q S
+n K
+n K
+p N
+n Q
+n K
+n K
+p N
+n K
+n K
+n K
+n B
+q {
+n T
+n K
+n K
+q |
+q |
+n "
+q |
+[p^
+[p_
+\p[
+[q\
+\pZ
+[r`
+b#"
+q k
+q k
+q k
+q k
+q k
+q k
+[p]
+q |
+q |
+q |
+TSd
+q y
+TSe
+q y
+TSf
+q y
+TSg
+q y
+TSc
+q y
+TSb
+q y
+T@d
+TBe
+TBe
+TBf
+TBg
+TBg
+TBc
+TBc
+TBb
+TBb
+n K
+T!d
+n K
+n K
+T!e
+n K
+n K
+T!f
+n K
+n K
+T!g
+n J
+n K
+T!c
+n J
+n K
+T!b
+n J
+n G
+TEd
+TFe
+TGf
+THg
+TIc
+TJb
+q |
+q |
+q |
+q |
+8ml
+LH#
+B7K
+ZZZZZZ
+B7K
+ZZZZZZ
+B7K
+=B7
+zJ%
+xh'
+Fi-
+:/-
+=B7
+B7K
+T#Z
+B7i
+x,%
+B7K
+B7J
+T-i
+B7J
+B7J
+M6-
+-<-=
+{,%
+B7J
+*fP
+SY<<
+VY<
+<KK<K
+<-----
+{,_
+0!H
+0'2
+0)2
+0+H
+0.*
+0/H
+010#2
+052
+3J.
+070#2
+0)H
+;JF
+0B0@2
+0B0@H
+0$0#X
+$callback
+$cdn
+$completion
+$continuation
+$data
+$description
+$epNum
+$fullPosterUrl
+$genres
+$headersMap
+'$i$a$-any-BluPhimProvider$load$tvType$1
+6$i$a$-associate-BluPhimProvider$loadLinks$2$1$tokens$1
+2$i$a$-filter-BluPhimProvider$getEpisodes$2$epNum$1
+1$i$a$-find-BluPhimProvider$loadLinks$2$1$script$1
+6$i$a$-find-BluPhimProvider$loadLinks$2$2$oPhimScript$1
+-$i$a$-forEach-BluPhimPlugin$verifySignature$1
++$i$a$-forEach-BluPhimProvider$getEpisodes$2
+-$i$a$-forEach-BluPhimProvider$loadLinks$2$1$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+8$i$a$-getOrElse-BluPhimProvider$loadLinks$2$1$tokens$1$1
+&$i$a$-let-BluPhimProvider$getBaseUrl$1
+4$i$a$-let-BluPhimProvider$getEpisodes$2$server2Url$1
+;$i$a$-let-BluPhimProvider$getVideoInterceptor$1$intercept$1
+'$i$a$-let-BluPhimProvider$load$poster$1
+)$i$a$-let-BluPhimProvider$load$watchUrl$1
+8$i$a$-let-BluPhimProvider$toSearchResult$fullPosterUrl$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+'$i$a$-map-BluPhimProvider$load$genres$1
+5$i$a$-mapNotNull-BluPhimProvider$getMainPage$movies$1
+5$i$a$-mapNotNull-BluPhimProvider$getMainPage$movies$2
+7$i$a$-mapNotNull-BluPhimProvider$load$recommendations$1
+)$i$a$-mapNotNull-BluPhimProvider$search$2
+.$i$a$-runCatching-BluPhimProvider$load$score$1
+3$i$a$-takeIf-BluPhimProvider$toSearchResult$title$1
+$i$f$any
+$i$f$associate
+$i$f$associateTo
+$i$f$filter
+$i$f$filterTo
+$i$f$forEach
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$parseJson
+$iframeEmbedSrc
+$linkData
+$name
+$poster
+&$r8$lambda$1LtMJxEvaKDucM2b9jlDYB-1ulQ
+&$r8$lambda$Ri_g4dlgLofUCsC67mXaT6bmIu0
+&$r8$lambda$nqsC0IXwlihoSpcirCyMlog2zDc
+&$r8$lambda$uGsDLiQnDWsLrEUvUTZa1VrwNPU
+$receiver
+$recommendations
+$result
+$score
+$subtitleCallback
+$this
+$this$any$iv
+$this$associate$iv
+$this$associateTo$iv$iv
+$this$coroutineScope
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$md5
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newMovieSearchResponse
+$this$newTvSeriesLoadResponse
+$this$toJson
+$this$toSearchResult
+$year
+%02X
+%02x
+%25
+%2F
+&cdn=
+&lang=vi
+&token1=
+&token2=
+&token3=
+&web=
+()Ljava/lang/Integer;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+k(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;)Lrecloudstream/LinkData;
+r(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/lang/Integer;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+)TT;
+*/*
+*>;)
+, episode=
+, season=
+, server2Url=
+, title=
+, year=
+.m3u8
+/?token1=
+/geturl
+/search?k=
+/segment/
+/streaming?id=
+/the-loai/phim-bo-
+/the-loai/phim-cap-nhat-
+/the-loai/phim-chieu-rap-
+/the-loai/phim-le-
+/the-loai/phim-moi-
+/video/
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+://
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+<unused var>
+>;)
+>;)V
+>;)Z
+>;>;)
+>;>;>;
+?sv2=true
+$ANGLE (ARM, Mali-G78, OpenGL ES 3.2)
+Accept
+Accept-Language
+Anime
+BluPhim
+BluPhimPlugin.kt
+BluPhimProvider.kt
+BluPhim_debug
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Companion
+D8$$SyntheticClass
+FORM
+t h
+III
+ILCIZIL
+ILI
+ILLIZIL
+INSTANCE
+KKPhim
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LII
+LILL
+LLI
+LLL
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLIL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLZIIL
+LLZLLL
+Landroid/content/Context;
+*Landroid/content/SharedPreferences$Editor;
+#Landroid/content/SharedPreferences;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+5Lcom/lagradost/cloudstream3/CloudStreamApp$Companion;
++Lcom/lagradost/cloudstream3/CloudStreamApp;
+$Lcom/lagradost/cloudstream3/Episode;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
+0Lcom/lagradost/cloudstream3/MovieSearchResponse;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+LinkData(server1Url=
+Ljava/lang/Appendable;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/System;
+Ljava/lang/Throwable;
+Ljava/net/URI;
+Ljava/net/URLDecoder;
+Ljava/nio/charset/Charset;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Result$Companion;
+Lkotlin/Result;
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/RangesKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/BuildersKt;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+Lokhttp3/HttpUrl;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType;
+Lokhttp3/MultipartBody$Builder;
+Lokhttp3/MultipartBody;
+Lokhttp3/Request;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+7Lrecloudstream/BluPhimPlugin$$ExternalSyntheticLambda0;
+Lrecloudstream/BluPhimPlugin;
+9Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda0;
+9Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda1;
+9Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda2;
+-Lrecloudstream/BluPhimProvider$getEpisodes$1;
+-Lrecloudstream/BluPhimProvider$getMainPage$1;
+5Lrecloudstream/BluPhimProvider$getVideoInterceptor$1;
+&Lrecloudstream/BluPhimProvider$load$1;
+&Lrecloudstream/BluPhimProvider$load$2;
+&Lrecloudstream/BluPhimProvider$load$3;
+=Lrecloudstream/BluPhimProvider$loadLinks$2$1$extractorLink$1;
+PLrecloudstream/BluPhimProvider$loadLinks$2$1$invokeSuspend$$inlined$parseJson$1;
+-Lrecloudstream/BluPhimProvider$loadLinks$2$1;
+=Lrecloudstream/BluPhimProvider$loadLinks$2$2$extractorLink$1;
+-Lrecloudstream/BluPhimProvider$loadLinks$2$2;
+NLrecloudstream/BluPhimProvider$loadLinks$2$invokeSuspend$$inlined$parseJson$1;
++Lrecloudstream/BluPhimProvider$loadLinks$2;
+(Lrecloudstream/BluPhimProvider$search$1;
+Lrecloudstream/BluPhimProvider;
+-Lrecloudstream/BluPhimProviderKt$parseJson$1;
+!Lrecloudstream/BluPhimProviderKt;
+Lrecloudstream/LinkData;
+M3U8
+MD5
+Movie
+oMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36
+Origin
+Phim B
+Phim Chi
+u R
+Phim C
+p Nh
+Phim Hot
+Phim L
+Phim M
+Referer
+SDK_INT
+SHA-256
+SMAP
+BluPhimPlugin.kt
+Kotlin
+*S Kotlin
++ 1 BluPhimPlugin.kt
+recloudstream/BluPhimPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 BluPhimPlugin.kt
+recloudstream/BluPhimPlugin
+49#1:60,2
+SMAP
+BluPhimProvider.kt
+Kotlin
+*S Kotlin
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 _Strings.kt
+kotlin/text/StringsKt___StringsKt
+1#1,410:1
+1611#2,9:411
+1863#2:420
+1864#2:422
+1620#2:423
+1611#2,9:424
+1863#2:433
+1864#2:435
+1620#2:436
+1611#2,9:438
+1863#2:447
+1864#2:449
+1620#2:450
+1557#2:452
+1628#2,3:453
+1611#2,9:456
+1863#2:465
+1864#2:467
+1620#2:468
+1755#2,3:469
+1863#2:472
+1864#2:479
+1#3:421
+1#3:434
+1#3:437
+1#3:448
+1#3:451
+1#3:466
+1#3:480
+434#4:473
+507#4,5:474
+*S KotlinDebug
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider
+107#1:411,9
+107#1:420
+107#1:422
+107#1:423
+115#1:424,9
+115#1:433
+115#1:435
+115#1:436
+144#1:438,9
+144#1:447
+144#1:449
+144#1:450
+163#1:452
+163#1:453,3
+164#1:456,9
+164#1:465
+164#1:467
+164#1:468
+169#1:469,3
+209#1:472
+209#1:479
+107#1:421
+115#1:434
+144#1:448
+164#1:466
+212#1:473
+212#1:474,5
+SMAP
+BluPhimProvider.kt
+Kotlin
+*S Kotlin
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider$loadLinks$2
++ 2 BluPhimProvider.kt
+recloudstream/BluPhimProviderKt
+1#1,410:1
+25#2:411
+*S KotlinDebug
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider$loadLinks$2
+238#1:411
+SMAP
+BluPhimProvider.kt
+Kotlin
+*S Kotlin
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider$loadLinks$2$1
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 4 BluPhimProvider.kt
+recloudstream/BluPhimProviderKt
+1#1,410:1
+1#2:411
+1187#3,2:412
+1261#3,4:414
+1863#3,2:419
+25#4:418
+*S KotlinDebug
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider$loadLinks$2$1
+283#1:412,2
+283#1:414,4
+339#1:419,2
+338#1:418
+SMAP
+BluPhimProvider.kt
+Kotlin
+*S Kotlin
++ 1 BluPhimProvider.kt
+recloudstream/BluPhimProvider$loadLinks$2$2
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,410:1
+1#2:411
+Sec-Fetch-Mode
+Sec-Fetch-Site
+Server
+Server G
+Server b
+n th
+ 3 - 
+TT;>;
+TvSeries
+UTF-8
+UTF_8
+Unknown
+User-Agent
+VIL
+VLIL
+VLL
+VLLL
+VLLLL
+VLLLLL
+VLLLLLL
+VLLLLLLIL
+VLLLLLLL
+X-Requested-With
+XMLHttpRequest
+ZLL
+ZLLZ
+ZLLZIL
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+a.btn-see.btn-stream-link
+access$fixUrl
+access$getBaseUrl
+access$getEpisodes
+access$getMapper$p
+access$md5
+access$proxyUrl
+access$toJson
+accessFlags
+add
+addFormDataPart
+allowedPackages
+apiLevel
+append
+apply
+areEqual
+arrayEndIndex
+arrayStartIndex
+async$default
+attr
+attr(...)
+balance
+baseHeaders
+baseUrl
+bluphim_prefs
+bluphim_token
+body
+bodyString
+boxBoolean
+build
+byteValue
+bytes
+/call to 'resume' before 'invoke' with coroutine
+callback
+capacity$iv
+cdn
+cdn.
+cdn\d+\.
+chain
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+code
+coerceAtLeast
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+commonUserAgent
+component1
+component2
+component3
+component4
+component5
+component6
+constructor-impl
+contains
+contains$default
+contentType
+context
+copy
+copy$default
+copyOf
+coroutineScope
+cors
+create
+createFailure
+currentHash
+currentPackage
+currentTimeMillis
+data
+data(...)
+dd.theloaidd a
+,dd.theloaidd a:contains(TV Series - Phim b
+decode
+decodeUrl
+description
+destination$iv$iv
+digest
+div.detail div.tab
+/div.dinfo dl.col dt:contains(N
+m s
+n xu
+t) + dd
+.div.dinfo dl.col dt:contains(
+m IMDb) + dd a
+)div.list-episode a:not([href*=?sv2=true])
++div.list-films.film-hot ul#film_hot li.item
+/div.list-films.film-hot ul#film_related li.item
+ div.list-films.film-new div.item
+div.list-films.film-new li.item
+div.name
+div.poster img
+div.text h1 span.title
+div.text span.title a
+document
+domain
+edit
+element
+element$iv
+element$iv$iv
+emptyList
+epNum
+episode
+episodeList
+episodes
+equals
+expectedHashes
+expectedSignatures
+extractorLink
+f$0
+f$1
+file
+finalCdn
+finalUrl
+fixUrl
+format
+format(...)
+freetube.com.mx
+from
+fullHref
+fullPosterUrl
+genres
+get
+get$default
+getApkContentsSigners
+getApp
+getBaseUrl
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getContext
+getData
+getDocument
+getEpisode
+getEpisodes
+getEpisodes$lambda$15$lambda$14
+getFirst
+getHasDownloadSupport
+getHasMainPage
+getHost
+getInstance
+getLang
+getMainPage
+getMainUrl
+getName
+getPackageInfo
+getPackageManager
+getPackageName
+getScheme
+getSeason
+getSecond
+getServer1Url
+getServer2Url
+getSharedPreferences
+getString
+getSupportedTypes
+getText
+getTitle
+getValue
+getVideoInterceptor
+getYear
+hasDownloadSupport
+hasMainPage
+hasNext
+hashCode
+headersMap
+href
+http
+https:
+https://bluphim.uk.com
+https://freetube.com.mx
+https://proxy.cors.sh/
+iframe#embedIframe
+iframe#iframeStream
+iframe2Doc
+iframe2Url
+iframeEmbedSrc
+iframeStreamDoc
+iframeStreamSrc
+img
+index$iv$iv
+indexOf$default
+info
+intercept
+invoke
+invokeSuspend
+isCasting
+isDigit
+isEmpty
+isFailure-impl
+isSeries
+it$iv$iv
+item$iv$iv
+iterator
+jacksonObjectMapper
+joinToString$default
+kind
+label
+lang
+length
+linkData
+listOf
+load
+loadLinks
+mainPage
+mainPageOf
+mainUrl
+mapCapacity
+mapOf
+mapper
+masterM3u8Url
+md5
+md5$lambda$16
+movies
+name
+needClassReification
+newBody
+newBuilder
+newEpisode
+newExtractorLink
+newHomePageResponse
+newMovieLoadResponse
+newMovieSearchResponse$default
+newSubtitleFile$default
+newTvSeriesLoadResponse
+next
+nextElementSibling
+oPhimScript
+opstream
+other
+page
+parseJson
+parts
+phim-hot
+post$default
+postUrl
+poster
+posterUrl
+prefs
+proceed
+proxyUrl
+put
+putString
+query
+ratingString
+readValue
+readValue(...)
+recloudstream.BluPhimProvider
+$recloudstream.BluPhimProvider$load$2
+$recloudstream.BluPhimProvider$load$3
+)recloudstream.BluPhimProvider$loadLinks$2
++recloudstream.BluPhimProvider$loadLinks$2$1
+;recloudstream.BluPhimProvider$loadLinks$2$1$extractorLink$1
++recloudstream.BluPhimProvider$loadLinks$2$2
+;recloudstream.BluPhimProvider$loadLinks$2$2$extractorLink$1
+3recloudstream/BluPhimProvider$getVideoInterceptor$1
++recloudstream/BluPhimProviderKt$parseJson$1
+recommendations
+registerMainAPI
+renderer
+replace
+replace$default
+request
+requestBody
+resolve
+response
+result
+same-site
+score
+script
+"script:containsData(myvideo.setup)
+search
+season
+select
+select(...)
+selectFirst
+separator
+server1Url
+server2Url
+setEpisode
+setHeaders
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setScore
+setTags
+setType
+setYear
+setupScript
+sig
+signatures
+signingInfo
+size
+sourceName
+split$default
+src
+startsWith$default
+string
+substring
+substring(...)
+substringAfter$default
+substringBefore$default
+subtitleCallback
+supportedTypes
+sv2=true
+text
+text(...)
+this
+this$0
+throwOnFailure
+title
+toByteArray
+toIntOrNull
+toJson
+toSearchResult
+toSearchResult$lambda$4
+toString
+token
+token1
+token2
+token3
+tokenString
+tokens
+track
+tracks
+tracks:
+tracksJson
+tracksStartIndex
+trim
+tvType
+url
+value
+value$iv
+valueOf
+var cdn = '
+var domain = '
+var url = '
+var videoId =
+var videoId = '
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vi-VN,vi;q=0.9
+videoId
+watchUrl
+writeValueAsString
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/BluPhimPlugin$$ExternalSyntheticLambda0;":"-2b4d3bb1c","Lrecloudstream/BluPhimPlugin;":"ad6f6b15","Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda0;":"-153c62e33","Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda1;":"-2b9372ae1","Lrecloudstream/BluPhimProvider$$ExternalSyntheticLambda2;":"-2f6cf82a3","Lrecloudstream/BluPhimProvider$getEpisodes$1;":"30b30f4","Lrecloudstream/BluPhimProvider$getMainPage$1;":"9651572e","Lrecloudstream/BluPhimProvider$getVideoInterceptor$1;":"3ac11be5","Lrecloudstream/BluPhimProvider$load$1;":"f70922b7","Lrecloudstream/BluPhimProvider$load$2;":"4a903c68","Lrecloudstream/BluPhimProvider$load$3;":"bb416469","Lrecloudstream/BluPhimProvider$loadLinks$2$1$extractorLink$1;":"57a45f04","Lrecloudstream/BluPhimProvider$loadLinks$2$1$invokeSuspend$$inlined$parseJson$1;":"3e5fcdf","Lrecloudstream/BluPhimProvider$loadLinks$2$1;":"cb3e6832","Lrecloudstream/BluPhimProvider$loadLinks$2$2$extractorLink$1;":"faca14df","Lrecloudstream/BluPhimProvider$loadLinks$2$2;":"6a0da00f","Lrecloudstream/BluPhimProvider$loadLinks$2$invokeSuspend$$inlined$parseJson$1;":"a6faf4c8","Lrecloudstream/BluPhimProvider$loadLinks$2;":"d02f7248","Lrecloudstream/BluPhimProvider$search$1;":"8e65b2da","Lrecloudstream/BluPhimProvider;":"70adaff7","Lrecloudstream/BluPhimProviderKt$parseJson$1;":"f25167ea","Lrecloudstream/BluPhimProviderKt;":"2368888c","Lrecloudstream/LinkData;":"b73ea608"}
+ Phim
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+f7s
+f7s
+f7s
+y78
+z7'
+f7s
+f7K
+f7v
+f7K
+f7s
+g7)
+g7%
+J7s
+m7~
+k7R
+#7v
+t7J
+i7K

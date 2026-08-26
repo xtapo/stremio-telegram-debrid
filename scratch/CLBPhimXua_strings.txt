@@ -1,0 +1,1697 @@
+dex
+035
+xV4
+5V@
+n e
+q j
+q V
+r w
+p F
+p F
+q@W
+T2 
+q@P
+T -
+T!.
+q0Y
+TS/
+TS1
+TS0
+T0/
+T21
+T20
+n b
+T!/
+n b
+n b
+T!1
+n b
+n b
+T!0
+n b
+n ^
+TS3
+TS2
+T03
+T22
+n b
+T!3
+n b
+n b
+T!2
+n a
+n ^
+n0#
+p0 
+[47
+R06
+Y06
+T08
+q0\
+[4=
+R0<
+Y0<
+T0>
+qR^
+[4A
+R0@
+Y0@
+T0B
+q0a
+[4H
+R0G
+Y0G
+T0I
+q0b
+[EP
+R@O
+Y@O
+T@Q
+n@~
+[4\
+R0[
+Y0[
+T0]
+n07
+n :
+n08
+R f
+p H
+T e
+T!_
+n .
+T!d
+n -
+T!`
+n 1
+T!b
+n ,
+T!^
+n +
+T!c
+n 0
+T!a
+n /
+ p0
+n0<
+n ?
+n0=
+R o
+p H
+T n
+T!h
+n '
+T!m
+n &
+T!i
+n *
+T!k
+n %
+T!g
+n $
+T!l
+n )
+T!j
+n (
+ p0
+n0A
+n D
+n0B
+R x
+p H
+T w
+T!q
+n .
+T!v
+n -
+T!r
+n 1
+T!t
+n ,
+T!p
+n +
+T!u
+n 0
+T!s
+n /
+ p0
+r y
+r y
+qRf
+n0J
+n M
+n0K
+p H
+n 7
+n 6
+n 5
+p@I
+ p0
+#n@
+0!n 
+(&;
+q@O
+q M
+r v
+n >
+n b
+n b
+n ?
+(Mp r
+q j
+q V
+p0j
+pUm
+p0v
+p0w
+p0*
+p H
+(gT
+n t
+p F
+p0,
+p H
+(Fq
+n b
+n b
+n a
+n b
+mT&
+p0j
+r v
+n b
+n b
+n b
+p s
+n b
+n b
+p s
+n b
+n b
+p s
+n b
+n b
+n b
+n ^
+p s
+n b
+n b
+n b
+n b
+n b
+n b
+r0}
+n b
+n _
+n b
+n _
+n ?
+p0.
+p H
+n b
+n b
+n b
+n b
+p0j
+p00
+T4H
+R0G
+p H
+T7F
+T8E
+T9D
+T:C
+n b
+n b
+n _
+[:C
+[9D
+[8E
+[=F
+Y7G
+p0j
+r v
+r o
+p02
+T4P
+R5O
+p H
+R5J
+T6N
+T7M
+T:L
+T;K
+R:J
+T;M
+T<L
+T=K
+N([
+n b
+n b
+n _
+n b
+(L[;K
+[<L
+[5M
+Y:J
+Y8O
+p0v
+n b
+n b
+n _
+n b
+n _
+n b
+[;K
+[:L
+[7M
+[8N
+Y5J
+,Y<O
+p0j
+r v
+n b
+n b
+n b
+n _
+n b
+n _
+n ?
+p04
+p H
+n b
+n b
+p s
+n b
+n b
+p0j
+p r
+Nn0Z
+r o
+p0w
++qQ
+r o
+p h
+r o
+pZm
+n b
+n b
+n b
+n _
+n b
+n _
+n b
+n _
+n b
+n _
+n ?
+r x
+r x
+r x
+r x
+p h
+r o
+ 5O
+(*r
+r x
+( "
+n b
+n b
+n ?
+CY#
+p0G
+p H
+S'z
+T*~
+T+}
+T-|
+T/{
+T$}
+T'|
+T({
+n b
+n b
+n ?
+n b
+n b
+[${
+[/|
+[+}
+r x
+n k
+p0U
+n W
+n0`
+n ^
+n b
+n ^
+n0`
+n W
+n W
+q i
+p@i
+r o
+p E
+n b
+n ^
+n _
+n ^
+n0`
+r ~
+n b
+n b
+n ^
+n b
+n ^
+n0`
+n ^
+n0`
+n ^
+n _
+n b
+n b
+n b
+n b
+p@I
+['{
+[(|
+[+}
+[)~
+Z-z
+!Y!
+n ?
+n b
+n b
+n ?
+p0N
+p H
+n b
+n b
+p s
+n b
+n b
+p0j
+r v
+n b
+n b
+n b
+n _
+n ?
+n b
+n b
+n b
+n b
+n b
+q d
+n b
+n b
+p h
+r C
+r o
+n W
+q i
+n b
+n0`
+n ^
+n _
+n ^
+n0`
+n ^
+n0`
+n ^
+n _
+n W
+p@i
+n l
+n W
+n l
+n e
+p h
+r C
+r o
+r x
+p0 
+r v
+p h
+n b
+n b
+n b
+Nr o
+p0 
+r v
+r0}
+r0}
+r0}
+(*"
+n b
+n b
+n b
+n ^
+&q 
+6q 
+Fq 
+n b
+n b
+n ^
+n b
+!bq
+n b
+n0`
+n ^
+n0`
+n ^
+n0`
+q@O
+$qS
+r x
+r x
+q@O
+q@N
+"r x
+n b
+n b
+r x
+n b
+n b
+n b
+n0`
+n ^
+n b
+n b
+n0`
+n ^
+n0`
+n b
+n b
+n ?
+Bll
+n@K
+n@K
+n@K
+n@K
+$ZZ
+n@J
+n@J
+z,#
+yJ%
+`J`
+n@J
+n@J
+Uxx
+{,"
+n@i
+n@J
+w,&
+n@J
+{,"
+z,2
+n@J
+n@x
+n@J
+z,#x
+~,K
+yJ%
+ZKiiii
+Zpl
+<KK
+K-0KKKKS
+WpZl
+[so
+{J#
+/8>8>V\
+01H
+0>H
+0CH
+0E2
+0CH
+0F2
+012
+0IH
+012
+0#2
+0P2
+@J0
+0#2
+0C2
+012
+0V0#2
+0#2
+010#H
+[JF
+0b0`2
+0b0`H
+eJ2
+0b0`H
+0k2
+0dH
+0nH
+0n2
+0n2
+0n2
+0nH
+012
+0u2
+0u2
+012
+0uH
+0k2
+0n2
+0u2
+0u2
+012
+0u2
+0u2
+0uH
+0n2
+0u2
+0u2
+0uH
+0$0#X
+ )*
+0(0(X
+0,X
+0z8BX
+8BX
+wPZV
+ actors=
+ cookieLen=
+ epsTotal=
+ items=
+ rec=
+$actors
+$baseCdn
+$completion
+$continuation
+$ep
+$frag
+$header
+6$i$a$-also-CLBPhimXuaProvider$resolveHydrax$datasB64$1
+%$i$a$-any-CLBPhimXuaProvider$load$2$4
+/$i$a$-buildMap-CLBPhimXuaProvider$authHeaders$1
+2$i$a$-filter-CLBPhimXuaProvider$getCategoryNames$3
+6$i$a$-filter-CLBPhimXuaProvider$resolveHydrax$sorted$1
+@$i$a$-firstNotNullOfOrNull-CLBPhimXuaProvider$embeddedPoster$1$1
+-$i$a$-flatMap-CLBPhimXuaProvider$load$2$eps$1
+0$i$a$-forEach-CLBPhimXuaPlugin$verifySignature$1
+,$i$a$-forEach-CLBPhimXuaProvider$readRange$2
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+3$i$a$-forEachIndexed-CLBPhimXuaProvider$readRange$1
+3$i$a$-ifEmpty-CLBPhimXuaProvider$getCategoryNames$4
+5$i$a$-let-CLBPhimXuaProvider$buildRecommendations$2$1
+2$i$a$-let-CLBPhimXuaProvider$getMainPage$items$1$1
+/$i$a$-let-CLBPhimXuaProvider$load$2$introText$1
+3$i$a$-let-CLBPhimXuaProvider$postToSearch$isMovie$1
+*$i$a$-let-CLBPhimXuaProvider$readRange$2$1
+5$i$a$-let-CLBPhimXuaProvider$resolveHydrax$sorted$2$1
+'$i$a$-let-CLBPhimXuaProvider$search$2$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+5$i$a$-map-CLBPhimXuaProvider$hydraxToken$digitBytes$1
+,$i$a$-map-CLBPhimXuaProvider$load$2$actors$3
++$i$a$-map-CLBPhimXuaProvider$load$2$eps$1$1
+!$i$a$-map-CLBPhimXuaProvider$ov$1
++$i$a$-map-CLBPhimXuaProvider$parseServers$1
+3$i$a$-mapNotNull-CLBPhimXuaProvider$load$2$actors$1
+3$i$a$-mapNotNull-CLBPhimXuaProvider$load$2$catIds$2
+;$i$a$-runCatching-CLBPhimXuaProvider$buildRecommendations$2
+5$i$a$-runCatching-CLBPhimXuaProvider$embeddedPoster$1
+8$i$a$-runCatching-CLBPhimXuaProvider$ensureAuth$result$1
+4$i$a$-runCatching-CLBPhimXuaProvider$getCategoryId$2
+7$i$a$-runCatching-CLBPhimXuaProvider$getCategoryNames$2
+8$i$a$-runCatching-CLBPhimXuaProvider$getMainPage$items$1
++$i$a$-runCatching-CLBPhimXuaProvider$load$2
+-$i$a$-runCatching-CLBPhimXuaProvider$search$2
+8$i$a$-sortedBy-CLBPhimXuaProvider$resolveHydrax$sorted$2
+*$i$a$-sumOfInt-CLBPhimXuaProvider$load$2$1
+;$i$a$-synchronized-CLBPhimXuaProvider$ensureAuth$result$1$1
+8$i$a$-takeIf-CLBPhimXuaProvider$buildRecommendations$2$2
+4$i$a$-takeIf-CLBPhimXuaProvider$embeddedPoster$1$1$1
+2$i$a$-takeIf-CLBPhimXuaProvider$embeddedPoster$1$2
+1$i$a$-takeIf-CLBPhimXuaProvider$getCategoryId$2$1
+1$i$a$-takeIf-CLBPhimXuaProvider$load$2$actors$1$1
+/$i$a$-takeIf-CLBPhimXuaProvider$load$2$actors$2
+/$i$a$-takeIf-CLBPhimXuaProvider$load$2$catIds$1
+5$i$a$-takeIf-CLBPhimXuaProvider$load$2$resolvedPlot$1
+5$i$a$-takeIf-CLBPhimXuaProvider$load$2$resolvedPlot$2
+4$i$a$-use-CLBPhimXuaProvider$ensureAuth$result$1$1$1
+$i$f$any
+$i$f$filter
+$i$f$filterTo
+$i$f$flatMap
+$i$f$flatMapTo
+$i$f$forEach
+$i$f$forEachIndexed
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$sortedBy
+$idx
+$isMovie
+$latch
+$md5Id
+$off
+$poster
+$preferredOrder$inlined
+$published
+$qualityInt
+&$r8$lambda$1zANrWZ__GLZzqxgLzlFlXcL9h8
+&$r8$lambda$25BjRa7raupA1jf_u1orUjoNGkk
+&$r8$lambda$8UMyT22W-AdDeuzyZ12ndYsL-uo
+&$r8$lambda$FMyXLlMGsgu1HxH_IPfuNzsX7Dw
+&$r8$lambda$KX2wHZYwMo_UZ_KS9f1PoUZKVQE
+&$r8$lambda$dBovakfnt7SmRZdYjGxv5Ep1__k
+&$r8$lambda$eM7NWcEnV6L0y3iOtGA29pXcbpU
+&$r8$lambda$j-CdIH0ivyPN9_HcY28-BtsYX-0
+&$r8$lambda$toGhmeaG7LmSOHk7wynHfdgDrDQ
+&$r8$lambda$w0E4q-BzXhuMQ4jKgL-jaNq1gEs
+&$r8$lambda$wp_cV2V6Y_mbjXa2IZVoA2AZ_DY
+$recommendations
+$resId
+$resolvedPlot
+$result
+$results
+$size
+$srv
+$tags
+$take
+$this
+$this$any$iv
+ $this$authHeaders_u24lambda_u244
+*$this$buildRecommendations_u24lambda_u2434
+$this$cleanUrl
+#$this$embeddedPoster_u24lambda_u248
+$this$encodeUri
+$this$ensureAuth_u24lambda_u243
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$flatMap$iv
+$this$flatMapTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$forEachIndexed$iv
+#$this$getCategoryId_u24lambda_u2414
+&$this$getCategoryNames_u24lambda_u2438
+!$this$getMainPage_u24lambda_u2412
+$this$load_u24lambda_u2431
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newTvSeriesLoadResponse
+$this$search_u24lambda_u2416
+$this$sortedBy$iv
+$this_runCatching
+%02X
+%02x
+%20
+&_embed
+&categories=
+&orderby=date&order=desc
+&per_page=1
+&per_page=20&_embed
+&pwd=
+&redirect_to=
+&testcookie=1
+&wp-submit=
+' -> 
+' page=
+' servers=
+()I
+()Ljava/lang/Object;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+(()Ljava/util/concurrent/ExecutorService;
+()Lokhttp3/OkHttpClient;
+()V
+()Z
+(I)V
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Lcom/fasterxml/jackson/databind/JsonNode;Ljava/lang/Integer;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+x(Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+%(Ljava/lang/String;Ljava/util/List;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+D(Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+*>;)
+, eps=
+, server=
+, url=
+/clbpx?v=
+/mp4/
+/sora/
+/video.mp4
+/wp-json/wp/v2/categories/
+/wp-json/wp/v2/categories?slug=
+3/wp-json/wp/v2/posts?_embed&per_page=12&categories=
+-/wp-json/wp/v2/posts?_embed&per_page=20&page=
+/wp-json/wp/v2/posts?search=
+/wp-json/wp/v2/posts?slug=
+/wp-login.php
+1080p
+1440p
+2160p
+240p
+360p
+480p
+720p
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+</b>
+<T:
+<[^>]+>
+<anonymous>
+<b>
+<br
+<clinit>
+<get-values>(...)
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;)
+AES
+AES/CTR/NoPadding
+A^Y_C
+Accept
+Accept-Ranges
+Access-Control-Allow-Origin
+AsianDrama
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+CLBPhimXua
+CLBPhimXua: getMainPage '
+CLBPhimXua: hydrax readRange 
+CLBPhimXua: hydrax seg fetch 
+CLBPhimXua: load '
+CLBPhimXua: loadLinks hash=
+CLBPhimXua: login code=
+CLBPhimXua: no datas
+CLBPhimXua: resolveHydrax 
+CLBPhimXua: resolveHydrax vid=
+CLBPhimXua: search '
+CLBPhimXuaPlugin.kt
+CLBPhimXuaProvider.kt
+CLBPhimXua_debug
+Companion
+Comparisons.kt
+Content-Length
+Content-Range
+Content-Type
+Cookie
+D8$$SyntheticClass
+EpisodeRef
+EpisodeRef(name=
+FAIL_ON_UNKNOWN_PROPERTIES
+FULL
+HTTP_2
+HYDRAX_EMBED
+Hydrax
+I$0
+IGNORE_CASE
+ILI
+ILL
+INSTANCE
+ISO_8859_1
+J$0
+JJJ
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+LII
+LIJJIJ
+LILL
+LJL
+LLCL
+LLCLIL
+LLI
+LLJJIJJJ
+LLL
+LLLIIL
+LLLJJIJL
+LLLJJJ
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZ
+LLLLZIL
+LLLZIIL
+LLLZIL
+LLLZL
+LLZ
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+7Lcom/fasterxml/jackson/databind/DeserializationFeature;
+)Lcom/fasterxml/jackson/databind/JsonNode;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+"Lcom/lagradost/cloudstream3/Actor;
+&Lcom/lagradost/cloudstream3/ActorData;
+&Lcom/lagradost/cloudstream3/ActorRole;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+$Lcom/lagradost/cloudstream3/Episode;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/ByteArrayOutputStream;
+Ljava/io/Closeable;
+Ljava/io/PrintStream;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Comparable;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Long;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/Runnable;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/System;
+Ljava/lang/Throwable;
+Ljava/net/URLEncoder;
+Ljava/nio/charset/Charset;
+Ljava/security/Key;
+Ljava/security/MessageDigest;
++Ljava/security/spec/AlgorithmParameterSpec;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Base64$Decoder;
+Ljava/util/Base64$Encoder;
+Ljava/util/Base64;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/LinkedHashSet;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+%Ljava/util/concurrent/CountDownLatch;
+&Ljava/util/concurrent/ExecutorService;
+ Ljava/util/concurrent/Executors;
+Ljava/util/concurrent/TimeUnit;
+Ljavax/crypto/Cipher;
+#Ljavax/crypto/spec/IvParameterSpec;
+!Ljavax/crypto/spec/SecretKeySpec;
+Lkotlin/Function1;
+Lkotlin/Lazy;
+Lkotlin/LazyKt;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Result$Companion;
+Lkotlin/Result;
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+Lkotlin/io/CloseableKt;
+ Lkotlin/jvm/functions/Function0;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/RangesKt;
+Lkotlin/sequences/Sequence;
+Lkotlin/sequences/SequencesKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/RegexOption;
+Lkotlin/text/StringsKt;
+Lokhttp3/Call;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/OkHttpClient$Builder;
+Lokhttp3/OkHttpClient;
+Lokhttp3/Protocol;
+Lokhttp3/Request$Builder;
+Lokhttp3/Request;
+Lokhttp3/RequestBody$Companion;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/Jsoup;
+Lorg/jsoup/nodes/Document;
+:Lrecloudstream/CLBPhimXuaPlugin$$ExternalSyntheticLambda0;
+ Lrecloudstream/CLBPhimXuaPlugin;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda0;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda1;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda2;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda3;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda4;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda5;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda6;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda7;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda8;
+<Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda9;
+,Lrecloudstream/CLBPhimXuaProvider$Companion;
+-Lrecloudstream/CLBPhimXuaProvider$EpisodeRef;
+.Lrecloudstream/CLBPhimXuaProvider$ServerBlock;
+,Lrecloudstream/CLBPhimXuaProvider$authGet$1;
+9Lrecloudstream/CLBPhimXuaProvider$buildRecommendations$1;
+2Lrecloudstream/CLBPhimXuaProvider$getCategoryId$1;
+5Lrecloudstream/CLBPhimXuaProvider$getCategoryNames$1;
+0Lrecloudstream/CLBPhimXuaProvider$getMainPage$1;
+)Lrecloudstream/CLBPhimXuaProvider$load$1;
++Lrecloudstream/CLBPhimXuaProvider$load$2$2;
++Lrecloudstream/CLBPhimXuaProvider$load$2$3;
++Lrecloudstream/CLBPhimXuaProvider$load$2$5;
+DLrecloudstream/CLBPhimXuaProvider$resolveHydrax$$inlined$sortedBy$1;
+2Lrecloudstream/CLBPhimXuaProvider$resolveHydrax$1;
+2Lrecloudstream/CLBPhimXuaProvider$resolveHydrax$2;
++Lrecloudstream/CLBPhimXuaProvider$search$1;
+"Lrecloudstream/CLBPhimXuaProvider;
+MD5
+Movie
+kMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0 Mobile Safari/537.36
+Partial Content
+Range
+Referer
+SDK_INT
+SECONDS
+SHA-256
+SMAP
+CLBPhimXuaPlugin.kt
+Kotlin
+*S Kotlin
++ 1 CLBPhimXuaPlugin.kt
+recloudstream/CLBPhimXuaPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,57:1
+13402#2,2:58
+*S KotlinDebug
++ 1 CLBPhimXuaPlugin.kt
+recloudstream/CLBPhimXuaPlugin
+47#1:58,2
+SMAP
+CLBPhimXuaProvider.kt
+Kotlin
+*S Kotlin
++ 1 CLBPhimXuaProvider.kt
+recloudstream/CLBPhimXuaProvider
++ 2 _Strings.kt
+kotlin/text/StringsKt___StringsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 5 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,623:1
+975#2:624
+1046#2,3:625
+975#2:683
+1046#2,3:684
+1#3:628
+1#3:639
+1#3:652
+1611#4,9:629
+1863#4:638
+1864#4:640
+1620#4:641
+1611#4,9:642
+1863#4:651
+1864#4:653
+1620#4:654
+1557#4:655
+1628#4,3:656
+1368#4:659
+1454#4,2:660
+1557#4:662
+1628#4,3:663
+1456#4,3:666
+1755#4,3:669
+1557#4:672
+1628#4,3:673
+774#4:676
+865#4,2:677
+774#4:679
+865#4,2:680
+1053#4:682
+1872#4,3:687
+13402#5,2:690
+*S KotlinDebug
++ 1 CLBPhimXuaProvider.kt
+recloudstream/CLBPhimXuaProvider
+80#1:624
+80#1:625,3
+498#1:683
+498#1:684,3
+263#1:639
+277#1:652
+263#1:629,9
+263#1:638
+263#1:640
+263#1:641
+277#1:642,9
+277#1:651
+277#1:653
+277#1:654
+281#1:655
+281#1:656,3
+307#1:659
+307#1:660,2
+308#1:662
+308#1:663,3
+307#1:666,3
+314#1:669,3
+373#1:672
+373#1:673,3
+392#1:676
+392#1:677,2
+434#1:679
+434#1:680,2
+435#1:682
+576#1:687,3
+597#1:690,2
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 CLBPhimXuaProvider.kt
+recloudstream/CLBPhimXuaProvider
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,102:1
+436#2,2:103
+1#3:105
+ServerBlock
+ServerBlock(name=
+Set-Cookie
+TvSeries
+US_ASCII
+UTF-8
+UTF_8
+Unknown
+User-Agent
+VIDEO
+VIL
+VILL
+VLIJJIJLJILIL
+VLL
+VLLIL
+VLLJJIJ
+VLLL
+VLLLLIL
+VLLLLLLLL
+VLLZ
+VLLZIL
+ZLL
+ZLLZ
+ZLLZIL
+[,\u002C\uFF0C]
+[Landroid/content/pm/Signature;
+*[Lcom/lagradost/cloudstream3/MainPageData;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[[B
+\s*[,\u002C\uFF0C]\s*
+TXZ
+_embedded
+access$authGet
+access$authHeaders
+access$buildRecommendations
+access$getAuthCookie$cp
+access$getAuthState$cp
+access$getCategoryId
+access$getCategoryNames
+access$getCompanion$p
+access$getLoginLock$cp
+access$getUA$p
+access$resolveHydrax
+access$setAuthCookie$cp
+access$setAuthState$cp
+accessFlags
+actors
+actualEnd
+add
+addAll
+addQuality
+aesCtrDecrypt
+allowedPackages
+any
+apiLevel
+append
+application/json,*/*
+!application/x-www-form-urlencoded
+areEqual
+arr
+asInt
+asLong
+asText
+asText(...)
+authCookie
+authGet
+authHeaders
+authState
+await
+baseCdn
+blocks
+body
+booleanValue
+boxBoolean
+boxInt
+build
+buildRangeResponse
+buildRecommendations
+byteValue
+bytes
+bytes 
+bytes=
+bytes=(\d+)-(\d*)
+/call to 'resume' before 'invoke' with coroutine
+callback
+catId
+catIds
+categories
+chain
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+cid
+clbpx?v=
+clbpx\?v=([A-Za-z0-9_-]+)
+clbpx\?v=[A-Za-z0-9_-]+
+cleanUrl
+close
+closeFinally
+code
+codec
+coerceAtMost
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+compare
+compareValues
+component1
+component2
+component3
+configure
+connectTimeout
+constructor-impl
+contains
+contains$default
+content
+context
+cookieParts
+copy
+copy$default
+copyOf
+copyOf(...)
+count
+countDown
+create
+createFailure
+createMapBuilder
+credHeader
+cur
+currentHash
+currentPackage
+currentUrl
+data
+datasB64
+datas\s*=\s*"([^"]+)"
+date
+decode
+decode(...)
+decrypted
+deob
+deop
+destination$iv$iv
+dien-anh-tay
+digest
+digest(...)
+digitBytes
+distinct
+doFinal
+doFinal(...)
+domain
+domains
+drama-hq-nb
+element$iv
+element$iv$iv
+emailFragmentA
+emailFragmentB
+emailFragmentC
+embeddedPoster
+emitted
+emptyList
+enc
+encode
+encode(...)
+encodeToString
+encodeToString(...)
+encodeUri
+end
+endRaw
+ensureAuth
+eps
+equals
+excerpt
+excerptText
+execute
+expectedHashes
+expectedSignatures
+extractorLink
+f$0
+f$1
+f$10
+f$11
+f$2
+f$3
+f$4
+f$5
+f$6
+f$7
+f$8
+f$9
+find$default
+findAll$default
+first
+firstCat
+firstOrNull
+fixAbsolute
+followRedirects
+form
+format
+format(...)
+frag
+full
+get
+get$default
+getApkContentsSigners
+getApp
+getAuthCookie
+getAuthState
+getBaseClient
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getCategoryId
+getCategoryNames
+getData
+getDecoder
+getEncoder
+getEps
+getGroupValues
+getHasChromecastSupport
+getHasDownloadSupport
+getHasMainPage
+getHydraxClient
+getHydraxPool
+getInstance
+getLang
+getLoginLock
+getMainPage
+getMainUrl
+getMessage
+getName
+getOrNull
+getPackageInfo
+getPackageManager
+getPackageName
+getServer
+getSupportedTypes
+getText
+getUrl
+getValue
+getValue(...)
+getVideoInterceptor
+grace-mag-thumbnail-one
+h264
+hasChromecastSupport
+hasDownloadSupport
+hasMainPage
+hasNext
+hash
+hashCode
+head
+header
+headers
+Ehref="[^"]*clbpx\?v=([A-Za-z0-9_-]+)"[^>]*>([^<]*?T
+p\s*\d+[^<]*)</a>
+html
+htmlToString
+http
+https://
+https://abysscdn.com/
+https://clbphimxua.com
+https://hx.clbpx.local/
+https://playhydrax.com/
+https://playhydrax.com/?v=
+>https?://(?:playhydrax|abysscdn)\.com/?\??v?=?([A-Za-z0-9_-]+)
+hx.clbpx.local/
+hydraxClient
+hydraxClient$delegate
+hydraxClient_delegate$lambda$47
+hydraxInterceptor
+hydraxInterceptor$lambda$49
+hydraxInterceptor$lambda$50
+hydraxPool
+hydraxPool$delegate
+hydraxPool_delegate$lambda$48
+hydraxToken
+ids
+idx
+index
+index$iv
+indexOf
+info
+init
+intValue
+intercept
+introText
+invoke
+invokeSuspend
+isArray
+isBlank
+isCasting
+isEmpty
+isFailure-impl
+isMovie
+it$iv$iv
+item$iv
+item$iv$iv
+items
+iterator
+iterator(...)
+jacksonObjectMapper
+joinToString$default
+key
+keyHex
+kind
+kotlin.jvm.PlatformType
+label
+lang
+latch
+lazy
+length
+let(...)
+link
+list$iv$iv
+listOf
+load
+,load$lambda$31$lambda$29$lambda$28$lambda$27
+loadLinks
+log=
+loginClient
+loginLock
+longValue
+mainPage
+mainPage$default
+mainPageOf
+mainUrl
+map
+mapNotNull
+mapOf
+mapper
+max
+md5Hex
+md5Hex$lambda$45
+md5Id
+md5_id
+media
+mediaBytes
+media_details
+medium
+medium_large
+message
+min
+mp4
+name
+newAnimeSearchResponse$default
+newBuilder
+newCall
+newEpisode
+newExtractorLink
+newFixedThreadPool
+newHomePageResponse
+newMovieLoadResponse
+newTvSeriesLoadResponse
+next
+node
+off
+other
+out
+page
+parse
+parseServers
+parseServers$lambda$35
+parseServers$lambda$36
+parts
+passFragmentA
+passFragmentB
+path
+path(...)
+phim-bo-kiem-hiep-co-trang
+phim-hk-tk
+phim-hoat-hinh
+phim-tv
+pos
+post
+postToSearch
+postToSearch$lambda$10
+poster
+posts
+preferredOrder
+println
+proceed
+protocol
+published
+put
+qualityInt
+query
+range
+raw
+readRange
+readRange$lambda$52$lambda$51
+readTimeout
+readTree
+ recloudstream.CLBPhimXuaProvider
+)recloudstream.CLBPhimXuaProvider$load$2$2
+)recloudstream.CLBPhimXuaProvider$load$2$3
+)recloudstream.CLBPhimXuaProvider$load$2$5
+0recloudstream.CLBPhimXuaProvider$resolveHydrax$2
+recommendations
+registerMainAPI
+removePrefix
+rendered
+replace
+replace$default
+req
+request
+resId
+res_id
+resolveHydrax
+resolvedPlot
+resp
+result
+results
+root
+run
+search
+second
+segReq
+segs
+sentinel
+serve
+server
+serverName
+servers
+setActors
+setAuthCookie
+setAuthState
+setHeaders
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterHeaders
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setTags
+setYear
+sig
+signatures
+signingInfo
+size
+sizes
+slug
+sorted
+sortedWith
+source
+source_url
+sources
+split
+split$default
+srv
+start
+startsWith$default
+sub
+subDomain
+substring
+substring(...)
+substringAfter
+substringAfterLast$default
+substringBefore$default
+subtitleCallback
+suffix
+supportedTypes
+tags
+take
+text
+text(...)
+this
+this$0
+throwIndexOverflow
+throwOnFailure
+title
+toByteArray
+toByteArray(...)
+toIntOrNull
+toList
+toLongOrNull
+toString
+token
+total
+trim
+trimEnd
+url
+url2
+userId
+user_id
+value
+valueOf
+values
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+vid
+video/mp4
+want
+wordpress_
+%wordpress_test_cookie=WP Cookie check
+wp:featuredmedia
+write
+writeTimeout
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/CLBPhimXuaPlugin$$ExternalSyntheticLambda0;":"81f29f2","Lrecloudstream/CLBPhimXuaPlugin;":"db1ff5ab","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda0;":"-29ff36c","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda1;":"-2f1c66a53","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda2;":"-ed4faf51","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda3;":"1bd8b2264","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda4;":"-6ed6ac6a6","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda5;":"2210defb5","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda6;":"-295de9","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda7;":"3794bc76","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda8;":"-3adb3bc02","Lrecloudstream/CLBPhimXuaProvider$$ExternalSyntheticLambda9;":"-1bfbd25a1","Lrecloudstream/CLBPhimXuaProvider$Companion;":"e5d9dd79","Lrecloudstream/CLBPhimXuaProvider$EpisodeRef;":"19c1e08","Lrecloudstream/CLBPhimXuaProvider$ServerBlock;":"597259bd","Lrecloudstream/CLBPhimXuaProvider$authGet$1;":"457f2a9e","Lrecloudstream/CLBPhimXuaProvider$buildRecommendations$1;":"61148954","Lrecloudstream/CLBPhimXuaProvider$getCategoryId$1;":"4c0d9159","Lrecloudstream/CLBPhimXuaProvider$getCategoryNames$1;":"8a7b3781","Lrecloudstream/CLBPhimXuaProvider$getMainPage$1;":"16dcf2b9","Lrecloudstream/CLBPhimXuaProvider$load$1;":"de1c7326","Lrecloudstream/CLBPhimXuaProvider$load$2$2;":"abf7ed71","Lrecloudstream/CLBPhimXuaProvider$load$2$3;":"f180dfe5","Lrecloudstream/CLBPhimXuaProvider$load$2$5;":"c8f91297","Lrecloudstream/CLBPhimXuaProvider$resolveHydrax$$inlined$sortedBy$1;":"3897a7b0","Lrecloudstream/CLBPhimXuaProvider$resolveHydrax$1;":"d29a9b28","Lrecloudstream/CLBPhimXuaProvider$resolveHydrax$2;":"d8f6e19","Lrecloudstream/CLBPhimXuaProvider$search$1;":"79f62f51","Lrecloudstream/CLBPhimXuaProvider;":"a43ec99e"}
+ang c
+p nh
+ng nh
+ Trang
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Kh
+ng th
+ng nh
+p CLB PX
+ Package kh
+ng h
+p l
+ Drama H
+n Qu
+nh 
+u M
+ Ho
+t H
+ TV Series
+t c

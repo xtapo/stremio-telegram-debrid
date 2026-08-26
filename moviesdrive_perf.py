@@ -25,9 +25,11 @@ also the single place where "MoviesDrive returned nothing" can be diagnosed:
 """
 
 import asyncio
+import base64
 import json
 import logging
 import os
+import re
 import tempfile
 import time
 from collections import OrderedDict
@@ -94,6 +96,7 @@ CACHE_FILE = os.getenv("MD_CACHE_FILE") or os.path.join(
 )
 
 # Domain / anti-bot knobs
+MD_PORTAL_URL = (os.getenv("MD_PORTAL_URL") or "https://moviesdrives.cfd").strip()
 MIRROR_RANGE_RAW = os.getenv("MD_MIRROR_RANGE") or "1-6"
 BASE_PROBE_PATH = os.getenv("MD_BASE_PROBE_PATH") or "/"
 BASE_PROBE_TIMEOUT = _env_float("MD_BASE_PROBE_TIMEOUT", 6.0)
@@ -416,6 +419,7 @@ def mirror_candidates(url: str, bases: Iterable[str], primary: str) -> List[str]
 # ------------------------------------------------------------------
 _CLIENT: Optional[httpx.AsyncClient] = None
 _CLIENT_LOCK: Optional[asyncio.Lock] = None
+_CLIENT_LOOP: Optional[asyncio.AbstractEventLoop] = None
 _HTTP2_ENABLED = True
 
 
@@ -456,19 +460,31 @@ def _build_client() -> httpx.AsyncClient:
 
 async def get_client() -> httpx.AsyncClient:
     """Return the process-wide client, creating it on first use."""
-    global _CLIENT
-    if _CLIENT is not None and not _CLIENT.is_closed:
+    global _CLIENT, _CLIENT_LOOP
+    try:
+        current_loop = asyncio.get_running_loop()
+    except RuntimeError:
+        current_loop = None
+
+    if _CLIENT is not None and not _CLIENT.is_closed and _CLIENT_LOOP is current_loop:
         return _CLIENT
     async with _client_lock():
-        if _CLIENT is None or _CLIENT.is_closed:
+        if _CLIENT is None or _CLIENT.is_closed or _CLIENT_LOOP is not current_loop:
+            if _CLIENT is not None and not _CLIENT.is_closed:
+                try:
+                    await _CLIENT.aclose()
+                except Exception:
+                    pass
             _CLIENT = _build_client()
+            _CLIENT_LOOP = current_loop
     return _CLIENT
 
 
 async def aclose_client() -> None:
-    global _CLIENT
+    global _CLIENT, _CLIENT_LOOP
     client = _CLIENT
     _CLIENT = None
+    _CLIENT_LOOP = None
     if client is not None and not client.is_closed:
         try:
             await client.aclose()
@@ -765,6 +781,63 @@ def _discovery_lock() -> asyncio.Lock:
     return _DISCOVERY_LOCK
 
 
+async def fetch_portal_mirrors(portal_url: Optional[str] = None) -> List[str]:
+    """Fetch the latest active MoviesDrive domains from the official portal page (e.g. moviesdrives.cfd)."""
+    target = (portal_url or MD_PORTAL_URL or "").strip()
+    if not target:
+        return []
+
+    logger.info("MoviesDrive querying portal for latest active domains: %s", target)
+    html, _ = await fetch_text(
+        target,
+        headers=dict(DEFAULT_HEADERS),
+        retries=1,
+        read_timeout=8.0,
+        allow_antibot=False,
+    )
+    if not html:
+        return []
+
+    discovered: List[str] = []
+
+    def _add(u: str) -> None:
+        c = _norm_base(u)
+        if c and ("moviesdrive" in c.lower() or "moviedrive" in c.lower()):
+            if not c.endswith(".cfd") and c not in discovered:
+                discovered.append(c)
+
+    # 1. Decode base64 in atob(...) calls
+    for b64 in re.findall(r'atob\(["\']([A-Za-z0-9+/=]+)["\']\)', html):
+        try:
+            decoded = base64.b64decode(b64).decode("utf-8", errors="ignore")
+            for u in re.findall(r'https?://[a-zA-Z0-9.-]+', decoded):
+                _add(u)
+        except Exception:
+            pass
+
+    # 2. Decode base64 in script tags
+    for script in re.findall(r'<script[^>]*>(.*?)</script>', html, flags=re.DOTALL):
+        for b64 in re.findall(r'["\']([A-Za-z0-9+/=]{16,})["\']', script):
+            try:
+                decoded = base64.b64decode(b64).decode("utf-8", errors="ignore")
+                for u in re.findall(r'https?://[a-zA-Z0-9.-]+', decoded):
+                    _add(u)
+            except Exception:
+                pass
+
+    # 3. Direct regex matches for domain patterns
+    for u in re.findall(r'https?://[a-zA-Z0-9.-]*moviesdrive[a-zA-Z0-9.-]*', html, flags=re.IGNORECASE):
+        _add(u)
+    for u in re.findall(r'https?://[a-zA-Z0-9.-]*moviedrive[a-zA-Z0-9.-]*', html, flags=re.IGNORECASE):
+        _add(u)
+
+    if discovered:
+        logger.info("MoviesDrive portal discovery found domains: %s", discovered)
+        register_bases(*discovered)
+
+    return discovered
+
+
 async def probe_base(base: str) -> bool:
     """True when a mirror answers with real content (not a challenge page)."""
     candidate = _norm_base(base)
@@ -806,6 +879,14 @@ async def discover_active_base(
             and now - _LAST_DISCOVERY < BASE_DISCOVERY_TTL
         ):
             return _ACTIVE_BASE
+
+        # Query the portal to refresh domain candidates if forcing or unpinned
+        if force or not _ACTIVE_BASE or base_is_cooling(_ACTIVE_BASE or ""):
+            try:
+                await fetch_portal_mirrors()
+            except Exception as e:
+                logger.warning("MoviesDrive portal discovery failed: %s", e)
+
         candidates = candidate_bases(
             default, include_generated=True, limit=MAX_DISCOVERY_PROBES
         )
@@ -842,6 +923,17 @@ async def discover_active_base(
         if winner:
             note_active_base(winner)
             return winner
+
+        # If all candidates failed, try fetching and probing portal mirrors directly
+        try:
+            portal_bases = await fetch_portal_mirrors()
+            for base in portal_bases:
+                if await probe_base(base):
+                    note_active_base(base)
+                    return base
+        except Exception as exc:
+            logger.warning("MoviesDrive fallback portal probe error: %s", exc)
+
         logger.warning(
             "MoviesDrive: none of the %s mirror candidates answered, set MD_BASE_URL "
             "or MD_MIRRORS to the current domain",

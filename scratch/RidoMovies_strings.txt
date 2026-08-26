@@ -1,0 +1,1802 @@
+dex
+035
+xV4
+5V@
+n [
+r q
+q `
+q K
+r i
+p :
+p :
+q0=
+q0<
+q0:
+q09
+ a|
+n V
+n U
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n V
+n S
+ a~
+RS!
+US 
+RA!
+UB 
+n V
+n U
+n V
+n U
+n V
+R!!
+n T
+n V
+U! 
+n W
+n S
+TS$
+TS#
+TS"
+T@$
+T@$
+TC#
+TC#
+TC"
+TA"
+n V
+T!$
+n V
+n V
+T!#
+n V
+n V
+T!"
+n V
+n S
+RS%
+TS'
+RS&
+R0%
+T2'
+R2&
+n V
+R!%
+n T
+n V
+T!'
+n V
+n V
+R!&
+n T
+n S
+[46
+R05
+Y05
+T07
+qR@
+R :
+p <
+T 9
+T!8
+n !
+T!8
+ p0
+R0=
+p <
+T0<
+n V
+T2;
+n V
+n S
+n ,
+n +
+T!;
+ p0
+R0@
+p <
+T0?
+n V
+T2>
+n V
+n S
+n ,
+n +
+T!>
+ p0
+[ED
+R@C
+Y@C
+T@E
+n@N
+[4Q
+R0P
+Y0P
+T0R
+n0T
+n0%
+n (
+n0&
+R`Z
+p <
+T`Y
+TaT
+n #
+TaX
+n '
+TaS
+n "
+TaW
+n &
+TaU
+n  
+n %
+TaV
+n $
+ p0
+n0*
+n -
+n0+
+R`b
+p <
+T`a
+Ta\
+Ta`
+Ta[
+Ta_
+Ta]
+n  
+Ta^
+ p0
+[xh
+Rpg
+Ypg
+Tqi
+[El
+R@k
+Y@k
+T@m
+q@A
+[4p
+R0o
+Y0o
+T0q
+n0]
+pUE
+p@[
+RE5
+RE5
+eYE5
+TG6
+RH5
+p <
+T@,
+TB+
+T@,
+TB+
+RH*
+RI)
+RN(
+TO4
+TJ3
+TM2
+TK1
+TL0
+TA/
+TA.
+TA-
+TA,
+TA+
+TA.
+TH-
+TI,
+TJ+
+n V
+n V
+p W
+n V
+n S
+q t
+q t
+[A+
+[L,
+[M-
+[K.
+YJ5
+p Y
+n V
+n V
+n V
+n V
+n V
+n T
+p W
+!q_
+-q_
+$q_
+r a
+q A
+(q B
+n0O
+n V
+n T
+n V
+n T
+n V
+n W
+n V
+n V
+p W
+n V
+n S
+q t
+r j
+()"
+n V
+n V
+#n V
+n V
+q y
+p Z
+[Z+
+[^,
+[T-
+[W.
+[Y/
+[_0
+[]1
+[S2
+[\3
+[^4
+YR(
+Y[)
+YX*
+#YS5
+n V
+n T
+n V
+p W
+p -
+n V
+n S
+n V
+r j
+.qV
+r j
+p0D
+n V
+n V
+n V
+n V
+n V
+n T
+p W
+p0C
+n V
+n V
+n V
+n V
+n V
+n V
+p W
+n V
+n V
+n V
+p W
+[Z+
+[T,
+[S-
+[S.
+[S/
+[S0
+[S1
+[S2
+[S3
+[S4
+3YS5
+r j
+n V
+n V
+p W
+[Z+
+[T,
+[R-
+[R.
+[R/
+[R0
+[R1
+[R2
+[R3
+[R4
+BYR5
+qRY
+p0X
+p0 
+TCD
+REC
+p <
+T@B
+T@A
+n V
+n V
+n T
+n V
+n T
+n V
+n V
+p W
+[LA
+[MB
+YOC
+p K
+p K
+r a
+n V
+n T
+n V
+p W
+p0X
+CqX
+p0"
+p <
+(dq
+n V
+n V
+p W
+p K
+(5"
+'qX
+r j
+n V
+n V
+n V
+n W
+n V
+n U
+n V
+n U
+p W
+r a
+p@[
+n V
+n T
+n V
+n T
+p W
+p K
+*q_
+r j
+r j
+r a
+n e
+n _
+n V
+n T
+p W
+p0/
+TCh
+R@g
+p <
+TFf
+TGe
+THd
+TIc
+TFf
+TGe
+THd
+TIc
+T@e
+TEd
+TFc
+n V
+n V
+p W
+[Jc
+[Hd
+[@e
+YLg
+n V
+n W
+n V
+n T
+p W
+n V
+n V
+n V
+n V
+qZY
+n V
+n T
+n V
+p W
+"qZ
+r j
+n V
+n V
+n V
+n V
+p W
+(qZ
+n V
+n V
+n S
+p W
+[Ic
+[Ed
+[Ge
+[Ff
+(YHg
+pTE
+n V
+n V
+n S
+p W
+[Ic
+[Ed
+[Ge
+[Ff
+8YHg
+q@)
+n V
+n V
+(qZY
+"qZY
+p0X
+p01
+TCl
+REk
+p <
+T@j
+n V
+n V
+n S
+n V
+n V
+p W
+p K
+[Lj
+YEk
+q ~
+p K
+p K
+r a
+n V
+n T
+n V
+p W
+n V
+n V
+p W
+p0X
+R#o
+R#o
+CY#o
+p04
+T%p
+R&o
+p <
+T$n
+n V
+n V
+n V
+n V
+n V
+n V
+p W
+6#f
+q t
+q t
+n V
+n S
+q t
+[.n
+Y(o
+n V
+n T
+n V
+p W
+n V
+n S
+n V
+n S
+n V
+p K
+r a
+p0X
+5E+
+n I
+wn S
+r h
+r h
+r j
+r h
+q }
+(Bn J
+(4"
+p H
+n J
+p0b
+n J
+p B
+n L
+r j
+r j
+n S
+n V
+n V
+n V
+n I
+n0O
+r j
+r j
+r j
+n S
+n V
+n V
+n V
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+q t
+n Q
+p ^
+5v?
+r 7
+r a
+q0P
+q0^
+q0U
+q0\
+n V
+n T
+[Pw
+[Px
+\Pt
+[Qu
+[Ry
+[Rs
+[Rr
+n V
+n V
+q t
+n V
+n V
+q t
+[Pv
+n S
+T!r
+n V
+n V
+n V
+n 3
+p0X
+n S
+T!r
+n V
+n V
+n V
+n S
+n V
+n 3
+=ml
+<--------
+x+](p
+x,q
+<---(
+<--)
+`<K
+`<K
+`<K
+ZZZ
+`<K
+ZZZ
+`<J
+x,%
+KG"
+KH!
+},g
+L*L
+"$Y
+cKZ
+%YA
+%YA=
+`<J
+z,#
+`<J
+<+ 
+l94
+i9-
+|,H 
+<iL
+`<J
+x,%
+=-i
+`<J
+x,%
+`<J
+w,&
+-K-K-
+ZiU
+SwqY<<
+&anY
+QvqY<<
+SwqY<<
+<KK<K
+0'2
+QRSB
+0 j
+`!H
+0'2
+0)2
+0+H
+0.0#2
+022
+0J&
+0#2
+062
+8JF
+0=2
+0=H
+AJ>
+0=2
+0=H
+0#2
+0)H
+0$0#X
+ ctx=
+ embedUrl=
+ inPage=
+ isTv=
+ items
+ labels=
+ pageSize=
+ rating=
+ recs=
+ results
+ server=
+ subtitles
+ url=
+ videos parsed
+ videosJsonLen=
+ year=
+"contentUrl"\s*:\s*"([^"]+)"
+"file"\s*:\s*"([^"]+)"
+"label"\s*:\s*"([^"]+)"
+"ratingValue"\s*:\s*([0-9.]+)
+#detailConfig
+$completion
+$continuation
+$host
+3$i$a$-distinctBy-RidoMoviesProvider$load$episodes$2
+9$i$a$-filter-RidoMoviesProvider$extractRidoEmbed$dbgIdx$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+0$i$a$-forEach-RidoMoviesPlugin$verifySignature$1
+.$i$a$-forEach-RidoMoviesProvider$decryptRido$1
+.$i$a$-forEach-RidoMoviesProvider$decryptRido$2
+.$i$a$-forEach-RidoMoviesProvider$decryptRido$3
+3$i$a$-forEach-RidoMoviesProvider$extractRidoEmbed$4
+,$i$a$-forEach-RidoMoviesProvider$loadLinks$2
+3$i$a$-ifBlank-RidoMoviesProvider$normalizeSubLang$1
+)$i$a$-ifEmpty-RidoMoviesProvider$load$2$1
+)$i$a$-ifEmpty-RidoMoviesProvider$load$3$1
+>$i$a$-ifEmpty-RidoMoviesProvider$scrapeRecommendations$cards$2
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+1$i$a$-let-RidoMoviesProvider$extractRidoEmbed$4$1
+%$i$a$-let-RidoMoviesProvider$load$2$2
+%$i$a$-let-RidoMoviesProvider$load$3$2
+*$i$a$-let-RidoMoviesProvider$load$poster$1
+-$i$a$-let-RidoMoviesProviderKt$tryParseJson$1
+)$i$a$-map-RidoMoviesProvider$shiftChars$1
+:$i$a$-mapNotNull-RidoMoviesProvider$getMainPage$homeList$1
+3$i$a$-mapNotNull-RidoMoviesProvider$load$episodes$1
+/$i$a$-mapNotNull-RidoMoviesProvider$load$tags$1
+A$i$a$-mapNotNull-RidoMoviesProvider$scrapeRecommendations$cards$1
+,$i$a$-mapNotNull-RidoMoviesProvider$search$2
+>$i$a$-run-RidoMoviesProvider$scrapeRecommendations$genreHref$1
+-$i$a$-sortBy-RidoMoviesProvider$decryptRido$4
+-$i$a$-takeIf-RidoMoviesProvider$decryptRido$5
+8$i$a$-takeIf-RidoMoviesProvider$extractRidoEmbed$label$1
+-$i$a$-takeIf-RidoMoviesProvider$load$tags$1$1
+$i$f$distinctBy
+$i$f$filter
+$i$f$filterTo
+$i$f$forEach
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$parseJson
+$i$f$sortBy
+$i$f$tryParseJson
+$plot
+$poster
+&$r8$lambda$0-z_uVat6qTe9_ftw-xjkLI_Ch4
+&$r8$lambda$Uk24sIkZPEQ3FwzKPkkzZpKKQqU
+&$r8$lambda$XeNp-vWqqHPS5Jv9djMghipTk2M
+&$r8$lambda$YADLtFp_6Dv6gokK68TDDWIctQ0
+&$r8$lambda$_OQ2D4DlVEXgZvXpDfxg998aJj8
+&$r8$lambda$dgha3RX39nMMvQDpvW0GbvZJLWk
+&$r8$lambda$e33LfagdFf7XLSA6ehn2izbUZCU
+&$r8$lambda$rAyRxbWUiG_cS-tmGbKIY8KRyYg
+&$r8$lambda$vIuU_SELFlD_YX8vJ02gCWTs-tg
+&$r8$lambda$zOUSXfUS0T8GqD0TZdP-Qdogmjs
+$rating
+$recs
+$result
+$subHeaders
+$tags
+$this
+$this$distinctBy$iv
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newMovieSearchResponse
+$this$newSubtitleFile
+$this$newTvSeriesLoadResponse
++$this$scrapeRecommendations_u24lambda_u2410
+$this$sortBy$iv
+$year
+%02X
+&lang=en&limit=20
+()I
+()Ljava/lang/Integer;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+.(?:-base\s*\+|base\s*\+)\s*(\d+)\s*\)\s*%\s*26
+=(?:\w+\s*=\s*)?(\w+)\s*\(\s*\[("[^"]*"\s*,\s*)*"[^"]*"\]\s*\)
+(?:var\s+)?acc\s*=\s*(\d+)
+8(?s)eval\(function\(p,a,c,k,e,d\).*?\.split\('\|'\).*?\)
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+G(ILjava/lang/String;I)Lrecloudstream/RidoMoviesProvider$decryptRido$Op;
+(ILjava/lang/String;I)V
+(Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lrecloudstream/RidoMoviesProvider$ApiSearchItem;
+(Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+%(Ljava/util/List;Ljava/util/List;IZ)V
+O(Lorg/jsoup/nodes/Document;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+(no .vtt/.srt)
+(null)
+)TT;
+*>;)
+, cast=
+, has_more=
+, json=
+, page=
+, poster_path=
+, quality=
+, release_date=
+, service_name=
+, shift=
+, slug=
+, slug_en=
+, template=
+, title=
+, type=
+, vote_average=
+...
+.srt
+.vtt
+/api/search?q=
+/movies-rd1
+/page-
+/tv-series-rd1
+/tv/
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+:ERR] 
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+>;IZ)
+>;IZ)V
+@ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/
+Accept
+ApiSearchItem
+ApiSearchItem(id=
+ApiSearchResponse
+ApiSearchResponse(data=
+Arabic
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Chinese
+Closeload
+Companion
+Comparisons.kt
+D8$$SyntheticClass
+DetailVideo
+DetailVideo(video=
+Dutch
+English
+Episode 
+French
+German
+Hindi
+I$0
+I$1
+I$2
+III
+ILCIZIL
+ILL
+ILLIZIL
+INSTANCE
+ISO_8859_1
+Indonesian
+Italian
+Japanese
+Korean
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LII
+LIIL
+LILI
+LILL
+LLI
+LLILIIL
+LLL
+LLLIIL
+LLLIZ
+LLLL
+LLLLIL
+LLLLIZIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLLL
+LLLLLLLLLLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLZL
+LLZL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+Latest Movies
+Latest TV Series
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+7Lcom/fasterxml/jackson/annotation/JsonIgnoreProperties;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+$Lcom/lagradost/cloudstream3/Episode;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
+0Lcom/lagradost/cloudstream3/MovieSearchResponse;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+-Lcom/lagradost/cloudstream3/utils/JsUnpacker;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/PrintStream;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Comparable;
+Ljava/lang/Double;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/System;
+Ljava/net/URI;
+Ljava/nio/charset/Charset;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/HashSet;
+Ljava/util/Iterator;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Exception;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+#Lkotlin/jvm/internal/Ref$ObjectRef;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/IntRange;
+Lkotlin/sequences/Sequence;
+Lkotlin/sequences/SequencesKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lokhttp3/Interceptor;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+:Lrecloudstream/RidoMoviesPlugin$$ExternalSyntheticLambda0;
+ Lrecloudstream/RidoMoviesPlugin;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda0;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda1;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda2;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda3;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda4;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda5;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda6;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda7;
+<Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda8;
+0Lrecloudstream/RidoMoviesProvider$ApiSearchItem;
+PLrecloudstream/RidoMoviesProvider$ApiSearchResponse$$ExternalSyntheticBackport0;
+4Lrecloudstream/RidoMoviesProvider$ApiSearchResponse;
+.Lrecloudstream/RidoMoviesProvider$DetailVideo;
+@Lrecloudstream/RidoMoviesProvider$decryptRido$$inlined$sortBy$1;
+1Lrecloudstream/RidoMoviesProvider$decryptRido$Op;
+5Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$1;
+5Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$3;
+5Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$5;
+5Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$6;
+0Lrecloudstream/RidoMoviesProvider$getMainPage$1;
+)Lrecloudstream/RidoMoviesProvider$load$1;
+)Lrecloudstream/RidoMoviesProvider$load$2;
+)Lrecloudstream/RidoMoviesProvider$load$3;
+ALrecloudstream/RidoMoviesProvider$loadLinks$$inlined$parseJson$1;
+.Lrecloudstream/RidoMoviesProvider$loadLinks$1;
+:Lrecloudstream/RidoMoviesProvider$scrapeRecommendations$1;
+>Lrecloudstream/RidoMoviesProvider$search$$inlined$parseJson$1;
++Lrecloudstream/RidoMoviesProvider$search$1;
+"Lrecloudstream/RidoMoviesProvider;
+0Lrecloudstream/RidoMoviesProviderKt$parseJson$1;
+5Lrecloudstream/RidoMoviesProviderKt$tryParseJson$1$1;
+$Lrecloudstream/RidoMoviesProviderKt;
+M3U8
+Malay
+Movie
+oMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Mobile Safari/537.36
+Op(pos=
+Polish
+Portuguese
+RIDO
+ROOT
+Referer
+RidoMovies
+RidoMoviesPlugin.kt
+RidoMoviesProvider.kt
+RidoMovies_debug
+RidoRapid
+Russian
+SDK_INT
+SHA-256
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProvider
+1#1,102:1
+472#2:103
+SMAP
+RidoMoviesPlugin.kt
+Kotlin
+*S Kotlin
++ 1 RidoMoviesPlugin.kt
+recloudstream/RidoMoviesPlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 RidoMoviesPlugin.kt
+recloudstream/RidoMoviesPlugin
+49#1:60,2
+SMAP
+RidoMoviesProvider.kt
+Kotlin
+*S Kotlin
++ 1 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProvider
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 3 fake.kt
+kotlin/jvm/internal/FakeKt
++ 4 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProviderKt
++ 5 _Sequences.kt
+kotlin/sequences/SequencesKt___SequencesKt
++ 6 _Strings.kt
+kotlin/text/StringsKt___StringsKt
+1#1,569:1
+1611#2,9:570
+1863#2:579
+1864#2:581
+1620#2:582
+1611#2,9:584
+1863#2:593
+1864#2:595
+1620#2:596
+1611#2,9:598
+1863#2:607
+1864#2:609
+1620#2:610
+1611#2,9:611
+1863#2:620
+1864#2:622
+1620#2:623
+1663#2,8:624
+1611#2,9:632
+1863#2:641
+1864#2:643
+1620#2:644
+1863#2,2:647
+774#2:649
+865#2,2:650
+1010#2,2:660
+1#3:580
+1#3:594
+1#3:597
+1#3:608
+1#3:621
+1#3:642
+1#3:645
+12#4:583
+12#4:646
+1317#5,2:652
+1317#5,2:654
+1317#5,2:656
+1317#5,2:658
+975#6:662
+1046#6,3:663
+*S KotlinDebug
++ 1 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProvider
+70#1:570,9
+70#1:579
+70#1:581
+70#1:582
+113#1:584,9
+113#1:593
+113#1:595
+113#1:596
+164#1:598,9
+164#1:607
+164#1:609
+164#1:610
+170#1:611,9
+170#1:620
+170#1:622
+170#1:623
+184#1:624,8
+217#1:632,9
+217#1:641
+217#1:643
+217#1:644
+263#1:647,2
+339#1:649
+339#1:650,2
+472#1:660,2
+70#1:580
+113#1:594
+164#1:608
+170#1:621
+217#1:642
+109#1:583
+256#1:646
+373#1:652,2
+466#1:654,2
+467#1:656,2
+469#1:658,2
+527#1:662
+527#1:663,3
+SMAP
+RidoMoviesProvider.kt
+Kotlin
+*S Kotlin
++ 1 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProvider$load$2
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,569:1
+1#2:570
+SMAP
+RidoMoviesProvider.kt
+Kotlin
+*S Kotlin
++ 1 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProvider$load$3
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,569:1
+1#2:570
+SMAP
+RidoMoviesProvider.kt
+Kotlin
+*S Kotlin
++ 1 RidoMoviesProvider.kt
+recloudstream/RidoMoviesProviderKt
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,569:1
+1#2:570
+Spanish
+Subs
+TAG
+TT;>;
+Thai
+Turkish
+TvSeries
+Ukrainian
+Unknown
+User-Agent
+VII
+VIL
+VILI
+VILIIL
+VLL
+VLLIZ
+VLLIZIL
+VLLL
+VLLLIL
+VLLLLLLL
+VLLLLLLLLL
+VLLLLLLLLLIL
+Vietnamese
+X-Requested-With
+XMLHttpRequest
+Z$0
+ZLL
+ZLLZIL
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Integer;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+[^0-9]
+\"([^"]*)\"
+\[(.*?)\]
+\s*\(\s*\w+\s*\)\s*\{
+] bodyLen=
+] decrypt=
+a.ep-card-text.episode-link
+a.year-link
+aTag
+a[href*=/genre/][href*=/
+acc
+accInit
+accStep
+acc\s*\+\s*(\d+)\s*\)\s*%\s*256
+access$extractRidoEmbed
+access$getMapper$p
+access$scrapeRecommendations
+accessFlags
+add
+allowedPackages
+alphabet
+alt
+apiLevel
+append
+application/json
+ara
+arabic
+areEqual
+arrayCallRegex
+arrayRaw
+atob
+atobLenientToString
+atob\s*\(
+attr
+attr(...)
+badgeEl
+base
+baseUrl
+bits
+body
+boxBoolean
+boxDouble
+boxInt
+buffer
+byteValue
+bytes
+/call to 'resume' before 'invoke' with coroutine
+callback
+cards
+cast
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+chi
+chinese
+cleanUrl
+closeload
+closeload.top
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+commonUserAgent
+compare
+compareValues
+component1
+component2
+component3
+component4
+component5
+component6
+component7
+component8
+component9
+contains
+contains$default
+content
+contentUrl
+contentUrlRegex
+context
+copy
+copy$default
+copyOf
+count
+create
+currentHash
+currentPackage
+data
+data-src=["'](.*?)["']
+data-videos
+dbg
+dbgIdx
+decryptRido
+depth
+destination$iv$iv
+detailConfig
+deu
+digest
+distinct
+div.movie-card
+div.movie-overview
+div.movie-poster img
+document
+doubleValue
+e$iv
+element
+element$iv
+element$iv$iv
+embedUrl
+emptyList
+eng
+english
+entrySet
+episode-(\d+)
+episodeMatch
+episodes
+equals
+expectedHashes
+expectedSignatures
+extractDecoderBody
+extractRidoEmbed
+extractRidoEmbed FAILED
+extractRidoEmbed host=
+extractRidoEmbed url=
+extractRidoEmbed$lambda$15
+extractRidoEmbed$lambda$16
+extractRidoEmbed$lambda$17
+extractRidoEmbed$lambda$18
+extractRidoEmbed$lambda$23
+extractRidoEmbed: 
+ extractRidoEmbed: NO links found
+extractRidoEmbed: OK masterUrl=
+&extractRidoEmbed: contentUrl fallback=
+extractRidoEmbed: subFiles=
+f$0
+f$1
+file
+filter
+find$default
+findAll$default
+fixUrl
+fnName
+format
+format(...)
+fre
+french
+from10
+fullSubUrl
+function\s+
+genreHref
+german
+get
+get$default
+getApkContentsSigners
+getApp
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getCast
+getData
+getDocument
+getFirst
+getGroupValues
+getHasMainPage
+getHas_more
+getHost
+getId
+getInstance
+getKey
+getLang
+getLast
+getMainPage
+getMainPage FAILED
+getMainPage done: 
+getMainPage page=
+getMainPage$lambda$1$lambda$0
+getMainUrl
+getMessage
+getName
+getOrNull
+getPackageInfo
+getPackageManager
+getPackageName
+getPage
+getPos
+getPoster_path
+getQuality
+getRange
+getRelease_date
+getService_name
+getShift
+getSlug
+getSlug_en
+getSupportedTypes
+getTemplate
+getText
+getTitle
+getType
+getValue
+getVideo
+getVote_average
+h1.movie-title-main
+h2.movie-title
+hasClass
+hasMainPage
+hasNext
+has_more
+hashCode
+header
+headers
+hin
+hindi
+homeList
+host
+href
+html
+html(...)
+http
+https
+https://
+https://ridomovies.su
+!https?://[^"'\s<>]+?\.(?:vtt|srt)
+idx
+iframeStr
+ignoreUnknown
+img.movie-poster-img
+img.tv-poster
+imgTag
+indexOf$default
+info
+input
+intValue
+invoke
+invokeSuspend
+isBlank
+isCasting
+isEmpty
+isTv
+it$iv$iv
+item
+item$iv$iv
+iterator
+jacksonObjectMapper
+japanese
+joinToString$default
+jpn
+json
+key$iv
+kind
+kor
+korean
+label
+lang
+length
+list$iv
+listOf
+load
+load TV episodes=
+load tags=
+load title=
+load url=
+load$lambda$8$lambda$7
+loadExtractor
+loadLinks
+loadLinks FAILED
+loadLinks data=
+loadLinks: 
+ loadLinks: -> extractRidoEmbed (
+&loadLinks: -> loadExtractor(generic) (
+loadLinks: JSON parse failed: 
+loadLinks: detailConfig=
+!loadLinks: embedUrl NULL for svc=
+loadLinks: svc=
+#loadLinks: videosJson is null/empty
+log
+logErr
+logErr$default
+lower
+mainPage
+mainPageOf
+mainUrl
+map
+mapOf
+mapper
+masterUrl
+match
+max
+meta[name=description]
+min
+minOrNull
+movie
+msg
+name
+needClassReification
+newEpisode
+newExtractorLink
+newHomePageResponse
+newHomePageResponse$default
+newMovieLoadResponse
+newMovieSearchResponse$default
+newSubtitleFile
+newTvSeriesLoadResponse
+next
+normalizeSubLang
+ops
+other
+out
+ownText
+packedRegex
+page
+parseInt
+parseJson
+parts
+plot
+por
+portuguese
+pos
+poster
+poster_path
+println
+quality
+query
+rating
+rawFile
+readValue
+readValue(...)
+ recloudstream.RidoMoviesProvider
+3recloudstream.RidoMoviesProvider$extractRidoEmbed$3
+3recloudstream.RidoMoviesProvider$extractRidoEmbed$5
+3recloudstream.RidoMoviesProvider$extractRidoEmbed$6
+'recloudstream.RidoMoviesProvider$load$2
+'recloudstream.RidoMoviesProvider$load$3
+/recloudstream/RidoMoviesProvider$decryptRido$Op
+.recloudstream/RidoMoviesProviderKt$parseJson$1
+3recloudstream/RidoMoviesProviderKt$tryParseJson$1$1
+recs
+registerMainAPI
+release_date
+replace
+replace$default
+request
+res
+result
+reverse
+reversedArray
+ridorapid
+rus
+russian
+scrapeRecommendations
+scrapeRecommendations FAILED
+)scrapeRecommendations$lambda$12$lambda$11
+scrapeRecommendations: 
+scrapeRecommendations: genre=
+)scrapeRecommendations: no genre link for 
+search
+search API returned 
+search FAILED
+search query=
+search$lambda$3$lambda$2
+searchableText
+season-(\d+)
+seasonMatch
+select
+select(...)
+selectFirst
+serverName
+serviceName
+service_name
+set$iv
+setEpisode
+setHeaders
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setScore
+setSeason
+setTags
+setYear
+shift
+shiftChars
+sig
+signatures
+signingInfo
+size
+slug
+slug_en
+sortWith
+spa
+span.badge-type
+span.badge-type.tv
+Ispan.genre-links a[href*=/genre/], a.mobile-accordion-link[href*=/genre/]
+span.imdb-score
+span.movie-year
+spanish
+src
+srcRegex
+start
+startsWith$default
+subCount
+subFileRegex
+subFiles
+subHeaders
+subLabels
+substring
+substring(...)
+substringAfterLast$default
+substringBefore$default
+subtitleCallback
+supportedTypes
+tags
+take
+template
+text
+text(...)
+tha
+thai
+this
+this$0
+throwOnFailure
+title
+toByteArray
+toCharArray
+toCharArray(...)
+toDoubleOrNull
+toIntOrNull
+toList
+toLowerCase
+toLowerCase(...)
+toString
+toString(...)
+trim
+tryParseJson
+tur
+turkish
+tvType
+type
+typePath
+typeStr
+unpack
+unpacked
+url
+urlRe
+value
+valueOf
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+video
+videoId
+videoObj
+videos
+videosJson
+vie
+vietnamese
+vote_average
+year
+{url}
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/RidoMoviesPlugin$$ExternalSyntheticLambda0;":"30b729856","Lrecloudstream/RidoMoviesPlugin;":"2299c511","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda0;":"5f1af6e2f","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda1;":"12fedc5c3","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda2;":"71a6f22bf","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda3;":"20e7c8a35","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda4;":"-2e68ec06","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda5;":"-2e1f65e6","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda6;":"3ac7dc63","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda7;":"3055cb839","Lrecloudstream/RidoMoviesProvider$$ExternalSyntheticLambda8;":"1b77eb25e","Lrecloudstream/RidoMoviesProvider$ApiSearchItem;":"6299cea","Lrecloudstream/RidoMoviesProvider$ApiSearchResponse$$ExternalSyntheticBackport0;":"-20265f671","Lrecloudstream/RidoMoviesProvider$ApiSearchResponse;":"29ef976d","Lrecloudstream/RidoMoviesProvider$DetailVideo;":"efa8b930","Lrecloudstream/RidoMoviesProvider$decryptRido$$inlined$sortBy$1;":"46b7f4e1","Lrecloudstream/RidoMoviesProvider$decryptRido$Op;":"480bceef","Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$1;":"f00f5821","Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$3;":"f2fcfe0b","Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$5;":"347bd4ab","Lrecloudstream/RidoMoviesProvider$extractRidoEmbed$6;":"f079ee00","Lrecloudstream/RidoMoviesProvider$getMainPage$1;":"f31e8b53","Lrecloudstream/RidoMoviesProvider$load$1;":"85e4ce07","Lrecloudstream/RidoMoviesProvider$load$2;":"f201e0bc","Lrecloudstream/RidoMoviesProvider$load$3;":"24299ff","Lrecloudstream/RidoMoviesProvider$loadLinks$$inlined$parseJson$1;":"16e52de6","Lrecloudstream/RidoMoviesProvider$loadLinks$1;":"6b184bcb","Lrecloudstream/RidoMoviesProvider$scrapeRecommendations$1;":"8639d76e","Lrecloudstream/RidoMoviesProvider$search$$inlined$parseJson$1;":"7eb68aa","Lrecloudstream/RidoMoviesProvider$search$1;":"8e12eaf0","Lrecloudstream/RidoMoviesProvider;":"4834224c","Lrecloudstream/RidoMoviesProviderKt$parseJson$1;":"bdf72439","Lrecloudstream/RidoMoviesProviderKt$tryParseJson$1$1;":"c45d82ca","Lrecloudstream/RidoMoviesProviderKt;":"ad8b83fd"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+|7V
+y7h
+z7h
+z7h
+y7h
+y7l
+y7Z
+y79
+y7[
+y7?
+y7[
+y7[
+y7:
+y7[
+y74
+y7[
+y7h
+z7n
+z7h
+y7[
+y7[
+y7[
+~7-

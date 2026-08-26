@@ -1,0 +1,1397 @@
+dex
+035
+X'L
+u5;F<
+xV4
+5V@
+n =
+r N
+q A
+q 0
+q i
+q j
+r H
+p &
+p &
+ aj
+q f
+q f
+q f
+n ;
+n ;
+n ;
+n ;
+n ;
+n ;
+n 8
+q j
+q j
+ am
+TS$
+q f
+TS#
+q f
+TS"
+q f
+T@$
+T@$
+TC#
+TC#
+TC"
+TA"
+n ;
+T!$
+n ;
+n ;
+T!#
+n ;
+n ;
+T!"
+n ;
+n 8
+ an
+TS%
+q f
+TS&
+q f
+TS'
+q f
+T@%
+T@%
+TC&
+TC&
+TC'
+TA'
+n ;
+T!%
+n ;
+n ;
+T!&
+n ;
+n ;
+T!'
+n ;
+n 8
+[4*
+R0)
+Y0)
+T0+
+p c
+ ap
+RS.
+TS,
+q f
+TS-
+q f
+R0.
+T2,
+T2,
+T2-
+n ;
+R!.
+n 9
+n ;
+T!,
+n ;
+n ;
+T!-
+n :
+n 8
+q j
+q j
+p (
+(Aq
+T!3
+ p0d
+[45
+R04
+Y04
+T06
+p c
+R 8
+p (
+T 7
+T!9
+T!9
+ p0d
+[4<
+R0;
+Y0;
+T0=
+p c
+[EC
+R@B
+Y@B
+T@D
+n@!
+p c
+[4J
+R0I
+Y0I
+T0K
+n0'
+p c
+R N
+p (
+T M
+T!L
+T!L
+T!L
+ p0d
+R Q
+p (
+T P
+T!O
+T!O
+T!O
+ p0d
+R T
+p (
+T S
+T!R
+T!R
+T!R
+ p0d
+R0X
+p (
+T0W
+T1V
+T1V
+T2U
+T1V
+T2U
+ p0d
+[4[
+R0Z
+Y0Z
+T0\
+p c
+[xa
+Rp`
+Yp`
+Tqb
+p c
+[4j
+R0i
+Y0i
+T0k
+p c
+[#n
+R m
+Y m
+T o
+p c
+[4s
+R0r
+Y0r
+T0t
+n03
+p c
+n 8
+n ;
+n ;
+n .
+n .
+n .
+2c'
+2C#
+n04
+q i
+#qQ~
+50(
+n .
+50+
+n .
+q j
+n .
+q h
+n 5
+q i
+n :
+n 3
+q i
+n ;
+p0+
+p0.
+p 2
+p (
+p0+
+q S
+q V
+p @
+q S
+r B
+r B
+q V
+p @
+r B
+qY|
+n ;
+n ;
+Sq0
+r B
+q U
+q S
+p (
+n ;
+n ;
+(0n
+q0v
+n ;
+n ;
+n ;
+n 8
+p (
+(?q
+p r
+qXs
+r I
+p r
+qXs
+r I
+p r
+qXs
+r I
+p01
+r G
+p r
+qZt
+q[u
+r G
+p01
+r G
+p01
+T4C
+R5B
+p (
+T5A
+T8@
+T9?
+T:>
+T5?
+T8>
+T5?
+T8>
+I(5
+[5>
+[8?
+Y9B
+p 2
+q V
+p @
+p09
+r B
+r G
+n ;
+n ;
+[8>
+[5?
+)Y9B
+p0+
+p &
+p /
+[:>
+[9?
+[8@
+[7A
+<Y<B
+p0+
+q V
+p @
+p09
+r B
+r G
+p (
+qX}
+p0.
+)(5
+)qX|
+n ;
+n ;
+F2q0
+r B
+p0+
+r B
+(6n
+TS[
+RTZ
+p (
+TPY
+(Tq
+[_Y
+YVZ
+p -
+p (
+&qT|
+n ;
+n ;
+(Qn
+r e
+TEj
+R@i
+p (
+RLc
+T@h
+T@g
+T@f
+T@e
+T@d
+q S
+q S
+q S
+q S
+n ;
+n 8
+q S
+q S
+n ;
+n ;
+n ;
+n 9
+n ;
+q S
+q S
+q S
+[Id
+[Ge
+[Of
+[Ng
+[Mh
+YLc
+YAi
+q i
+qT|
+qT|
+n ;
+n ;
+r G
+TTn
+RSm
+p (
+TPl
+[Sl
+Y_m
+p -
+q\u
+r B
+p (
+7#x
+q S
+q S
+q S
+q S
+q S
+TOw
+f#f
+q S
+q S
+q S
+q S
+n ;
+n 8
+q S
+q S
+(kn 
+(^n 
+n ;
+q y
+n ;
+q z
+r G
+(\n 
+n ;
+q y
+n ;
+r G
+p r
+%qSt
+Tt|
+r n
+n ;
+q i
+qR|
+n ;
+n ;
+"qP}
+(;n
+n /
+n /
+n /
+n /
+39(
+#qQ}
+r B
+p r
+p r
+p r
+p r
+n04
+q i
+qQu
+qQs
+r I
+qQt
+r I
+q^t
+r I
+q^s
+r I
+r M
+p /
+r G
+q S
+q S
+q@)
+q *
+q 5
+q :
+q (
+q 4
+q j
+qR}
+q j
+q j
+qR}
+q j
+#qQ}
+q j
+q j
+q j
+[@{
+[@}
+\@y
+[Az
+\@x
+[@~
+[@w
+[@|
+q j
+q j
+q j
+5ml
+<------
+kx+
+W4K
+W4K
+W4K
+W4K
+W4K
+-xjMv:"
+-xjMv=8#
+W4J
+_2-
+W4J
+u,'
+W4J
+W4J
+W4J
+i<-
+x,%R
+_2-
+H,#
+W4J
+W4J
+y,$
+W4J
+xJ&
+,F"
+W4J
+W4J
+5--
+LGjY
+ojY
+GjY
+KiY<
+KiY<
+niYx
+<KK<K-
+ [2
+[\]^_B
+0#2
+0'2
+0'H
+0'2
+0'H
+0,2
+01002
+01H
+062
+0'2
+09H
+01002
+0100H
+0@*
+012
+0C002
+0F002
+0I2
+.J.
+0L00
+0M000K2
+.JF
+0T0R2
+0T0RH
+0V002
+0YH
+                query FldPosts {
+                  publicContentPostsPagination(folderId: "
+", limit: 50, page: 
+'"h2",null,\{[^{}]*?"children":"([^"]+)"
+'"h3",null,\{[^{}]*?"children":"([^"]+)"
+"href":"(/thu-vien/[^"]+)"
+-"src":"(https://cdn\.yumei-anime\.com[^"]+?)"
+$completion
+$continuation
+$epPath
+7$i$a$-filter-YumeiAnimeProvider$combineBranch$results$3
+,$i$a$-filter-YumeiAnimeProvider$prettySlug$1
+0$i$a$-filter-YumeiAnimeProvider$recentEpisodes$2
+4$i$a$-flatMap-YumeiAnimeProvider$combineBranch$eps$1
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+0$i$a$-forEach-YumeiAnimePlugin$verifySignature$1
+,$i$a$-forEach-YumeiAnimeProvider$fetchPage$3
+,$i$a$-forEach-YumeiAnimeProvider$fetchPage$5
+,$i$a$-forEach-YumeiAnimeProvider$loadLinks$2
+)$i$a$-forEach-YumeiAnimeProvider$search$3
+)$i$a$-forEach-YumeiAnimeProvider$search$5
+N$i$a$-forEachIndexed-CollectionsKt___CollectionsKt$mapIndexedNotNullTo$1$iv$iv
+-$i$a$-ifBlank-YumeiAnimeProvider$prettySlug$3
+E$i$a$-let-CollectionsKt___CollectionsKt$mapIndexedNotNullTo$1$1$iv$iv
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+@$i$a$-let-YumeiAnimeProvider$combineBranch$results$2$fullPosts$1
+5$i$a$-let-YumeiAnimeProvider$fetchPage$folderPoster$1
+-$i$a$-let-YumeiAnimeProvider$load$fullPosts$1
++$i$a$-let-YumeiAnimeProvider$postsFromApi$2
+2$i$a$-map-YumeiAnimeProvider$combineBranch$names$1
+*$i$a$-map-YumeiAnimeProvider$getMainPage$2
+0$i$a$-map-YumeiAnimeProvider$getMainPage$items$1
+;$i$a$-mapIndexed-YumeiAnimeProvider$combineBranch$results$1
+@$i$a$-mapIndexedNotNull-YumeiAnimeProvider$combineBranch$eps$1$1
+:$i$a$-mapIndexedNotNull-YumeiAnimeProvider$load$episodes$1
+.$i$a$-mapNotNull-YumeiAnimeProvider$load$eps$1
+H$i$a$-replaceFirstCharWithCharSequence-YumeiAnimeProvider$prettySlug$2$1
++$i$a$-takeIf-YumeiAnimeProvider$fetchPage$2
+-$i$a$-takeIf-YumeiAnimeProvider$fetchPage$3$1
++$i$a$-takeIf-YumeiAnimeProvider$fetchPage$4
+,$i$a$-takeIf-YumeiAnimeProvider$parseCards$1
+($i$a$-takeIf-YumeiAnimeProvider$search$2
+($i$a$-takeIf-YumeiAnimeProvider$search$4
+4$i$a$-takeIf-YumeiAnimeProvider$toSearchResponse$t$1
+$i$f$filter
+$i$f$filterTo
+$i$f$flatMap
+$i$f$flatMapTo
+$i$f$forEach
+$i$f$forEachIndexed
+$i$f$map
+$i$f$mapIndexed
+$i$f$mapIndexedNotNull
+$i$f$mapIndexedNotNullTo
+$i$f$mapIndexedTo
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$idx
+$names
+$page
+$poster
+&$r8$lambda$1ZR3MOCpmRw3c8ITZDNdlvIvFWI
+&$r8$lambda$8C1ctgSiUIec2SD6huPF9rRV94A
+&$r8$lambda$MJPXz6T5qdKNwrJZER6CrtokcP4
+&$r8$lambda$PNQ0DqogHf_70-rRlLs58wZo_rc
+&$r8$lambda$Zjmxq70gdDvVaBZh9wLW0T4TAKk
+&$r8$lambda$fMbhb5ZxPWE61Y7x7nMFgXj4fxs
+&$r8$lambda$md5IiOemI381P3D2uxiy5FTtCnQ
+&$r8$lambda$niVlewuEyNf0VZEbcSRPOJFo63w
+&$r8$lambda$oWd0wuLBXd1sIj4EbV9D-eXOwKc
+$receiver
+$result
+$this
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$flatMap$iv
+$this$flatMapTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$forEachIndexed$iv$iv$iv
+$this$fullUrl
+$this$map$iv
+$this$mapIndexed$iv
+$this$mapIndexedNotNull$iv
+$this$mapIndexedNotNullTo$iv$iv
+$this$mapIndexedTo$iv$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newTvSeriesLoadResponse
+$this$toSearchResponse
+$this_toSearchResponse
+$title
+%02X
+()I
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+`(ILjava/lang/String;Ljava/util/List;)Lrecloudstream/YumeiAnimeProvider$combineBranch$LeafResult;
+&(ILjava/lang/String;Ljava/util/List;)V
+(Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+l(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Z)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+](Lrecloudstream/YumeiAnimeProvider$Source;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+) {
+                    totalDocs
+                    docs { title slug path __typename }
+                    __typename
+                  }
+                }
+            
+*/*
+*>;)
+, cardTitle=
+, hlsUrl=
+, path=
+, poster=
+, posts=
+, slug=
+, title=
+, variant=
+/r2.
+/tap-
+/thu-vien
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+<anonymous>
+<clinit>
+<destruct>
+<init>
+3<meta[^>]*property="og:image"[^>]*content="([^"]*)"
+3<meta[^>]*property="og:title"[^>]*content="([^"]*)"
+<set-?>
+>;)
+>;)V
+>;)Z
+>;+
+>;>;)
+>;>;>;)
+>;Z)V
+Accept
+Anime
+Anime kh
+AnimeMovie
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Card
+Card(href=
+Cartoon
+Companion
+Content-Type
+D8$$SyntheticClass
+DUB
+FldPosts
+I$0
+ILI
+ILLIZIL
+INSTANCE
+L$0
+L$1
+L$2
+L$3
+L$4
+LII
+LILL
+LLCLIL
+LLI
+LLILLIL
+LLL
+LLLIIL
+LLLIL
+LLLL
+LLLLIL
+LLLLLIL
+LLLLLILLIL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLZIIL
+LLZLLL
+Landroid/content/Context;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/os/Build$VERSION;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+)Lcom/fasterxml/jackson/databind/JsonNode;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+$Lcom/lagradost/cloudstream3/Episode;
+,Lcom/lagradost/cloudstream3/EpisodeResponse;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+-Lcom/lagradost/cloudstream3/ParCollectionsKt;
++Lcom/lagradost/cloudstream3/SearchResponse;
+'Lcom/lagradost/cloudstream3/SeasonData;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+LeafResult
+LeafResult(seasonNum=
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashSet;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Pair<
+Lkotlin/ResultKt;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+ Lkotlin/jvm/internal/Ref$IntRef;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/sequences/Sequence;
+Lkotlin/text/MatchGroup;
+"Lkotlin/text/MatchGroupCollection;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lokhttp3/Interceptor;
+Lokhttp3/RequestBody;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+:Lrecloudstream/YumeiAnimePlugin$$ExternalSyntheticLambda0;
+ Lrecloudstream/YumeiAnimePlugin;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda0;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda1;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda2;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda3;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda4;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda5;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda6;
+<Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda7;
+'Lrecloudstream/YumeiAnimeProvider$Card;
+,Lrecloudstream/YumeiAnimeProvider$Companion;
+.Lrecloudstream/YumeiAnimeProvider$PageContent;
+'Lrecloudstream/YumeiAnimeProvider$Post;
+)Lrecloudstream/YumeiAnimeProvider$Source;
+2Lrecloudstream/YumeiAnimeProvider$combineBranch$1;
+;Lrecloudstream/YumeiAnimeProvider$combineBranch$LeafResult;
+:Lrecloudstream/YumeiAnimeProvider$combineBranch$results$2;
+/Lrecloudstream/YumeiAnimeProvider$emitSource$1;
+/Lrecloudstream/YumeiAnimeProvider$emitSource$2;
+.Lrecloudstream/YumeiAnimeProvider$fetchPage$1;
+0Lrecloudstream/YumeiAnimeProvider$getMainPage$1;
+)Lrecloudstream/YumeiAnimeProvider$load$1;
+)Lrecloudstream/YumeiAnimeProvider$load$3;
+)Lrecloudstream/YumeiAnimeProvider$load$4;
+)Lrecloudstream/YumeiAnimeProvider$load$5;
+)Lrecloudstream/YumeiAnimeProvider$load$6;
+4Lrecloudstream/YumeiAnimeProvider$loadFolderCards$1;
+.Lrecloudstream/YumeiAnimeProvider$loadLinks$1;
+1Lrecloudstream/YumeiAnimeProvider$postsFromApi$1;
+3Lrecloudstream/YumeiAnimeProvider$recentEpisodes$1;
++Lrecloudstream/YumeiAnimeProvider$search$1;
+"Lrecloudstream/YumeiAnimeProvider;
+M3U8
+lMozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
+i c
+p nh
+OVA
+Origin
+PageContent
+Pokemon
+Post
+Post(title=
+Power Rangers
+ROOT
+Referer
+SDK_INT
+SHA-256
+SMAP
+YumeiAnimePlugin.kt
+Kotlin
+*S Kotlin
++ 1 YumeiAnimePlugin.kt
+recloudstream/YumeiAnimePlugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,59:1
+13402#2,2:60
+*S KotlinDebug
++ 1 YumeiAnimePlugin.kt
+recloudstream/YumeiAnimePlugin
+49#1:60,2
+SMAP
+YumeiAnimeProvider.kt
+Kotlin
+*S Kotlin
++ 1 YumeiAnimeProvider.kt
+recloudstream/YumeiAnimeProvider
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,562:1
+1#2:563
+1#2:599
+1#2:612
+1#2:643
+1863#3,2:564
+1863#3,2:566
+774#3:568
+865#3,2:569
+1557#3:571
+1628#3,3:572
+1557#3:575
+1628#3,3:576
+774#3:579
+865#3,2:580
+1863#3,2:582
+1863#3,2:584
+1577#3,11:586
+1872#3,2:597
+1874#3:600
+1588#3:601
+1611#3,9:602
+1863#3:611
+1864#3:613
+1620#3:614
+1567#3:615
+1598#3,4:616
+774#3:620
+865#3,2:621
+1557#3:623
+1628#3,3:624
+1368#3:627
+1454#3,2:628
+1577#3,11:630
+1872#3,2:641
+1874#3:644
+1588#3:645
+1456#3,3:646
+1863#3,2:649
+*S KotlinDebug
++ 1 YumeiAnimeProvider.kt
+recloudstream/YumeiAnimeProvider
+449#1:599
+472#1:612
+506#1:643
+140#1:564,2
+162#1:566,2
+223#1:568
+223#1:569,2
+242#1:571
+242#1:572,3
+248#1:575
+248#1:576,3
+282#1:579
+282#1:580,2
+336#1:582,2
+349#1:584,2
+449#1:586,11
+449#1:597,2
+449#1:600
+449#1:601
+472#1:602,9
+472#1:611
+472#1:613
+472#1:614
+498#1:615
+498#1:616,4
+502#1:620
+502#1:621,2
+504#1:623
+504#1:624,3
+505#1:627
+505#1:628,2
+506#1:630,11
+506#1:641,2
+506#1:644
+506#1:645
+505#1:646,3
+540#1:649,2
+SMAP
+YumeiAnimeProvider.kt
+Kotlin
+*S Kotlin
++ 1 YumeiAnimeProvider.kt
+recloudstream/YumeiAnimeProvider$combineBranch$results$2
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,562:1
+1#2:563
+Server 
+Source
+Source(code=
+Super Sentai
+TvSeries
+USER_AGENT
+Unknown
+User-Agent
+VIL
+VILL
+VLL
+VLLI
+VLLL
+VLLLI
+VLLLLLLZ
+VLLZIL
+VLZZLLIL
+YumeiAnime
+YumeiAnimePlugin.kt
+YumeiAnimeProvider.kt
+YumeiAnime_debug
+ZLL
+ZLLZ
+ZLLZIL
+["$","$L5"
+[Landroid/content/pm/Signature;
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+\"folder\":\{"id":"([a-f0-9]+)"
+access$combineBranch
+access$emitSource
+access$fetchPage
+access$fullUrl
+access$loadFolderCards
+access$postsFromApi
+access$recentEpisodes
+accessFlags
+add
+addAll
+addDubStatus$default
+addSeasonNamesSeasonData
+allowedPackages
+amap
+anime-khac
+apiLevel
+apiUrl
+apollo-require-preflight
+append
+8application/graphql-response+json,application/json;q=0.9
+application/json
+areEqual
+asInt
+asText
+balancedNodeEnd
+before
+body
+boxBoolean
+boxInt
+byteValue
+/call to 'resume' before 'invoke' with coroutine
+callback
+card
+cardTitle
+cards
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+code
+codeLabel
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+combineBranch
++combineBranch$lambda$34$lambda$33$lambda$32
+combined
+component1
+component2
+component3
+contains
+contains$default
+contentUrl
+context
+copy
+copy$default
+copyOf
+create
+currentHash
+currentPackage
+data
+depth
+destination$iv$iv
+digest
+docs
+element
+element$iv
+element$iv$iv
+emitSource
+emptyList
+emptyMap
+end
+epPath
+episodes
+eps
+equals
+expectedHashes
+expectedSignatures
+extractRsc
+f$0
+f$1
+f$2
+f$3
+featureImageAsset
+fetchPage
+find$default
+findAll$default
+findJsonEnd
+firstEp
+firstOrNull
+folderId
+folderPoster
+folders
+format
+format(...)
+fullPath
+fullPosts
+fullUrl
+get
+get$default
+getApkContentsSigners
+getApp
+getCOROUTINE_SUSPENDED
+getCardTitle
+getCode
+getFirst
+getFolderId
+getFolderPoster
+getGroupValues
+getGroups
+getHasDownloadSupport
+getHasMainPage
+getHlsUrl
+getHref
+getInstance
+getLang
+getMainPage
+getMainUrl
+getName
+getPackageInfo
+getPackageManager
+getPackageName
+getPath
+getPoster
+getPosts
+getSeasonNum
+getSlug
+getSources
+getSupportedTypes
+getText
+getTitle
+getValue
+getVariant
+gql
+gqlHeaders
+!group relative block aspect-[2/3]
+h2Re
+h3Re
+hasDownloadSupport
+hasMainPage
+hasNext
+hashCode
+headers
+hls
+hlsUrl
+href
+hrefRe
+html
+http
+Bhttps://(?:cdn|r2)\.yumei-anime\.com/videos/[a-f0-9-]+/index\.m3u8
+#https://api.yumei-anime.com/graphql
+https://yumei-anime.com
+ https://yumei-anime.com/thu-vien
+idx
+imageUrls
+inStr
+index$iv$iv
+index$iv$iv$iv
+indexOf$default
+info
+intValue
+invoke
+invokeSuspend
+isArray
+isBlank
+isCasting
+isEmpty
+isWatch
+it$iv$iv
+item$iv$iv
+item$iv$iv$iv
+items
+iterator
+iterator(...)
+jacksonObjectMapper
+joinToString$default
+key
+kind
+label
+lang
+leaf
+length
+lib
+libraryLabel
+limit
+list$iv$iv
+listOf
+load
+load$lambda$23
+load$lambda$26$lambda$25
+load$lambda$28$lambda$27
+loadFolderCards
+loadLinks
+m3u8Re
+madeProgress
+mainUrl
+mapOf
+mapper
+medium
+mediumUrl
+name
+names
+newAnimeSearchResponse$default
+newEpisode
+newExtractorLink
+newHomePageResponse
+newTvSeriesLoadResponse
+next
+node
+5null cannot be cast to non-null type java.lang.String
+ogImage
+ogTitle
+operationName
+original
+other
+out
+page
+parseCards
+path
+pattern
+pokemon
+post$default
+poster
+posterRe
+posts
+postsFromApi
+power-rangers
+prettySlug
+prettySlug$lambda$9
+printStackTrace
+provider
+publicContentPostsPagination
+publicSearch
+query
+query publicSearch($search: String!, $limit: Int!) {
+  folders: publicContentFolders(search: $search) {
+    id name path subtitle type childCount postCount
+    featureImageAsset { url mediumUrl __typename }
+    __typename
+  }
+  posts: publicContentPostsPagination(search: $search, limit: $limit) {
+    totalDocs
+    docs { id title slug path type excerptHtml
+      featureImageAsset { url mediumUrl __typename }
+      __typename
+    }
+    __typename
+  }
+readJsonValue
+readTree
+recent
+recentEpisodes
+ recloudstream.YumeiAnimeProvider
+8recloudstream.YumeiAnimeProvider$combineBranch$results$2
+-recloudstream.YumeiAnimeProvider$emitSource$2
+'recloudstream.YumeiAnimeProvider$load$3
+'recloudstream.YumeiAnimeProvider$load$4
+'recloudstream.YumeiAnimeProvider$load$5
+'recloudstream.YumeiAnimeProvider$load$6
+9recloudstream/YumeiAnimeProvider$combineBranch$LeafResult
+registerMainAPI
+removePrefix
+removeSuffix
+request
+resp
+result
+results
+rootLibs
+rows
+rsc
+search
+search$lambda$18$lambda$17
+search$lambda$21$lambda$20
+seasonNum
+seen
+=self\.__next_f\.push\(\[(\d+),\s*("(?:\\.|[^"\\])*")\s*\]\);?
+setEpisode
+setLang
+setMainUrl
+setName
+setOf
+setPosterUrl
+setReferer
+setSeason
+sig
+signatures
+signingInfo
+size
+slug
+sources
+split$default
+start
+startsWith$default
+substring
+substring(...)
+substringAfterLast$default
+subtitleCallback
+super-sentai
+supportedTypes
+this
+this$0
+throwIndexOverflow
+throwOnFailure
+title
+toByteArray
+toSearchResponse
+toSearchResponse$lambda$15
+toString
+toString(...)
+toUpperCase
+toUpperCase(...)
+totalDocs
+trimEnd
+trimIndent
+true
+url
+value
+valueOf
+variables
+variant
+variantLabel
+verifySignature
+!verifySignature$lambda$1$lambda$0
+versionHash
+(web:11111111-2222-3333-4444-555555555555
+(web:22222222-3333-4444-5555-666666666666
+x-device-id
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/YumeiAnimePlugin$$ExternalSyntheticLambda0;":"-2f561eb1b","Lrecloudstream/YumeiAnimePlugin;":"6b357564","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda0;":"1a01b544c","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda1;":"-2f2288e43","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda2;":"-11ec8fd73","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda3;":"7c33111ff","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda4;":"-5cdd22743","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda5;":"7a01d6386","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda6;":"-42afe865d","Lrecloudstream/YumeiAnimeProvider$$ExternalSyntheticLambda7;":"242f8e8e3","Lrecloudstream/YumeiAnimeProvider$Card;":"715805ae","Lrecloudstream/YumeiAnimeProvider$Companion;":"7b16fdb8","Lrecloudstream/YumeiAnimeProvider$PageContent;":"717e462e","Lrecloudstream/YumeiAnimeProvider$Post;":"3f8d6dcc","Lrecloudstream/YumeiAnimeProvider$Source;":"a9c55564","Lrecloudstream/YumeiAnimeProvider$combineBranch$1;":"59d0d754","Lrecloudstream/YumeiAnimeProvider$combineBranch$LeafResult;":"deb4dbb6","Lrecloudstream/YumeiAnimeProvider$combineBranch$results$2;":"83722f4f","Lrecloudstream/YumeiAnimeProvider$emitSource$1;":"4496bc03","Lrecloudstream/YumeiAnimeProvider$emitSource$2;":"53b10179","Lrecloudstream/YumeiAnimeProvider$fetchPage$1;":"45100280","Lrecloudstream/YumeiAnimeProvider$getMainPage$1;":"6f771af4","Lrecloudstream/YumeiAnimeProvider$load$1;":"92062c9b","Lrecloudstream/YumeiAnimeProvider$load$3;":"4e12ed3d","Lrecloudstream/YumeiAnimeProvider$load$4;":"21758718","Lrecloudstream/YumeiAnimeProvider$load$5;":"7dafa9a2","Lrecloudstream/YumeiAnimeProvider$load$6;":"a1a794c2","Lrecloudstream/YumeiAnimeProvider$loadFolderCards$1;":"a935446d","Lrecloudstream/YumeiAnimeProvider$loadLinks$1;":"fc23373b","Lrecloudstream/YumeiAnimeProvider$postsFromApi$1;":"9a442a70","Lrecloudstream/YumeiAnimeProvider$recentEpisodes$1;":"6e602fe4","Lrecloudstream/YumeiAnimeProvider$search$1;":"8b886795","Lrecloudstream/YumeiAnimeProvider;":"cc67d896"}
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+v7f
+s7 
+v7}
+~7'
+s7 
+t7!
+}7'
+s7#
+p7c
+{7"
+s7!
+p7c
+p7"
+p7c
+p7c
+p7c
+p7c
+p7c
+p7O
+p7O
+p7O
+p7O
+p7c
+p7c
+p7c
+p7c
+p7c
+p7+
+p7Q
+a7c
+v7o
+|7w
+w7^
+y7b

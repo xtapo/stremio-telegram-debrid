@@ -429,6 +429,16 @@ def _collect_stream_links(html_text: str) -> List[Dict[str, str]]:
     seen = set()
     media_fallback: List[Dict[str, str]] = []
 
+    for m in re.finditer(r'var\s+[a-zA-Z0-9_]+\s*=\s*["\'](https?://[^"\']*pixeldrain[^"\']+)["\']', html_text):
+        href = m.group(1)
+        if href in seen:
+            continue
+        if "/u/" in href:
+            direct_href = href.replace("/u/", "/api/file/")
+            streams.append({"type": "PixelDrain Server", "url": direct_href})
+            seen.add(direct_href)
+            seen.add(href)
+
     for a in make_soup(html_text).find_all("a", href=True):
         href = a["href"]
         text = a.get_text(strip=True)
@@ -514,6 +524,9 @@ async def resolve_direct_stream_links(hubcloud_file_url: str) -> List[Dict[str, 
 def pick_best_stream(streams: List[Dict[str, str]]) -> Optional[Dict[str, str]]:
     if not streams:
         return None
+    for item in streams:
+        if "pixeldrain" in item.get("url", "").lower():
+            return item
     for item in streams:
         if any(host in item.get("url", "").lower() for host in FSL_HOSTS):
             return item

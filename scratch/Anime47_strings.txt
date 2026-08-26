@@ -1,0 +1,2063 @@
+dex
+035
+M$|
+xV4
+5V@
+p r
+p r
+qU]
+q ^
+TS 
+T@ 
+T@ 
+T! 
+n@"
+TC!
+T!!
+n ,
+p *
+TS#
+TS"
+T@#
+T@#
+TC"
+TA"
+T!#
+T!"
+n05
+p02
+TS%
+TS&
+TS$
+T@%
+T@%
+TC&
+TC&
+TC$
+TA$
+T!%
+T!&
+T!$
+n@@
+p@<
+TS(
+TS)
+TS'
+T@(
+T@(
+TC)
+TC)
+TC'
+TA'
+T!(
+T!)
+T!'
+n@L
+p@H
+RS.
+TS1
+TS,
+TS/
+TS+
+TS2
+TS4
+TS-
+TS3
+TS0
+TS*
+R@.
+TB1
+TB1
+TB,
+TB,
+TB/
+TB/
+TB+
+TB+
+TB2
+TB2
+TB4
+TB4
+TB-
+TB-
+TB3
+TB3
+TB0
+TB0
+TB*
+TB*
+R2.
+T21
+T2,
+T2/
+T2+
+T22
+T24
+T2-
+T23
+T20
+T2*
+TS6
+TS5
+T06
+T06
+T25
+T!6
+T!5
+n0s
+p0p
+RS7
+TS8
+TS9
+R@7
+TB8
+TB8
+TB9
+TB9
+R!7
+T!8
+T!9
+n@~
+p@z
+TS;
+TS:
+T0;
+T0;
+T2:
+T!;
+T!:
+TC<
+T!<
+TS=
+TS>
+T0=
+T2>
+T!=
+T!>
+TS?
+TS@
+T@?
+T@?
+TC@
+TA@
+T!?
+T!@
+RSC
+TSG
+TSF
+TSD
+TSE
+TSB
+TSA
+TSH
+TSI
+R@C
+TBG
+TBF
+TBD
+TBE
+TBE
+TBB
+TBB
+TBA
+TBA
+TBH
+TBH
+TBI
+TBI
+R!C
+T!G
+T!F
+T!D
+T!E
+T!B
+T!A
+T!H
+T!I
+RSL
+TSO
+TSM
+TSN
+TSP
+TSQ
+TSK
+TSJ
+R@L
+TBO
+TBO
+TBM
+TBM
+TBN
+TBN
+TBP
+TBP
+TBQ
+TBQ
+TBK
+TBK
+TBJ
+TBJ
+R!L
+T!O
+T!M
+T!N
+T!P
+T!Q
+T!K
+T!J
+RST
+TSW
+TSV
+TSU
+TSX
+TSS
+TSR
+R@T
+TBW
+TBV
+TBU
+TBU
+TBX
+TBX
+TBS
+TBS
+TBR
+TBR
+R!T
+T!W
+T!V
+T!U
+T!X
+T!S
+T!R
+RVT
+TWW
+TXV
+TYU
+TZX
+T[S
+T\R
+TS\
+TSZ
+TSY
+TS[
+T@\
+T@\
+TCZ
+TCZ
+TCY
+TCY
+TC[
+TA[
+T!\
+T!Z
+T!Y
+T![
+TS]
+TS^
+T@]
+T@]
+TC^
+TA^
+T!]
+T!^
+TC_
+T!_
+RS`
+TSc
+TSa
+TSb
+R@`
+TBc
+TBc
+TBa
+TBa
+TBb
+TBb
+R!`
+T!c
+T!a
+T!b
+[#f
+R e
+Y e
+T g
+q `
+[#i
+R h
+Y h
+T j
+q c
+[Ep
+R@o
+Y@o
+T@q
+n@q
+q@|
+q a
+[4w
+R0v
+Y0v
+T0x
+n0x
+n0/
+n0-
+n 0
+p v
+%(Fw
+q c
+n0>
+p Q
+T1}
+T2y
+p@,
+ p0
+n05
+n03
+n 6
+p v
+%(Fw
+q c
+n0>
+p Q
+T2~
+p@2
+ p0
+n0;
+n09
+n <
+p v
+%(Fw
+q c
+n0>
+p Q
+p@8
+ p0
+n0@
+n0>
+n A
+p v
+(Yq
+p@2
+p@,
+p@8
+p@=
+ p0
+n0C
+n F
+n0D
+p v
+n F
+n E
+n I
+n J
+n H
+n D
+n G
+ p0
+n0K
+n N
+n0L
+p v
+n c
+n a
+n b
+p@J
+ p0
+n0S
+n0Q
+n T
+p v
+H(M
+q c
+n0>
+p Q
+,qS
+p@J
+7YW
+q e
+p0]
+7n[k
+ p0
+n0X
+n0V
+n Y
+p v
+ p0
+n0|
+n0>
+n ?
+n0=
+r m
+r j
+(On
+(5n
+p k
+#50
+p i
+p m
+TTf
+RSe
+p v
+TPd
+&#f
+[Sd
+YXe
+n0>
+q c
+(qR
+n0>
+p Q
+7{[y
+p0 
+p v
+p i
+p0#
+p v
+W(Y
+q c
+n0>
+(I"
+p Q
+p l
+q0X
+p Q
+p Q
+p0)
+p v
+(]q
+p@=
+p l
+n \
+p l
+p0A
+q0W
+p l
+(/n
+p h
+p0i
+p u
+p0H
+p v
+n0>
+p0[
+p v
+}(U
+q c
+n0>
+(;"
+p Q
+p l
+7m[D
+7m[d
+p {
+!qS
+(+r
+qTh
+q y
+p l
+n K
+n L
+q0S
+n P
+n O
+p0%
+B#"
+DnT
+BD"
+n0!
+(0n
+333333
+3q {
+n &
+n '
+n &
+n '
+n ,
+n ,
+n 3
+n 6
+p .
+n 0
+n 7
+p "
+n #
+n (
+n &
+n %
+p "
+n #
+n (
+n &
+n $
+n %
+n /
+n /
+p .
+n 0
+n 7
+p )
+n -
+n ,
+n *
+*Tn +
+p )
+n -
+n ,
+n *
+n +
+n /
+n /
+o02
+0n 
+n 9
+n :
+!n ;
+dlo
+<--)
+iKF
+<i*
+hvJ
+ycK
+3ZZZZZZZ
+ycK
+yciZ
+ycK
+[*[*
+Kiii
+ycJ
+jwZ
+{J$
+*.<
+ycJ
+ycJ
+ycJ
+z,#
+ycJ
+ycJ
+Yx<x
+<KKK<K-
+KZi
+l,i+
+ZZ<
+ZZ<
+"ij
+xxi
+xxi
+%<=<
+0"2
+0%2
+042
+WXYZ[\]^_`abcdefghijklB
+0-H
+0/2
+032
+0)H
+7J$
+H:"
+0;2
+0=2
+032
+0@H
+0/0$2
+0E2
+<JF
+0L0J2
+0L0JH
+0S2
+0NH
+032
+0VH
+0 8BX
+0%0$X
+'R 
+0$0)X
+"Android"
+("Chromium";v="120", "Not?A_Brand";v="24"
+"PRIVATE_MODE"
+$actorsList
+$animeId
+$callback
+$completion
+$continuation
+$ctx
+$emailPref
+$epCount
+$epNum
+$episodeIds
+$episodes
+$headers
+,$i$a$-any-Anime47Provider$mapSubtitleLabel$1
+&$i$a$-apply-Anime47ProviderKt$mapper$1
+<$i$a$-apply-Anime47SettingsDialog$onCreateView$frameLayout$1
+H$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$actionCategory$1
+F$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$authCategory$1
+B$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$closeBtn$1
+C$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$emailPref$1
+B$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$passPref$1
+B$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$resetBtn$1
+F$i$a$-apply-Anime47SettingsFragment$onCreatePreferences$resetBtn$1$1$1
+3$i$a$-apply-Anime47SettingsFragment$onViewCreated$1
+3$i$a$-apply-Anime47SettingsFragment$onViewCreated$2
+;$i$a$-filter-Anime47Provider$createSearchResponse$epCount$1
+,$i$a$-filter-Anime47Provider$load$episodes$3
+($i$a$-filter-Anime47Provider$load$tags$2
+-$i$a$-flatMap-Anime47Provider$load$episodes$1
+-$i$a$-flatMap-Anime47Provider$load$episodes$2
+-$i$a$-forEach-Anime47Plugin$verifySignature$1
+/$i$a$-forEach-Anime47Provider$loadLinks$2$1$1$1
+1$i$a$-forEach-Anime47Provider$loadLinks$2$1$1$1$3
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+C$i$a$-getOrPut-CollectionsKt___CollectionsKt$groupByTo$list$1$iv$iv
+-$i$a$-groupBy-Anime47Provider$load$episodes$4
+-$i$a$-let-Anime47Provider$load$actorsList$1$1
++$i$a$-let-Anime47Provider$load$scoreValue$1
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
+)$i$a$-map-Anime47Provider$load$episodes$5
+6$i$a$-map-Anime47Provider$load$episodes$5$idListJson$1
+'$i$a$-map-Anime47Provider$loadLinks$2$1
+3$i$a$-mapNotNull-Anime47Provider$getMainPage$home$1
+2$i$a$-mapNotNull-Anime47Provider$load$actorsList$1
+7$i$a$-mapNotNull-Anime47Provider$load$recommendations$1
+,$i$a$-mapNotNull-Anime47Provider$load$tags$1
+)$i$a$-mapNotNull-Anime47Provider$search$2
+I$i$a$-replaceFirstCharWithCharSequence-Anime47Provider$mapSubtitleLabel$2
+.$i$a$-sortedBy-Anime47Provider$load$episodes$6
+$i$f$any
+$i$f$fetchApi
+$i$f$filter
+$i$f$filterTo
+$i$f$flatMap
+$i$f$flatMapTo
+$i$f$forEach
+$i$f$getOrPut
+$i$f$groupBy
+$i$f$groupByTo
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$parseJson
+$i$f$sortedBy
+$id
+$loaded
+$nonprofitRegex
+$passPref
+$plot
+$poster
+$prefs
+&$r8$lambda$8w87NnkKcXyi80QWXPEz1UftPvE
+&$r8$lambda$CRfKDdX8Z70EFpTeTMgtsnEtYOE
+&$r8$lambda$Hvg1WWOOBeVyNDAbhQqSz6lfcag
+&$r8$lambda$NxoUjQye0JOWgSYA8UETDrb9Y10
+&$r8$lambda$P8IbDj0krq7S4uAiXsLCbKk5SMA
+&$r8$lambda$UYiz3Bs2ukd7yxgwxoKM0Y0laSY
+&$r8$lambda$WZMkMh3lVLUMEc--6bntARKL6Yc
+&$r8$lambda$Yg_fi0oAxO3mrcqqhxaYMWrqaak
+&$r8$lambda$kFVSIhgjQ-Jmc6dlrnytP6UskbI
+$receiver
+$recommendations
+$referer
+$result
+$scoreValue
+$subtitleCallback
+$tags
+$this
+$this$any$iv
+$this$coroutineScope
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$flatMap$iv
+$this$flatMapTo$iv$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$getOrPut$iv$iv$iv
+$this$groupBy$iv
+$this$groupByTo$iv$iv
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$mapper_u24lambda_u240
+$this$newAnimeLoadResponse
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+)$this$onCreatePreferences_u24lambda_u2411
+H$this$onCreatePreferences_u24lambda_u2411_u24lambda_u2410_u24lambda_u249
+)$this$onCreatePreferences_u24lambda_u2413
+($this$onCreatePreferences_u24lambda_u242
+($this$onCreatePreferences_u24lambda_u244
+($this$onCreatePreferences_u24lambda_u247
+($this$onCreatePreferences_u24lambda_u248
+!$this$onCreateView_u24lambda_u240
+"$this$onViewCreated_u24lambda_u240
+"$this$onViewCreated_u24lambda_u241
+$this$sortedBy$iv
+$this$toJson
+$this$toTvType
+$year
+%02X
+&page=
+&page=1
+()I
+%()Landroid/content/SharedPreferences;
+()Ljava/lang/Boolean;
+()Ljava/lang/Double;
+()Ljava/lang/Integer;
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+/()Lrecloudstream/Anime47Provider$ApiFilterData;
+,()Lrecloudstream/Anime47Provider$DetailPost;
+0()Lrecloudstream/Anime47Provider$WatchAnimeInfo;
+()V
+()Z
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+W(ILjava/lang/Integer;Ljava/lang/String;)Lrecloudstream/Anime47Provider$EpisodeListItem;
+)(ILjava/lang/Integer;Ljava/lang/String;)V
+:(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+p(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/Double;Ljava/util/List;)Lrecloudstream/Anime47Provider$DetailPost;
+(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/lang/Double;Ljava/util/List;)V
+(Ljava/lang/Boolean;Ljava/lang/String;Lrecloudstream/Anime47Provider$ApiFilterData;)Lrecloudstream/Anime47Provider$ApiFilterResponse;
+U(Ljava/lang/Boolean;Ljava/lang/String;Lrecloudstream/Anime47Provider$ApiFilterData;)V
+(Ljava/lang/Integer;Ljava/util/List;Lrecloudstream/Anime47Provider$WatchAnimeInfo;)Lrecloudstream/Anime47Provider$ApiWatchResponse;
+T(Ljava/lang/Integer;Ljava/util/List;Lrecloudstream/Anime47Provider$WatchAnimeInfo;)V
+&(Ljava/lang/String;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+'(Ljava/lang/String;Ljava/lang/String;)V
+9(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;)Lcom/lagradost/cloudstream3/SearchResponse;
+I(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+%(Ljava/lang/String;Ljava/util/List;)V
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/util/List;)V
+V(Ljava/util/List;Ljava/lang/Boolean;)Lrecloudstream/Anime47Provider$ApiSearchResponse;
+&(Ljava/util/List;Ljava/lang/Boolean;)V
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+-(Lrecloudstream/Anime47Provider$DetailPost;)V
+(TT;TT;)I
+(\d+)(?:\.html|/)?$
+)TT;
+********
+*>;)
+, anime=
+, characters=
+, cover=
+, current_episode=
+, data=
+, description=
+, episodes=
+, genres=
+, groups=
+, has_more=
+, image=
+, image_url=
+, label=
+, link=
+, message=
+, number=
+, password=
+, player_type=
+, poster=
+, refresh_token=
+, role=
+, score=
+, server_name=
+, slug=
+, streams=
+, subtitles=
+, thumbnail=
+, title=
+, type=
+, videos=
+, year=
+-TT;>;)
+/anime/
+!/anime/filter?lang=vi&sort=latest
+!/anime/filter?lang=vi&sort=rating
+ /anime/filter?lang=vi&type=movie
+/anime/filter?lang=vi&type=tv
+/anime/info/
+/anime/watch/episode/
+/auth/login
+/episodes?lang=vi
+/recommendations?lang=vi
+/search/full/?lang=vi&keyword=
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+_9B:4F:6C:87:EE:B7:0B:25:7C:7F:96:8E:65:B1:56:16:82:4B:CE:33:E9:CC:74:A0:7A:D3:DD:26:63:2A:1D:B7
+<T:
+<anonymous>
+<clinit>
+<init>
+<set-?>
+<unused var>
+>;)
+>;)V
+>;)Z
+>;>;
+>;>;)
+?lang=vi
+Anime
+Anime Movie
+Anime M
+i C
+p Nh
+Anime TV
+Anime47
+Anime47Plugin.kt
+Anime47Provider.kt
+Anime47Settings
+Anime47_debug
+AnimeMovie
+ApiDetailResponse
+ApiDetailResponse(data=
+ApiEpisodeResponse
+ApiEpisodeResponse(teams=
+ApiFilterData
+ApiFilterData(posts=
+ApiFilterResponse
+ApiFilterResponse(success=
+ApiRecommendationResponse
+ApiRecommendationResponse(data=
+ApiSearchResponse
+ApiSearchResponse(results=
+ApiWatchResponse
+ApiWatchResponse(id=
+Authorization
+Bearer 
+_C2:75:5B:1F:BC:6C:EF:A6:AA:20:73:9F:52:7D:09:24:65:25:61:8A:7E:16:ED:B2:E2:17:1C:2C:9D:E7:0C:72
+Cartoon
+CharacterInfo
+CharacterInfo(name=
+a thi
+t l
+Companion
+Comparisons.kt
+u tr
+c d
+ li
+u trang ch
+ thay 
+i ho
+c t
+i kho
+n ch
+a k
+ch ho
+D8$$SyntheticClass
+Data is null
+DetailPost
+DetailPost(id=
+Email
+English
+EpisodeGroup
+EpisodeGroup(name=
+EpisodeListItem
+EpisodeListItem(id=
+EpisodeTeam
+EpisodeTeam(team_name=
+FAIL_ON_UNKNOWN_PROPERTIES
+GenreInfo
+GenreInfo(name=
+t H
+nh Trung Qu
+III
+ILI
+ILL
+INSTANCE
+Invalid anime ID from URL
+JJJ
+BKh
+ng th
+i trang ch
+. C
+ th
+ do k
+t n
+i m
+ng ho
+c API thay 
+L$0
+L$1
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+LCL
+LIL
+LILL
+LILLL
+LILLLLLL
+LILLLLLLL
+LILLLLLLLL
+LILLLLLLLLLL
+LLI
+LLILLIL
+LLILLLIL
+LLILLLLLLIL
+LLILLLLLLLIL
+LLILLLLLLLLIL
+LLILLLLLLLLLLIL
+LLL
+LLLI
+LLLIIL
+LLLIL
+LLLJ
+LLLL
+LLLLIL
+LLLLL
+LLLLLIL
+LLLLLILLIL
+LLLLLL
+LLLLLLIL
+LLLLLLL
+LLLLLLLIL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLLZLLIL
+LLZ
+LLZLLL
+Landroid/app/Activity;
+Landroid/app/Dialog;
+Landroid/content/Context;
+*Landroid/content/SharedPreferences$Editor;
+#Landroid/content/SharedPreferences;
+ Landroid/content/pm/PackageInfo;
+#Landroid/content/pm/PackageManager;
+Landroid/content/pm/Signature;
+ Landroid/content/pm/SigningInfo;
+Landroid/content/res/Resources;
+Landroid/os/Build$VERSION;
+Landroid/os/Bundle;
+Landroid/util/DisplayMetrics;
+Landroid/view/LayoutInflater;
+Landroid/view/View;
+%Landroid/view/ViewGroup$LayoutParams;
+Landroid/view/ViewGroup;
+Landroid/view/Window;
+Landroid/widget/EditText;
+)Landroid/widget/FrameLayout$LayoutParams;
+Landroid/widget/FrameLayout;
+Landroid/widget/Toast;
+*Landroidx/appcompat/app/AppCompatActivity;
+&Landroidx/fragment/app/DialogFragment;
+ Landroidx/fragment/app/Fragment;
+'Landroidx/fragment/app/FragmentManager;
++Landroidx/fragment/app/FragmentTransaction;
+?Landroidx/preference/EditTextPreference$OnBindEditTextListener;
+(Landroidx/preference/EditTextPreference;
+;Landroidx/preference/Preference$OnPreferenceChangeListener;
+:Landroidx/preference/Preference$OnPreferenceClickListener;
+ Landroidx/preference/Preference;
+(Landroidx/preference/PreferenceCategory;
+.Landroidx/preference/PreferenceFragmentCompat;
+'Landroidx/preference/PreferenceManager;
+&Landroidx/preference/PreferenceScreen;
++Landroidx/recyclerview/widget/RecyclerView;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+/Lcom/fasterxml/jackson/core/type/TypeReference;
+/Lcom/fasterxml/jackson/core/type/TypeReference<
+7Lcom/fasterxml/jackson/databind/DeserializationFeature;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+"Lcom/lagradost/cloudstream3/Actor;
+&Lcom/lagradost/cloudstream3/ActorData;
+&Lcom/lagradost/cloudstream3/ActorRole;
+.Lcom/lagradost/cloudstream3/AnimeLoadResponse;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
++Lcom/lagradost/cloudstream3/CommonActivity;
+&Lcom/lagradost/cloudstream3/DubStatus;
+$Lcom/lagradost/cloudstream3/Episode;
+2Lcom/lagradost/cloudstream3/ErrorLoadingException;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+,Lcom/lagradost/cloudstream3/Score$Companion;
+"Lcom/lagradost/cloudstream3/Score;
++Lcom/lagradost/cloudstream3/SearchResponse;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+#Lcom/lagradost/cloudstream3/TvType;
+5Lcom/lagradost/cloudstream3/network/CloudflareKiller;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+"Ldalvik/annotation/EnclosingClass;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+!Ldalvik/annotation/MemberClasses;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/IOException;
+Ljava/lang/Appendable;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Comparable;
+Ljava/lang/Double;
+Ljava/lang/Error;
+Ljava/lang/Exception;
+$Ljava/lang/IllegalArgumentException;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/Throwable;
+Ljava/net/URL;
+Ljava/net/URLEncoder;
+Ljava/security/MessageDigest;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashMap;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map$Entry;
+Ljava/util/Map;
+Ljava/util/Map<
+Ljava/util/Set;
+Ljava/util/Set<
+Ljava/util/concurrent/TimeUnit;
++Ljava/util/concurrent/atomic/AtomicBoolean;
+Lkotlin/Function1;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/Triple<
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
+$Lkotlin/coroutines/CoroutineContext;
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+"Lkotlin/jvm/internal/InlineMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/text/CharsKt;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/AwaitKt;
+Lkotlinx/coroutines/BuildersKt;
+#Lkotlinx/coroutines/CoroutineScope;
+%Lkotlinx/coroutines/CoroutineScopeKt;
+#Lkotlinx/coroutines/CoroutineStart;
+Lkotlinx/coroutines/Deferred;
+LoginRequest
+LoginRequest(login=
+LoginResponse
+LoginResponse(access_token=
+Lokhttp3/HttpUrl;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/Request$Builder;
+Lokhttp3/Request;
+Lokhttp3/RequestBody$Companion;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+Lokio/BufferedSource;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+7Lrecloudstream/Anime47Plugin$$ExternalSyntheticLambda0;
+7Lrecloudstream/Anime47Plugin$$ExternalSyntheticLambda1;
+Lrecloudstream/Anime47Plugin;
+9Lrecloudstream/Anime47Provider$$ExternalSyntheticLambda0;
+9Lrecloudstream/Anime47Provider$$ExternalSyntheticLambda1;
+1Lrecloudstream/Anime47Provider$ApiDetailResponse;
+2Lrecloudstream/Anime47Provider$ApiEpisodeResponse;
+-Lrecloudstream/Anime47Provider$ApiFilterData;
+1Lrecloudstream/Anime47Provider$ApiFilterResponse;
+9Lrecloudstream/Anime47Provider$ApiRecommendationResponse;
+1Lrecloudstream/Anime47Provider$ApiSearchResponse;
+0Lrecloudstream/Anime47Provider$ApiWatchResponse;
+-Lrecloudstream/Anime47Provider$CharacterInfo;
+*Lrecloudstream/Anime47Provider$DetailPost;
+,Lrecloudstream/Anime47Provider$EpisodeGroup;
+/Lrecloudstream/Anime47Provider$EpisodeListItem;
++Lrecloudstream/Anime47Provider$EpisodeTeam;
+)Lrecloudstream/Anime47Provider$GenreInfo;
+,Lrecloudstream/Anime47Provider$LoginRequest;
+-Lrecloudstream/Anime47Provider$LoginResponse;
+$Lrecloudstream/Anime47Provider$Post;
+2Lrecloudstream/Anime47Provider$RecommendationItem;
+*Lrecloudstream/Anime47Provider$SearchItem;
+&Lrecloudstream/Anime47Provider$Stream;
+,Lrecloudstream/Anime47Provider$SubtitleItem;
+)Lrecloudstream/Anime47Provider$VideoItem;
+.Lrecloudstream/Anime47Provider$WatchAnimeInfo;
+@Lrecloudstream/Anime47Provider$ensureToken$$inlined$parseJson$1;
+-Lrecloudstream/Anime47Provider$ensureToken$1;
+=Lrecloudstream/Anime47Provider$fetchApi$$inlined$parseJson$1;
+0Lrecloudstream/Anime47Provider$getAuthHeaders$1;
+?Lrecloudstream/Anime47Provider$getMainPage$$inlined$fetchApi$1;
+-Lrecloudstream/Anime47Provider$getMainPage$1;
+5Lrecloudstream/Anime47Provider$getVideoInterceptor$1;
+8Lrecloudstream/Anime47Provider$load$$inlined$sortedBy$1;
+&Lrecloudstream/Anime47Provider$load$1;
+WLrecloudstream/Anime47Provider$load$2$episodesTask$1$invokeSuspend$$inlined$fetchApi$1;
+5Lrecloudstream/Anime47Provider$load$2$episodesTask$1;
+SLrecloudstream/Anime47Provider$load$2$infoTask$1$invokeSuspend$$inlined$fetchApi$1;
+1Lrecloudstream/Anime47Provider$load$2$infoTask$1;
+SLrecloudstream/Anime47Provider$load$2$recsTask$1$invokeSuspend$$inlined$fetchApi$1;
+1Lrecloudstream/Anime47Provider$load$2$recsTask$1;
+&Lrecloudstream/Anime47Provider$load$2;
+&Lrecloudstream/Anime47Provider$load$3;
+>Lrecloudstream/Anime47Provider$loadLinks$$inlined$parseJson$1;
++Lrecloudstream/Anime47Provider$loadLinks$1;
+3Lrecloudstream/Anime47Provider$loadLinks$2$1$1$1$2;
+QLrecloudstream/Anime47Provider$loadLinks$2$1$1$invokeSuspend$$inlined$fetchApi$1;
+/Lrecloudstream/Anime47Provider$loadLinks$2$1$1;
++Lrecloudstream/Anime47Provider$loadLinks$2;
+:Lrecloudstream/Anime47Provider$search$$inlined$fetchApi$1;
+(Lrecloudstream/Anime47Provider$search$1;
+Lrecloudstream/Anime47Provider;
+-Lrecloudstream/Anime47ProviderKt$parseJson$1;
+!Lrecloudstream/Anime47ProviderKt;
+%Lrecloudstream/Anime47SettingsDialog;
+ALrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda0;
+ALrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda1;
+ALrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda2;
+ALrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda3;
+ALrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda4;
+'Lrecloudstream/Anime47SettingsFragment;
+u thi
+t l
+p v
+ tho
+i t
+i th
+ng tin phim: 
+i: Kh
+ng th
+ kh
+i t
+o giao di
+n c
+M3U8
+oMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36
+oMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36
+t kh
+OVA
+Origin
+Post
+Post(id=
+ROOT
+Range
+RecommendationItem
+RecommendationItem(id=
+Referer
+SDK_INT
+SHA-256
+SMAP
+Anime47Plugin.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Plugin.kt
+recloudstream/Anime47Plugin
++ 2 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,239:1
+13402#2,2:240
+*S KotlinDebug
++ 1 Anime47Plugin.kt
+recloudstream/Anime47Plugin
+76#1:240,2
+SMAP
+Anime47Plugin.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Plugin.kt
+recloudstream/Anime47SettingsFragment
++ 2 fake.kt
+kotlin/jvm/internal/FakeKt
+1#1,239:1
+1#2:240
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider
++ 2 _Strings.kt
+kotlin/text/StringsKt___StringsKt
++ 3 Anime47Provider.kt
+recloudstream/Anime47ProviderKt
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 5 fake.kt
+kotlin/jvm/internal/FakeKt
++ 6 Maps.kt
+kotlin/collections/MapsKt__MapsKt
++ 7 _Maps.kt
+kotlin/collections/MapsKt___MapsKt
+1#1,418:1
+185#1,10:427
+195#1,4:438
+185#1,10:455
+195#1,4:466
+434#2:419
+507#2,5:420
+32#3:425
+32#3:426
+32#3:437
+32#3:465
+32#3:564
+1611#4,9:442
+1863#4:451
+1864#4:453
+1620#4:454
+1611#4,9:470
+1863#4:479
+1864#4:481
+1620#4:482
+1611#4,9:483
+1863#4:492
+1864#4:494
+1620#4:495
+774#4:496
+865#4,2:497
+1611#4,9:500
+1863#4:509
+1864#4:511
+1620#4:512
+1368#4:513
+1454#4,5:514
+1368#4:519
+1454#4,5:520
+774#4:525
+865#4,2:526
+1485#4:528
+1510#4,3:529
+1513#4,3:539
+1557#4:545
+1628#4,3:546
+1053#4:550
+1611#4,9:551
+1863#4:560
+1864#4:562
+1620#4:563
+1755#4,3:565
+1#5:452
+1#5:480
+1#5:493
+1#5:499
+1#5:510
+1#5:561
+1#5:568
+381#6,7:532
+126#7:542
+153#7,2:543
+155#7:549
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider
+205#1:427,10
+205#1:438,4
+228#1:455,10
+228#1:466,4
+141#1:419
+141#1:420,5
+170#1:425
+194#1:426
+205#1:437
+228#1:465
+300#1:564
+212#1:442,9
+212#1:451
+212#1:453
+212#1:454
+228#1:470,9
+228#1:479
+228#1:481
+228#1:482
+252#1:483,9
+252#1:492
+252#1:494
+252#1:495
+252#1:496
+252#1:497,2
+257#1:500,9
+257#1:509
+257#1:511
+257#1:512
+263#1:513
+263#1:514,5
+263#1:519
+263#1:520,5
+264#1:525
+264#1:526,2
+265#1:528
+265#1:529,3
+265#1:539,3
+267#1:545
+267#1:546,3
+272#1:550
+274#1:551,9
+274#1:560
+274#1:562
+274#1:563
+353#1:565,3
+212#1:452
+228#1:480
+252#1:493
+257#1:510
+274#1:561
+265#1:532,7
+266#1:542
+266#1:543,2
+266#1:549
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$episodesTask$1
++ 2 Anime47Provider.kt
+recloudstream/Anime47Provider
++ 3 Anime47Provider.kt
+recloudstream/Anime47ProviderKt
+1#1,418:1
+185#2,10:419
+195#2,4:430
+32#3:429
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$episodesTask$1
+242#1:419,10
+242#1:430,4
+242#1:429
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$infoTask$1
++ 2 Anime47Provider.kt
+recloudstream/Anime47Provider
++ 3 Anime47Provider.kt
+recloudstream/Anime47ProviderKt
+1#1,418:1
+185#2,10:419
+195#2,4:430
+32#3:429
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$infoTask$1
+241#1:419,10
+241#1:430,4
+241#1:429
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$recsTask$1
++ 2 Anime47Provider.kt
+recloudstream/Anime47Provider
++ 3 Anime47Provider.kt
+recloudstream/Anime47ProviderKt
+1#1,418:1
+185#2,10:419
+195#2,4:430
+32#3:429
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$load$2$recsTask$1
+243#1:419,10
+243#1:430,4
+243#1:429
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$loadLinks$2
++ 2 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,418:1
+1557#2:419
+1628#2,3:420
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$loadLinks$2
+308#1:419
+308#1:420,3
+SMAP
+Anime47Provider.kt
+Kotlin
+*S Kotlin
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$loadLinks$2$1$1
++ 2 Anime47Provider.kt
+recloudstream/Anime47Provider
++ 3 Anime47Provider.kt
+recloudstream/Anime47ProviderKt
++ 4 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
+1#1,418:1
+185#2,10:419
+195#2,4:430
+32#3:429
+1863#4:434
+1863#4,2:435
+1864#4:437
+*S KotlinDebug
++ 1 Anime47Provider.kt
+recloudstream/Anime47Provider$loadLinks$2$1$1
+311#1:419,10
+311#1:430,4
+311#1:429
+312#1:434
+335#1:435,2
+312#1:437
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 Anime47Provider.kt
+recloudstream/Anime47Provider
+1#1,102:1
+272#2:103
+SearchItem
+SearchItem(id=
+Stream
+Stream(url=
+Subbed
+Subtitle
+SubtitleItem
+SubtitleItem(file=
+TT;>;
+Top 
+nh Gi
+PTrang web y
+u c
+ng nh
+p. Vui l
+ng m
+t ti
+ch 
+u h
+nh t
+i kho
+i kho
+n Anime47
+y ch
+UTF-8
+Unknown
+Unknown Title
+User-Agent
+VII
+VIIII
+VIL
+VILL
+VILLL
+VILLLLLL
+VILLLLLLL
+VILLLLLLLL
+VILLLLLLLLLL
+VLIL
+VLILLLLL
+VLL
+VLLL
+VLLLIL
+VLLLL
+VLLLLIL
+VLLLLLLL
+VLLLLLLLLL
+VideoItem
+VideoItem(url=
+Vietnamese
+WatchAnimeInfo
+WatchAnimeInfo(id=
+Xong / 
+a th
+ng tin 
+ng nh
+a t
+i kho
+n kh
+i thi
+t b
+ZLL
+ZLLLLL
+ZLLZ
+ZLLZIL
+[Landroid/content/pm/Signature;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+access$ensureToken
+access$findMpegTsOffset
+access$getApiBaseUrl$p
+access$getAuthHeaders
+access$getInterceptor$p
+access$getMapper$p
+access$mapSubtitleLabel
+access$toJson
+accessFlags
+access_token
+actionCategory
+activity
+actorsList
+add
+addAll
+addDubStatus
+addPreference
+allowedPackages
+anime
+anime47_email
+anime47_password
+anime47_prefs
+animeId
+answer$iv$iv$iv
+apiBaseUrl
+apiLevel
+append
+application/json
+apply
+areEqual
+async$default
+authCategory
+authority
+await
+awaitAll
+beginTransaction
+body
+boxBoolean
+boxInt
+build
+byteValue
+bytes=0
+cachedToken
+/call to 'resume' before 'invoke' with coroutine
+callback
+chain
+char
+charAt
+characters
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+closeBtn
+collectionSizeOrDefault
+com.lagradost.cloudstream3
+%com.lagradost.cloudstream3.prerelease
+commit
+compare
+compareValues
+component1
+component10
+component11
+component2
+component3
+component4
+component5
+component6
+component7
+component8
+component9
+configure
+container
+contains
+contains$default
+containsMatchIn
+contentLength
+contentType
+context
+copy
+copy$default
+copyOf
+coroutineScope
+cover
+create
+createPreferenceScreen
+createPreferenceScreen(...)
+createSearchResponse
+createSearchResponse$default
+createSearchResponse$lambda$1
+ctx
+currentHash
+currentPackage
+current_episode
+data
+density
+description
+destination$iv$iv
+dialog
+digest
+dismiss
+distinct
+e$iv
+edit
+editText
+element$iv
+element$iv$iv
+email
+emailPref
+emptyList
+emptyMap
+encode
+encodedQuery
+eng
+english
+engsub
+ensureToken
+entrySet
+epCount
+epList
+epNum
+episodeIds
+episodes
+episodesResponse
+episodesStr
+episodesTask
+equals
+expectedHashes
+expectedSignatures
+extractorLink
+f$0
+f$1
+f$2
+f$3
+fetchApi
+file
+finalWidth
+find$default
+findMpegTsOffset
+fixUrl
+format
+format(...)
+frameId
+frameLayout
+from10
+generateViewId
+genres
+get
+get$default
+getAccess_token
+getActivity
+getAnime
+getApkContentsSigners
+getApp
+getAuthHeaders
+getCOROUTINE_SUSPENDED
+getCharacters
+getChildFragmentManager
+getContext
+getContext(...)
+getCover
+getCurrent_episode
+getData
+getDescription
+getDialog
+getDisplayMetrics
+getEpisode
+getEpisodes
+getFile
+getGenres
+getGroupValues
+getGroups
+getHasDownloadSupport
+getHasMainPage
+getHas_more
+getHost
+getId
+getImage
+getImage_url
+getInstance
+getKey
+getLabel
+getLang
+getLayoutParams
+getLink
+getListView
+getLogin
+getMainPage
+getMainUrl
+getMessage
+getName
+getNumber
+getPackageInfo
+getPackageManager
+getPackageName
+getParentFragment
+getPassword
+getPlayer_type
+getPoster
+getPosts
+getPreferenceManager
+getPrefs
+getRefresh_token
+getResources
+getResults
+getRole
+getScore
+getServer_name
+getSharedPreferences
+getSlug
+getStreams
+getString
+getSubtitles
+getSuccess
+getSupportFragmentManager
+getSupportedTypes
+getTeam_name
+getTeams
+getText
+getThumbnail
+getTitle
+getType
+getUrl
+getValue
+getVideoInterceptor
+getVideos
+getWindow
+getYear
+groups
+hasDownloadSupport
+hasMainPage
+hasNext
+has_more
+hashCode
+header
+headers
+headers$iv
+height
+home
+http
+https:
+https://anime47.best
+https://anime47.love/api
+idListJson
+image
+image_url
+index$iv$iv
+inflater
+info
+infoRes
+infoTask
+intValue
+intercept
+interceptor
+invoke
+invokeSuspend
+isBlank
+isCasting
+isDigit
+isEmpty
+isLowerCase
+it$iv$iv
+item
+item$iv$iv
+iterator
+jacksonObjectMapper
+joinToString$default
+jwplayer
+key$iv$iv
+keywords
+kind
+label
+lang
+language
+length
+link
+list$iv$iv
+listOf
+load
+load$lambda$0
+load$lambda$15$lambda$14
+loadLinks
+loaded
+login
+lowerLabel
+mainPage
+mainPageOf
+mainUrl
+makeText
+mapOf
+mapSubtitleLabel
+mapper
+mark
+maxWidth
+message
+metrics
+min
+movie
+mutableMapOf
+name
+needClassReification
+newAnimeLoadResponse$default
+newAnimeSearchResponse$default
+newBuilder
+newEpisode
+newExtractorLink
+newHomePageResponse
+newLength
+newRequest
+newValue
+next
+nonprofitRegex
+!nonprofit\.asia|cdn\d+\.nonprofit
+number
+offset
+onBindEditText
+onCreatePreferences
+'onCreatePreferences$lambda$11$lambda$10
+'onCreatePreferences$lambda$13$lambda$12
+%onCreatePreferences$lambda$4$lambda$3
+%onCreatePreferences$lambda$7$lambda$5
+%onCreatePreferences$lambda$7$lambda$6
+onCreateView
+onPreferenceChange
+onPreferenceClick
+onStart
+onViewCreated
+origin
+other
+ova
+pad
+page
+parse
+parseInt
+parseJson
+passPref
+password
+peek
+peekBytes
+peekLimit
+percentWidth
+pl.vlogphim.net
+player_type
+plot
+post
+post$default
+poster
+posts
+postsList
+pref
+prefs
+printStackTrace
+proceed
+put
+query
+rangeHeader
+readByteArray
+readValue
+readValue(...)
+rec
+recloudstream.Anime47Provider
+$recloudstream.Anime47Provider$load$2
+3recloudstream.Anime47Provider$load$2$episodesTask$1
+/recloudstream.Anime47Provider$load$2$infoTask$1
+/recloudstream.Anime47Provider$load$2$recsTask$1
+$recloudstream.Anime47Provider$load$3
+)recloudstream.Anime47Provider$loadLinks$2
+-recloudstream.Anime47Provider$loadLinks$2$1$1
+1recloudstream.Anime47Provider$loadLinks$2$1$1$1$2
+;recloudstream/Anime47Provider$fetchApi$$inlined$parseJson$1
+3recloudstream/Anime47Provider$getVideoInterceptor$1
++recloudstream/Anime47ProviderKt$parseJson$1
+recommendations
+recommendationsResponse
+recsTask
+referer
+refresh_token
+registerMainAPI
+relativePath
+remove
+replace
+reqBody
+request
+requireContext
+res
+resText
+resetBtn
+response
+result
+results
+role
+rootKey
+savedEmail
+savedInstanceState
+savedPass
+score
+scoreValue
+screen
+search
+sec-ch-ua
+sec-ch-ua-mobile
+sec-ch-ua-platform
+serverName
+server_name
+set
+setActors
+setBackgroundDrawableResource
+setEpisode
+setGravity
+setHeaders
+setIcon
+setId
+setInputType
+setKey
+setLang
+setLayout
+setLayoutParams
+setMainUrl
+setName
+setNestedScrollingEnabled
+setOf
+setOnBindEditTextListener
+setOnPreferenceChangeListener
+setOnPreferenceClickListener
+setOpenSettings
+setOverScrollMode
+setPadding
+setPlot
+setPosterUrl
+setPreferenceScreen
+setQuality
+setRecommendations
+setReferer
+setScore
+setSharedPreferencesName
+setSummary
+setTags
+setText
+setTitle
+setYear
+show
+sig
+signatures
+signingInfo
+size
+skip
+slug
+sortedWith
+source
+startsWith$default
+strValue
+stream
+streamUrl
+streams
+sub
+substring
+substring(...)
+subtitleCallback
+subtitleLanguageMap
+subtitles
+success
+supportedTypes
+tags
+team_name
+teams
+text
+text$iv
+this
+this$0
+this_$iv
+throwOnFailure
+thumbnail
+title
+titlecase
+ng anh
+ng vi
+toByteArray
+toIntOrNull
+toJson
+toLowerCase
+toLowerCase(...)
+toString
+toTvType
+token
+trim
+trimEnd
+type
+url
+url$iv
+value
+value$iv$iv$iv
+valueOf
+verifySignature
+!verifySignature$lambda$2$lambda$1
+versionHash
+via.placeholder.com
+videos
+viet
+vietnamese
+vietsub
+view
+vlogphim.net
+watchRes
+width
+widthPixels
+window
+writeValueAsString
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/Anime47Plugin$$ExternalSyntheticLambda0;":"-2391505c3","Lrecloudstream/Anime47Plugin$$ExternalSyntheticLambda1;":"-37d69cbb2","Lrecloudstream/Anime47Plugin;":"5f4dd18f","Lrecloudstream/Anime47Provider$$ExternalSyntheticLambda0;":"-218362fc6","Lrecloudstream/Anime47Provider$$ExternalSyntheticLambda1;":"60697469b","Lrecloudstream/Anime47Provider$ApiDetailResponse;":"d5a25ca7","Lrecloudstream/Anime47Provider$ApiEpisodeResponse;":"74f99621","Lrecloudstream/Anime47Provider$ApiFilterData;":"7823bf6a","Lrecloudstream/Anime47Provider$ApiFilterResponse;":"e827bf3c","Lrecloudstream/Anime47Provider$ApiRecommendationResponse;":"93f32005","Lrecloudstream/Anime47Provider$ApiSearchResponse;":"f1582ff6","Lrecloudstream/Anime47Provider$ApiWatchResponse;":"3e44d50f","Lrecloudstream/Anime47Provider$CharacterInfo;":"2dc4a820","Lrecloudstream/Anime47Provider$DetailPost;":"d5138675","Lrecloudstream/Anime47Provider$EpisodeGroup;":"2dab7f0","Lrecloudstream/Anime47Provider$EpisodeListItem;":"77340bc1","Lrecloudstream/Anime47Provider$EpisodeTeam;":"74581b79","Lrecloudstream/Anime47Provider$GenreInfo;":"d571e2a5","Lrecloudstream/Anime47Provider$LoginRequest;":"25e40291","Lrecloudstream/Anime47Provider$LoginResponse;":"9b05b77f","Lrecloudstream/Anime47Provider$Post;":"c378cda2","Lrecloudstream/Anime47Provider$RecommendationItem;":"22075fd0","Lrecloudstream/Anime47Provider$SearchItem;":"654d70b","Lrecloudstream/Anime47Provider$Stream;":"bd32853e","Lrecloudstream/Anime47Provider$SubtitleItem;":"a4f135","Lrecloudstream/Anime47Provider$VideoItem;":"210e6397","Lrecloudstream/Anime47Provider$WatchAnimeInfo;":"ffb81202","Lrecloudstream/Anime47Provider$ensureToken$$inlined$parseJson$1;":"5ff56018","Lrecloudstream/Anime47Provider$ensureToken$1;":"7299cb9f","Lrecloudstream/Anime47Provider$fetchApi$$inlined$parseJson$1;":"98c3dc0b","Lrecloudstream/Anime47Provider$getAuthHeaders$1;":"6ae03f86","Lrecloudstream/Anime47Provider$getMainPage$$inlined$fetchApi$1;":"945c5272","Lrecloudstream/Anime47Provider$getMainPage$1;":"444ddc","Lrecloudstream/Anime47Provider$getVideoInterceptor$1;":"67c35089","Lrecloudstream/Anime47Provider$load$$inlined$sortedBy$1;":"e4fdb2b7","Lrecloudstream/Anime47Provider$load$1;":"8c765f5d","Lrecloudstream/Anime47Provider$load$2$episodesTask$1$invokeSuspend$$inlined$fetchApi$1;":"dee414ce","Lrecloudstream/Anime47Provider$load$2$episodesTask$1;":"b51163ad","Lrecloudstream/Anime47Provider$load$2$infoTask$1$invokeSuspend$$inlined$fetchApi$1;":"9bb3a7b3","Lrecloudstream/Anime47Provider$load$2$infoTask$1;":"3716c3e1","Lrecloudstream/Anime47Provider$load$2$recsTask$1$invokeSuspend$$inlined$fetchApi$1;":"d83217f4","Lrecloudstream/Anime47Provider$load$2$recsTask$1;":"d7c83f5d","Lrecloudstream/Anime47Provider$load$2;":"b92fe6b2","Lrecloudstream/Anime47Provider$load$3;":"25fdc7bc","Lrecloudstream/Anime47Provider$loadLinks$$inlined$parseJson$1;":"ccf98e2e","Lrecloudstream/Anime47Provider$loadLinks$1;":"1d4e0d56","Lrecloudstream/Anime47Provider$loadLinks$2$1$1$1$2;":"98c337e","Lrecloudstream/Anime47Provider$loadLinks$2$1$1$invokeSuspend$$inlined$fetchApi$1;":"3bca0dd0","Lrecloudstream/Anime47Provider$loadLinks$2$1$1;":"607f853a","Lrecloudstream/Anime47Provider$loadLinks$2;":"8d40974c","Lrecloudstream/Anime47Provider$search$$inlined$fetchApi$1;":"c8234bad","Lrecloudstream/Anime47Provider$search$1;":"8d7be05d","Lrecloudstream/Anime47Provider;":"ec97bd8f","Lrecloudstream/Anime47ProviderKt$parseJson$1;":"2b92e00a","Lrecloudstream/Anime47ProviderKt;":"45b09ed0","Lrecloudstream/Anime47SettingsDialog;":"bbf478f7","Lrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda0;":"51d1bbd8","Lrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda1;":"-3a014a01","Lrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda2;":"-35ec2f8d0","Lrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda3;":"6ef0c407","Lrecloudstream/Anime47SettingsFragment$$ExternalSyntheticLambda4;":"7247b5e23","Lrecloudstream/Anime47SettingsFragment;":"ad7510f7"}
+a t
+i kho
+ Ch
+ng d
+ng kh
+ng h
+p l
+! B
+ ch
+n b
+i plugin Yuu.
+ Package kh
+ng h
+p l
+97I
+*7P
+'7Q
+$7R
+n7p

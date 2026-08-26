@@ -1,0 +1,1756 @@
+dex
+035
+xV4
+T0&
+T1'
+U2(
+q@+
+q '
+[#-
+R ,
+Y ,
+T .
+q .
+[E3
+R@2
+Y@2
+T@4
+n@<
+[4G
+R0F
+Y0F
+T0H
+n0H
+R0O
+p @
+T0N
+T1K
+T1M
+n  
+T1P
+T2I
+q 0
+T1J
+T1L
+ p0
+R0X
+p @
+T0W
+T1S
+n #
+T1V
+n '
+T1Y
+T2Q
+q 0
+n "
+T1R
+n &
+T1U
+n %
+T1T
+n $
+ p0
+[xd
+Rpc
+Ypc
+Tqe
+[xj
+Rpi
+Ypi
+Tqk
+[4o
+R0n
+Y0n
+T0p
+q@2
+R0r
+p @
+T0q
+n /
+n .
+T1s
+n -
+T!s
+ p0
+[4w
+R0v
+Y0v
+T0x
+q@3
+[4|
+R0{
+Y0{
+T0}
+n0V
+p ~
+#n@}
+0!n {
+(&;
+q@G
+q E
+r m
+p v
+r y
+n 7
+q a
+q M
+p 6
+p@T
+p@U
+TC-
+RE,
+p @
+T@+
+T@*
+TG+
+TH*
+[E*
+[F+
+YN,
+[M*
+[L+
+YO,
+,q[
+r p
+r p
+p ^
+n P
+r f
+r f
+-RK
+T?3
+R42
+p @
+T01
+T40
+R4/
+T51
+T60
+[40
+[51
+Y6/
+Y>2
+p 6
+n X
+n X
+d(U"
+n X
+n X
+n V
+d(<
+n X
+n U
+n X
+t(!"
+n X
+n U
+n X
+n X
+n V
+[=0
+[<1
+%Y52
+p Z
+r f
+R4F
+R4F
+TY4F
+T6G
+R7F
+p @
+R75
+T8=
+T9<
+T?;
+T::
+T<9
+T>8
+T;E
+T1D
+T1C
+T1B
+T1A
+T1@
+T1?
+T1>
+T17
+T16
+T1>
+T77
+T86
+T17
+T76
+[16
+[77
+Y;F
+p 6
+[>6
+[17
+[<>
+Y?F
+n X
+n X
+T(5
+'qZ
+n X
+n X
+n X
+n U
+n X
+r f
+p ^
+r f
+r f
+r f
+(.8
+r f
+r p
+r p
+El(
+r f
+n i
+n _
+ FC
+(&r
+ FC
+(%r
+(Ar
+p@N
+p ^
+p@N
+r f
+r m
+r m
+p Z
+#8#
+r f
+r n
+r f
+n i
+n _
+(;r
+Sp@N
+j(_
+p ?
+TCd
+R@c
+p @
+REZ
+T@a
+T@`
+T@_
+T@^
+T@]
+REZ
+T@b
+TFa
+TL`
+TM_
+TN^
+TG]
+REZ
+T@a
+TF`
+TG_
+TM^
+TH]
+REZ
+T@b
+T@a
+T@`
+T@_
+T@^
+T@]
+REZ
+T@b
+TFa
+TG`
+TH_
+TM^
+TJ]
+REZ
+T@`
+TF_
+TG^
+TH]
+R@\
+RE[
+RFZ
+TGa
+TH`
+TJ_
+TI^
+T@]
+REZ
+T@`
+TF_
+TG^
+TH]
+[H]
+[G^
+[F_
+[@`
+YEZ
+YIc
+p 6
+n X
+n X
+n V
+[F]
+[H^
+[@_
+[E`
+[Ba
+YJZ
+YI[
+YA\
+#YCc
+-q\
+r p
+6#e
+n X
+n X
+-q\
+n Q
+'qQ
+[,]
+[+^
+[/_
+[.`
+[#a
+[-b
+Y%Z
+GY'c
+[%]
+[!^
+[/_
+[.`
+[#a
+[-b
+Y'Z
+PY c
+qR)
+TT~
+r p
+[%]
+[!^
+[/_
+[.`
+[#a
+[$b
+Y'Z
+dY$c
+p@T
+r m
+r o
+r m
+[L]
+[K^
+[O_
+[N`
+[Fa
+[@b
+YEZ
+xYHc
+p@U
+[K]
+[O^
+[N_
+[L`
+[Fa
+[Bb
+YEZ
+YHc
+qT)
+T?j
+R4i
+p @
+T0h
+T4g
+T5f
+[<f
+[;g
+[=h
+Y5i
+n X
+n X
+n X
+n X
+n b
+p0L
+r u
+n X
+n U
+n V
+n U
+Rxn
+Rxn
+Yxn
+Tzo
+R{n
+p @
+Tpl
+T{m
+T|l
+n X
+n X
+[}l
+[|m
+r p
+n b
+p0L
+n N
+n0W
+n U
+n X
+n U
+n0W
+n N
+p L
+n N
+q `
+p@4
+Qn 
+n$0
+n X
+n X
+n U
+n X
+n U
+n0W
+n U
+n0W
+n U
+n V
+n X
+n X
+n X
+[rl
+[qm
+!Yqn
+Tew
+Rcv
+p @
+T`u
+Tct
+r p
+r p
+n X
+n X
+n X
+n X
+[ct
+[ku
+Ynv
+V#f
+n U
+n X
+n X
+r p
+n X
+n V
+n U
+r p
+p0!
+TC|
+RE{
+p @
+T@y
+TEz
+TFy
+n("
+[Ey
+[Fz
+YG{
+p 6
+q Z
+n X
+n X
+n X
+n X
+[Ny
+[Oz
+%YE{
+p Z
+r f
+p O
+p ^
+r <
+r f
+p L
+n N
+q `
+n X
+n0W
+n U
+n V
+n U
+n0W
+n U
+n0W
+n U
+n V
+n N
+p@4
+n c
+n N
+n c
+n [
+q J
+q@[
+r <
+n X
+n X
+r <
+r 8
+r0t
+p C
+&q 
+6q 
+Fq 
+n X
+n X
+n U
+n X
+!bq
+n X
+n0W
+n U
+n0W
+n U
+n0W
+q@G
+$qS
+r p
+r p
+q@G
+q@F
+n X
+n X
+n0W
+n U
+n X
+n X
+n0W
+n U
+n0W
+]5K
+]5K
+ZZZ
+]5K
+]5J
+,%<
+]5J
+I-K
+{Y`
+]5J
+j1-
+j1-
+j1-
+#e!
+<+*$
+j1-
+j1-
+5iL
+<:9#
+j1-
+]5J
+&]5
+{h#
+]5J
+y,$
+]5J
+]5K
+]5J
+]5J
+z,K
+ZZZ
+sYZ
+KrY<K
+ZKiiii
+M`\
+<KK
+K/mL
+J`M\
+Na^
+7ZK
+{J#
+)/8>8>V\
+0(H
+0(2
+0(2
+0(2
+0(H
+0.2
+002
+002
+0.2
+00H
+0D0BH
+EJ*
+0D0BH
+EJ 
+0M2
+0.2
+0PH
+0I2
+0W2
+0[H
+0.2
+0.2
+0D0B2
+0D0BH
+dJ:
+0D0BH
+0k2
+0CH
+0k2
+0(2
+002
+002
+0.2
+002
+002
+00H
+0t2
+0v2
+0(2
+002
+002
+00H
+0y*
+0zH
+0 X
+0$X
+058BX
+0;8BX
+0J0IX
+"\s*:\s*"((?:[^"\\]|\\.)*)"
+"hls"\s*:\s*"((?:[^"\\]|\\.)*)"
+$baseCdn
+$completion
+$continuation
+$displayName
+$document
+$episodeText
+$frag
+$genres
++$i$a$-all-HDVNNProvider$load$episodes$4$1$1
+%$i$a$-any-HDVNNProvider$load$tvType$1
+%$i$a$-any-HDVNNProvider$load$tvType$2
+0$i$a$-distinctBy-HDVNNProvider$load$episodeIds$2
+7$i$a$-distinctBy-HDVNNProvider$load$recommendations$1$3
+4$i$a$-filter-HDVNNProvider$getBaseUrl$2$candidates$2
+3$i$a$-filter-HDVNNProvider$load$recommendations$1$2
+9$i$a$-filter-HDVNNProvider$toSearchResponse$1$1$epCount$1
+1$i$a$-firstOrNull-HDVNNProvider$resolveHydrax$s$1
+1$i$a$-firstOrNull-HDVNNProvider$resolveHydrax$s$2
+@$i$a$-forEach-CollectionsKt___CollectionsKt$mapNotNullTo$1$iv$iv
+'$i$a$-forEach-HDVNNProvider$readRange$2
+.$i$a$-forEachIndexed-HDVNNProvider$readRange$1
+/$i$a$-ifBlank-HDVNNProvider$loadLinks$headers$1
+0$i$a$-ifBlank-HDVNNProvider$loadLinks$watchDoc$1
+4$i$a$-ifEmpty-HDVNNProvider$load$recommendations$1$4
+>$i$a$-let-CollectionsKt___CollectionsKt$mapNotNullTo$1$1$iv$iv
++$i$a$-let-HDVNNProvider$load$genreLinks$1$2
+0$i$a$-let-HDVNNProvider$load$recommendations$1$1
+#$i$a$-let-HDVNNProvider$loadLinks$3
+%$i$a$-let-HDVNNProvider$readRange$2$1
+3$i$a$-let-HDVNNProvider$toSearchResponse$1$poster$1
+1$i$a$-map-HDVNNProvider$getBaseUrl$2$candidates$1
+0$i$a$-map-HDVNNProvider$hydraxToken$digitBytes$1
+'$i$a$-map-HDVNNProvider$load$episodes$4
+%$i$a$-map-HDVNNProvider$load$genres$1
+2$i$a$-mapNotNull-HDVNNProvider$getMainPage$items$1
+2$i$a$-mapNotNull-HDVNNProvider$load$durationText$1
+0$i$a$-mapNotNull-HDVNNProvider$load$episodeIds$1
+0$i$a$-mapNotNull-HDVNNProvider$load$genreLinks$1
+<$i$a$-mapNotNull-HDVNNProvider$load$recommendations$1$recs$1
+0$i$a$-mapNotNull-HDVNNProvider$load$statusText$1
+*$i$a$-mapNotNull-HDVNNProvider$load$year$1
+'$i$a$-mapNotNull-HDVNNProvider$search$2
+/$i$a$-maxByOrNull-HDVNNProvider$load$episodes$1
+-$i$a$-maxByOrNull-HDVNNProvider$load$fullEp$1
+.$i$a$-run-HDVNNProvider$load$recommendations$1
+2$i$a$-runCatching-HDVNNProvider$toSearchResponse$1
+,$i$a$-sortedBy-HDVNNProvider$load$episodes$3
+.$i$a$-takeIf-HDVNNProvider$load$genreLinks$1$1
+&$i$a$-takeIf-HDVNNProvider$loadLinks$2
+%$i$a$-takeIf-HDVNNProvider$plotText$1
+1$i$a$-withLock$default-HDVNNProvider$getBaseUrl$2
+$i$f$all
+$i$f$any
+$i$f$distinctBy
+$i$f$filter
+$i$f$filterTo
+$i$f$firstOrNull
+$i$f$forEach
+$i$f$forEachIndexed
+$i$f$map
+$i$f$mapNotNull
+$i$f$mapNotNullTo
+$i$f$mapTo
+$i$f$maxByOrNull
+$i$f$sortedBy
+$i$f$withLock
+$idx
+$isMovie
+$latch
+$md5Id
+$off
+$poster
+$posterUrl
+&$r8$lambda$6VH2FPX_xcN3t-SKGIkOli7v2ZA
+&$r8$lambda$9Bc3rtSWCUiXPR6xoKR2L4gFq7o
+&$r8$lambda$UvxRNDfkUMJIUroPx11J5WvM-k4
+&$r8$lambda$ecZtulsiEdhguJF_z6LF6vnTmGw
+&$r8$lambda$ibIH-SAWXeev0LE6OVs7QChnVJM
+&$r8$lambda$mL2GLRgJ_aIpYTtoTpLUb_FdN5w
+&$r8$lambda$orriaqZNUzmZ3_4Jc7ctscsKYsQ
+&$r8$lambda$s_Jk0xCJD_Wman51Y6p3zOM7vYg
+&$r8$lambda$soZGYyyw6WSN4dNPDWb71PTDpXA
+&$r8$lambda$ve9-35jXg0rkiPE3tumkIADlpz4
+$recommendations
+$resId
+$result
+$results
+$showStatus
+$size
+$take
+$this
+$this$all$iv
+$this$any$iv
+$this$distinctBy$iv
+$this$filter$iv
+$this$filterTo$iv$iv
+$this$firstOrNull$iv
+$this$forEach$iv
+$this$forEach$iv$iv$iv
+$this$forEachIndexed$iv
+$this$load_u24lambda_u2433
+$this$map$iv
+$this$mapNotNull$iv
+$this$mapNotNullTo$iv$iv
+$this$mapTo$iv$iv
+$this$maxByOrNull$iv
+$this$newAnimeSearchResponse
+$this$newEpisode
+$this$newExtractorLink
+$this$newMovieLoadResponse
+$this$newTvSeriesLoadResponse
+$this$sortedBy$iv
+$this$toSearchResponse
+&$this$toSearchResponse_u24lambda_u2450
+$this$withLock_u24default$iv
+$year
+%02x
+&id=
+()Ljava/lang/String;
+()Ljava/util/List;
+()Ljava/util/Set;
+(()Ljava/util/concurrent/ExecutorService;
+()Lokhttp3/OkHttpClient;
+()V
+()Z
+U(?:https?://)?(?:playhydrax\.com/\?v=|(?:player\.)?abyssplayer\.com/)([A-Za-z0-9_-]+)
+a(ILcom/lagradost/cloudstream3/MainPageRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;)V
+(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+F(Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+f(Ljava/lang/String;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(Ljava/lang/String;ZLkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+4(Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+(TT;TT;)I
+*>;)
+-episode-id-(\d+)\.html
+.html
+/mp4/
+/phim-moi-cap-nhap.html
+/phim-moi-cap-nhap.html?p=
+/server/ajax/player
+/sora/
+/tim-kiem/
+/video.mp4
+/xem-phim/
+1080p
+480p
+720p
+@7de78e4c4546435adeebf26ef4b0cc5c4f405847ffd476305b2b34259a231191
+<T:
+7<a\s+href=["'](https?://[^"']+)/?["'][^>]*>\s*https?://
+<anonymous>
+<init>
+<set-?>
+=m18
+=m22
+=m37
+>;)
+>;)V
+>;>;)
+?p=
+AES
+AES/CTR/NoPadding
+Accept-Ranges
+Access-Control-Allow-Origin
+Anime
+Anime Nh
+t B
+AsianDrama
+Companion
+Comparisons.kt
+Completed
+Content-Length
+Content-Range
+Content-Type
+D8$$SyntheticClass
+EpisodeID
+FULL
+HDVNN
+HDVNNPlugin.kt
+HDVNNProvider.kt
+HDVNN_debug
+HH Trung Qu
+HTTP_2
+HYDRAX_EMBED
+n Th
+n T
+t H
+Hydrax 
+I$0
+I$1
+I$2
+ILI
+ILL
+INSTANCE
+ISO_8859_1
+JJJ
+ng t
+m th
+y ti
+L$0
+L$1
+L$10
+L$11
+L$12
+L$13
+L$14
+L$15
+L$2
+L$3
+L$4
+L$5
+L$6
+L$7
+L$8
+L$9
+LIIL
+LIJJIJ
+LILL
+LJL
+LLCL
+LLI
+LLJJIJJJ
+LLL
+LLLIIL
+LLLJJIJL
+LLLJJJ
+LLLL
+LLLLIL
+LLLLL
+LLLLLILLIL
+LLLLLL
+LLLLLLL
+LLLLLLLL
+LLLLLLLLLLLZILJLZLLIL
+LLLLLLLZILJLZLLIL
+LLLLLZLIL
+LLLLZIL
+LLLZIIL
+LLLZL
+LLZLLL
+LZIL
+Landroid/content/Context;
+5Lcom/android/tools/r8/annotations/SynthesizedClassV2;
+)Lcom/fasterxml/jackson/databind/JsonNode;
+-Lcom/fasterxml/jackson/databind/ObjectMapper;
+0Lcom/fasterxml/jackson/databind/node/ObjectNode;
+2Lcom/fasterxml/jackson/module/kotlin/ExtensionsKt;
+0Lcom/lagradost/cloudstream3/AnimeSearchResponse;
+&Lcom/lagradost/cloudstream3/DubStatus;
+$Lcom/lagradost/cloudstream3/Episode;
+)Lcom/lagradost/cloudstream3/HomePageList;
+-Lcom/lagradost/cloudstream3/HomePageResponse;
+)Lcom/lagradost/cloudstream3/LoadResponse;
+$Lcom/lagradost/cloudstream3/MainAPI;
+&Lcom/lagradost/cloudstream3/MainAPIKt;
++Lcom/lagradost/cloudstream3/MainActivityKt;
+)Lcom/lagradost/cloudstream3/MainPageData;
+,Lcom/lagradost/cloudstream3/MainPageRequest;
+.Lcom/lagradost/cloudstream3/MovieLoadResponse;
++Lcom/lagradost/cloudstream3/SearchResponse;
+'Lcom/lagradost/cloudstream3/ShowStatus;
+)Lcom/lagradost/cloudstream3/SubtitleFile;
+1Lcom/lagradost/cloudstream3/TvSeriesLoadResponse;
+#Lcom/lagradost/cloudstream3/TvType;
+6Lcom/lagradost/cloudstream3/plugins/CloudstreamPlugin;
++Lcom/lagradost/cloudstream3/plugins/Plugin;
+1Lcom/lagradost/cloudstream3/utils/ExtractorApiKt;
+0Lcom/lagradost/cloudstream3/utils/ExtractorLink;
+4Lcom/lagradost/cloudstream3/utils/ExtractorLinkType;
+,Lcom/lagradost/cloudstream3/utils/Qualities;
+%Lcom/lagradost/nicehttp/NiceResponse;
+!Lcom/lagradost/nicehttp/Requests;
+'Lcom/lagradost/nicehttp/ResponseParser;
+#Ldalvik/annotation/EnclosingMethod;
+Ldalvik/annotation/InnerClass;
+Ldalvik/annotation/Signature;
+(Ldalvik/annotation/SourceDebugExtension;
+Ljava/io/ByteArrayOutputStream;
+Ljava/lang/Appendable;
+Ljava/lang/Boolean;
+Ljava/lang/Byte;
+Ljava/lang/CharSequence;
+Ljava/lang/Character;
+Ljava/lang/Comparable;
+Ljava/lang/Exception;
+!Ljava/lang/IllegalStateException;
+Ljava/lang/Integer;
+Ljava/lang/Iterable;
+Ljava/lang/Long;
+Ljava/lang/Math;
+Ljava/lang/Number;
+Ljava/lang/Object;
+Ljava/lang/Runnable;
+Ljava/lang/String;
+Ljava/lang/StringBuilder;
+Ljava/lang/Throwable;
+Ljava/net/URLEncoder;
+Ljava/nio/charset/Charset;
+Ljava/security/Key;
+Ljava/security/MessageDigest;
++Ljava/security/spec/AlgorithmParameterSpec;
+Ljava/util/ArrayList;
+Ljava/util/Arrays;
+Ljava/util/Base64$Decoder;
+Ljava/util/Base64$Encoder;
+Ljava/util/Base64;
+Ljava/util/Collection;
+Ljava/util/Comparator;
+Ljava/util/HashSet;
+Ljava/util/Iterator;
+Ljava/util/LinkedHashSet;
+Ljava/util/List;
+Ljava/util/List<
+Ljava/util/Locale;
+Ljava/util/Map;
+Ljava/util/Set;
+Ljava/util/Set<
+%Ljava/util/concurrent/CountDownLatch;
+&Ljava/util/concurrent/ExecutorService;
+ Ljava/util/concurrent/Executors;
+Ljava/util/concurrent/TimeUnit;
+Ljavax/crypto/Cipher;
+#Ljavax/crypto/spec/IvParameterSpec;
+!Ljavax/crypto/spec/SecretKeySpec;
+Lkotlin/Function1;
+Lkotlin/Lazy;
+Lkotlin/LazyKt;
+Lkotlin/Metadata;
+Lkotlin/Pair;
+Lkotlin/Result$Companion;
+Lkotlin/Result;
+Lkotlin/ResultKt;
+Lkotlin/Triple;
+Lkotlin/TuplesKt;
+Lkotlin/Unit;
+Lkotlin/collections/ArraysKt;
+"Lkotlin/collections/CollectionsKt;
+Lkotlin/collections/MapsKt;
+Lkotlin/collections/SetsKt;
+"Lkotlin/comparisons/ComparisonsKt;
+ Lkotlin/coroutines/Continuation;
+ Lkotlin/coroutines/Continuation<
++Lkotlin/coroutines/intrinsics/IntrinsicsKt;
+'Lkotlin/coroutines/jvm/internal/Boxing;
+1Lkotlin/coroutines/jvm/internal/ContinuationImpl;
+.Lkotlin/coroutines/jvm/internal/DebugMetadata;
+.Lkotlin/coroutines/jvm/internal/SuspendLambda;
+ Lkotlin/jvm/functions/Function0;
+ Lkotlin/jvm/functions/Function1;
+ Lkotlin/jvm/functions/Function1<
+ Lkotlin/jvm/functions/Function2;
+ Lkotlin/jvm/functions/Function2<
+.Lkotlin/jvm/internal/DefaultConstructorMarker;
+ Lkotlin/jvm/internal/Intrinsics;
+*Lkotlin/jvm/internal/SourceDebugExtension;
+Lkotlin/ranges/RangesKt;
+Lkotlin/sequences/Sequence;
+Lkotlin/sequences/SequencesKt;
+Lkotlin/text/Charsets;
+Lkotlin/text/MatchResult;
+Lkotlin/text/Regex;
+Lkotlin/text/StringsKt;
+Lkotlinx/coroutines/sync/Mutex;
+!Lkotlinx/coroutines/sync/MutexKt;
+Lokhttp3/Call;
+Lokhttp3/Interceptor$Chain;
+Lokhttp3/Interceptor;
+Lokhttp3/MediaType$Companion;
+Lokhttp3/MediaType;
+Lokhttp3/OkHttpClient$Builder;
+Lokhttp3/OkHttpClient;
+Lokhttp3/Protocol;
+Lokhttp3/Request$Builder;
+Lokhttp3/Request;
+Lokhttp3/RequestBody;
+Lokhttp3/Response$Builder;
+Lokhttp3/Response;
+ Lokhttp3/ResponseBody$Companion;
+Lokhttp3/ResponseBody;
+#Lorg/jetbrains/annotations/NotNull;
+$Lorg/jetbrains/annotations/Nullable;
+Lorg/jsoup/nodes/Document;
+Lorg/jsoup/nodes/Element;
+Lorg/jsoup/select/Elements;
+Lrecloudstream/HDVNNPlugin;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda0;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda1;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda2;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda3;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda4;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda5;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda6;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda7;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda8;
+7Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda9;
+*Lrecloudstream/HDVNNProvider$getBaseUrl$1;
++Lrecloudstream/HDVNNProvider$getMainPage$1;
+6Lrecloudstream/HDVNNProvider$load$$inlined$sortedBy$1;
+$Lrecloudstream/HDVNNProvider$load$1;
+$Lrecloudstream/HDVNNProvider$load$2;
+$Lrecloudstream/HDVNNProvider$load$3;
+)Lrecloudstream/HDVNNProvider$loadLinks$1;
+4Lrecloudstream/HDVNNProvider$resolveHdvideoEmbeds$1;
+-Lrecloudstream/HDVNNProvider$resolveHydrax$1;
+2Lrecloudstream/HDVNNProvider$resolveHydrax$link$1;
+)Lrecloudstream/HDVNNProvider$resolveVk$1;
+&Lrecloudstream/HDVNNProvider$search$1;
+Lrecloudstream/HDVNNProvider;
+M3U8
+MD5
+Movie
+MovieID
+kMozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0 Mobile Safari/537.36
+Mutex$default
+i C
+p Nh
+Ongoing
+Partial Content
+Phim B
+Phim H
+n Qu
+Phim L
+Phim Trung Qu
+Phim 
+u-M
+t h
+ROOT
+Range
+Referer
+SECONDS
+SMAP
+Comparisons.kt
+Kotlin
+*S Kotlin
++ 1 Comparisons.kt
+kotlin/comparisons/ComparisonsKt__ComparisonsKt$compareBy$2
++ 2 HDVNNProvider.kt
+recloudstream/HDVNNProvider
+1#1,102:1
+372#2:103
+SMAP
+HDVNNProvider.kt
+Kotlin
+*S Kotlin
++ 1 HDVNNProvider.kt
+recloudstream/HDVNNProvider
++ 2 Mutex.kt
+kotlinx/coroutines/sync/MutexKt
++ 3 _Collections.kt
+kotlin/collections/CollectionsKt___CollectionsKt
++ 4 _Strings.kt
+kotlin/text/StringsKt___StringsKt
++ 5 fake.kt
+kotlin/jvm/internal/FakeKt
++ 6 _Arrays.kt
+kotlin/collections/ArraysKt___ArraysKt
+1#1,753:1
+116#2,8:754
+125#2,2:769
+1557#3:762
+1628#3,3:763
+774#3:766
+865#3,2:767
+295#3,2:775
+295#3,2:777
+1611#3,9:779
+1863#3:788
+1864#3:790
+1620#3:791
+1611#3,9:792
+1863#3:801
+1864#3:803
+1620#3:804
+1611#3,9:805
+1863#3:814
+1864#3:817
+1620#3:818
+1557#3:819
+1628#3,3:820
+1611#3,9:823
+1863#3:832
+1864#3:834
+1620#3:835
+1611#3,9:836
+1863#3:845
+1864#3:847
+1620#3:848
+1611#3,9:849
+1863#3:858
+1864#3:860
+1620#3:861
+1611#3,9:862
+1863#3:871
+1864#3:873
+1620#3:874
+1663#3,8:875
+1755#3,3:883
+1971#3,14:886
+1053#3:900
+1557#3:901
+1628#3,3:902
+1611#3,9:905
+1863#3:914
+1864#3:916
+1620#3:917
+774#3:918
+865#3,2:919
+1663#3,8:921
+1971#3,14:929
+1872#3,3:944
+975#4:771
+1046#4,3:772
+1069#4,2:949
+434#4:951
+507#4,5:952
+1#5:789
+1#5:802
+1#5:815
+1#5:816
+1#5:833
+1#5:846
+1#5:859
+1#5:872
+1#5:915
+1#5:943
+13402#6,2:947
+*S KotlinDebug
++ 1 HDVNNProvider.kt
+recloudstream/HDVNNProvider
+64#1:754,8
+64#1:769,2
+76#1:762
+76#1:763,3
+77#1:766
+77#1:767,2
+152#1:775,2
+153#1:777,2
+263#1:779,9
+263#1:788
+263#1:790
+263#1:791
+286#1:792,9
+286#1:801
+286#1:803
+286#1:804
+305#1:805,9
+305#1:814
+305#1:817
+305#1:818
+315#1:819
+315#1:820,3
+319#1:823,9
+319#1:832
+319#1:834
+319#1:835
+324#1:836,9
+324#1:845
+324#1:847
+324#1:848
+335#1:849,9
+335#1:858
+335#1:860
+335#1:861
+346#1:862,9
+346#1:871
+346#1:873
+346#1:874
+352#1:875,8
+360#1:883,3
+366#1:886,14
+372#1:900
+373#1:901
+373#1:902,3
+390#1:905,9
+390#1:914
+390#1:916
+390#1:917
+395#1:918
+395#1:919,2
+395#1:921,8
+400#1:929,14
+679#1:944,3
+110#1:771
+110#1:772,3
+375#1:949,2
+744#1:951
+744#1:952,5
+263#1:789
+286#1:802
+305#1:816
+319#1:833
+324#1:846
+335#1:859
+346#1:872
+390#1:915
+701#1:947,2
+Subbed
+i l
+ng th
+TvSeries
+US_ASCII
+UTF-8
+UTF_8
+Unknown
+User-Agent
+VIDEO
+VIL
+VILL
+VK 
+VK HLS
+VLIJJIJLJILIL
+VLL
+VLLJJIJ
+VLLL
+VLLLLILLLLIL
+VLLLLLLL
+VLLLLLLLL
+VLLZ
+VLLZIL
+X-CSRF-TOKEN
+X-Requested-With
+XMLHttpRequest
+ZLL
+ZLLZ
+ZLLZIL
+[?&]id=(\d+)
+[?&]oid=(-?\d+)
+[A-Za-z0-9+/=_\-]*
+$[Lcom/lagradost/cloudstream3/TvType;
+[Ljava/lang/Object;
+[Ljava/lang/String;
+[Lkotlin/Pair;
+[[B
+,aHR0cHM6Ly9saDMuZ29vZ2xldXNlcmNvbnRlbnQuY29t
+a[href]
+acc
+access$getBaseUrl
+access$getMobileUserAgent$p
+access$plotText
+access$resolveHdvideoEmbeds
+access$resolveHydrax
+access$resolveVk
+accessFlags
+actualEnd
+add
+addAll
+aesCtrDecrypt
+apiLevel
+append
+areEqual
+asInt
+asLong
+asText
+asText(...)
+attr
+attr(...)
+await
+b64s
+base
+baseCdn
+baseUrlMutex
+block
+body
+booleanValue
+boxBoolean
+boxInt
+build
+buildRangeResponse
+byteValue
+bytes
+bytes 
+bytes=
+bytes=(\d+)-(\d*)
+cachedBaseUrl
+/call to 'resume' before 'invoke' with coroutine
+callback
+candidates
+chain
+charAt
+checkNotNull
+checkNotNullExpressionValue
+checkNotNullParameter
+close
+code
+codec
+coerceAtMost
+collectionSizeOrDefault
+compare
+compareValues
+component1
+component2
+component3
+connectTimeout
+constructor-impl
+contains
+contains$default
+content
+context
+copyOf
+copyOf(...)
+countDown
+create
+createFailure
+createObjectNode
+csrf
+data
+datasB64
+datas\s*=\s*"([^"]+)"
+decode
+decode(...)
+decoded
+decrypted
+destination$iv$iv
+digest
+digitBytes
+directTags
+displayName
+distinct
+div
+div.episode-latest span
+div.head div.first img
+div.last > div
+div.list-item-episode p
+div.list_cate a
+(div.list_episode div.list-item-episode a
+div.movies-list div.movie-item
+div.name-movie
+div.name_other
+doFinal
+doFinal(...)
+document
+domain
+domains
+durationText
+e$iv
+element$iv
+element$iv$iv
+embedUrl
+emitted
+enc
+encode
+encodeToString
+encodeToString(...)
+encoded
+end
+endRaw
+endsWith$default
+epCount
+epId
+epUrl
+episodeIds
+episodeLinks
+episodeText
+episodes
+exec
+execute
+extraIframes
+extractorLink
+f$0
+f$1
+f$10
+f$11
+f$2
+f$3
+f$4
+f$5
+f$6
+f$7
+f$8
+f$9
+fallbackBase
+find$default
+findAll$default
+first
+firstOrNull
+fixUrl
+format
+format(...)
+found
+frag
+fullEp
+gdoc
+genreLinks
+genres
+get
+get$default
+getApp
+getBaseUrl
+getBytes
+getBytes(...)
+getCOROUTINE_SUSPENDED
+getData
+getDecoder
+getDocument
+getEncoder
+getEpisodes
+getFirst
+getGroupValues
+getHasDownloadSupport
+getHasMainPage
+getHydraxClient
+getHydraxPool
+getInstance
+getLang
+getMainPage
+getMainUrl
+getName
+getOrNull
+getSecond
+getSupportedTypes
+getText
+getThird
+getUrl
+getValue
+getValue(...)
+getVideoInterceptor
+grids
+h1.heading_movie
+h264
+hasDownloadSupport
+hasMainPage
+hasNext
+hdvideo
+head
+header
+headers
+hls
+href
+html
+html(...)
+http
+https:
+https://
+https://abysscdn.com/
+https://hdvnn.net
+https://hdvnn.xyz
+https://hx.hdvnn.local/
+https://playhydrax.com/
+https://playhydrax.com/?v=
+https://vk.com/
+!https://vk.com/video_ext.php?oid=
+hx.hdvnn.local/
+hydraxClient
+hydraxClient$delegate
+hydraxClient_delegate$lambda$5
+hydraxInterceptor
+hydraxInterceptor$lambda$41
+hydraxInterceptor$lambda$42
+hydraxPool
+hydraxPool$delegate
+hydraxPool_delegate$lambda$6
+hydraxToken
+idx
+img
+index
+index$iv
+index$iv$iv
+init
+intValue
+intercept
+invoke
+invokeSuspend
+isBlank
+isCasting
+isDigit
+isEmpty
+isFailure-impl
+isMovie
+it$iv$iv
+item$iv
+item$iv$iv
+items
+iterator
+iterator$iv
+jacksonObjectMapper
+joinToString$default
+json
+key
+key$iv
+keyHex
+kind
+label
+lang
+last
+lastOrNull
+latch
+lazy
+length
+link
+linkDomain
+list$iv
+listOf
+listOfNotNull
+load
+load$lambda$23
+load$lambda$27$lambda$26
+loadExtractor
+loadLinks
+loc-phim/W1tdLFtdLFsxXSxbXV0=
+loc-phim/W1tdLFtdLFsyXSxbXV0=
+lock
+longValue
+mainPage
+mainPageOf
+mainUrl
+map
+mapOf
+mapper
+max
+maxElem$iv
+maxValue$iv
+md5Hex
+md5Hex$lambda$3
+md5Id
+md5_id
+media
+mediaBytes
+message
+meta[property=og:image]
+Hmeta\s+http-equiv=["']refresh["'][^>]*content=["']\d+;(https?://[^"']+)"
+min
+mobileUserAgent
+movieId
+movieLink
+movie_id[:=]\s*(\d+)
+mp4
+mp4Json
+mp4_1080
+mp4_240
+mp4_360
+mp4_480
+mp4_720
+name
+#name="csrf-token" content="([^"]+)"
+newAnimeSearchResponse$default
+newCall
+newEpisode
+newEpisodeData
+newExtractorLink
+newFixedThreadPool
+newHomePageResponse
+newMovieLoadResponse
+newTvSeriesLoadResponse
+next
+node
+off
+oid
+out
+owner$iv
+padded
+page
+parts
+path
+path(...)
+player
+playerUrl
+plotText
+pos
+post$default
+poster
+posterUrl
+pref
+prefix
+proceed
+protocol
+put
+qual
+quality
+query
+range
+raw
+rawHref
+readRange
+readRange$lambda$44$lambda$43
+readTimeout
+readTree
+readTree(...)
+recloudstream.HDVNNProvider
+"recloudstream.HDVNNProvider$load$2
+"recloudstream.HDVNNProvider$load$3
+0recloudstream.HDVNNProvider$resolveHydrax$link$1
+recommendations
+recs
+referer
+refreshDomain
+registerMainAPI
+removePrefix
+repeat
+replace$default
+req
+request
+resId
+resLabel
+res_id
+resolveHdvideoEmbeds
+resolveHdvideoEmbeds$lambda$40
+resolveHydrax
+resolveVk
+resolved
+resp
+result
+results
+root
+run
+search
+second
+seen
+segReq
+segs
+select
+select(...)
+selectFirst
+sentinel
+serve
+set$iv
+setHeaders
+setLang
+setMainUrl
+setName
+setOf
+setPlot
+setPosterUrl
+setQuality
+setRecommendations
+setReferer
+setShowStatus
+setTags
+setYear
+showStatus
+size
+slug
+sortedWith
+sources
+split$default
+src
+src_
+src_dr
+src_go
+src_hd
+src_hy
+src_lt_3
+src_on
+src_pt
+src_vip
+src_vk
+src_vnn_1
+src_vnn_2
+start
+startsWith$default
+statusText
+sub
+substringAfter
+substringBefore$default
+subtitleCallback
+suffix
+supportedTypes
+tag
+take
+text
+text(...)
+the-loai/anime-nhat-ban.html
+the-loai/hh-trung-quoc.html
+the-loai/phim-au-my.html
+the-loai/phim-han-quoc.html
+the-loai/phim-trung-quoc.html
+this
+this$0
+throwIndexOverflow
+throwOnFailure
+title
+toByteArray
+toByteArray(...)
+toIntOrNull
+toList
+toLongOrNull
+toLowerCase
+toLowerCase(...)
+toSearchResponse
+$toSearchResponse$lambda$50$lambda$49
+toString
+toString(...)
+toUpperCase
+toUpperCase(...)
+token
+total
+trim
+trimEnd
+tvType
+unlock
+url
+userId
+user_id
+v$iv
+value
+valueOf
+versionHash
+vid
+video/mp4
+vk.com
+vkCandidates
+vkUrl
+vnnTags
+vurl
+want
+watchDoc
+write
+writeTimeout
+year
+e~~D8{"backend":"dex","compilation-mode":"debug","has-checksums":true,"min-api":21,"version":"8.7.18"}
+~~~{"Lrecloudstream/HDVNNPlugin;":"8e09f81d","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda0;":"32e146724","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda1;":"d31d40a8","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda2;":"7909dcfb","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda3;":"-29800a59b","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda4;":"225556b7f","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda5;":"-289e18880","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda6;":"2b925fc30","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda7;":"18a0dac05","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda8;":"-65e5180ff","Lrecloudstream/HDVNNProvider$$ExternalSyntheticLambda9;":"-be25ad49","Lrecloudstream/HDVNNProvider$getBaseUrl$1;":"1ff5d61e","Lrecloudstream/HDVNNProvider$getMainPage$1;":"45c070e8","Lrecloudstream/HDVNNProvider$load$$inlined$sortedBy$1;":"d41d3800","Lrecloudstream/HDVNNProvider$load$1;":"adf8fc73","Lrecloudstream/HDVNNProvider$load$2;":"423242fc","Lrecloudstream/HDVNNProvider$load$3;":"ed49460d","Lrecloudstream/HDVNNProvider$loadLinks$1;":"b699c861","Lrecloudstream/HDVNNProvider$resolveHdvideoEmbeds$1;":"6492ff71","Lrecloudstream/HDVNNProvider$resolveHydrax$1;":"c0aa1b4d","Lrecloudstream/HDVNNProvider$resolveHydrax$link$1;":"c7e5a2f","Lrecloudstream/HDVNNProvider$resolveVk$1;":"6fa49695","Lrecloudstream/HDVNNProvider$search$1;":"2d26d57a","Lrecloudstream/HDVNNProvider;":"ccedf5ef"}
+ang C
+p Nh
+}7B
+}7@
+}7B
+}7#
+}7(
+}7r
+}7B
+}7B
+~7Y
+~7U
+}7B
+}7B
+}7B

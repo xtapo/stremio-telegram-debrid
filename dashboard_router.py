@@ -735,6 +735,10 @@ async def api_update_config(request: Request):
         "enable_source_telegram_debrid": "ENABLE_SOURCE_TELEGRAM",
         "enable_source_nguonc": "ENABLE_SOURCE_NGUONC",
         "enable_source_vsmov": "ENABLE_SOURCE_VSMOV",
+        "enable_source_kkphim": "ENABLE_SOURCE_KKPHIM",
+        "enable_source_ridomovies": "ENABLE_SOURCE_RIDOMOVIES",
+        "enable_source_clbphimxua": "ENABLE_SOURCE_CLBPHIMXUA",
+        "enable_source_yanhh3d": "ENABLE_SOURCE_YANHH3D",
         "enable_source_hhpanda": "ENABLE_SOURCE_HHPANDA",
         "enable_source_moviesdrive": "ENABLE_SOURCE_MOVIESDRIVE",
         "enable_source_hdhub4u": "ENABLE_SOURCE_HDHUB4U",
@@ -758,6 +762,10 @@ async def api_update_config(request: Request):
         "enable_board_telegram_debrid": "ENABLE_BOARD_TELEGRAM",
         "enable_board_nguonc": "ENABLE_BOARD_NGUONC",
         "enable_board_vsmov": "ENABLE_BOARD_VSMOV",
+        "enable_board_kkphim": "ENABLE_BOARD_KKPHIM",
+        "enable_board_ridomovies": "ENABLE_BOARD_RIDOMOVIES",
+        "enable_board_clbphimxua": "ENABLE_BOARD_CLBPHIMXUA",
+        "enable_board_yanhh3d": "ENABLE_BOARD_YANHH3D",
         "enable_board_hhpanda": "ENABLE_BOARD_HHPANDA",
         "enable_board_moviesdrive": "ENABLE_BOARD_MOVIESDRIVE",
         "enable_board_hdhub4u": "ENABLE_BOARD_HDHUB4U",
@@ -801,6 +809,10 @@ async def api_update_config(request: Request):
             "telegram": getattr(Config, "ENABLE_SOURCE_TELEGRAM", True),
             "nguonc": getattr(Config, "ENABLE_SOURCE_NGUONC", True),
             "vsmov": getattr(Config, "ENABLE_SOURCE_VSMOV", True),
+            "kkphim": getattr(Config, "ENABLE_SOURCE_KKPHIM", True),
+            "ridomovies": getattr(Config, "ENABLE_SOURCE_RIDOMOVIES", True),
+            "clbphimxua": getattr(Config, "ENABLE_SOURCE_CLBPHIMXUA", True),
+            "yanhh3d": getattr(Config, "ENABLE_SOURCE_YANHH3D", True),
             "hhpanda": getattr(Config, "ENABLE_SOURCE_HHPANDA", True),
             "moviesdrive": getattr(Config, "ENABLE_SOURCE_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_SOURCE_HDHUB4U", True),
@@ -819,6 +831,10 @@ async def api_update_config(request: Request):
             "telegram": getattr(Config, "ENABLE_BOARD_TELEGRAM", True),
             "nguonc": getattr(Config, "ENABLE_BOARD_NGUONC", True),
             "vsmov": getattr(Config, "ENABLE_BOARD_VSMOV", True),
+            "kkphim": getattr(Config, "ENABLE_BOARD_KKPHIM", True),
+            "ridomovies": getattr(Config, "ENABLE_BOARD_RIDOMOVIES", True),
+            "clbphimxua": getattr(Config, "ENABLE_BOARD_CLBPHIMXUA", True),
+            "yanhh3d": getattr(Config, "ENABLE_BOARD_YANHH3D", True),
             "hhpanda": getattr(Config, "ENABLE_BOARD_HHPANDA", True),
             "moviesdrive": getattr(Config, "ENABLE_BOARD_MOVIESDRIVE", True),
             "hdhub4u": getattr(Config, "ENABLE_BOARD_HDHUB4U", True),
@@ -1028,6 +1044,78 @@ async def api_system_addons(request: Request):
                 "public": f"{domain_url}/vsmov/manifest.json"
             },
             "routes": ["/vsmov/manifest.json", "/vsmov/catalog", "/vsmov/stream"]
+        },
+        {
+            "id": "kkphim",
+            "name": "KKPhim Cinema",
+            "tag": "Kho Phim & Anime Lớn Nhất",
+            "category": "Full HD / Vietsub & Lồng Tiếng",
+            "icon": "fa-film",
+            "badge": "Direct HLS 1080p",
+            "badge_color": "rose",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_KKPHIM", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_KKPHIM", True)),
+            "description": "Hệ thống phim lẻ, phim bộ, hoạt hình & TV shows khổng lồ từ KKPhim & PhimAPI với luồng phát HLS .m3u8 siêu tốc độ, đầy đủ Vietsub và Thuyết minh/Lồng tiếng.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/kkphim/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/kkphim/manifest.json",
+                "public": f"{domain_url}/kkphim/manifest.json"
+            },
+            "routes": ["/kkphim/manifest.json", "/kkphim/catalog", "/kkphim/meta", "/kkphim/stream"]
+        },
+        {
+            "id": "ridomovies",
+            "name": "RidoMovies English",
+            "tag": "Movies & TV Series English",
+            "category": "English 1080p / 4K",
+            "icon": "fa-globe",
+            "badge": "English HD",
+            "badge_color": "blue",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_RIDOMOVIES", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_RIDOMOVIES", True)),
+            "description": "Kho phim lẻ và series truyền hình quốc tế tiếng Anh chất lượng cao từ RidoMovies (ridomovies.su).",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/ridomovies/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/ridomovies/manifest.json",
+                "public": f"{domain_url}/ridomovies/manifest.json"
+            },
+            "routes": ["/ridomovies/manifest.json", "/ridomovies/catalog", "/ridomovies/meta", "/ridomovies/stream"]
+        },
+        {
+            "id": "clbphimxua",
+            "name": "CLB Phim Xưa & Kinh Điển",
+            "tag": "Phim Kinh Điển & Xưa",
+            "category": "Phim Xưa & Cổ Trang",
+            "icon": "fa-history",
+            "badge": "Kinh Điển",
+            "badge_color": "amber",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_CLBPHIMXUA", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_CLBPHIMXUA", True)),
+            "description": "Tuyển tập các tác phẩm điện ảnh và truyền hình kinh điển Việt Nam & Châu Á từ CLBPhimXua.",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/clbphimxua/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/clbphimxua/manifest.json",
+                "public": f"{domain_url}/clbphimxua/manifest.json"
+            },
+            "routes": ["/clbphimxua/manifest.json", "/clbphimxua/catalog", "/clbphimxua/meta", "/clbphimxua/stream"]
+        },
+        {
+            "id": "yanhh3d",
+            "name": "Yanhh3d 3D Donghua",
+            "tag": "Hoạt Hình 3D Trung Quốc",
+            "category": "Donghua 4K Vietsub",
+            "icon": "fa-dragon",
+            "badge": "4K Donghua",
+            "badge_color": "teal",
+            "enabled": bool(getattr(Config, "ENABLE_SOURCE_YANHH3D", True)),
+            "board_enabled": bool(getattr(Config, "ENABLE_BOARD_YANHH3D", True)),
+            "description": "Kho hoạt hình 3D Tu Tiên, Kiếm Hiệp Trung Quốc (Donghua) siêu nét 4K từ Yanhh3d (yanhh3d.run).",
+            "manifests": {
+                "local": f"http://127.0.0.1:{port}/yanhh3d/manifest.json",
+                "lan": f"http://{lan_ip}:{port}/yanhh3d/manifest.json",
+                "public": f"{domain_url}/yanhh3d/manifest.json"
+            },
+            "routes": ["/yanhh3d/manifest.json", "/yanhh3d/catalog", "/yanhh3d/meta", "/yanhh3d/stream"]
         },
         {
             "id": "hhpanda",
@@ -1500,7 +1588,107 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
             logger.warning(f"Dashboard search Vidking error: {e}")
         return items
 
+    async def search_kkphim_task():
+        items = []
+        try:
+            from kkphim_router import search_kkphim
+            results = await search_kkphim(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("kkphim:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name") or m.get("title"),
+                    "original_title": m.get("name"),
+                    "source": "KKPhim Cinema",
+                    "source_id": "kkphim",
+                    "poster": m.get("poster"),
+                    "year": m.get("releaseInfo", "Full HD"),
+                    "quality": "Direct HLS 1080p",
+                    "type": m.get("type", "movie"),
+                    "detail_url": f"/api/media/details?source=kkphim&id={raw_id}&type={m.get('type', 'movie')}"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search KKPhim error: {e}")
+        return items
+
+    async def search_ridomovies_task():
+        items = []
+        try:
+            from ridomovies_router import search_ridomovies
+            results = await search_ridomovies(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("ridomovies:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name"),
+                    "original_title": m.get("name"),
+                    "source": "RidoMovies English",
+                    "source_id": "ridomovies",
+                    "poster": m.get("poster"),
+                    "year": m.get("releaseInfo", "HD"),
+                    "quality": "English 1080p/4K",
+                    "type": m.get("type", "movie"),
+                    "detail_url": f"/api/media/details?source=ridomovies&id={raw_id}&type={m.get('type', 'movie')}"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search RidoMovies error: {e}")
+        return items
+
+    async def search_clbphimxua_task():
+        items = []
+        try:
+            from clbphimxua_router import search_clbphimxua
+            results = await search_clbphimxua(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("clbphimxua:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name"),
+                    "original_title": m.get("name"),
+                    "source": "CLB Phim Xưa",
+                    "source_id": "clbphimxua",
+                    "poster": m.get("poster"),
+                    "year": "Kinh Điển",
+                    "quality": "Phim Xưa / Kinh Điển",
+                    "type": "movie",
+                    "detail_url": f"/api/media/details?source=clbphimxua&id={raw_id}&type=movie"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search CLBPhimXua error: {e}")
+        return items
+
+    async def search_yanhh3d_task():
+        items = []
+        try:
+            from yanhh3d_router import search_yanhh3d
+            results = await search_yanhh3d(query.strip(), max_results=15)
+            for m in results:
+                raw_id = m.get("id", "").replace("yanhh3d:", "")
+                items.append({
+                    "id": m.get("id"),
+                    "title": m.get("name"),
+                    "original_title": "Hoạt Hình 3D Trung Quốc",
+                    "source": "Yanhh3d 3D Donghua",
+                    "source_id": "yanhh3d",
+                    "poster": m.get("poster"),
+                    "year": "4K Ultra HD",
+                    "quality": "Donghua 4K Vietsub",
+                    "type": "series",
+                    "detail_url": f"/api/media/details?source=yanhh3d&id={raw_id}&type=series"
+                })
+        except Exception as e:
+            logger.warning(f"Dashboard search Yanhh3d error: {e}")
+        return items
+
     tasks = []
+    if getattr(Config, "ENABLE_SOURCE_KKPHIM", True) and (not source or source == "all" or source == "kkphim"):
+        tasks.append(search_kkphim_task())
+    if getattr(Config, "ENABLE_SOURCE_RIDOMOVIES", True) and (not source or source == "all" or source == "ridomovies"):
+        tasks.append(search_ridomovies_task())
+    if getattr(Config, "ENABLE_SOURCE_CLBPHIMXUA", True) and (not source or source == "all" or source == "clbphimxua"):
+        tasks.append(search_clbphimxua_task())
+    if getattr(Config, "ENABLE_SOURCE_YANHH3D", True) and (not source or source == "all" or source == "yanhh3d"):
+        tasks.append(search_yanhh3d_task())
     if getattr(Config, "ENABLE_SOURCE_ERNAX", True) and (not source or source == "all" or source == "ernax"):
         tasks.append(search_ernax())
     if getattr(Config, "ENABLE_SOURCE_VIDKING", True) and (not source or source == "all" or source == "vidking"):
@@ -1532,6 +1720,8 @@ async def api_universal_search(request: Request, q: str = Query(..., min_length=
 
 @dashboard_router.get("/api/media/details")
 async def api_media_details(request: Request, source: str, id: str):
+    import re
+    import urllib.parse
     base_url = str(request.base_url).rstrip("/")
 
     # 1. NGUONC
@@ -1603,7 +1793,153 @@ async def api_media_details(request: Request, source: str, id: str):
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
 
-    # 3. HHPANDA
+    # 3. KKPHIM
+    elif source == "kkphim":
+        try:
+            from kkphim_router import kkphim_fetch_json, format_img_url
+            url = f"https://phimapi.com/phim/{id}"
+            data = await kkphim_fetch_json(url)
+            if data and "movie" in data:
+                movie = data["movie"]
+                episodes = []
+                for s_idx, server in enumerate(data.get("episodes", [])):
+                    server_name = server.get("server_name", f"VIP #{s_idx+1}")
+                    for ep in server.get("server_data", []) or server.get("items", []):
+                        m3u8_url = ep.get("link_m3u8") or ""
+                        embed_url = ep.get("link_embed") or ""
+                        episodes.append({
+                            "name": f"Tập {ep.get('name', '1')} [{server_name}]",
+                            "slug": ep.get("slug", ""),
+                            "server": server_name,
+                            "embed": embed_url,
+                            "m3u8": m3u8_url
+                        })
+                return {
+                    "title": movie.get("name", id),
+                    "original_title": movie.get("origin_name", ""),
+                    "description": re.sub(r'<[^>]+>', '', movie.get("content", "")).strip(),
+                    "poster": format_img_url(movie.get("poster_url") or movie.get("thumb_url")),
+                    "year": str(movie.get("year", "2025")),
+                    "episodes": episodes
+                }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 4. RIDOMOVIES
+    elif source == "ridomovies":
+        try:
+            from ridomovies_router import ridomovies_fetch_text, RIDOMOVIES_BASE
+            url = f"{RIDOMOVIES_BASE}/movies/{id}"
+            html = await ridomovies_fetch_text(url)
+            if not html:
+                url = f"{RIDOMOVIES_BASE}/tv/{id}"
+                html = await ridomovies_fetch_text(url)
+            title_m = re.search(r'<h1[^>]*>([^<]+)</h1>', html)
+            title = title_m.group(1).strip() if title_m else id.replace("-", " ").title()
+            poster_m = re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html)
+            poster = poster_m.group(1) if poster_m else ""
+            desc_m = re.search(r'<meta\s+property=["\']og:description["\']\s+content=["\']([^"\']+)["\']', html)
+            desc = desc_m.group(1) if desc_m else ""
+            iframes = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', html)
+            episodes = []
+            for idx, if_url in enumerate(iframes, 1):
+                if not if_url.startswith("http"):
+                    if_url = f"https:{if_url}" if if_url.startswith("//") else f"{RIDOMOVIES_BASE}{if_url}"
+                episodes.append({
+                    "name": f"Server #{idx}",
+                    "slug": f"srv_{idx}",
+                    "server": f"RidoMovies Server #{idx}",
+                    "embed": if_url,
+                    "m3u8": ""
+                })
+            return {
+                "title": title,
+                "original_title": title,
+                "description": desc,
+                "poster": poster,
+                "year": "HD / 4K",
+                "episodes": episodes
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 5. CLBPHIMXUA
+    elif source == "clbphimxua":
+        try:
+            from clbphimxua_router import clb_fetch_json, CLBPHIMXUA_BASE, clb_post_to_meta
+            url = f"{CLBPHIMXUA_BASE}/wp-json/wp/v2/posts/{id}?_embed"
+            post = await clb_fetch_json(url)
+            if post and isinstance(post, dict):
+                m = clb_post_to_meta(post)
+                content = post.get("content", {}).get("rendered", "") if isinstance(post.get("content"), dict) else ""
+                iframes = re.findall(r'<iframe[^>]+src=["\']([^"\']+)["\']', content)
+                video_links = re.findall(r'href=["\']([^"\']+\.(?:m3u8|mp4|mkv))["\']', content)
+                episodes = []
+                for idx, v_url in enumerate(video_links, 1):
+                    episodes.append({
+                        "name": f"Direct Stream #{idx}",
+                        "slug": f"v_{idx}",
+                        "server": "CLBPhimXua VIP",
+                        "embed": "",
+                        "m3u8": v_url
+                    })
+                for idx, if_url in enumerate(iframes, 1):
+                    episodes.append({
+                        "name": f"Web Player #{idx}",
+                        "slug": f"if_{idx}",
+                        "server": "CLBPhimXua Embed",
+                        "embed": if_url,
+                        "m3u8": ""
+                    })
+                return {
+                    "title": m.get("name", id),
+                    "original_title": "Phim Kinh Điển / Xưa",
+                    "description": m.get("description", ""),
+                    "poster": m.get("poster", ""),
+                    "year": "Kinh Điển",
+                    "episodes": episodes
+                }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 6. YANHH3D
+    elif source == "yanhh3d":
+        try:
+            from yanhh3d_router import yanhh_fetch_html, YANHH3D_BASE
+            url = f"{YANHH3D_BASE}/{id}"
+            html = await yanhh_fetch_html(url)
+            title_m = re.search(r'<h1[^>]*>([^<]+)</h1>', html)
+            title = title_m.group(1).strip() if title_m else id.replace("-", " ").title()
+            poster_m = re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\']([^"\']+)["\']', html)
+            poster = poster_m.group(1) if poster_m else ""
+            desc_m = re.search(r'<meta\s+property=["\']og:description["\']\s+content=["\']([^"\']+)["\']', html)
+            desc = desc_m.group(1) if desc_m else ""
+            ep_matches = re.findall(r'<a[^>]+href=["\'](/[^"\']*/tap-[^"\']+)["\'][^>]*>([^<]+)</a>', html)
+            episodes = []
+            seen = set()
+            for ep_href, ep_name in ep_matches:
+                ep_slug = ep_href.strip("/").split("/")[-1]
+                if ep_slug not in seen:
+                    seen.add(ep_slug)
+                    episodes.append({
+                        "name": ep_name.strip(),
+                        "slug": ep_slug,
+                        "server": "Yanhh3d 4K",
+                        "embed": f"{YANHH3D_BASE}{ep_href}",
+                        "m3u8": ""
+                    })
+            return {
+                "title": title,
+                "original_title": "Hoạt Hình 3D Trung Quốc",
+                "description": desc,
+                "poster": poster,
+                "year": "4K Ultra HD",
+                "episodes": episodes
+            }
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+
+    # 7. HHPANDA
     elif source == "hhpanda":
         try:
             import re
