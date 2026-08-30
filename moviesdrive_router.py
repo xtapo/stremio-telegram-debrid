@@ -521,7 +521,7 @@ async def stream_endpoint(request: Request, type: str, id: str):
 
         if not matched_hit:
             return _no_streams(
-                "không có bài viết nào khọp tức đề '" + display + "' (IMDb " + imdb_id + ")",
+                "không có bài viết nào khớp tiêu đề '" + display + "' (IMDb " + imdb_id + ")",
                 id,
             )
 

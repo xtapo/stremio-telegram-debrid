@@ -18,22 +18,24 @@ RIDOMOVIES_BASE = "https://ridomovies.su"
 _ridomovies_cache: Dict[str, Tuple[Dict[str, Any], float]] = {}
 RIDOMOVIES_CACHE_TTL = 600  # 10 minutes
 
-import requests
+_rido_client: Optional[httpx.AsyncClient] = None
 
-_rido_session: Optional[requests.Session] = None
-
-def get_rido_session() -> requests.Session:
-    global _rido_session
-    if _rido_session is None:
-        _rido_session = requests.Session()
-        _rido_session.headers.update({
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Referer": "https://ridomovies.su/",
-            "Origin": "https://ridomovies.su"
-        })
-    return _rido_session
+def get_rido_client() -> httpx.AsyncClient:
+    global _rido_client
+    if _rido_client is None or _rido_client.is_closed:
+        _rido_client = httpx.AsyncClient(
+            timeout=httpx.Timeout(15.0, connect=6.0),
+            follow_redirects=True,
+            limits=httpx.Limits(max_keepalive_connections=20, max_connections=40),
+            headers={
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "application/json, text/plain, */*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Referer": "https://ridomovies.su/",
+                "Origin": "https://ridomovies.su"
+            }
+        )
+    return _rido_client
 
 async def ridomovies_fetch_json(url: str, ttl: int = RIDOMOVIES_CACHE_TTL) -> Optional[dict]:
     now = time.time()
@@ -42,16 +44,11 @@ async def ridomovies_fetch_json(url: str, ttl: int = RIDOMOVIES_CACHE_TTL) -> Op
         if now < exp:
             return data
 
-    def _get():
-        sess = get_rido_session()
-        res = sess.get(url, timeout=12)
-        if res.status_code == 200:
-            return res.json()
-        return None
-
     try:
-        data = await asyncio.to_thread(_get)
-        if data:
+        client = get_rido_client()
+        res = await client.get(url)
+        if res.status_code == 200:
+            data = res.json()
             if len(_ridomovies_cache) > 500:
                 _ridomovies_cache.clear()
             _ridomovies_cache[url] = (data, now + ttl)
@@ -61,15 +58,11 @@ async def ridomovies_fetch_json(url: str, ttl: int = RIDOMOVIES_CACHE_TTL) -> Op
     return None
 
 async def ridomovies_fetch_text(url: str) -> str:
-    def _get():
-        sess = get_rido_session()
-        res = sess.get(url, timeout=12)
+    try:
+        client = get_rido_client()
+        res = await client.get(url)
         if res.status_code == 200:
             return res.text
-        return ""
-
-    try:
-        return await asyncio.to_thread(_get)
     except Exception as e:
         logger.warning(f"RidoMovies fetch html failed for {url}: {e}")
     return ""

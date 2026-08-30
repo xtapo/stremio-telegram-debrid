@@ -1,0 +1,24 @@
+Page title: Reacher.S01E01.1080p.WEB-DL.Hindi.5.1-English.5.1.ESub.x264-[moviesdrives.com].mkv
+
+--- Links found in GamerXYT page ---
+[Login] -> https://hubcloud.cx/drive/admin
+[moviesdrives.mov] -> https://moviesdrives.mov/
+[VPN] -> https://one.one.one.one/
+[How ? Click Here 👉 to Watch Tutorial 👀] -> https://tinyurl.com/Unblock-Ban-Site
+[Download [Server : 10Gbps]] -> https://pixel.hubcloud.cx/?id=1864755802c7d1d04e59e6dc50dd3b3d5ae64077cf05f161d27ce082843d8a75ab92760b2299e65d3a61b4cf814c7571f68b9c50f0aa69e6bec8d2a7f5ed33c5e49671344a6f9afc79c2a51e53d299964a4c036039d7c0d779f787c3094f2006::280060123eb71affc960fb203d26394d
+[Download File [1.01 GB]] -> https://floral-forest-499c.ceromig960.workers.dev/034476ddc075de42b109b66fe18134ffc3ac6425ad6ba65b9123840046955eb3bbbbb559be5cdf8719829c13c6570f3c::32c2aa77c6abfb9911c360297f6aa4a9/1397996994/Reacher.S01E01.1080p.WEB-DL.Hindi.5.1-English.5.1.ESub.x264-[moviesdrives.com].mkv
+[Downoad From Telegram] -> https://hubcloud.cx/tg/go?id=3Ofp3dyuoqThzuDY3N/K4aHZ3NCju+rPzODi6tHh2NXk4ajn59bf3bHDzOHayOHlu7u5p+/GmcbDwp2/qsq93b/KuK3kvsvjw8fVvsjJwbe+xbqd4sbIx7y2pMm6wcHYucuy4LE=
+[IDM] -> https://www.google.com/search?q=idm+dowload+manager
+[IDA] -> https://www.google.com/search?q=IDA+dowload+manager
+[@Telegram Group] -> https://t.me/hubcloudreport
+
+--- Script tags / variables ---
+JS line: window.location.href = 'https://bonuscaf.com/go/1272663';
+JS line: var size = document.getElementById("size").innerHTML
+JS line: var sharelink = document.getElementById("sharelink").innerHTML
+JS line: window.location = document.location.href = sharelink;
+JS line: function copy_link(e){let el=e;e = document.getElementById(el).value; if(typeof e == 'undefined'){e=document.getElementById(el).innerText}a=document.createElement("textarea");a.innerHTML=e,document.body.appendChild(a),a.select();document.execCommand("copy");document.body.removeChild(a),swal("Link Copied ! : "+e)}
+JS line: // const L_=["aHR0cHM6Ly90aW55dXJsLmNvbS9hdm9ndXJsNHU="],localStorageKey="pds",hoursLimit=6;let opened=!1;document.addEventListener("click",function(){if(!opened){var a=localStorage.getItem(localStorageKey),l=(new Date).getTime();if(!(a&&l-a<216e5)){opened=!0;let e=L_[Math.floor(Math.random()*L_.length)],t=atob(e),o=document.createElement("a");o.href=t,o.target="_blank",o.rel="noopener noreferrer",a=new MouseEvent("click",{view:window,bubbles:!0,cancelable:!0}),o.dispatchEvent(a),setTimeout(()=>window.focus(),100),localStorage.setItem(localStorageKey,l)}}});
+JS line: window.sessionStorage.setItem('xl',window.location.href)
+JS line: function cn(t){let e=window.location.protocol+"//"+window.location.host+t;history.replaceState({path:e},"",e)}cn("/bgmi/");
+JS line: function setCookie(e,t,i){let o=encodeURIComponent(t),$=new Date;$.setTime($.getTime()+36e5*i);let n=`${e}=${o}; expires=${$.toUTCString()}; path=/`;document.cookie=n}setCookie("xyt",1,24);

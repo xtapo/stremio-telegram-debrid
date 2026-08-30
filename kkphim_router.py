@@ -235,9 +235,13 @@ async def kkphim_manifest():
         "name": "KKPhim Cinema Vietsub",
         "description": "Kho phim Vietsub, Thuyết minh, Lồng tiếng chất lượng cao từ KKPhim & PhimAPI",
         "logo": "https://raw.githubusercontent.com/Stremio/stremio-addon-sdk/master/logo.png",
-        "resources": ["catalog", "meta", "stream"],
+        "resources": [
+            "catalog",
+            {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["kkphim:"]},
+            {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["kkphim:", "tt"]},
+        ],
         "types": ["movie", "series"],
-        "idPrefixes": ["kkphim:"],
+        "idPrefixes": ["kkphim:", "tt"],
         "catalogs": catalogs
     }
 
@@ -381,6 +385,87 @@ async def kkphim_meta_handler(type: str, id: str):
 
     return {"meta": meta}
 
+IMDB_TO_KKPHIM_CACHE: Dict[str, Tuple[Optional[str], float]] = {}
+IMDB_TO_KKPHIM_TTL = 7200  # 2 hours
+
+async def find_kkphim_slug_by_imdb(media_type: str, imdb_id: str, season_num: Optional[int] = None) -> Optional[str]:
+    cache_key = f"{media_type}:{imdb_id}:{season_num or 1}"
+    now = time.time()
+    if cache_key in IMDB_TO_KKPHIM_CACHE:
+        cached_slug, ts = IMDB_TO_KKPHIM_CACHE[cache_key]
+        if now - ts < IMDB_TO_KKPHIM_TTL:
+            return cached_slug
+
+    try:
+        client = get_kkphim_client()
+        c_res = await client.get(f"https://v3-cinemeta.strem.io/meta/{media_type}/{imdb_id}.json")
+        if c_res.status_code != 200:
+            return None
+        meta = c_res.json().get("meta", {})
+        if not meta or not meta.get("name"):
+            return None
+
+        title = meta.get("name", "")
+        clean_title = re.sub(r"[^\w\s]", " ", title).strip()
+
+        search_queries = [title]
+        if clean_title != title:
+            search_queries.append(clean_title)
+        if media_type == "series" and season_num:
+            search_queries.insert(0, f"{clean_title} phan {season_num}")
+            search_queries.insert(0, f"{clean_title} season {season_num}")
+
+        words = clean_title.split()
+        if len(words) > 2:
+            search_queries.append(" ".join(words[:2]))
+
+        all_items = []
+        seen_slugs = set()
+        for q in search_queries:
+            url = f"{KKPHIM_API_BASE}/v1/api/tim-kiem?keyword={urllib.parse.quote(q)}&limit=15"
+            res = await client.get(url)
+            if res.status_code == 200:
+                for it in res.json().get("data", {}).get("items", []):
+                    s = it.get("slug")
+                    if s and s not in seen_slugs:
+                        seen_slugs.add(s)
+                        all_items.append(it)
+            if all_items:
+                break
+
+        def _norm(s: str) -> str:
+            return re.sub(r"[^\w\s]", "", (s or "").lower()).strip()
+
+        target_norm = _norm(title)
+        target_words = [
+            w for w in target_norm.split()
+            if len(w) > 1 and w not in ("a", "an", "the", "and", "or", "of", "in", "to", "for", "with")
+        ]
+        if not target_words:
+            target_words = target_norm.split()
+
+        matched_slug = None
+        for it in all_items:
+            name_norm = _norm(it.get("name", ""))
+            orig_norm = _norm(it.get("origin_name", ""))
+            slug_norm = _norm(it.get("slug", "").replace("-", " "))
+
+            is_match = (
+                target_norm in orig_norm
+                or target_norm in name_norm
+                or target_norm in slug_norm
+                or all(w in orig_norm or w in name_norm or w in slug_norm for w in target_words)
+            )
+            if is_match:
+                matched_slug = it.get("slug")
+                break
+
+        IMDB_TO_KKPHIM_CACHE[cache_key] = (matched_slug, now)
+        return matched_slug
+    except Exception as e:
+        logger.warning(f"Error resolving KKPhim slug by IMDb {imdb_id}: {e}")
+        return None
+
 # ------------------------------------------------------------------
 # Stream Route
 # ------------------------------------------------------------------
@@ -390,22 +475,39 @@ async def kkphim_stream_handler(type: str, id: str):
     # Formats:
     # 1. kkphim:{slug} (Movie)
     # 2. kkphim:{slug}:{server_idx}:{ep_slug} (Series episode)
-    
-    slug = id.replace("kkphim:", "")
+    # 3. tt... (IMDb ID)
+
+    slug = None
     target_server_idx = 0
     target_ep_slug = None
-    
-    parts = slug.split(":")
-    if len(parts) >= 3:
-        slug = parts[0]
-        try:
-            target_server_idx = int(parts[1])
-        except ValueError:
-            target_server_idx = 0
-        target_ep_slug = parts[2]
-    elif len(parts) == 2:
-        slug = parts[0]
-        target_ep_slug = parts[1]
+    episode_num = None
+
+    if id.startswith("tt"):
+        parts = id.split(":")
+        imdb_id = parts[0]
+        season_num = int(parts[1]) if len(parts) > 1 else None
+        episode_num = int(parts[2]) if len(parts) > 2 else (1 if type == "series" else None)
+
+        slug = await find_kkphim_slug_by_imdb(type, imdb_id, season_num=season_num)
+        if not slug:
+            return {"streams": []}
+    elif id.startswith("kkphim:"):
+        clean_id = id.replace("kkphim:", "")
+        parts = clean_id.split(":")
+        if len(parts) >= 3:
+            slug = parts[0]
+            try:
+                target_server_idx = int(parts[1])
+            except ValueError:
+                target_server_idx = 0
+            target_ep_slug = parts[2]
+        elif len(parts) == 2:
+            slug = parts[0]
+            target_ep_slug = parts[1]
+        else:
+            slug = clean_id
+    else:
+        slug = id
 
     url = f"{KKPHIM_API_BASE}/phim/{slug}"
     data = await kkphim_fetch_json(url)
@@ -415,13 +517,13 @@ async def kkphim_stream_handler(type: str, id: str):
     movie = data.get("movie", {})
     movie_title = movie.get("name", slug)
     episodes_groups = data.get("episodes", [])
-    
+
     streams = []
-    
+
     for s_idx, ep_group in enumerate(episodes_groups):
         server_name = ep_group.get("server_name", f"VIP #{s_idx+1}")
         ep_list = ep_group.get("server_data", []) or ep_group.get("items", [])
-        
+
         target_ep = None
         if target_ep_slug:
             for ep in ep_list:
@@ -436,6 +538,21 @@ async def kkphim_stream_handler(type: str, id: str):
                         target_ep = ep_list[num_idx]
                 except Exception:
                     pass
+        elif episode_num is not None:
+            for ep in ep_list:
+                ep_slug_val = str(ep.get("slug", "")).lower()
+                ep_name_val = str(ep.get("name", "")).lower()
+                if (
+                    ep_slug_val == f"tap-{episode_num}"
+                    or ep_slug_val == f"tap-{episode_num:02d}"
+                    or ep_name_val == str(episode_num)
+                    or ep_name_val == f"tập {episode_num}"
+                    or ep_name_val == f"tap {episode_num}"
+                ):
+                    target_ep = ep
+                    break
+            if not target_ep and 1 <= episode_num <= len(ep_list):
+                target_ep = ep_list[episode_num - 1]
         else:
             # Movie: Take first episode
             if ep_list:
@@ -445,7 +562,7 @@ async def kkphim_stream_handler(type: str, id: str):
             m3u8_url = target_ep.get("link_m3u8")
             embed_url = target_ep.get("link_embed")
             ep_title = target_ep.get("name", "1")
-            
+
             if m3u8_url:
                 streams.append({
                     "name": f"⚡ KKPhim [{server_name}]",

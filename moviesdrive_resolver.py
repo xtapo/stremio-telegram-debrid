@@ -47,11 +47,13 @@ from moviesdrive_perf import (
 logger = logging.getLogger("moviesdrive_addon")
 
 # The defaults are only a starting point - MD_BASE_URL / MD_MIRRORS win.
-DEFAULT_BASE_URL = "https://new2.moviesdrive.christmas"
+DEFAULT_BASE_URL = "https://new3.moviesdrive.christmas"
 DEFAULT_BACKUP_URLS = [
+    "https://new3.moviesdrive.christmas",
     "https://new2.moviesdrive.christmas",
     "https://new1.moviesdrive.christmas",
-    "https://moviesdrives.mov",
+    "https://new4.moviesdrive.christmas",
+    "https://new5.moviesdrive.christmas",
 ]
 
 MOVIESDRIVE_BASE_URL = perf.env_base() or DEFAULT_BASE_URL
@@ -247,12 +249,24 @@ async def _scrape_buttons(post_url: str) -> List[Dict[str, Any]]:
     results: List[Dict[str, Any]] = []
     seen = set()
     current_season = None
+    current_heading = ""
 
-    for elem in content.find_all(["h1", "h2", "h3", "h4", "h5", "h6", "p", "div"]):
+    # Iterate leaf elements in document order to avoid container div text pollution
+    for elem in content.find_all(["h1", "h2", "h3", "h4", "h5", "h6", "p", "div", "hr"]):
+        if elem.find(["h1", "h2", "h3", "h4", "h5", "h6", "p", "hr"]):
+            continue
+
         text = elem.get_text(" ", strip=True)
-        season_match = re.search(r"\bseason\s*(\d+)\b", text, re.I)
-        if season_match:
-            current_season = int(season_match.group(1))
+        if not text and not elem.find_all("a", href=True):
+            continue
+
+        # Check if this element defines a specific Season heading (ignoring broad ranges like "Season 1 - 4")
+        is_range = bool(re.search(r"\bseason\s*\d+\s*(?:[-–—]|to)\s*\d+\b", text, re.I))
+        if not is_range and len(text) < 200:
+            s_match = re.search(r"\bseason\s*(\d+)\b", text, re.I) or re.search(r"\b\[?\s*S(\d+)\s*\]?\b", text, re.I)
+            if s_match:
+                current_season = int(s_match.group(1))
+                current_heading = text
 
         for a in elem.find_all("a", href=True):
             href = a["href"]
@@ -263,12 +277,20 @@ async def _scrape_buttons(post_url: str) -> List[Dict[str, Any]]:
                 continue
             if any(word in href.lower() for word in ("category", "tag", "telegram", "join")):
                 continue
+
             btn_season = current_season
-            bs_match = re.search(r"\bs(\d+)\b|\bseason\s*(\d+)\b", btn_text, re.I)
-            if bs_match:
+            bs_match = re.search(r"\bseason\s*(\d+)\b|\bS(\d+)\b", btn_text, re.I)
+            if bs_match and not re.search(r"\bseason\s*\d+\s*(?:[-–—]|to)\s*\d+\b", btn_text, re.I):
                 btn_season = int(bs_match.group(1) or bs_match.group(2))
+
+            # Combine button text with heading if button text is generic
+            combo_text = btn_text
+            if current_heading and len(btn_text) < 20:
+                combo_text = f"{btn_text} ({current_heading})"
+
             seen.add(href)
-            results.append({"text": btn_text, "url": href, "season": btn_season})
+            results.append({"text": combo_text, "url": href, "season": btn_season})
+
     if not results:
         logger.warning(
             "MoviesDrive found no download buttons on %s (hosts looked for: %s)",
@@ -464,6 +486,36 @@ def _collect_stream_links(html_text: str) -> List[Dict[str, str]]:
     return streams or media_fallback
 
 
+async def _resolve_pixel_link(pixel_url: str, referer: str) -> Optional[Dict[str, str]]:
+    """Resolve pixel.hubcloud.cx or gamerxyt dl.php to the direct Google CDN video link."""
+    client = await perf.get_client()
+    try:
+        r = await client.get(
+            pixel_url,
+            headers={"User-Agent": perf.USER_AGENT, "Referer": referer},
+            follow_redirects=True,
+            timeout=10.0,
+        )
+        final_url = str(r.url)
+        parsed = urllib.parse.urlsplit(final_url)
+        params = urllib.parse.parse_qs(parsed.query)
+        if "link" in params and params["link"][0].startswith("http"):
+            direct_link = params["link"][0]
+            return {"type": "Google CDN 10Gbps", "url": direct_link}
+
+        html = r.text or ""
+        m = re.search(r'[\?&]link=([^\'"&\s]+)', html) or re.search(
+            r'href\s*=\s*["\'](https?://video-downloads\.googleusercontent\.com[^"\']+)["\']', html
+        )
+        if m:
+            direct_link = urllib.parse.unquote(m.group(1))
+            if direct_link.startswith("http"):
+                return {"type": "Google CDN 10Gbps", "url": direct_link}
+    except Exception as e:
+        logger.warning("Pixel link resolve failed for %s: %s", pixel_url, e)
+    return None
+
+
 async def _scrape_direct_streams(hubcloud_file_url: str) -> List[Dict[str, str]]:
     first_html, _ = await fetch_text(
         hubcloud_file_url,
@@ -503,6 +555,17 @@ async def _scrape_direct_streams(hubcloud_file_url: str) -> List[Dict[str, str]]
         return []
 
     streams = _collect_stream_links(second_html)
+    
+    # Also resolve pixel.hubcloud.cx links for super-fast Google CDN streams
+    soup2 = make_soup(second_html)
+    for a in soup2.find_all("a", href=True):
+        href = a["href"]
+        if "pixel." in href or "dl.php" in href:
+            pixel_stream = await _resolve_pixel_link(href, referer=gamer_link)
+            if pixel_stream:
+                streams.insert(0, pixel_stream)
+                break
+
     if not streams:
         logger.warning(
             "GamerXYT page %s had no usable link (looked for %s)",
@@ -524,12 +587,22 @@ async def resolve_direct_stream_links(hubcloud_file_url: str) -> List[Dict[str, 
 def pick_best_stream(streams: List[Dict[str, str]]) -> Optional[Dict[str, str]]:
     if not streams:
         return None
+    # 1. Prefer Google CDN / Google Video (fastest & most stable)
     for item in streams:
-        if "pixeldrain" in item.get("url", "").lower():
+        u = item.get("url", "").lower()
+        if "googleusercontent" in u or "google" in u:
             return item
+    # 2. Prefer PixelDrain
     for item in streams:
-        if any(host in item.get("url", "").lower() for host in FSL_HOSTS):
+        u = item.get("url", "").lower()
+        if "pixeldrain" in u:
             return item
+    # 3. Prefer FSL (Cloudflare R2)
+    for item in streams:
+        u = item.get("url", "").lower()
+        if any(host in u for host in FSL_HOSTS):
+            return item
+    # 4. Fallback to Worker CDN or any other
     return streams[0]
 
 
@@ -538,7 +611,10 @@ def pick_best_stream(streams: List[Dict[str, str]]) -> Optional[Dict[str, str]]:
 # ------------------------------------------------------------------
 def _is_pack(text: str) -> bool:
     low = (text or "").lower()
-    return any(word in low for word in PACK_WORDS)
+    if any(good in low for good in ("single episode", "single ep", "episodes", "episode", "/e]", "/ep]")):
+        if not any(bad in low for bad in ("zip", "pack", "rar", ".zip", ".rar", "season pack")):
+            return False
+    return any(word in low for word in ("zip", "pack", "rar", ".zip", ".rar", "batch", "season pack"))
 
 
 async def collect_candidates(

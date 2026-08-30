@@ -316,8 +316,13 @@ def get_nguonc_manifest(request: Request) -> Dict[str, Any]:
         "name": "NguonC Phim (Cinema)",
         "description": "Xem trực tuyến Phim Lẻ, Phim Bộ, TV Shows, Hoạt Hình Vietsub / Thuyết Minh từ NguonC API.",
         "logo": "https://phim.nguonc.com/public/images/logo.png",
-        "resources": ["catalog", "meta", "stream"],
+        "resources": [
+            "catalog",
+            {"name": "meta", "types": ["movie", "series"], "idPrefixes": ["nguonc:"]},
+            {"name": "stream", "types": ["movie", "series"], "idPrefixes": ["nguonc:", "tt"]},
+        ],
         "types": ["movie", "series"],
+        "idPrefixes": ["nguonc:", "tt"],
         "catalogs": [
             {
                 "type": "movie",
@@ -788,6 +793,88 @@ async def nguonc_player_page(url: str):
 """
     return HTMLResponse(content=html)
 
+IMDB_TO_NGUONC_CACHE: Dict[str, Tuple[Optional[str], float]] = {}
+IMDB_TO_NGUONC_TTL = 7200  # 2 hours
+
+async def find_nguonc_slug_by_imdb(media_type: str, imdb_id: str, season_num: Optional[int] = None) -> Optional[str]:
+    cache_key = f"{media_type}:{imdb_id}:{season_num or 1}"
+    now = time.time()
+    if cache_key in IMDB_TO_NGUONC_CACHE:
+        cached_slug, ts = IMDB_TO_NGUONC_CACHE[cache_key]
+        if now - ts < IMDB_TO_NGUONC_TTL:
+            return cached_slug
+
+    try:
+        async with httpx.AsyncClient(timeout=8.0) as client:
+            c_res = await client.get(f"https://v3-cinemeta.strem.io/meta/{media_type}/{imdb_id}.json")
+            if c_res.status_code != 200:
+                return None
+            meta = c_res.json().get("meta", {})
+            if not meta or not meta.get("name"):
+                return None
+
+            title = meta.get("name", "")
+            year = str(meta.get("year") or "")
+
+            search_queries = [title]
+            clean_title = re.sub(r"[^\w\s]", " ", title).strip()
+            if clean_title != title:
+                search_queries.append(clean_title)
+
+            if media_type == "series" and season_num:
+                search_queries.insert(0, f"{clean_title} phan {season_num}")
+                search_queries.insert(0, f"{clean_title} season {season_num}")
+
+            words = clean_title.split()
+            if len(words) > 2:
+                search_queries.append(" ".join(words[:2]))
+
+            all_items = []
+            seen_slugs = set()
+            for q in search_queries:
+                s_res = await client.get(f"{NGUONC_API_BASE}/films/search?keyword={urllib.parse.quote(q)}")
+                if s_res.status_code == 200:
+                    for it in s_res.json().get("items", []):
+                        s = it.get("slug")
+                        if s and s not in seen_slugs:
+                            seen_slugs.add(s)
+                            all_items.append(it)
+                if all_items:
+                    break
+
+            def _norm(s: str) -> str:
+                return re.sub(r"[^\w\s]", "", (s or "").lower()).strip()
+
+            target_norm = _norm(title)
+            target_words = [
+                w for w in target_norm.split()
+                if len(w) > 1 and w not in ("a", "an", "the", "and", "or", "of", "in", "to", "for", "with")
+            ]
+            if not target_words:
+                target_words = target_norm.split()
+
+            matched_slug = None
+            for it in all_items:
+                name_norm = _norm(it.get("name", ""))
+                orig_norm = _norm(it.get("original_name", ""))
+                slug_norm = _norm(it.get("slug", "").replace("-", " "))
+
+                is_match = (
+                    target_norm in orig_norm
+                    or target_norm in name_norm
+                    or target_norm in slug_norm
+                    or all(w in orig_norm or w in name_norm or w in slug_norm for w in target_words)
+                )
+                if is_match:
+                    matched_slug = it.get("slug")
+                    break
+
+            IMDB_TO_NGUONC_CACHE[cache_key] = (matched_slug, now)
+            return matched_slug
+    except Exception as e:
+        logger.warning(f"Error resolving NguonC slug by IMDb {imdb_id}: {e}")
+        return None
+
 @nguonc_router.get("/stream/{type}/{id}.json")
 @nguonc_router.get("/nguonc/stream/{type}/{id}.json")
 async def nguonc_stream_handler(request: Request, type: str, id: str):
@@ -795,10 +882,29 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
         from vsmov_router import vsmov_stream_handler
         return await vsmov_stream_handler(request, type, id)
 
-    parts = id.split(":")
-    slug = parts[1] if len(parts) > 1 else id
+    slug = None
+    target_ep_slug = None
+    episode_num = None
 
-    target_ep_slug = parts[3] if len(parts) > 3 else (parts[2] if len(parts) > 2 and not parts[2].isdigit() else None)
+    if id.startswith("tt"):
+        parts = id.split(":")
+        imdb_id = parts[0]
+        season_num = int(parts[1]) if len(parts) > 1 else None
+        episode_num = int(parts[2]) if len(parts) > 2 else (1 if type == "series" else None)
+
+        slug = await find_nguonc_slug_by_imdb(type, imdb_id, season_num=season_num)
+        if not slug:
+            return {"streams": []}
+    elif id.startswith("nguonc:"):
+        parts = id.split(":")
+        slug = parts[1] if len(parts) > 1 else id
+        target_ep_slug = parts[3] if len(parts) > 3 else (parts[2] if len(parts) > 2 and not parts[2].isdigit() else None)
+        if len(parts) > 2 and parts[2].isdigit():
+            episode_num = int(parts[2])
+        elif len(parts) > 3 and parts[3].isdigit():
+            episode_num = int(parts[3])
+    else:
+        slug = id
 
     api_url = f"{NGUONC_API_BASE}/film/{slug}"
 
@@ -817,7 +923,7 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
 
             base_url = str(request.base_url).rstrip("/")
             proxy_base = f"{base_url}/nguonc/stream_proxy" if not base_url.endswith("/nguonc") else f"{base_url}/stream_proxy"
-            
+
             movie_name = movie.get("name", "")
             quality = movie.get("quality", "HD")
             lang = movie.get("language", "Vietsub")
@@ -827,23 +933,40 @@ async def nguonc_stream_handler(request: Request, type: str, id: str):
                 server_name = server.get("server_name", f"Server #{s_idx + 1}")
                 items = server.get("items", [])
 
-                # Find episode item matching target_ep_slug or default to first
+                # Find episode item matching target_ep_slug or episode_num
                 target_item = None
                 if target_ep_slug:
                     for item in items:
                         if item.get("slug") == target_ep_slug:
                             target_item = item
                             break
+                elif episode_num is not None:
+                    for item in items:
+                        item_slug = (item.get("slug") or "").lower()
+                        item_name = (item.get("name") or "").lower()
+                        if (
+                            item_slug == f"tap-{episode_num}"
+                            or item_slug == f"tap-{episode_num:02d}"
+                            or item_name == str(episode_num)
+                            or item_name == f"tập {episode_num}"
+                            or item_name == f"tap {episode_num}"
+                            or item_name == f"tập {episode_num:02d}"
+                        ):
+                            target_item = item
+                            break
+                    if not target_item and 1 <= episode_num <= len(items):
+                        target_item = items[episode_num - 1]
+
                 if not target_item and items:
                     target_item = items[0]
 
                 if target_item:
                     embed_url = target_item.get("embed", "")
                     ep_title = target_item.get("name", "")
-                    
+
                     if embed_url:
                         encoded_embed = urllib.parse.quote(embed_url, safe='')
-                        
+
                         # 1. Direct CDN Stream (Không qua proxy video, kết nối trực tiếp CDN gốc)
                         direct_stream_url = f"{proxy_base}?embed={encoded_embed}&direct=1&referer={encoded_embed}"
                         streams.append({
